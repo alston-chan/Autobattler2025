@@ -715,18 +715,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8858f92c45d6f4cbe52ec1391be6be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appearance: {fileID: 0}
-  equipmentManagement: {fileID: 0}
   isCharacter: 1
   isTeam: 1
   maxHealth: 100
   attackRange: 1
+  attackDamage: 10
   minAttackCooldown: 0.7
   maxAttackCooldown: 1.3
-  attackDamage: 10
   critChance: 0.2
   critKnockbackForce: 3.5
   normalKnockbackForce: 0
+  moveSpeed: 3
+  separationDistance: 1
+  separationStrength: 0.5
 --- !u!114 &364035558888234246
 MonoBehaviour:
   m_ObjectHideFlags: 0

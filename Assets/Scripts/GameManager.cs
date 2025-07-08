@@ -25,10 +25,10 @@ public class GameManager : Singleton<GameManager>
         {
             if (entity.isTeam)
             {
-                entity.appearance.CreateAvatars();
+                entity.Appearance.CreateAvatars();
             }
 
-            entity.appearance.SetRandomAppearance();
+            entity.Appearance.SetRandomAppearance();
             entity.EquipRandom();
         }
     }
