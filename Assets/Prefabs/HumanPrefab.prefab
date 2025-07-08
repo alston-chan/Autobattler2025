@@ -383,8 +383,11 @@ GameObject:
   - component: {fileID: 114665035860700710}
   - component: {fileID: 114576219538283162}
   - component: {fileID: 1793250967599767188}
+  - component: {fileID: -2014301142437070770}
+  - component: {fileID: 364035558888234246}
+  - component: {fileID: -2952166528620030506}
   m_Layer: 0
-  m_Name: Human
+  m_Name: HumanPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -399,8 +402,8 @@ Transform:
   m_GameObject: {fileID: 1109986072035710}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.4, y: 0.6, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4137129292409914}
@@ -700,6 +703,68 @@ MonoBehaviour:
   - {fileID: 4526183615447572}
   - {fileID: 4526183615447572}
   Firearm: {fileID: 4298589807477886}
+--- !u!114 &-2014301142437070770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109986072035710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8858f92c45d6f4cbe52ec1391be6be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  appearance: {fileID: 0}
+  equipmentManagement: {fileID: 0}
+  isCharacter: 1
+  isTeam: 1
+--- !u!114 &364035558888234246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109986072035710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fed4a1d67792b394d835eda86199b8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterAppearance:
+    Hair: Common.Basic.Hair.BuzzCut
+    Beard: 
+    Ears: Common.Basic.Ears.HumanEars
+    Eyebrows: Common.Basic.Eyebrows.Eyebrows1
+    Eyes: Common.Basic.Eyes.Male
+    Mouth: Common.Basic.Mouth.Normal
+    Head: Common.Basic.Head.Human
+    HairColor:
+      serializedVersion: 2
+      rgba: 4278203030
+    BeardColor:
+      serializedVersion: 2
+      rgba: 4278203030
+    EyesColor:
+      serializedVersion: 2
+      rgba: 4294952960
+    BodyColor:
+      serializedVersion: 2
+      rgba: 4286105855
+  avatarPrefab: {fileID: 5941417919615035630, guid: dc49263ee869c9942b5239ac3c4fe9ee, type: 3}
+  avatar: {fileID: 0}
+--- !u!114 &-2952166528620030506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109986072035710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0873a6313e7eed9448bd2955268884c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1148429461579488
 GameObject:
   m_ObjectHideFlags: 0
