@@ -719,6 +719,14 @@ MonoBehaviour:
   equipmentManagement: {fileID: 0}
   isCharacter: 1
   isTeam: 1
+  maxHealth: 100
+  attackRange: 1
+  minAttackCooldown: 0.7
+  maxAttackCooldown: 1.3
+  attackDamage: 10
+  critChance: 0.2
+  critKnockbackForce: 3.5
+  normalKnockbackForce: 0
 --- !u!114 &364035558888234246
 MonoBehaviour:
   m_ObjectHideFlags: 0

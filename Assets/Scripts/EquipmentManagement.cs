@@ -8,7 +8,7 @@ public class EquipmentManagement : MonoBehaviour
     private Character Character;
     private Appearance Appearance;
 
-    public void Start()
+    public void Awake()
     {
         Character = GetComponent<Character>();
         Appearance = GetComponent<Appearance>();

@@ -13,7 +13,7 @@ public class Appearance : MonoBehaviour
     public GameObject avatar;
     private AvatarSetup avatarSetup;
 
-    public void Start()
+    public void Awake()
     {
         Character = GetComponent<Character>();
     }
@@ -32,7 +32,10 @@ public class Appearance : MonoBehaviour
 
         var helmetId = Character.SpriteCollection.Helmet.SingleOrDefault(i => i.Sprite == Character.Helmet)?.Id;
 
-        avatarSetup.Initialize(CharacterAppearance, helmetId);
+        if (avatarSetup != null)
+        {
+            avatarSetup.Initialize(CharacterAppearance, helmetId);
+        }
     }
 
     public void SetRandomAppearance()
