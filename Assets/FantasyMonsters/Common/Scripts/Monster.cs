@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.FantasyMonsters.Common.Scripts.Tweens;
@@ -53,7 +54,7 @@ namespace Assets.FantasyMonsters.Common.Scripts
         /// </summary>
         public void SetState(MonsterState state)
         {
-            Animator.SetInteger("State", (int) state);
+            Animator.SetInteger("State", (int)state);
         }
 
         /// <summary>
@@ -78,6 +79,21 @@ namespace Assets.FantasyMonsters.Common.Scripts
         public virtual void Spring()
         {
             ScaleSpring.Begin(this, 1f, 1.1f, 40, 2);
+        }
+
+        private List<Color> _colors;
+
+        public IEnumerator HitAsRed()
+        {
+            var renderers = GetComponentsInChildren<SpriteRenderer>().Where(r => r.tag != "IgnoreHitEffect").ToArray();
+
+            _colors ??= renderers.Select(i => i.color).ToList();
+
+            for (var i = 0; i < renderers.Length; i++) renderers[i].color = Color.red;
+
+            yield return new WaitForSeconds(0.1f);
+
+            for (var i = 0; i < renderers.Length; i++) renderers[i].color = _colors[i];
         }
 
         // Play Die animation.

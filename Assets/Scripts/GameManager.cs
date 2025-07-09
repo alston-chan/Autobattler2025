@@ -28,8 +28,11 @@ public class GameManager : Singleton<GameManager>
                 entity.Appearance.CreateAvatars();
             }
 
-            entity.Appearance.SetRandomAppearance();
-            entity.EquipRandom();
+            if (entity.isCharacter)
+            {
+                entity.Appearance.SetRandomAppearance();
+                entity.EquipRandom();
+            }
         }
     }
 }

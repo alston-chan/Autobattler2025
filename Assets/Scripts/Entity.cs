@@ -1,23 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
+using Assets.FantasyMonsters.Common.Scripts;
 using UnityEngine;
-
-
 
 public class Entity : MonoBehaviour
 {
     #region References
     [Header("References")]
     private Character character;
+    private Monster monster;
     public Appearance Appearance { get; private set; }
     public EquipmentManagement EquipmentManagement { get; private set; }
+    public ResourceBar healthBar;
     #endregion
 
     #region Team & Identity
     [Header("Team & Identity")]
-    [SerializeField] private bool isCharacter = true;
+    [SerializeField] public bool isCharacter = true;
     public bool isTeam = true;
+    public bool isDead = false;
     #endregion
 
     #region Health
@@ -59,15 +61,23 @@ public class Entity : MonoBehaviour
     private void Awake()
     {
         character = GetComponent<Character>();
+        monster = GetComponent<Monster>();
         Appearance = GetComponent<Appearance>();
         EquipmentManagement = GetComponent<EquipmentManagement>();
-        currentHealth = maxHealth;
+
         attackCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
+
+        currentHealth = maxHealth;
+        healthBar.SetSize(currentHealth / maxHealth);
+        if (!isTeam)
+        {
+            healthBar.SetColor(Color.red);
+        }
     }
 
     private void Update()
     {
-        if (character.GetState() == CharacterState.DeathB) return;
+        if (isDead) return;
 
         FaceTarget();
         HandleKnockback();
@@ -83,7 +93,7 @@ public class Entity : MonoBehaviour
             if (toTarget.x != 0)
             {
                 Vector3 scale = transform.localScale;
-                scale.x = Mathf.Abs(scale.x) * Mathf.Sign(toTarget.x);
+                scale.x = Mathf.Abs(scale.x) * Mathf.Sign(toTarget.x) * (isCharacter ? 1 : -1);
                 transform.localScale = scale;
             }
         }
@@ -144,23 +154,35 @@ public class Entity : MonoBehaviour
                     float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
                     Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
                     move = (dir + lateralOffset).normalized * moveSpeed;
-                    character.SetState(CharacterState.Run);
+                    if (character != null)
+                        character.SetState(CharacterState.Run);
+                    else if (monster != null)
+                        monster.SetState(MonsterState.Run);
                 }
                 else
                 {
-                    character.SetState(CharacterState.Idle);
+                    if (character != null)
+                        character.SetState(CharacterState.Idle);
+                    else if (monster != null)
+                        monster.SetState(MonsterState.Idle);
                 }
             }
             else
             {
-                character.SetState(CharacterState.Idle);
+                if (character != null)
+                    character.SetState(CharacterState.Idle);
+                else if (monster != null)
+                    monster.SetState(MonsterState.Idle);
                 Attack(currentTarget);
             }
         }
         else
         {
             currentTarget = null;
-            character.SetState(CharacterState.Idle);
+            if (character != null)
+                character.SetState(CharacterState.Idle);
+            else if (monster != null)
+                monster.SetState(MonsterState.Idle);
         }
         if (knockbackVelocity.magnitude < 0.01f && knockbackStunTimer <= 0f)
         {
@@ -188,13 +210,20 @@ public class Entity : MonoBehaviour
     private IEnumerator AttackCoroutine(Entity target)
     {
         isAttacking = true;
-        if (Random.value < 0.5f)
+        // Play attack animation depending on type
+        if (character != null)
         {
-            character.Slash();
+            if (Random.value < 0.5f)
+                character.Slash();
+            else
+                character.Jab();
         }
-        else
+        else if (monster != null)
         {
-            character.Jab();
+            if (Random.value < 0.5f)
+                monster.Attack();
+            else
+                monster.AttackAlt();
         }
         yield return new WaitForSeconds(0.2f);
         bool isCrit = Random.value < critChance;
@@ -224,10 +253,17 @@ public class Entity : MonoBehaviour
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
+        if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
+
         if (character != null)
         {
             character.HitAsScale();
             StartCoroutine(character.HitAsRed());
+        }
+        else if (monster != null)
+        {
+            monster.Spring();
+            StartCoroutine(monster.HitAsRed());
         }
         if (currentHealth <= 0)
         {
@@ -237,6 +273,16 @@ public class Entity : MonoBehaviour
 
     private void Die()
     {
+        isDead = true;
+
+        if (character != null)
+        {
+            character.SetState(CharacterState.DeathB);
+        }
+        else if (monster != null)
+        {
+            monster.Die();
+        }
         Destroy(gameObject);
     }
 }

@@ -22,22 +22,22 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         public MeleeWeapon MeleeWeapon;
         public Firearm Firearm;
 
-		[Header("Service")]
-		public LayerManager LayerManager;
+        [Header("Service")]
+        public LayerManager LayerManager;
 
         [Header("Custom")]
         public bool ShowHelmet = true;
 
         public Vector2 BodyScale
-	    {
-		    get { return BodyRenderers.Single(i => i.name == "Torso").transform.localScale; }
-		    set => GetComponent<CharacterBodySculptor>().OnCharacterLoaded(value);
+        {
+            get { return BodyRenderers.Single(i => i.name == "Torso").transform.localScale; }
+            set => GetComponent<CharacterBodySculptor>().OnCharacterLoaded(value);
         }
 
-	    /// <summary>
-		/// Called automatically when something was changed.
-		/// </summary>
-		public void OnValidate()
+        /// <summary>
+        /// Called automatically when something was changed.
+        /// </summary>
+        public void OnValidate()
         {
             if (Head == null) return;
 
@@ -56,7 +56,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
                 handler.StateExit.AddListener(() => SetExpression("Default"));
             }
         }
-        
+
         /// <summary>
         /// Called automatically when object was enabled.
         /// </summary>
@@ -65,17 +65,17 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             HairMask.isCustomRangeActive = true;
             HairMask.frontSortingOrder = HelmetRenderer.sortingOrder;
             HairMask.backSortingOrder = HairRenderer.sortingOrder - 1;
-			UpdateAnimation();
+            UpdateAnimation();
         }
 
-	    public void OnDisable()
-	    {
-		    _animationState = -1;
-	    }
+        public void OnDisable()
+        {
+            _animationState = -1;
+        }
 
-	    private int _animationState = -1;
+        private int _animationState = -1;
 
-		/// <summary>
+        /// <summary>
         /// Initializes character renderers with selected sprites.
         /// </summary>
         public override void Initialize()
@@ -90,11 +90,11 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             }
         }
 
-		/// <summary>
-		/// Initializes character renderers with selected sprites.
-		/// </summary>
-		private void TryInitialize()
-		{
+        /// <summary>
+        /// Initializes character renderers with selected sprites.
+        /// </summary>
+        private void TryInitialize()
+        {
             if (Expressions.All(i => i.Name != "Default") || Expressions.All(i => i.Name != "Angry") || Expressions.All(i => i.Name != "Dead"))
             {
                 throw new Exception("Character must have at least 3 basic expressions: Default, Angry and Dead.");
@@ -116,45 +116,45 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             HeadRenderer.sprite = Head;
             EarsRenderer.sprite = Ears;
             HairRenderer.sprite = Hair;
-			SetExpression(Expression);
-			BeardRenderer.sprite = Beard;
-			MapSprites(BodyRenderers, Body);
-			GlassesRenderer.sprite = Glasses;
-			MaskRenderer.sprite = Mask;
-			EarringsRenderer.sprite = Earrings;
-			MapSprites(ArmorRenderers, Armor);
-			CapeRenderer.sprite = Cape;
-			BackRenderer.sprite = Back;
-			PrimaryMeleeWeaponRenderer.sprite = PrimaryMeleeWeapon;
-			SecondaryMeleeWeaponRenderer.sprite = SecondaryMeleeWeapon;
-			MapSprites(BowRenderers, Bow);
-			MapSprites(FirearmsRenderers, Firearms);
-			ShieldRenderer.sprite = Shield;
+            SetExpression(Expression);
+            BeardRenderer.sprite = Beard;
+            MapSprites(BodyRenderers, Body);
+            GlassesRenderer.sprite = Glasses;
+            MaskRenderer.sprite = Mask;
+            EarringsRenderer.sprite = Earrings;
+            MapSprites(ArmorRenderers, Armor);
+            CapeRenderer.sprite = Cape;
+            BackRenderer.sprite = Back;
+            PrimaryMeleeWeaponRenderer.sprite = PrimaryMeleeWeapon;
+            SecondaryMeleeWeaponRenderer.sprite = SecondaryMeleeWeapon;
+            MapSprites(BowRenderers, Bow);
+            MapSprites(FirearmsRenderers, Firearms);
+            ShieldRenderer.sprite = Shield;
 
-			PrimaryMeleeWeaponRenderer.enabled = WeaponType != WeaponType.Bow;
-			SecondaryMeleeWeaponRenderer.enabled = WeaponType == WeaponType.MeleePaired;
-			BowRenderers.ForEach(i => i.enabled = WeaponType == WeaponType.Bow);
-			ShieldRenderer.enabled = WeaponType == WeaponType.Melee1H || WeaponType == WeaponType.Firearm1H;
+            PrimaryMeleeWeaponRenderer.enabled = WeaponType != WeaponType.Bow;
+            SecondaryMeleeWeaponRenderer.enabled = WeaponType == WeaponType.MeleePaired;
+            BowRenderers.ForEach(i => i.enabled = WeaponType == WeaponType.Bow);
+            ShieldRenderer.enabled = WeaponType == WeaponType.Melee1H || WeaponType == WeaponType.Firearm1H;
 
-			if (Hair != null && HideEars && HairRenderer.maskInteraction == SpriteMaskInteraction.None)
-			{
-				EarsRenderer.sprite = null;
-			}
+            if (Hair != null && HideEars && HairRenderer.maskInteraction == SpriteMaskInteraction.None)
+            {
+                EarsRenderer.sprite = null;
+            }
 
-			switch (WeaponType)
-			{
+            switch (WeaponType)
+            {
                 case WeaponType.Firearm1H:
                 case WeaponType.Firearm2H:
-                {
-                    Firearm.AmmoShooted = 0;
-                    BuildFirearms(Firearm.Params);
-                    break;
-                }
+                    {
+                        Firearm.AmmoShooted = 0;
+                        BuildFirearms(Firearm.Params);
+                        break;
+                    }
             }
 
             ApplyMaterials();
             UpdateAnimation();
-		}
+        }
 
         /// <summary>
         /// Refer to Animator window for animation params, states and transitions!
@@ -163,21 +163,21 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         {
             if (!Animator.isInitialized) return;
 
-            var state = 100 * (int) WeaponType;
+            var state = 100 * (int)WeaponType;
 
-            Animator.SetInteger("WeaponType", (int) WeaponType);
+            Animator.SetInteger("WeaponType", (int)WeaponType);
 
             if ((WeaponType == WeaponType.Firearm1H || WeaponType == WeaponType.Firearm2H || WeaponType == WeaponType.FirearmsPaired) && Firearm.Params != null)
             {
-				Animator.SetInteger("MagazineType", (int) Firearm.Params.MagazineType);
-                Animator.SetInteger("HoldType", (int) Firearm.Params.HoldType);
-                state += (int) Firearm.Params.HoldType;
+                Animator.SetInteger("MagazineType", (int)Firearm.Params.MagazineType);
+                Animator.SetInteger("HoldType", (int)Firearm.Params.HoldType);
+                state += (int)Firearm.Params.HoldType;
             }
 
             if (state == _animationState) return; // No need to change animation.
 
             _animationState = state;
-			
+
             if (WeaponType == WeaponType.Firearm1H || WeaponType == WeaponType.Firearm2H)
             {
                 Animator.Play("IdleFirearm", 0); // Upper body
@@ -189,12 +189,12 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
 
             Relax();
             SetState(CharacterState.Idle);
-		}
+        }
 
-		/// <summary>
-		/// Alternative way to Hit character (with a script).
-		/// </summary>
-		public void HitAsScale()
+        /// <summary>
+        /// Alternative way to Hit character (with a script).
+        /// </summary>
+        public void HitAsScale()
         {
             ScaleSpring.Begin(this, 1f, 1.1f, 50, 5);
         }
@@ -206,14 +206,14 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         /// </summary>
         public IEnumerator HitAsRed()
         {
-            var renderers = GetComponentsInChildren<SpriteRenderer>();
+            var renderers = GetComponentsInChildren<SpriteRenderer>().Where(r => r.tag != "IgnoreHitEffect").ToArray();
 
             _colors ??= renderers.Select(i => i.color).ToList();
-            
+
             for (var i = 0; i < renderers.Length; i++) renderers[i].color = Color.red;
-            
+
             yield return new WaitForSeconds(0.1f);
-            
+
             for (var i = 0; i < renderers.Length; i++) renderers[i].color = _colors[i];
         }
 
