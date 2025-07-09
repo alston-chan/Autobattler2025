@@ -386,6 +386,7 @@ GameObject:
   - component: {fileID: -2014301142437070770}
   - component: {fileID: 364035558888234246}
   - component: {fileID: -2952166528620030506}
+  - component: {fileID: 2573757335595155163}
   m_Layer: 0
   m_Name: HumanPrefab
   m_TagString: Untagged
@@ -718,6 +719,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 6707765629141734296}
+  ArmL: {fileID: 4314068295598354}
+  ArmR: {fileID: 4957315199455554}
+  AngleToTarget: 0
+  AngleToArm: 0
+  FixedArm: 0
   isCharacter: 1
   isTeam: 1
   isDead: 0
@@ -729,6 +735,11 @@ MonoBehaviour:
   critChance: 0.2
   critKnockbackForce: 3.5
   normalKnockbackForce: 0
+  isRanged: 1
+  arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
+  fireTransform: {fileID: 4059777504579930}
+  clipCharge: {fileID: 7400000, guid: 20538db717b94efeaa004e68d9284e3f, type: 2}
+  createArrows: 1
   moveSpeed: 3
   separationDistance: 1
   separationStrength: 0.5
@@ -778,6 +789,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0873a6313e7eed9448bd2955268884c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!70 &2573757335595155163
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109986072035710}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 1.2}
+  m_Size: {x: 1.25, y: 3}
+  m_Direction: 0
 --- !u!1 &1148429461579488
 GameObject:
   m_ObjectHideFlags: 0

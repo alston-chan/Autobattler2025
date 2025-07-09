@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.FantasyMonsters.Common.Scripts;
+using Assets.HeroEditor.Common.Scripts.ExampleScripts;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
@@ -14,6 +15,14 @@ public class Entity : MonoBehaviour
     public EquipmentManagement EquipmentManagement { get; private set; }
     public ResourceBar healthBar;
     #endregion
+
+    // Bow aiming logic
+    [Header("Bow Arm Aiming")]
+    public Transform ArmL;
+    public Transform ArmR;
+    public float AngleToTarget;
+    public float AngleToArm;
+    public bool FixedArm;
 
     #region Team & Identity
     [Header("Team & Identity")]
@@ -40,6 +49,13 @@ public class Entity : MonoBehaviour
     private float attackCooldown;
     private bool isAttacking = false;
     private Entity currentTarget;
+    // Bow/ranged logic
+    [Header("Ranged/Bow")]
+    [SerializeField] private bool isRanged = false;
+    [SerializeField] private GameObject arrowPrefab;
+    [SerializeField] private Transform fireTransform;
+    [SerializeField] private AnimationClip clipCharge;
+    [SerializeField] private bool createArrows = true;
     #endregion
 
     #region Movement
@@ -83,6 +99,54 @@ public class Entity : MonoBehaviour
         HandleKnockback();
         HandleTimers();
         HandleAI();
+    }
+
+    private void LateUpdate()
+    {
+        // Bow aiming logic (for ranged characters)
+        if (isRanged && currentTarget != null && character != null && ArmL != null)
+        {
+            Transform arm = ArmL;
+            Transform weapon = null;
+            if (character.BowRenderers != null && character.BowRenderers.Count > 3)
+            {
+                weapon = character.BowRenderers[3].transform;
+            }
+            else
+            {
+                return;
+            }
+            if (character.IsReady())
+            {
+                RotateArm(arm, weapon, FixedArm ? arm.position + 1000 * Vector3.right : currentTarget.transform.position, -40, 40);
+            }
+        }
+    }
+
+    public void RotateArm(Transform arm, Transform weapon, Vector2 target, float angleMin, float angleMax)
+    {
+        target = arm.transform.InverseTransformPoint(target);
+        var angleToTarget = Vector2.SignedAngle(Vector2.right, target);
+        var angleToArm = Vector2.SignedAngle(weapon.right, arm.transform.right) * Mathf.Sign(weapon.lossyScale.x);
+        var fix = weapon.InverseTransformPoint(arm.transform.position).y / target.magnitude;
+        AngleToTarget = angleToTarget;
+        AngleToArm = angleToArm;
+        if (fix < -1) fix = -1;
+        else if (fix > 1) fix = 1;
+        var angleFix = Mathf.Asin(fix) * Mathf.Rad2Deg;
+        var angle = angleToTarget + angleFix + arm.transform.localEulerAngles.z;
+        angle = NormalizeAngle(angle);
+        if (angle > angleMax) angle = angleMax;
+        else if (angle < angleMin) angle = angleMin;
+        if (float.IsNaN(angle)) Debug.LogWarning(angle);
+        arm.transform.localEulerAngles = new Vector3(0, 0, angle + angleToArm);
+    }
+
+    private static float NormalizeAngle(float angle)
+    {
+        while (angle > 180) angle -= 360;
+        while (angle < -180) angle += 360;
+        return angle;
     }
 
     private void FaceTarget()
@@ -196,7 +260,8 @@ public class Entity : MonoBehaviour
         EquipmentManagement.EquipRandomArmor();
         EquipmentManagement.EquipRandomHelmet();
         EquipmentManagement.EquipRandomShield();
-        EquipmentManagement.EquipRandomWeapon();
+        // EquipmentManagement.EquipRandomWeapon();
+        EquipmentManagement.EquipRandomBow();
     }
 
     public void Attack(Entity target)
@@ -210,36 +275,74 @@ public class Entity : MonoBehaviour
     private IEnumerator AttackCoroutine(Entity target)
     {
         isAttacking = true;
-        // Play attack animation depending on type
-        if (character != null)
+        if (isRanged && character != null)
         {
-            if (Random.value < 0.5f)
-                character.Slash();
-            else
-                character.Jab();
+            character.GetReady();
+            float chargeTime = 0.5f;
+            if (clipCharge != null) chargeTime = clipCharge.length;
+            character.Animator.SetInteger("Charge", 1);
+            yield return new WaitForSeconds(chargeTime);
+            character.Animator.SetInteger("Charge", 2);
+            if (createArrows && arrowPrefab != null && fireTransform != null)
+            {
+                CreateArrow();
+            }
+            yield return new WaitForSeconds(0.1f);
         }
-        else if (monster != null)
+        else
         {
-            if (Random.value < 0.5f)
-                monster.Attack();
-            else
-                monster.AttackAlt();
-        }
-        yield return new WaitForSeconds(0.2f);
-        bool isCrit = Random.value < critChance;
-        target.TakeDamage(attackDamage);
-        if (isCrit)
-        {
-            Vector3 knockbackDir = (target.transform.position - transform.position).normalized;
-            target.ApplyKnockback(knockbackDir, critKnockbackForce);
-        }
-        else if (normalKnockbackForce > 0f)
-        {
-            Vector3 knockbackDir = (target.transform.position - transform.position).normalized;
-            target.ApplyKnockback(knockbackDir, normalKnockbackForce);
+            // Melee or monster logic
+            if (character != null)
+            {
+                if (Random.value < 0.5f)
+                    character.Slash();
+                else
+                    character.Jab();
+            }
+            else if (monster != null)
+            {
+                if (Random.value < 0.5f)
+                    monster.Attack();
+                else
+                    monster.AttackAlt();
+            }
+            yield return new WaitForSeconds(0.2f);
+            bool isCrit = Random.value < critChance;
+            target.TakeDamage(attackDamage);
+            if (isCrit)
+            {
+                Vector3 knockbackDir = (target.transform.position - transform.position).normalized;
+                target.ApplyKnockback(knockbackDir, critKnockbackForce);
+            }
+            else if (normalKnockbackForce > 0f)
+            {
+                Vector3 knockbackDir = (target.transform.position - transform.position).normalized;
+                target.ApplyKnockback(knockbackDir, normalKnockbackForce);
+            }
         }
         yield return new WaitForSeconds(attackCooldown);
         isAttacking = false;
+    }
+
+    private void CreateArrow()
+    {
+        var arrow = Instantiate(arrowPrefab, fireTransform);
+        var sr = arrow.GetComponent<SpriteRenderer>();
+        var rb = arrow.GetComponent<Rigidbody2D>();
+        const float speed = 18.75f;
+        arrow.transform.localPosition = Vector3.zero;
+        arrow.transform.localRotation = Quaternion.identity;
+        arrow.transform.SetParent(null);
+        rb.velocity = speed * fireTransform.right * Mathf.Sign(character.transform.lossyScale.x) * Random.Range(0.85f, 1.15f);
+        // Set shooter and target reference
+        var projectile = arrow.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            projectile.damage = attackDamage;
+            projectile.knockbackForce = critKnockbackForce;
+            projectile.shooter = this;
+            projectile.target = currentTarget;
+        }
     }
 
     public void ApplyKnockback(Vector3 direction, float force)
