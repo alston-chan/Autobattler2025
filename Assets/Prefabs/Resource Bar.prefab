@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 114455756125948258}
   m_Layer: 0
   m_Name: Border
-  m_TagString: IgnoreHitEffect
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4300973755324043182}
   m_Layer: 0
   m_Name: Bar Sprite
-  m_TagString: IgnoreHitEffect
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 8540863257126919745}
   m_Layer: 0
   m_Name: Background
-  m_TagString: IgnoreHitEffect
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

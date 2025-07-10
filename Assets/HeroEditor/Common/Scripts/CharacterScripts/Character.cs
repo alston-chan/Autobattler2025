@@ -206,7 +206,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         /// </summary>
         public IEnumerator HitAsRed()
         {
-            var renderers = GetComponentsInChildren<SpriteRenderer>().Where(r => r.tag != "IgnoreHitEffect").ToArray();
+            var renderers = GetComponentsInChildren<SpriteRenderer>();
 
             _colors ??= renderers.Select(i => i.color).ToList();
 

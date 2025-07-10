@@ -33,8 +33,9 @@ public class Entity : MonoBehaviour
 
     #region Health
     [Header("Health")]
-    [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
+    public float maxHealth = 100f;
+    public float currentHealth;
+    public Vector3 healthBarOffset = new Vector3(0, 3.0f, 1);
     #endregion
 
     #region Combat
@@ -89,11 +90,6 @@ public class Entity : MonoBehaviour
         attackCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
 
         currentHealth = maxHealth;
-        healthBar.SetSize(currentHealth / maxHealth);
-        if (!isTeam)
-        {
-            healthBar.SetColor(Color.red);
-        }
     }
 
     private void Update()
@@ -384,6 +380,7 @@ public class Entity : MonoBehaviour
         {
             monster.Die();
         }
+        Destroy(healthBar.gameObject);
         Destroy(gameObject);
     }
 }
