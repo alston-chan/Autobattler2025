@@ -75,4 +75,20 @@ public class EquipmentManagement : MonoBehaviour
         Appearance.CharacterAppearance = new CharacterAppearance();
         Appearance.Refresh();
     }
+
+    // Equip random equipment, only bow if ranged, else melee weapon
+    public void EquipRandom(bool isRanged = false)
+    {
+        EquipRandomArmor();
+        EquipRandomHelmet();
+        EquipRandomShield();
+        if (isRanged)
+        {
+            EquipRandomBow();
+        }
+        else
+        {
+            EquipRandomWeapon();
+        }
+    }
 }

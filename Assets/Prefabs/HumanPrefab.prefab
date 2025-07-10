@@ -728,6 +728,8 @@ MonoBehaviour:
   isTeam: 1
   isDead: 0
   maxHealth: 100
+  meleeRange: 1.5
+  rangedRange: 15
   attackRange: 1
   attackDamage: 10
   minAttackCooldown: 0.7

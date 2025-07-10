@@ -39,7 +39,9 @@ public class Entity : MonoBehaviour
 
     #region Combat
     [Header("Combat")]
-    [SerializeField] private float attackRange = 1.0f;
+    [SerializeField] private float meleeRange = 1.5f;
+    [SerializeField] private float rangedRange = 15f;
+    [SerializeField, HideInInspector] private float attackRange = 1.0f;
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float minAttackCooldown = 0.7f;
     [SerializeField] private float maxAttackCooldown = 1.3f;
@@ -80,6 +82,9 @@ public class Entity : MonoBehaviour
         monster = GetComponent<Monster>();
         Appearance = GetComponent<Appearance>();
         EquipmentManagement = GetComponent<EquipmentManagement>();
+
+        // Set attack range based on entity type
+        attackRange = isRanged ? rangedRange : meleeRange;
 
         attackCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
 
@@ -257,11 +262,7 @@ public class Entity : MonoBehaviour
 
     public void EquipRandom()
     {
-        EquipmentManagement.EquipRandomArmor();
-        EquipmentManagement.EquipRandomHelmet();
-        EquipmentManagement.EquipRandomShield();
-        // EquipmentManagement.EquipRandomWeapon();
-        EquipmentManagement.EquipRandomBow();
+        EquipmentManagement.EquipRandom(isRanged);
     }
 
     public void Attack(Entity target)
@@ -301,10 +302,7 @@ public class Entity : MonoBehaviour
             }
             else if (monster != null)
             {
-                if (Random.value < 0.5f)
-                    monster.Attack();
-                else
-                    monster.AttackAlt();
+                monster.Attack();
             }
             yield return new WaitForSeconds(0.2f);
             bool isCrit = Random.value < critChance;
