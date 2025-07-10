@@ -362,7 +362,7 @@ public class Entity : MonoBehaviour
             monster.Spring();
             StartCoroutine(monster.HitAsRed());
         }
-        if (currentHealth <= 0)
+        if (!isDead && currentHealth <= 0)
         {
             Die();
         }

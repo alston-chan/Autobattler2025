@@ -6,24 +6,23 @@ public class GameManager : Singleton<GameManager>
 {
     public GameObject avatarUI;
 
-    // Start is called before the first frame update
+    public GameObject healthBarsOrganizer;
+    public GameObject resourceBarPrefab;
+
     void Start()
     {
         CreateAvatarUI();
+        InstantiateHealthBars();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    void Update() { }
 
     private void CreateAvatarUI()
     {
         Entity[] entities = FindObjectsOfType<Entity>();
         foreach (Entity entity in entities)
         {
-            if (entity.isTeam)
+            if (entity.isTeam && entity.isCharacter)
             {
                 entity.Appearance.CreateAvatars();
             }
@@ -33,6 +32,25 @@ public class GameManager : Singleton<GameManager>
                 entity.Appearance.SetRandomAppearance();
                 entity.EquipRandom();
             }
+        }
+    }
+
+    private void InstantiateHealthBars()
+    {
+        Entity[] entities = FindObjectsOfType<Entity>();
+        foreach (Entity entity in entities)
+        {
+            GameObject healthBarObj = Instantiate(resourceBarPrefab, healthBarsOrganizer.transform);
+            ResourceBar healthBar = healthBarObj.GetComponent<ResourceBar>();
+            healthBarObj.transform.localScale = entity.transform.localScale;
+            entity.healthBar = healthBar;
+            entity.healthBar.SetSize(entity.currentHealth / entity.maxHealth);
+
+            if (!entity.isTeam)
+            {
+                healthBar.SetColor(Color.red);
+            }
+            healthBar.entity = entity;
         }
     }
 }
