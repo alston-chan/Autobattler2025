@@ -28,7 +28,7 @@ namespace Assets.HeroEditor.Common.Scripts.EditorScripts
             {
                 Character.Hit();
                 Character.HitAsScale();
-                StartCoroutine(Character.HitAsRed());
+                StartCoroutine(Character.HitAsRed(0.1f));
             }
         }
 
@@ -75,7 +75,7 @@ namespace Assets.HeroEditor.Common.Scripts.EditorScripts
 
             Character.SetState(state);
 
-            Refresh(); 
+            Refresh();
         }
     }
 }

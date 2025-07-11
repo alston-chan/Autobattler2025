@@ -717,6 +717,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8858f92c45d6f4cbe52ec1391be6be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
+  monster: {fileID: 0}
   healthBar: {fileID: 0}
   ArmL: {fileID: 4314068295598354}
   ArmR: {fileID: 4957315199455554}
@@ -729,20 +731,9 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   healthBarOffset: {x: 0, y: 1.5, z: 1}
-  meleeRange: 1.5
-  rangedRange: 15
-  attackRange: 1
-  attackDamage: 10
-  minAttackCooldown: 0.7
-  maxAttackCooldown: 1.3
-  critChance: 0.2
-  critKnockbackForce: 3.5
-  normalKnockbackForce: 0
   isRanged: 1
-  arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
   fireTransform: {fileID: 4059777504579930}
-  clipCharge: {fileID: 7400000, guid: 20538db717b94efeaa004e68d9284e3f, type: 2}
-  createArrows: 1
+  spells: []
   moveSpeed: 3
   separationDistance: 1
   separationStrength: 0.5

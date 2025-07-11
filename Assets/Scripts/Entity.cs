@@ -9,8 +9,8 @@ public class Entity : MonoBehaviour
 {
     #region References
     [Header("References")]
-    private Character character;
-    private Monster monster;
+    public Character character;
+    public Monster monster;
     public Appearance Appearance { get; private set; }
     public EquipmentManagement EquipmentManagement { get; private set; }
     public ResourceBar healthBar;
@@ -40,26 +40,19 @@ public class Entity : MonoBehaviour
 
     #region Combat
     [Header("Combat")]
-    [SerializeField] private float meleeRange = 1.5f;
-    [SerializeField] private float rangedRange = 15f;
-    [SerializeField, HideInInspector] private float attackRange = 1.0f;
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float minAttackCooldown = 0.7f;
-    [SerializeField] private float maxAttackCooldown = 1.3f;
-    [SerializeField] private float critChance = 0.2f;
-    [SerializeField] private float critKnockbackForce = 3.5f;
-    [SerializeField] private float normalKnockbackForce = 0f;
-    private float attackCooldown;
+    private float attackRange = 1.0f;
     private bool isAttacking = false;
     private Entity currentTarget;
     // Bow/ranged logic
     [Header("Ranged/Bow")]
     [SerializeField] private bool isRanged = false;
-    [SerializeField] private GameObject arrowPrefab;
-    [SerializeField] private Transform fireTransform;
-    [SerializeField] private AnimationClip clipCharge;
-    [SerializeField] private bool createArrows = true;
+    public Transform fireTransform;
     #endregion
+
+    // Spell system
+    [Header("Spells")]
+    public List<Spell> spells;
+    private float[] spellCooldowns;
 
     #region Movement
     [Header("Movement")]
@@ -84,12 +77,20 @@ public class Entity : MonoBehaviour
         Appearance = GetComponent<Appearance>();
         EquipmentManagement = GetComponent<EquipmentManagement>();
 
-        // Set attack range based on entity type
-        attackRange = isRanged ? rangedRange : meleeRange;
-
-        attackCooldown = Random.Range(minAttackCooldown, maxAttackCooldown);
+        // Set attack range based on spell data if available, otherwise fallback to default
+        if (spells != null && spells.Count > 0 && spells[0] != null)
+        {
+            attackRange = spells[0].range;
+        }
+        else
+        {
+            attackRange = 1.5f;
+        }
 
         currentHealth = maxHealth;
+
+        if (spells == null) spells = new List<Spell>();
+        spellCooldowns = new float[spells.Count];
     }
 
     private void Update()
@@ -99,6 +100,7 @@ public class Entity : MonoBehaviour
         FaceTarget();
         HandleKnockback();
         HandleTimers();
+        UpdateSpellCooldowns();
         HandleAI();
     }
 
@@ -261,83 +263,41 @@ public class Entity : MonoBehaviour
         EquipmentManagement.EquipRandom(isRanged);
     }
 
+
     public void Attack(Entity target)
     {
-        if (!isAttacking && target != null)
+        if (!isAttacking && target != null && spells != null && spells.Count > 0)
         {
-            StartCoroutine(AttackCoroutine(target));
+            for (int i = 0; i < spells.Count; i++)
+            {
+                if (spells[i] != null && spells[i].CanCast(this, target) && spellCooldowns[i] <= 0)
+                {
+                    StartCoroutine(CastSpellWithCooldown(i, target));
+                    break; // Only cast one spell per attack
+                }
+            }
         }
     }
 
-    private IEnumerator AttackCoroutine(Entity target)
+    private IEnumerator CastSpellWithCooldown(int spellIndex, Entity target)
     {
         isAttacking = true;
-        if (isRanged && character != null)
-        {
-            character.GetReady();
-            float chargeTime = 0.5f;
-            if (clipCharge != null) chargeTime = clipCharge.length;
-            character.Animator.SetInteger("Charge", 1);
-            yield return new WaitForSeconds(chargeTime);
-            character.Animator.SetInteger("Charge", 2);
-            if (createArrows && arrowPrefab != null && fireTransform != null)
-            {
-                CreateArrow();
-            }
-            yield return new WaitForSeconds(0.1f);
-        }
-        else
-        {
-            // Melee or monster logic
-            if (character != null)
-            {
-                if (Random.value < 0.5f)
-                    character.Slash();
-                else
-                    character.Jab();
-            }
-            else if (monster != null)
-            {
-                monster.Attack();
-            }
-            yield return new WaitForSeconds(0.2f);
-            bool isCrit = Random.value < critChance;
-            target.TakeDamage(attackDamage);
-            if (isCrit)
-            {
-                Vector3 knockbackDir = (target.transform.position - transform.position).normalized;
-                target.ApplyKnockback(knockbackDir, critKnockbackForce);
-            }
-            else if (normalKnockbackForce > 0f)
-            {
-                Vector3 knockbackDir = (target.transform.position - transform.position).normalized;
-                target.ApplyKnockback(knockbackDir, normalKnockbackForce);
-            }
-        }
-        yield return new WaitForSeconds(attackCooldown);
+        yield return StartCoroutine(spells[spellIndex].Cast(this, target));
+        spellCooldowns[spellIndex] = spells[spellIndex].cooldown;
         isAttacking = false;
     }
 
-    private void CreateArrow()
+    // Decrement spell cooldowns every frame
+    private void UpdateSpellCooldowns()
     {
-        var arrow = Instantiate(arrowPrefab, fireTransform);
-        var sr = arrow.GetComponent<SpriteRenderer>();
-        var rb = arrow.GetComponent<Rigidbody2D>();
-        const float speed = 18.75f;
-        arrow.transform.localPosition = Vector3.zero;
-        arrow.transform.localRotation = Quaternion.identity;
-        arrow.transform.SetParent(null);
-        rb.velocity = speed * fireTransform.right * Mathf.Sign(character.transform.lossyScale.x) * Random.Range(0.85f, 1.15f);
-        // Set shooter and target reference
-        var projectile = arrow.GetComponent<Projectile>();
-        if (projectile != null)
+        if (spellCooldowns == null) return;
+        for (int i = 0; i < spellCooldowns.Length; i++)
         {
-            projectile.damage = attackDamage;
-            projectile.knockbackForce = critKnockbackForce;
-            projectile.shooter = this;
-            projectile.target = currentTarget;
+            if (spellCooldowns[i] > 0)
+                spellCooldowns[i] -= Time.deltaTime;
         }
     }
+
 
     public void ApplyKnockback(Vector3 direction, float force)
     {
@@ -355,12 +315,12 @@ public class Entity : MonoBehaviour
         if (character != null)
         {
             character.HitAsScale();
-            StartCoroutine(character.HitAsRed());
+            StartCoroutine(character.HitAsRed(0.1f));
         }
         else if (monster != null)
         {
             monster.Spring();
-            StartCoroutine(monster.HitAsRed());
+            StartCoroutine(monster.HitAsRed(0.1f));
         }
         if (!isDead && currentHealth <= 0)
         {

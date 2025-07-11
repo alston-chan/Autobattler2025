@@ -204,7 +204,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         /// <summary>
         /// Alternative way to Hit character (with a script).
         /// </summary>
-        public IEnumerator HitAsRed()
+        public IEnumerator HitAsRed(float waitTime)
         {
             var renderers = GetComponentsInChildren<SpriteRenderer>();
 
@@ -212,7 +212,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
 
             for (var i = 0; i < renderers.Length; i++) renderers[i].color = Color.red;
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(waitTime);
 
             for (var i = 0; i < renderers.Length; i++) renderers[i].color = _colors[i];
         }

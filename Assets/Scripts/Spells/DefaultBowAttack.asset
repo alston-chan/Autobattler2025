@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae7fde46ff79b884f89e5aa5b465ad32, type: 3}
+  m_Name: DefaultBowAttack
+  m_EditorClassIdentifier: 
+  spellName: 
+  cooldown: 1
+  range: 15
+  arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
+  damage: 10
+  knockbackForce: 0
+  chargeTime: 0.5
+  clipCharge: {fileID: 7400000, guid: 20538db717b94efeaa004e68d9284e3f, type: 2}
