@@ -14,6 +14,7 @@ public class Entity : MonoBehaviour
     public Appearance Appearance { get; private set; }
     public EquipmentManagement EquipmentManagement { get; private set; }
     public ResourceBar healthBar;
+    public CharacterInventory characterInventory;
     #endregion
 
     // Bow aiming logic

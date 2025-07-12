@@ -720,6 +720,7 @@ MonoBehaviour:
   character: {fileID: 0}
   monster: {fileID: 0}
   healthBar: {fileID: 0}
+  characterInventory: {fileID: 0}
   ArmL: {fileID: 4314068295598354}
   ArmR: {fileID: 4957315199455554}
   AngleToTarget: 0
