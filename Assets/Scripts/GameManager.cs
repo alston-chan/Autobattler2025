@@ -9,13 +9,22 @@ public class GameManager : Singleton<GameManager>
     public GameObject healthBarsOrganizer;
     public GameObject resourceBarPrefab;
 
+    [Header("Game State")]
+    public bool isGameStarted = false;
+
     void Start()
     {
         CreateAvatarUI();
         InstantiateHealthBars();
     }
 
-    void Update() { }
+    void Update()
+    {
+        if (!isGameStarted && Input.GetKeyDown(KeyCode.Space))
+        {
+            isGameStarted = true;
+        }
+    }
 
     private void CreateAvatarUI()
     {

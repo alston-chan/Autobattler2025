@@ -99,6 +99,9 @@ public class Entity : MonoBehaviour
 
     private void Update()
     {
+        // Only update if the game has started
+        if (!GameManager.Instance.isGameStarted) return;
+
         if (isDead) return;
 
         FaceTarget();
