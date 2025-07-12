@@ -91,6 +91,10 @@ public class Entity : MonoBehaviour
 
         if (spells == null) spells = new List<Spell>();
         spellCooldowns = new float[spells.Count];
+        for (int i = 0; i < spellCooldowns.Length; i++)
+        {
+            spellCooldowns[i] = spells[i].cooldown;
+        }
     }
 
     private void Update()
@@ -102,6 +106,15 @@ public class Entity : MonoBehaviour
         HandleTimers();
         UpdateSpellCooldowns();
         HandleAI();
+
+        for (int i = 0; i < spells.Count; i++)
+        {
+            if (spells[i] != null && spells[i].alwaysOn && spells[i].CanCast(this, null) && spellCooldowns[i] <= 0)
+            {
+                StartCoroutine(CastSpellWithCooldown(i, null));
+                break; // Only cast one spell per attack
+            }
+        }
     }
 
     private void LateUpdate()
@@ -270,7 +283,7 @@ public class Entity : MonoBehaviour
         {
             for (int i = 0; i < spells.Count; i++)
             {
-                if (spells[i] != null && spells[i].CanCast(this, target) && spellCooldowns[i] <= 0)
+                if (spells[i] != null && !spells[i].alwaysOn && spells[i].CanCast(this, target) && spellCooldowns[i] <= 0)
                 {
                     StartCoroutine(CastSpellWithCooldown(i, target));
                     break; // Only cast one spell per attack
@@ -282,8 +295,8 @@ public class Entity : MonoBehaviour
     private IEnumerator CastSpellWithCooldown(int spellIndex, Entity target)
     {
         isAttacking = true;
+        spellCooldowns[spellIndex] = spells[spellIndex].cooldown; // Set cooldown immediately to prevent double-casting
         yield return StartCoroutine(spells[spellIndex].Cast(this, target));
-        spellCooldowns[spellIndex] = spells[spellIndex].cooldown;
         isAttacking = false;
     }
 
@@ -304,7 +317,7 @@ public class Entity : MonoBehaviour
         if (knockbackImmunityTimer > 0f) return;
         knockbackVelocity += direction.normalized * force;
         knockbackStunTimer = knockbackStunTime;
-        knockbackImmunityTimer = knockbackImmunityTime;
+        // knockbackImmunityTimer = knockbackImmunityTime;
     }
 
     public void TakeDamage(float amount)

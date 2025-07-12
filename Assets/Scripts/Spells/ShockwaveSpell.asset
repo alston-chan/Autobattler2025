@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b8740a048201f64ab62f8d741fd75fc, type: 3}
+  m_Name: ShockwaveSpell
+  m_EditorClassIdentifier: 
+  spellName: 
+  cooldown: 3
+  range: 1.5
+  alwaysOn: 1
+  damage: 10
+  radius: 3
+  knockbackForce: 10
+  shockwaveEffectPrefab: {fileID: 5112403345868107898, guid: 6f34ef0d986e9db4199cf75805f79753, type: 3}
