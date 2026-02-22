@@ -7,6 +7,7 @@ using Assets.HeroEditor.InventorySystem.Scripts.Elements;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using HeroEditor.Common;
 using HeroEditor.Common.Data;
+using HeroEditor.Common.Enums;
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.HeroEditor.InventorySystem.Scripts;
@@ -71,17 +72,68 @@ public class CharacterInventory : ItemWorkspace
     /// <summary>
     /// Initialize owned items (just for example).
     /// </summary>
-    public void InitializeCharacterInventory()
+    public void InitializeCharacterInventory(Entity characterEntity)
     {
+        this.CharacterEntity = characterEntity;
+
         var equipped = new List<Item>();
         Equipment.Initialize(ref equipped);
     }
 
     public void InitializePlayerInventory()
     {
-        var sprites = SpriteCollection.Helmet;
-        ItemCollection.Active.Items = sprites.Select(i => CreateFakeItemParams(new Item(i.Id), i, ItemType.Helmet)).ToList();
-        var inventory = ItemCollection.Active.Items.Select(i => new Item(i.Id)).ToList(); // inventory.Clear();
+        ItemCollection.Active.Reset();
+
+        // Map of armor part tab name to sub-sprite name (updated for new item types)
+        var armorParts = new Dictionary<string, string>
+        {
+            { "Vest", "Torso" },
+            { "Gloves", "SleeveR" },
+            { "Boots", "Shin" }
+        };
+
+        var selected = new List<ItemParams>();
+
+        // Add one item for each armor part if available
+        foreach (var part in armorParts)
+        {
+            var sprite = SpriteCollection.Armor.FirstOrDefault(i => i.Sprites != null && i.Sprites.Any(j => j.name == part.Value));
+            if (sprite != null)
+            {
+                // Use new item types for each part
+                ItemType itemType = ItemType.Armor;
+                string itemId = $"{sprite.Id}.{part.Key}";
+                if (part.Key == "Vest") itemType = ItemType.VestBeltPauldron;
+                else if (part.Key == "Gloves") itemType = ItemType.Gloves;
+                else if (part.Key == "Boots") itemType = ItemType.Boots;
+                selected.Add(CreateFakeItemParams(new Item(itemId), sprite, itemType, ".Armor.", $".{part.Key}."));
+            }
+        }
+
+        // Add a helmet if available
+        var helmet = SpriteCollection.Helmet.FirstOrDefault();
+        if (helmet != null)
+        {
+            selected.Add(CreateFakeItemParams(new Item(helmet.Id), helmet, ItemType.Helmet));
+        }
+
+        // Add a shield if available
+        var shield = SpriteCollection.Shield.FirstOrDefault();
+        if (shield != null)
+        {
+            selected.Add(CreateFakeItemParams(new Item(shield.Id), shield, ItemType.Shield));
+        }
+
+        // Add a weapon if available (1H melee as example)
+        var weapon = SpriteCollection.MeleeWeapon1H.FirstOrDefault();
+        if (weapon != null)
+        {
+            selected.Add(CreateFakeItemParams(new Item(weapon.Id), weapon, ItemType.Weapon));
+        }
+
+        // Set the mock items as the only items in the active collection
+        ItemCollection.Active.Items = selected;
+        var inventory = selected.Select(i => new Item(i.Id)).ToList();
 
         RegisterCallbacks();
         PlayerInventory.Initialize(ref inventory);

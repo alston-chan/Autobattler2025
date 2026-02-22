@@ -528,7 +528,6 @@ MonoBehaviour:
   CraftSound: {fileID: 0}
   UseSound: {fileID: 0}
   AudioSource: {fileID: 0}
-  InitializeExample: 0
   SpriteCollection: {fileID: 11400000, guid: ea12bd5655e5a4a4794bdff9225dd4da, type: 2}
   CharacterEntity: {fileID: 0}
   statsKeys: {fileID: 0}
@@ -1865,7 +1864,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -300, y: 0}
+  m_SizeDelta: {x: -320, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9155569909643653078
 MonoBehaviour:
@@ -2697,7 +2696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114545488286891104, guid: 55ae631815894df1b96a4819bee3f259, type: 3}
       propertyPath: Types.Array.data[0]
-      value: 10
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 224802004478583408, guid: 55ae631815894df1b96a4819bee3f259, type: 3}
       propertyPath: m_Pivot.x
@@ -3088,7 +3087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114545488286891104, guid: 55ae631815894df1b96a4819bee3f259, type: 3}
       propertyPath: Types.Array.data[0]
-      value: 7
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 224802004478583408, guid: 55ae631815894df1b96a4819bee3f259, type: 3}
       propertyPath: m_Pivot.x
@@ -3487,7 +3486,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114545488286891104, guid: 55ae631815894df1b96a4819bee3f259, type: 3}
       propertyPath: Types.Array.data[0]
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 224802004478583408, guid: 55ae631815894df1b96a4819bee3f259, type: 3}
       propertyPath: m_Pivot.x
