@@ -26,15 +26,15 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
         /// </summary>
         public InventoryItem ItemPrefab;
 
-	    /// <summary>
-	    /// Character preview.
-	    /// </summary>
-		public Character Preview;
+        /// <summary>
+        /// Character preview.
+        /// </summary>
+        public Character Preview;
 
         public Transform Scheme;
         public int BagSize;
 
-        public readonly List<InventoryItem> InventoryItems = new List<InventoryItem>(); 
+        public readonly List<InventoryItem> InventoryItems = new List<InventoryItem>();
 
         public void OnValidate()
         {
@@ -48,10 +48,10 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             //}
         }
 
-	    public void Start()
-	    {
-		    //Character.Animator.SetBool("Ready", false);
-		}
+        public void Start()
+        {
+            //Character.Animator.SetBool("Ready", false);
+        }
 
         public void SetBagSize(int size)
         {
@@ -97,7 +97,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
                 inventoryItem.Count.text = null;
                 inventoryItem.transform.position = slot.transform.position;
                 inventoryItem.transform.SetSiblingIndex(slot.transform.GetSiblingIndex());
-                
+
                 if (AutoSelect) inventoryItem.Select(item == selected);
 
                 InventoryItems.Add(inventoryItem);
@@ -105,7 +105,11 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
 
             if (Preview)
             {
-                CharacterInventorySetup.Setup(Preview, items);
+                //CharacterInventorySetup.Setup(Preview, items);
+                if (selected != null)
+                {
+                    Preview.Equip(selected);
+                }
                 Preview.Initialize();
             }
 

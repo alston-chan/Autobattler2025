@@ -9,14 +9,17 @@
 		Currency,
 		Loot,
 		Material,
-	    Supply,
-        Recipe,
+		Supply,
+		Recipe,
 		Weapon,
-	    Armor,
-	    Helmet,
-	    Shield,
-	    Jewelry,
-        Backpack,
-        Coupon
+		Armor,
+		Helmet,
+		Shield,
+		Jewelry,
+		Backpack,
+		Coupon,
+		VestBeltPauldron,
+		Gloves,
+		Boots
 	}
 }

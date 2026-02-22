@@ -102,7 +102,7 @@ public class GameManager : Singleton<GameManager>
             characterInventory.Equipment.Preview = characterEntity.character;
             characterInventory.AudioSource = audioSource.GetComponent<AudioSource>();
             characterInventory.PlayerInventory = PlayerInventory.GetComponentInChildren<ScrollInventory>();
-            characterInventory.InitializeCharacterInventory();
+            characterInventory.InitializeCharacterInventory(characterEntity);
 
             characterEntity.characterInventory = characterInventory;
             characterInventory.gameObject.SetActive(false);

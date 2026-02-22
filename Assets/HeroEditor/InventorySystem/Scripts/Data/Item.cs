@@ -35,7 +35,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Data
 
         public Item Clone()
         {
-            return (Item) MemberwiseClone();
+            return (Item)MemberwiseClone();
         }
 
         public ItemParams Params => ItemCollection.Active.GetItemParams(this);
@@ -43,7 +43,8 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Data
         public ItemIcon Icon => ItemCollection.Active.GetItemIcon(this);
 
         public int Hash => $"{Id}.{Modifier?.Id}.{Modifier?.Level}".GetHashCode();
-        public bool IsEquipment => Params.Type == ItemType.Armor || Params.Type == ItemType.Helmet || Params.Type == ItemType.Weapon || Params.Type == ItemType.Shield;
+        public bool IsEquipment => Params.Type == ItemType.Armor || Params.Type == ItemType.Helmet || Params.Type == ItemType.Weapon || Params.Type == ItemType.Shield
+                || Params.Type == ItemType.VestBeltPauldron || Params.Type == ItemType.Gloves || Params.Type == ItemType.Boots;
         public bool IsWeapon => Params.Type == ItemType.Weapon;
         public bool IsShield => Params.Type == ItemType.Shield;
         public bool IsDagger => Params.Class == ItemClass.Dagger;

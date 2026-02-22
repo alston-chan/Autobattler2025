@@ -15,18 +15,26 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
     public partial class Character
     {
         /// <summary>
+        /// Maps equipment parts to their dependent sub-parts that should also be equipped.
+        /// </summary>
+        private static readonly Dictionary<EquipmentPart, EquipmentPart[]> EquipmentDependencies =
+            new Dictionary<EquipmentPart, EquipmentPart[]>
+            {
+                { EquipmentPart.Vest, new[] { EquipmentPart.Belt, EquipmentPart.Pauldrons } }
+            };
+        /// <summary>
         /// Set character's body parts.
         /// </summary>
-		public override void SetBody(ItemSprite item, BodyPart part, Color? color)
+        public override void SetBody(ItemSprite item, BodyPart part, Color? color)
         {
             switch (part)
             {
                 case BodyPart.Body:
                     Body = item?.Sprites;
-					break;
+                    break;
                 case BodyPart.Head:
                     Head = item?.Sprite;
-					break;
+                    break;
                 case BodyPart.Hair:
                     Hair = item?.Sprite;
                     FullHair = Helmet == null || FullHair;
@@ -56,7 +64,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             }
 
             Initialize();
-		}
+        }
 
         public override void SetBody(ItemSprite item, BodyPart part)
         {
@@ -83,10 +91,10 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             if (MouthRenderer.sprite == null) MouthRenderer.sprite = Expressions[0].Mouth;
         }
 
-		/// <summary>
-		/// Equip something from SpriteCollection.
-		/// </summary>
-		public override void Equip(ItemSprite item, EquipmentPart part, Color? color)
+        /// <summary>
+        /// Equip something from SpriteCollection.
+        /// </summary>
+        public override void Equip(ItemSprite item, EquipmentPart part, Color? color)
         {
             switch (part)
             {
@@ -120,42 +128,39 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
                 case EquipmentPart.Gloves:
                 case EquipmentPart.Belt:
                 case EquipmentPart.Boots:
-                    foreach (var p in GetEquipmentSubPartNames(part))
-                    {
-                        SetArmorParts(p, item?.Sprites);
-                    }
+                    EquipAllSubParts(part, item);
                     break;
                 case EquipmentPart.MeleeWeapon1H:
                     PrimaryMeleeWeapon = item?.Sprite;
                     PrimaryMeleeWeaponRenderer.color = color ?? (item != null && item.Tags.Contains("Paint") ? PrimaryMeleeWeaponRenderer.color : Color.white);
                     if (WeaponType != WeaponType.MeleePaired) WeaponType = WeaponType.Melee1H;
-					break;
+                    break;
                 case EquipmentPart.MeleeWeapon2H:
                     PrimaryMeleeWeapon = item?.Sprite;
                     PrimaryMeleeWeaponRenderer.color = color ?? (item != null && item.Tags.Contains("Paint") ? PrimaryMeleeWeaponRenderer.color : Color.white);
                     WeaponType = WeaponType.Melee2H;
-					break;
+                    break;
                 case EquipmentPart.MeleeWeaponPaired:
                     if (WeaponType == WeaponType.Melee2H) PrimaryMeleeWeapon = null;
                     SecondaryMeleeWeapon = item?.Sprite;
                     WeaponType = WeaponType.MeleePaired;
-					break;
+                    break;
                 case EquipmentPart.Bow:
                     Bow = item?.Sprites.ToList();
                     WeaponType = WeaponType.Bow;
-					break;
+                    break;
                 case EquipmentPart.Firearm1H:
                     Firearms = item?.Sprites.ToList();
                     WeaponType = WeaponType.Firearm1H;
-					break;
+                    break;
                 case EquipmentPart.Firearm2H:
                     Firearms = item?.Sprites.ToList();
                     WeaponType = WeaponType.Firearm2H;
-					break;
+                    break;
                 case EquipmentPart.Shield:
                     Shield = item?.Sprite;
                     WeaponType = WeaponType.Melee1H;
-					break;
+                    break;
                 case EquipmentPart.Cape:
                     Cape = item?.Sprite;
                     CapeRenderer.color = color ?? CapeRenderer.color;
@@ -163,7 +168,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
                 case EquipmentPart.Back:
                     Back = item?.Sprite;
                     BackRenderer.color = color ?? BackRenderer.color;
-					break;
+                    break;
                 case EquipmentPart.Earrings:
                     Earrings = item?.Sprite;
                     EarringsRenderer.color = color ?? EarringsRenderer.color;
@@ -180,7 +185,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             }
 
             Initialize();
-		}
+        }
 
         public override void Equip(ItemSprite item, EquipmentPart part)
         {
@@ -192,7 +197,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         /// </summary>
         public override void UnEquip(EquipmentPart part)
         {
-			Equip(null, part);
+            Equip(null, part);
         }
 
         /// <summary>
@@ -207,25 +212,28 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             {
                 case ItemType.Helmet: Equip(item.Sprite, EquipmentPart.Helmet); break;
                 case ItemType.Armor: Equip(item.Sprite, EquipmentPart.Armor); break;
+                case ItemType.VestBeltPauldron: Equip(item.Sprite, EquipmentPart.Vest); break;
+                case ItemType.Gloves: Equip(item.Sprite, EquipmentPart.Gloves); break;
+                case ItemType.Boots: Equip(item.Sprite, EquipmentPart.Boots); break;
                 case ItemType.Shield: Equip(item.Sprite, EquipmentPart.Shield); break;
                 case ItemType.Weapon:
-                {
-                    switch (itemParams.Class)
                     {
-                        case ItemClass.Bow: Equip(item.Sprite, EquipmentPart.Bow); break;
-                        case ItemClass.Firearm:
-                            Equip(item.Sprite, itemParams.Tags.Contains(ItemTag.TwoHanded)
-                                    ? EquipmentPart.Firearm2H
-                                    : EquipmentPart.Firearm1H);
-                            break;
-                        default:
-                            Equip(item.Sprite, itemParams.Tags.Contains(ItemTag.TwoHanded)
-                                    ? EquipmentPart.MeleeWeapon2H
-                                    : EquipmentPart.MeleeWeapon1H);
-                            break;
+                        switch (itemParams.Class)
+                        {
+                            case ItemClass.Bow: Equip(item.Sprite, EquipmentPart.Bow); break;
+                            case ItemClass.Firearm:
+                                Equip(item.Sprite, itemParams.Tags.Contains(ItemTag.TwoHanded)
+                                        ? EquipmentPart.Firearm2H
+                                        : EquipmentPart.Firearm1H);
+                                break;
+                            default:
+                                Equip(item.Sprite, itemParams.Tags.Contains(ItemTag.TwoHanded)
+                                        ? EquipmentPart.MeleeWeapon2H
+                                        : EquipmentPart.MeleeWeapon1H);
+                                break;
+                        }
+                        break;
                     }
-                    break;
-                }
             }
         }
 
@@ -244,37 +252,63 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             Initialize();
         }
 
-		private void SetArmorParts(string part, List<Sprite> armor)
-	    {
-		    var sprite = armor?.SingleOrDefault(j => j.name == part);
+        private void SetArmorParts(string part, List<Sprite> armor)
+        {
+            var sprite = armor?.SingleOrDefault(j => j.name == part);
 
             Armor?.RemoveAll(i => i == null || i.name == part);
-            
+
             if (sprite != null)
             {
                 if (Armor == null) Armor = new List<Sprite>();
 
                 Armor.Add(sprite);
             }
-	    }
+        }
 
-		private void BuildFirearms(FirearmParams firearmParams)
+        private void BuildFirearms(FirearmParams firearmParams)
         {
             if (firearmParams == null) return;
 
             Firearm.Params = firearmParams; // TODO:
-		    Firearm.SlideTransform.localPosition = firearmParams.SlidePosition;
-		    Firearm.MagazineTransform.localPosition = firearmParams.MagazinePosition;
-		    Firearm.FireTransform.localPosition = firearmParams.FireMuzzlePosition;
-		    Firearm.AmmoShooted = 0;
+            Firearm.SlideTransform.localPosition = firearmParams.SlidePosition;
+            Firearm.MagazineTransform.localPosition = firearmParams.MagazinePosition;
+            Firearm.FireTransform.localPosition = firearmParams.FireMuzzlePosition;
+            Firearm.AmmoShooted = 0;
             Firearm.Fire.SetLamp(Firearm.Params.LoadType == FirearmLoadType.Lamp ? firearmParams.GetColorFromMeta("LampReady") : Color.white);
         }
 
-		private static void MapSprites(List<SpriteRenderer> spriteRenderers, List<Sprite> sprites)
+        private static void MapSprites(List<SpriteRenderer> spriteRenderers, List<Sprite> sprites)
         {
-			foreach (var part in spriteRenderers)
+            foreach (var part in spriteRenderers)
             {
                 part.sprite = sprites?.SingleOrDefault(i => i != null && i.name == part.name.Split('[')[0]);
+            }
+        }
+
+        /// <summary>
+        /// Equips all sub-parts for a given equipment part, including any dependent parts.
+        /// </summary>
+        private void EquipAllSubParts(EquipmentPart part, ItemSprite item)
+        {
+            // Equip the main part's sub-parts
+            foreach (var p in GetEquipmentSubPartNames(part))
+            {
+                Debug.Log($"Setting armor part: {p} for {part} with item: {item?.Id}");
+                SetArmorParts(p, item?.Sprites);
+            }
+
+            // Equip any dependent parts' sub-parts
+            if (EquipmentDependencies.TryGetValue(part, out var dependentParts))
+            {
+                foreach (var dependentPart in dependentParts)
+                {
+                    foreach (var p in GetEquipmentSubPartNames(dependentPart))
+                    {
+                        Debug.Log($"Setting armor part: {p} for {dependentPart} (from {part}) with item: {item?.Id}");
+                        SetArmorParts(p, item?.Sprites);
+                    }
+                }
             }
         }
     }

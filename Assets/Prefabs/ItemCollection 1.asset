@@ -13,127 +13,87 @@ MonoBehaviour:
   m_Name: ItemCollection 1
   m_EditorClassIdentifier: 
   SpriteCollections:
-  - {fileID: 11400000, guid: 620e7b0c742440a4be6c065493edd0eb, type: 2}
+  - {fileID: 11400000, guid: ea12bd5655e5a4a4794bdff9225dd4da, type: 2}
   IconCollections:
   - {fileID: 11400000, guid: 0b1224523bda42afbf2646ba665a77b3, type: 2}
   Items:
-  - Id: Gold
+  - Id: Extensions.Epic.Armor.AngelicDress.Vest
     Level: 0
     Rarity: 0
-    Type: 1
+    Type: 13
     Class: 0
     Tags: 
     Properties: []
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Supplies.Gold
-    SpriteId: FantasyHeroes.Basic.Supplies.Gold
-    Meta: 
+    IconId: Extensions.Epic.Vest.AngelicDress
+    SpriteId: Extensions.Epic.Armor.AngelicDress
+    Meta: '{}'
     Localization: []
-  - Id: MilitiamanArmor
+  - Id: Extensions.Epic.Armor.AngelicDress.Gloves
     Level: 0
     Rarity: 0
-    Type: 7
-    Class: 9
+    Type: 14
+    Class: 0
     Tags: 
-    Properties:
-    - Id: 30
-      Value: 10
-    Price: 100
-    Weight: 80
-    IconId: FantasyHeroes.Basic.Armor.Militiaman
-    SpriteId: FantasyHeroes.Basic.Armor.Militiaman
-    Meta: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: Extensions.Epic.Gloves.AngelicDress
+    SpriteId: Extensions.Epic.Armor.AngelicDress
+    Meta: '{}'
     Localization: []
-  - Id: MilitiamanHelmet
+  - Id: Extensions.Epic.Armor.AngelicDress.Boots
+    Level: 0
+    Rarity: 0
+    Type: 15
+    Class: 0
+    Tags: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: Extensions.Epic.Boots.AngelicDress
+    SpriteId: Extensions.Epic.Armor.AngelicDress
+    Meta: '{}'
+    Localization: []
+  - Id: FantasyHeroes.Basic.Helmet.AdvancedDipperHat
     Level: 0
     Rarity: 0
     Type: 8
-    Class: 9
+    Class: 0
     Tags: 
-    Properties:
-    - Id: 30
-      Value: 10
-    Price: 50
-    Weight: 30
-    IconId: FantasyHeroes.Basic.Helmet.MilitiamanHelmet2 [Paint]
-    SpriteId: FantasyHeroes.Basic.Helmet.MilitiamanHelmet2 [Paint]
-    Meta: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: FantasyHeroes.Basic.Helmet.AdvancedDipperHat
+    SpriteId: FantasyHeroes.Basic.Helmet.AdvancedDipperHat
+    Meta: '{}'
     Localization: []
-  - Id: Morgana
-    Level: 0
-    Rarity: 2
-    Type: 6
-    Class: 2
-    Tags: 
-    Properties:
-    - Id: 13
-      Value: 10-15
-    Price: 70
-    Weight: 30
-    IconId: FantasyHeroes.Basic.MeleeWeapon1H.Morgana
-    SpriteId: FantasyHeroes.Basic.MeleeWeapon1H.Morgana
-    Meta: 
-    Localization: []
-  - Id: LongHammer
-    Level: 0
-    Rarity: 1
-    Type: 6
-    Class: 4
-    Tags: 03000000
-    Properties:
-    - Id: 13
-      Value: 10-15
-    Price: 120
-    Weight: 80
-    IconId: FantasyHeroes.Basic.MeleeWeapon2H.LongHammer
-    SpriteId: FantasyHeroes.Basic.MeleeWeapon2H.LongHammer
-    Meta: 
-    Localization: []
-  - Id: GoldDragon
-    Level: 0
-    Rarity: 3
-    Type: 6
-    Class: 7
-    Tags: 03000000
-    Properties:
-    - Id: 13
-      Value: 40-50
-    Price: 1000
-    Weight: 40
-    IconId: FantasyHeroes.Basic.Bow.GoldDragon
-    SpriteId: FantasyHeroes.Basic.Bow.GoldDragon
-    Meta: 
-    Localization: []
-  - Id: MagicGoldenRing
-    Level: 0
-    Rarity: 1
-    Type: 10
-    Class: 10
-    Tags: 
-    Properties:
-    - Id: 21
-      Value: 50
-    Price: 500
-    Weight: 1
-    IconId: FantasyHeroes.Basic.Supplies.MagicGoldenRing
-    SpriteId: FantasyHeroes.Basic.Supplies.MagicGoldenRing
-    Meta: 
-    Localization: []
-  - Id: LargePotion
+  - Id: FantasyHeroes.Basic.Shield.AdvancedGladiatorShield
     Level: 0
     Rarity: 0
-    Type: 4
-    Class: 13
+    Type: 9
+    Class: 0
     Tags: 
-    Properties:
-    - Id: 21
-      Value: 50
-    Price: 10
-    Weight: 5
-    IconId: FantasyHeroes.Basic.Supplies.LargePotion
-    SpriteId: FantasyHeroes.Basic.Supplies.LargePotion
-    Meta: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: FantasyHeroes.Basic.Shield.AdvancedGladiatorShield
+    SpriteId: FantasyHeroes.Basic.Shield.AdvancedGladiatorShield
+    Meta: '{}'
+    Localization: []
+  - Id: Extensions.AbandonedWorkshop.MeleeWeapon1H.ApprenticeWand
+    Level: 0
+    Rarity: 0
+    Type: 6
+    Class: 0
+    Tags: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: Extensions.AbandonedWorkshop.MeleeWeapon1H.ApprenticeWand
+    SpriteId: Extensions.AbandonedWorkshop.MeleeWeapon1H.ApprenticeWand
+    Meta: '{}'
     Localization: []
   BackgroundBlue: {fileID: 21300000, guid: 6a7965a697c24a689633cfa2a821ca7e, type: 3}
   BackgroundBrown: {fileID: 21300000, guid: 533abca1f345417e984b150a43d1ef78, type: 3}
