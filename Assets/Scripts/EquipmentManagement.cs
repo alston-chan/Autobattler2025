@@ -56,8 +56,11 @@ public class EquipmentManagement : MonoBehaviour
         var helmet = EquipRandomFromCollection(ItemType.Helmet);
         if (helmet != null) equipped.Add(helmet);
 
-        var shield = EquipRandomFromCollection(ItemType.Shield);
-        if (shield != null) equipped.Add(shield);
+        if (!isRanged)
+        {
+            var shield = EquipRandomFromCollection(ItemType.Shield);
+            if (shield != null) equipped.Add(shield);
+        }
 
         if (isRanged)
         {
