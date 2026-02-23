@@ -105,11 +105,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
 
             if (Preview)
             {
-                //CharacterInventorySetup.Setup(Preview, items);
-                if (selected != null)
-                {
-                    Preview.Equip(selected);
-                }
+                CharacterInventorySetup.Setup(Preview, items);
                 Preview.Initialize();
             }
 

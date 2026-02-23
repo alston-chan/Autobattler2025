@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.HeroEditor.Common.Scripts.Common;
+using Assets.HeroEditor.Common.Scripts.Collections;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
@@ -37,6 +38,7 @@ public class CharacterInventory : ItemWorkspace
 
     // New fields
     public SpriteCollection SpriteCollection;
+    public IconCollection IconCollection;
     public Entity CharacterEntity;
 
     public TextMeshProUGUI statsKeys;
@@ -46,27 +48,7 @@ public class CharacterInventory : ItemWorkspace
     {
         ItemCollection.Active = ItemCollection;
         ItemCollection.Active.SpriteCollections = new List<SpriteCollection> { SpriteCollection };
-    }
-
-    private ItemParams CreateFakeItemParams(Item item, ItemSprite itemSprite, ItemType itemType, string replaceable = null, string replacement = null)
-    {
-        var spriteId = itemSprite?.Id;
-        var iconId = itemSprite?.Id;
-
-        if (iconId != null && item.Id != null && replaceable != null && replacement != null)
-        {
-            iconId = iconId.Replace(replaceable, replacement);
-        }
-
-        return new ItemParams
-        {
-            Id = item.Id,
-            IconId = iconId,
-            SpriteId = spriteId,
-            Meta = itemSprite == null ? null : Serializer.Serialize(itemSprite.Tags),
-            Type = itemType,
-            // PhysicalDamageBonus = 5
-        };
+        ItemCollection.Active.IconCollections = new List<IconCollection> { IconCollection };
     }
 
     /// <summary>
@@ -84,56 +66,23 @@ public class CharacterInventory : ItemWorkspace
     {
         ItemCollection.Active.Reset();
 
-        // Map of armor part tab name to sub-sprite name (updated for new item types)
-        var armorParts = new Dictionary<string, string>
+        // For testing: add 1 random item of each equipment type
+        var equipmentTypes = new[]
         {
-            { "Vest", "Torso" },
-            { "Gloves", "SleeveR" },
-            { "Boots", "Shin" }
+            ItemType.VestBeltPauldron, ItemType.Gloves, ItemType.Boots,
+            ItemType.Helmet, ItemType.Shield, ItemType.Weapon
         };
 
-        var selected = new List<ItemParams>();
-
-        // Add one item for each armor part if available
-        foreach (var part in armorParts)
+        var inventory = new List<Item>();
+        foreach (var type in equipmentTypes)
         {
-            var sprite = SpriteCollection.Armor.FirstOrDefault(i => i.Sprites != null && i.Sprites.Any(j => j.name == part.Value));
-            if (sprite != null)
+            var candidates = ItemCollection.Active.Items.Where(i => i.Type == type).ToList();
+            if (candidates.Count > 0)
             {
-                // Use new item types for each part
-                ItemType itemType = ItemType.Armor;
-                string itemId = $"{sprite.Id}.{part.Key}";
-                if (part.Key == "Vest") itemType = ItemType.VestBeltPauldron;
-                else if (part.Key == "Gloves") itemType = ItemType.Gloves;
-                else if (part.Key == "Boots") itemType = ItemType.Boots;
-                selected.Add(CreateFakeItemParams(new Item(itemId), sprite, itemType, ".Armor.", $".{part.Key}."));
+                var picked = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+                inventory.Add(new Item(picked.Id));
             }
         }
-
-        // Add a helmet if available
-        var helmet = SpriteCollection.Helmet.FirstOrDefault();
-        if (helmet != null)
-        {
-            selected.Add(CreateFakeItemParams(new Item(helmet.Id), helmet, ItemType.Helmet));
-        }
-
-        // Add a shield if available
-        var shield = SpriteCollection.Shield.FirstOrDefault();
-        if (shield != null)
-        {
-            selected.Add(CreateFakeItemParams(new Item(shield.Id), shield, ItemType.Shield));
-        }
-
-        // Add a weapon if available (1H melee as example)
-        var weapon = SpriteCollection.MeleeWeapon1H.FirstOrDefault();
-        if (weapon != null)
-        {
-            selected.Add(CreateFakeItemParams(new Item(weapon.Id), weapon, ItemType.Weapon));
-        }
-
-        // Set the mock items as the only items in the active collection
-        ItemCollection.Active.Items = selected;
-        var inventory = selected.Select(i => new Item(i.Id)).ToList();
 
         RegisterCallbacks();
         PlayerInventory.Initialize(ref inventory);

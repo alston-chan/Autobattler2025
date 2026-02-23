@@ -514,7 +514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d6edbe524016e4d924d004eaa43963, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemCollection: {fileID: 11400000, guid: f88033e18ad80a84ebe0545bb6adbd68, type: 2}
+  ItemCollection: {fileID: 11400000, guid: 62c254719fe5a114db1bb9738bebf8b2, type: 2}
   ItemInfo: {fileID: 712717653905816287}
   Equipment: {fileID: 4413284245819229450}
   PlayerInventory: {fileID: 0}
@@ -529,6 +529,7 @@ MonoBehaviour:
   UseSound: {fileID: 0}
   AudioSource: {fileID: 0}
   SpriteCollection: {fileID: 11400000, guid: ea12bd5655e5a4a4794bdff9225dd4da, type: 2}
+  IconCollection: {fileID: 11400000, guid: 98ed2473dafd6294b9c1f1b6c9f1b974, type: 2}
   CharacterEntity: {fileID: 0}
   statsKeys: {fileID: 0}
   statsValues: {fileID: 0}

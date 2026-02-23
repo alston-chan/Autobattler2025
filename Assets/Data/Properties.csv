@@ -1,0 +1,5 @@
+ItemId,PropertyId,Value
+sword1,Damage,5-10
+bow1,Damage,4-8
+bow1,Range,5
+shield1,Blocking,15

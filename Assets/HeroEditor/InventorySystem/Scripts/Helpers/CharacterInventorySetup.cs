@@ -15,7 +15,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Helpers
         public static void Setup(Character character, List<Item> equipped)
         {
             character.ResetEquipment();
-            
+
             foreach (var item in equipped)
             {
                 try
@@ -30,6 +30,13 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Helpers
                             break;
                         case ItemType.Armor:
                             character.Armor = character.SpriteCollection.Armor.FindSpritesById(item.Params.SpriteId);
+                            break;
+                        case ItemType.VestBeltPauldron:
+                        case ItemType.Gloves:
+                        case ItemType.Boots:
+                            character.Equip(character.SpriteCollection.Armor.SingleOrDefault(i => i.Id == item.Params.SpriteId),
+                                item.Params.Type == ItemType.VestBeltPauldron ? EquipmentPart.Vest :
+                                item.Params.Type == ItemType.Gloves ? EquipmentPart.Gloves : EquipmentPart.Boots);
                             break;
                         case ItemType.Shield:
                             character.Shield = character.SpriteCollection.Shield.FindSpriteById(item.Params.SpriteId);

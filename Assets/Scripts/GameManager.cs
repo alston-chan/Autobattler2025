@@ -64,7 +64,12 @@ public class GameManager : Singleton<GameManager>
             if (entity.isCharacter)
             {
                 entity.Appearance.SetRandomAppearance();
-                entity.EquipRandom();
+
+                // Enemies use random sprites, allies will be equipped after inventory setup
+                if (!entity.isTeam)
+                {
+                    entity.EquipRandom();
+                }
             }
         }
     }
@@ -114,6 +119,10 @@ public class GameManager : Singleton<GameManager>
                 characterInventory.InitializePlayerInventory();
                 initializedPlayerInventory = true;
             }
+
+            // Equip ally with random items from ItemCollection and add to Equipment UI
+            var equippedItems = characterEntity.EquipmentManagement.EquipRandomFromCollection(characterEntity.IsRanged);
+            characterInventory.Equipment.Initialize(ref equippedItems);
         }
     }
 

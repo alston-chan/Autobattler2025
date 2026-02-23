@@ -47,6 +47,7 @@ public class Entity : MonoBehaviour
     // Bow/ranged logic
     [Header("Ranged/Bow")]
     [SerializeField] private bool isRanged = false;
+    public bool IsRanged => isRanged;
     public Transform fireTransform;
     #endregion
 
