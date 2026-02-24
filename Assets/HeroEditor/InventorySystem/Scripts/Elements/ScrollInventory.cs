@@ -40,7 +40,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             ItemType.Loot,
             ItemType.Recipe,
             ItemType.Material
-		};
+        };
 
         private readonly List<InventoryItem> _itemInstances = new List<InventoryItem>(); // Reusing instances to reduce Instantiate() calls.
         private int _hash;
@@ -49,8 +49,8 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
         {
             base.Initialize(ref items, selected);
 
-			if (reset) _hash = 0;
-		}
+            if (reset) _hash = 0;
+        }
 
         public void Initialize(ref List<Item> items, bool reset = false)
         {
@@ -76,17 +76,31 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             return true;
         }
 
-		public void SetTypeFilter(string input)
+        /// <summary>
+        /// Turn off all toggle highlights, then turn on only the matching item (if any).
+        /// </summary>
+        public void HighlightOnly(Item item)
+        {
+            foreach (var instance in _itemInstances)
+            {
+                if (instance.Toggle != null)
+                {
+                    instance.Toggle.SetIsOnWithoutNotify(instance.Item == item);
+                }
+            }
+        }
+
+        public void SetTypeFilter(string input)
         {
             var type = input.ToEnum<ItemType>();
 
-			SetTypeFilter(new List<ItemType> { type });
+            SetTypeFilter(new List<ItemType> { type });
         }
 
-		public void SetTypeFilter(List<ItemType> types)
+        public void SetTypeFilter(List<ItemType> types)
         {
             FilterFunc = item => types.Contains(item.Params.Type);
-			Refresh(null, force: true);
+            Refresh(null, force: true);
         }
 
         public void UnsetFilter()
@@ -95,13 +109,13 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             Refresh(null, force: true);
         }
 
-		public override void Refresh(Item selected)
+        public override void Refresh(Item selected)
         {
             Refresh(selected, force: false);
         }
 
         public void Refresh(Item selected, bool force)
-		{
+        {
             if (Items == null) return;
 
             List<Item> items;
@@ -110,7 +124,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             {
                 items = new List<Item>();
                 var groups = Items.OrderBy(SortingFunc).ToList().GroupBy(i => i.Params.Type);
-                
+
                 foreach (var group in groups)
                 {
                     items.AddRange(group.OrderBy(i => i.Params.Class).ThenBy(i => i.Params.Price));
@@ -124,7 +138,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             if (FilterFunc != null)
             {
                 items.RemoveAll(i => !FilterFunc(i));
-			}
+            }
 
             foreach (var instance in _itemInstances)
             {
@@ -139,7 +153,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
                 for (var i = 0; i < items.Count; i++)
                 {
                     instances[i].Initialize(items[i]);
-				}
+                }
 
                 return;
             }
@@ -158,40 +172,40 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             }
 
             var columns = 0;
-		    var rows = 0;
+            var rows = 0;
 
-		    switch (Grid.constraint)
-		    {
-			    case GridLayoutGroup.Constraint.FixedColumnCount:
-			    {
-				    var height = Mathf.FloorToInt((ScrollRect.GetComponent<RectTransform>().rect.height + Grid.spacing.y) / (Grid.cellSize.y + Grid.spacing.y));
+            switch (Grid.constraint)
+            {
+                case GridLayoutGroup.Constraint.FixedColumnCount:
+                    {
+                        var height = Mathf.FloorToInt((ScrollRect.GetComponent<RectTransform>().rect.height + Grid.spacing.y) / (Grid.cellSize.y + Grid.spacing.y));
 
-				    columns = Grid.constraintCount;
-				    rows = Mathf.Max(height, Mathf.FloorToInt((float) items.Count / columns));
-                    rows++;
+                        columns = Grid.constraintCount;
+                        rows = Mathf.Max(height, Mathf.FloorToInt((float)items.Count / columns));
+                        rows++;
 
-					break;
-			    }
-			    case GridLayoutGroup.Constraint.FixedRowCount:
-			    {
-				    var width = Mathf.FloorToInt((ScrollRect.GetComponent<RectTransform>().rect.width + Grid.spacing.x) / (Grid.cellSize.x + Grid.spacing.x));
+                        break;
+                    }
+                case GridLayoutGroup.Constraint.FixedRowCount:
+                    {
+                        var width = Mathf.FloorToInt((ScrollRect.GetComponent<RectTransform>().rect.width + Grid.spacing.x) / (Grid.cellSize.x + Grid.spacing.x));
 
-				    rows = Grid.constraintCount;
-				    columns = Mathf.Max(width, Mathf.FloorToInt((float) items.Count / rows));
-                    columns++;
+                        rows = Grid.constraintCount;
+                        columns = Mathf.Max(width, Mathf.FloorToInt((float)items.Count / rows));
+                        columns++;
 
-                    break;
-			    }
-		    }
+                        break;
+                    }
+            }
 
-		    for (var i = items.Count; i < columns * rows; i++)
-		    {
+            for (var i = items.Count; i < columns * rows; i++)
+            {
                 var instance = GetItemInstance();
 
                 instance.Initialize(null);
             }
-	        
-		    _hash = GetHash(items);
+
+            _hash = GetHash(items);
 
             OnRefresh?.Invoke();
         }

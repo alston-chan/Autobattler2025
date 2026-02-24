@@ -77,6 +77,24 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             return false;
         }
 
+        /// <summary>
+        /// Turn off all toggle highlights, then turn on only the matching item (if any).
+        /// </summary>
+        public void HighlightOnly(Item item)
+        {
+            var found = false;
+
+            foreach (var ei in InventoryItems)
+            {
+                if (ei.Toggle != null)
+                {
+                    var match = !found && ei.Item == item;
+                    ei.Toggle.SetIsOnWithoutNotify(match);
+                    if (match) found = true;
+                }
+            }
+        }
+
         public override void Refresh(Item selected)
         {
             var items = Slots.Select(FindItem).Where(i => i != null).ToList();

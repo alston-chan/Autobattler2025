@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.HeroEditor.Common.Scripts.Common;
@@ -112,6 +112,11 @@ public class CharacterInventory : ItemWorkspace
     {
         SelectedItem = item;
         ItemInfo.Initialize(SelectedItem, SelectedItem.Params.Price);
+
+        // Clear all green highlights, then highlight only the clicked item
+        PlayerInventory.HighlightOnly(item);
+        Equipment.HighlightOnly(item);
+
         Refresh();
     }
 
