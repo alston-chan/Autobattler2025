@@ -144,7 +144,7 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
         {
             if (slot.Types.Contains(ItemType.Shield))
             {
-                var copy = Items.SingleOrDefault(i => i.Params.Type == ItemType.Weapon && (i.IsTwoHanded || i.IsFirearm));
+                var copy = Items.SingleOrDefault(i => i.Params.Type == ItemType.Weapon && !i.IsBow && (i.IsTwoHanded || i.IsFirearm));
 
                 if (copy != null)
                 {
