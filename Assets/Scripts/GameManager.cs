@@ -53,7 +53,7 @@ public class GameManager : Singleton<GameManager>
 
     private void CreateAvatarUI()
     {
-        Entity[] entities = FindObjectsOfType<Entity>();
+        var entities = EntityRegistry.All;
         foreach (Entity entity in entities)
         {
             if (entity.isTeam && entity.isCharacter)
@@ -76,14 +76,14 @@ public class GameManager : Singleton<GameManager>
 
     private void InstantiateHealthBars()
     {
-        Entity[] entities = FindObjectsOfType<Entity>();
+        var entities = EntityRegistry.All;
         foreach (Entity entity in entities)
         {
             GameObject healthBarObj = Instantiate(resourceBarPrefab, healthBarsOrganizer.transform);
             ResourceBar healthBar = healthBarObj.GetComponent<ResourceBar>();
             healthBarObj.transform.localScale = entity.transform.localScale;
             entity.healthBar = healthBar;
-            entity.healthBar.SetSize(entity.currentHealth / entity.maxHealth);
+            entity.Health.healthBar.SetSize(entity.Health.currentHealth / entity.Health.maxHealth);
 
             if (!entity.isTeam)
             {
@@ -91,7 +91,6 @@ public class GameManager : Singleton<GameManager>
             }
             healthBar.entity = entity;
 
-            healthBar.entity = entity;
             if (entity.isTeam && entity.isCharacter)
             {
                 GameManager.Instance.allyCharacters.Add(entity);

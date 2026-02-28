@@ -719,7 +719,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 0}
   monster: {fileID: 0}
-  healthBar: {fileID: 0}
   characterInventory: {fileID: 0}
   ArmL: {fileID: 4314068295598354}
   ArmR: {fileID: 4957315199455554}
@@ -728,16 +727,13 @@ MonoBehaviour:
   FixedArm: 0
   isCharacter: 1
   isTeam: 1
-  isDead: 0
+  unitData: {fileID: 0}
   maxHealth: 100
   currentHealth: 0
   healthBarOffset: {x: 0, y: 1.5, z: 1}
   isRanged: 1
   fireTransform: {fileID: 4059777504579930}
   spells: []
-  moveSpeed: 3
-  separationDistance: 1
-  separationStrength: 0.5
 --- !u!114 &364035558888234246
 MonoBehaviour:
   m_ObjectHideFlags: 0

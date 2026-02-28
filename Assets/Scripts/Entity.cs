@@ -1,10 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.FantasyMonsters.Common.Scripts;
-using Assets.HeroEditor.Common.Scripts.ExampleScripts;
 using UnityEngine;
 
+/// <summary>
+/// Thin facade for a game entity. Holds references and identity,
+/// delegates behaviour to Health, Knockback, and CombatAI components.
+/// </summary>
 public class Entity : MonoBehaviour
 {
     #region References
@@ -13,64 +15,57 @@ public class Entity : MonoBehaviour
     public Monster monster;
     public Appearance Appearance { get; private set; }
     public EquipmentManagement EquipmentManagement { get; private set; }
-    public ResourceBar healthBar;
     public CharacterInventory characterInventory;
+
+    // Components (assigned in Awake)
+    public Health Health { get; private set; }
+    public Knockback Knockback { get; private set; }
+    public CombatAI CombatAI { get; private set; }
     #endregion
 
-    // Bow aiming logic
+    #region Bow Aiming
     [Header("Bow Arm Aiming")]
     public Transform ArmL;
     public Transform ArmR;
     public float AngleToTarget;
     public float AngleToArm;
     public bool FixedArm;
+    #endregion
 
     #region Team & Identity
     [Header("Team & Identity")]
     [SerializeField] public bool isCharacter = true;
     public bool isTeam = true;
-    public bool isDead = false;
+    public bool isDead => Health != null && Health.IsDead;
     #endregion
 
-    #region Health
+    #region Data
+    [Header("Unit Data (optional)")]
+    [Tooltip("Assign a UnitData asset to drive stats from data. Leave null to use serialized fields below.")]
+    public UnitData unitData;
+    #endregion
+
+    #region Fallback fields (used when unitData is null)
     [Header("Health")]
     public float maxHealth = 100f;
     public float currentHealth;
     public Vector3 healthBarOffset = new Vector3(0, 3.0f, 1);
-    #endregion
 
-    #region Combat
-    [Header("Combat")]
-    private float attackRange = 1.0f;
-    private bool isAttacking = false;
-    private Entity currentTarget;
-    // Bow/ranged logic
     [Header("Ranged/Bow")]
     [SerializeField] private bool isRanged = false;
-    public bool IsRanged => isRanged;
+    public bool IsRanged => unitData != null ? unitData.isRanged : isRanged;
     public Transform fireTransform;
-    #endregion
 
-    // Spell system
     [Header("Spells")]
     public List<Spell> spells;
-    private float[] spellCooldowns;
-
-    #region Movement
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private float separationDistance = 1.0f;
-    [SerializeField] private float separationStrength = 0.5f;
     #endregion
 
-    #region Knockback
-    private Vector3 knockbackVelocity = Vector3.zero;
-    private float knockbackDamping = 10f;
-    private float knockbackStunTime = 0.05f;
-    private float knockbackStunTimer = 0f;
-    private float knockbackImmunityTime = 0.8f;
-    private float knockbackImmunityTimer = 0f;
-    #endregion
+    // Convenience — kept so existing code (spells, projectiles) still compiles
+    public ResourceBar healthBar
+    {
+        get => Health != null ? Health.healthBar : null;
+        set { if (Health != null) Health.healthBar = value; }
+    }
 
     private void Awake()
     {
@@ -79,53 +74,61 @@ public class Entity : MonoBehaviour
         Appearance = GetComponent<Appearance>();
         EquipmentManagement = GetComponent<EquipmentManagement>();
 
-        // Set attack range based on spell data if available, otherwise fallback to default
-        if (spells != null && spells.Count > 0 && spells[0] != null)
-        {
-            attackRange = spells[0].range;
-        }
-        else
-        {
-            attackRange = 1.5f;
-        }
+        // Ensure components exist (add at runtime if not already on the prefab)
+        Health = GetComponent<Health>();
+        if (Health == null) Health = gameObject.AddComponent<Health>();
 
-        currentHealth = maxHealth;
+        Knockback = GetComponent<Knockback>();
+        if (Knockback == null) Knockback = gameObject.AddComponent<Knockback>();
+
+        CombatAI = GetComponent<CombatAI>();
+        if (CombatAI == null) CombatAI = gameObject.AddComponent<CombatAI>();
+
+        // Apply UnitData if assigned, otherwise use serialized fields
+        if (unitData != null)
+        {
+            isCharacter = unitData.isCharacter;
+            maxHealth = unitData.maxHealth;
+            healthBarOffset = unitData.healthBarOffset;
+            if (unitData.spells != null && unitData.spells.Count > 0)
+                spells = new List<Spell>(unitData.spells);
+        }
 
         if (spells == null) spells = new List<Spell>();
-        spellCooldowns = new float[spells.Count];
-        for (int i = 0; i < spellCooldowns.Length; i++)
-        {
-            spellCooldowns[i] = spells[i].cooldown;
-        }
+
+        // Initialize components
+        Health.maxHealth = maxHealth;
+        Health.healthBarOffset = healthBarOffset;
+        Health.Initialize(this);
+
+        currentHealth = Health.currentHealth;
+
+        CombatAI.Initialize(this);
+    }
+
+    private void OnEnable()
+    {
+        EntityRegistry.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        EntityRegistry.Unregister(this);
     }
 
     private void Update()
     {
-        // Only update if the game has started
         if (!GameManager.Instance.isGameStarted) return;
-
         if (isDead) return;
 
-        FaceTarget();
-        HandleKnockback();
-        HandleTimers();
-        UpdateSpellCooldowns();
-        HandleAI();
-
-        for (int i = 0; i < spells.Count; i++)
-        {
-            if (spells[i] != null && spells[i].alwaysOn && spells[i].CanCast(this, null) && spellCooldowns[i] <= 0)
-            {
-                StartCoroutine(CastSpellWithCooldown(i, null));
-                break; // Only cast one spell per attack
-            }
-        }
+        Knockback.Tick();
+        CombatAI.Tick();
     }
 
     private void LateUpdate()
     {
         // Bow aiming logic (for ranged characters)
-        if (isRanged && currentTarget != null && character != null && ArmL != null)
+        if (IsRanged && CombatAI.CurrentTarget != null && character != null && ArmL != null)
         {
             Transform arm = ArmL;
             Transform weapon = null;
@@ -139,10 +142,32 @@ public class Entity : MonoBehaviour
             }
             if (character.IsReady())
             {
-                RotateArm(arm, weapon, FixedArm ? arm.position + 1000 * Vector3.right : currentTarget.transform.position, -40, 40);
+                RotateArm(arm, weapon, FixedArm ? arm.position + 1000 * Vector3.right : CombatAI.CurrentTarget.transform.position, -40, 40);
             }
         }
     }
+
+    #region Public API — delegates to components
+
+    public void TakeDamage(float amount)
+    {
+        Health.TakeDamage(amount);
+        currentHealth = Health.currentHealth;
+    }
+
+    public void ApplyKnockback(Vector3 direction, float force)
+    {
+        Knockback.Apply(direction, force);
+    }
+
+    public void EquipRandom()
+    {
+        EquipmentManagement.EquipRandom(IsRanged);
+    }
+
+    #endregion
+
+    #region Bow Aiming Helpers
 
     public void RotateArm(Transform arm, Transform weapon, Vector2 target, float angleMin, float angleMax)
     {
@@ -170,195 +195,5 @@ public class Entity : MonoBehaviour
         return angle;
     }
 
-    private void FaceTarget()
-    {
-        if (currentTarget != null)
-        {
-            Vector3 toTarget = currentTarget.transform.position - transform.position;
-            if (toTarget.x != 0)
-            {
-                Vector3 scale = transform.localScale;
-                scale.x = Mathf.Abs(scale.x) * Mathf.Sign(toTarget.x) * (isCharacter ? 1 : -1);
-                transform.localScale = scale;
-            }
-        }
-    }
-
-    private void HandleKnockback()
-    {
-        if (knockbackVelocity.magnitude > 0.01f)
-        {
-            transform.position += knockbackVelocity * Time.deltaTime;
-            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 1 - Mathf.Exp(-knockbackDamping * Time.deltaTime));
-        }
-    }
-
-    private void HandleTimers()
-    {
-        if (knockbackStunTimer > 0f) knockbackStunTimer -= Time.deltaTime;
-        if (knockbackImmunityTimer > 0f) knockbackImmunityTimer -= Time.deltaTime;
-    }
-
-    private void HandleAI()
-    {
-        Entity[] allEntities = FindObjectsOfType<Entity>();
-        Entity closestEnemy = null;
-        float closestDist = Mathf.Infinity;
-        Vector3 separation = Vector3.zero;
-        int neighborCount = 0;
-
-        foreach (var other in allEntities)
-        {
-            if (other == this) continue;
-            float dist = Vector3.Distance(transform.position, other.transform.position);
-            if (dist < separationDistance)
-            {
-                separation += (transform.position - other.transform.position).normalized / dist;
-                neighborCount++;
-            }
-            if (other.isTeam != this.isTeam && dist < closestDist)
-            {
-                closestDist = dist;
-                closestEnemy = other;
-            }
-        }
-        if (neighborCount > 0) separation /= neighborCount;
-
-        Vector3 move = Vector3.zero;
-        if (closestEnemy != null)
-        {
-            currentTarget = closestEnemy;
-            float distToTarget = Vector3.Distance(transform.position, currentTarget.transform.position);
-            if (distToTarget > attackRange)
-            {
-                if (!isAttacking)
-                {
-                    Vector3 dir = (currentTarget.transform.position - transform.position).normalized;
-                    float fade = Mathf.Clamp01((distToTarget - attackRange) / attackRange);
-                    Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
-                    float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
-                    Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
-                    move = (dir + lateralOffset).normalized * moveSpeed;
-                    if (character != null)
-                        character.SetState(CharacterState.Run);
-                    else if (monster != null)
-                        monster.SetState(MonsterState.Run);
-                }
-                else
-                {
-                    if (character != null)
-                        character.SetState(CharacterState.Idle);
-                    else if (monster != null)
-                        monster.SetState(MonsterState.Idle);
-                }
-            }
-            else
-            {
-                if (character != null)
-                    character.SetState(CharacterState.Idle);
-                else if (monster != null)
-                    monster.SetState(MonsterState.Idle);
-                Attack(currentTarget);
-            }
-        }
-        else
-        {
-            currentTarget = null;
-            if (character != null)
-                character.SetState(CharacterState.Idle);
-            else if (monster != null)
-                monster.SetState(MonsterState.Idle);
-        }
-        if (knockbackVelocity.magnitude < 0.01f && knockbackStunTimer <= 0f)
-        {
-            Vector3 finalMove = (move + separation * separationStrength) * Time.deltaTime;
-            transform.position += finalMove;
-        }
-    }
-
-    public void EquipRandom()
-    {
-        EquipmentManagement.EquipRandom(isRanged);
-    }
-
-
-    public void Attack(Entity target)
-    {
-        if (!isAttacking && target != null && spells != null && spells.Count > 0)
-        {
-            for (int i = 0; i < spells.Count; i++)
-            {
-                if (spells[i] != null && !spells[i].alwaysOn && spells[i].CanCast(this, target) && spellCooldowns[i] <= 0)
-                {
-                    StartCoroutine(CastSpellWithCooldown(i, target));
-                    break; // Only cast one spell per attack
-                }
-            }
-        }
-    }
-
-    private IEnumerator CastSpellWithCooldown(int spellIndex, Entity target)
-    {
-        isAttacking = true;
-        spellCooldowns[spellIndex] = spells[spellIndex].cooldown; // Set cooldown immediately to prevent double-casting
-        yield return StartCoroutine(spells[spellIndex].Cast(this, target));
-        isAttacking = false;
-    }
-
-    // Decrement spell cooldowns every frame
-    private void UpdateSpellCooldowns()
-    {
-        if (spellCooldowns == null) return;
-        for (int i = 0; i < spellCooldowns.Length; i++)
-        {
-            if (spellCooldowns[i] > 0)
-                spellCooldowns[i] -= Time.deltaTime;
-        }
-    }
-
-
-    public void ApplyKnockback(Vector3 direction, float force)
-    {
-        if (knockbackImmunityTimer > 0f) return;
-        knockbackVelocity += direction.normalized * force;
-        knockbackStunTimer = knockbackStunTime;
-        // knockbackImmunityTimer = knockbackImmunityTime;
-    }
-
-    public void TakeDamage(float amount)
-    {
-        currentHealth -= amount;
-        if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
-
-        if (character != null)
-        {
-            character.HitAsScale();
-            StartCoroutine(character.HitAsRed(0.1f));
-        }
-        else if (monster != null)
-        {
-            monster.Spring();
-            StartCoroutine(monster.HitAsRed(0.1f));
-        }
-        if (!isDead && currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    private void Die()
-    {
-        isDead = true;
-
-        if (character != null)
-        {
-            character.SetState(CharacterState.DeathB);
-        }
-        else if (monster != null)
-        {
-            monster.Die();
-        }
-        Destroy(healthBar.gameObject);
-        Destroy(gameObject);
-    }
+    #endregion
 }

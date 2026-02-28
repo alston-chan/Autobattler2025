@@ -24,10 +24,11 @@ public class ShockwaveSpell : Spell
             effect.transform.SetParent(caster.transform);
         }
 
-        // Find all entities in the scene
-        Entity[] allEntities = GameObject.FindObjectsOfType<Entity>();
-        foreach (Entity entity in allEntities)
+        // Use EntityRegistry instead of FindObjectsOfType
+        var allEntities = EntityRegistry.All;
+        for (int i = allEntities.Count - 1; i >= 0; i--)
         {
+            Entity entity = allEntities[i];
             if (entity == caster || entity.isDead) continue;
             // Only affect enemies
             if (entity.isTeam != caster.isTeam)
@@ -35,9 +36,7 @@ public class ShockwaveSpell : Spell
                 float dist = Vector3.Distance(caster.transform.position, entity.transform.position);
                 if (dist <= radius)
                 {
-                    // Apply damage
                     entity.TakeDamage(damage);
-                    // Apply knockback
                     Vector3 dir = (entity.transform.position - caster.transform.position).normalized;
                     entity.ApplyKnockback(dir, knockbackForce);
                 }
