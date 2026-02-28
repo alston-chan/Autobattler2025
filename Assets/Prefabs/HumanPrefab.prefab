@@ -729,7 +729,6 @@ MonoBehaviour:
   isTeam: 1
   unitData: {fileID: 0}
   maxHealth: 100
-  currentHealth: 0
   healthBarOffset: {x: 0, y: 1.5, z: 1}
   isRanged: 1
   fireTransform: {fileID: 4059777504579930}
