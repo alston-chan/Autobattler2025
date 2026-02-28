@@ -48,8 +48,10 @@ public class Entity : MonoBehaviour
     #region Fallback fields (used when unitData is null)
     [Header("Health")]
     public float maxHealth = 100f;
-    public float currentHealth;
     public Vector3 healthBarOffset = new Vector3(0, 3.0f, 1);
+
+    /// <summary>Convenience accessor. Always reads from Health component — no stale copies.</summary>
+    public float currentHealth => Health != null ? Health.currentHealth : 0f;
 
     [Header("Ranged/Bow")]
     [SerializeField] private bool isRanged = false;
@@ -101,9 +103,10 @@ public class Entity : MonoBehaviour
         Health.healthBarOffset = healthBarOffset;
         Health.Initialize(this);
 
-        currentHealth = Health.currentHealth;
-
         CombatAI.Initialize(this);
+
+        // Subscribe to death event for cleanup and round-end checks
+        Health.OnDied += HandleDeath;
     }
 
     private void OnEnable()
@@ -114,6 +117,18 @@ public class Entity : MonoBehaviour
     private void OnDisable()
     {
         EntityRegistry.Unregister(this);
+        if (Health != null) Health.OnDied -= HandleDeath;
+    }
+
+    private void HandleDeath()
+    {
+        // Clean up health bar (ownership is here, not in Health)
+        if (Health.healthBar != null)
+            Destroy(Health.healthBar.gameObject);
+
+        // Notify GameManager for win/lose evaluation
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnEntityDied(this);
     }
 
     private void Update()
@@ -152,7 +167,6 @@ public class Entity : MonoBehaviour
     public void TakeDamage(float amount)
     {
         Health.TakeDamage(amount);
-        currentHealth = Health.currentHealth;
     }
 
     public void ApplyKnockback(Vector3 direction, float force)

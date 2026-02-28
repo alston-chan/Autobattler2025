@@ -19,8 +19,11 @@ public class GameManager : Singleton<GameManager>
     public List<Entity> allyCharacters = new List<Entity>();
     public List<CharacterInventory> characterInventories = new List<CharacterInventory>();
 
-    [Header("Game State")]
-    public bool isGameStarted = false;
+    // ── Game State ──
+    public GameStateMachine StateMachine { get; private set; } = new GameStateMachine();
+
+    /// <summary>Backward-compatible shorthand. True when combat is active.</summary>
+    public bool isGameStarted => StateMachine.Current == GameState.Combat;
 
     void Start()
     {
@@ -34,7 +37,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (!isGameStarted && Input.GetKeyDown(KeyCode.Space))
         {
-            isGameStarted = true;
+            StateMachine.TransitionTo(GameState.Combat);
         }
 
         // Toggle character inventories with number keys 1,2,3,...
@@ -142,4 +145,39 @@ public class GameManager : Singleton<GameManager>
             PlayerInventory.SetActive(true);
         }
     }
+
+    #region Round lifecycle
+
+    /// <summary>
+    /// Called by any Entity when it dies. Checks if all allies or all enemies
+    /// are dead and transitions to RoundEnd when appropriate.
+    /// </summary>
+    public void OnEntityDied(Entity entity)
+    {
+        if (StateMachine.Current != GameState.Combat) return;
+
+        bool alliesAlive = false;
+        bool enemiesAlive = false;
+
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            if (all[i].isDead) continue;
+            if (all[i].isTeam) alliesAlive = true;
+            else enemiesAlive = true;
+        }
+
+        if (!alliesAlive)
+        {
+            Debug.Log("[GameManager] Defeat — all allies eliminated.");
+            StateMachine.TransitionTo(GameState.RoundEnd);
+        }
+        else if (!enemiesAlive)
+        {
+            Debug.Log("[GameManager] Victory — all enemies eliminated.");
+            StateMachine.TransitionTo(GameState.RoundEnd);
+        }
+    }
+
+    #endregion
 }

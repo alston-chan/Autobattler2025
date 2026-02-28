@@ -75,7 +75,7 @@ public class Health : MonoBehaviour
 
         OnDied?.Invoke();
 
-        if (healthBar != null) Destroy(healthBar.gameObject);
+        // Health bar cleanup is handled by Entity's OnDied subscriber
         Destroy(gameObject);
     }
 }

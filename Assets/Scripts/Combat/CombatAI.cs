@@ -10,10 +10,9 @@ using UnityEngine;
 /// </summary>
 public class CombatAI : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private float separationDistance = 1.0f;
-    [SerializeField] private float separationStrength = 0.5f;
+    private float moveSpeed = 3f;
+    private float separationDistance = 1.0f;
+    private float separationStrength = 0.5f;
 
     private float _attackRange = 1.5f;
     private bool _isAttacking;
@@ -27,6 +26,14 @@ public class CombatAI : MonoBehaviour
     public void Initialize(Entity entity)
     {
         _entity = entity;
+
+        // Apply UnitData-driven movement stats, fall back to defaults
+        if (_entity.unitData != null)
+        {
+            moveSpeed = _entity.unitData.moveSpeed;
+            separationDistance = _entity.unitData.separationDistance;
+            separationStrength = _entity.unitData.separationStrength;
+        }
 
         // Set attack range from first spell if available
         if (_entity.spells != null && _entity.spells.Count > 0 && _entity.spells[0] != null)
