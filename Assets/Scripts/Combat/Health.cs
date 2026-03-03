@@ -41,16 +41,8 @@ public class Health : MonoBehaviour
         if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
 
         // Visual hit feedback
-        if (_entity.character != null)
-        {
-            _entity.character.HitAsScale();
-            StartCoroutine(_entity.character.HitAsRed(0.1f));
-        }
-        else if (_entity.monster != null)
-        {
-            _entity.monster.Spring();
-            StartCoroutine(_entity.monster.HitAsRed(0.1f));
-        }
+        _entity.HitScale();
+        _entity.HitAsRed(0.1f);
 
         OnDamaged?.Invoke(amount, currentHealth);
 

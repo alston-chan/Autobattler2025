@@ -294,7 +294,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
             // Equip the main part's sub-parts
             foreach (var p in GetEquipmentSubPartNames(part))
             {
-                Debug.Log($"Setting armor part: {p} for {part} with item: {item?.Id}");
+                // Debug.Log($"Setting armor part: {p} for {part} with item: {item?.Id}");
                 SetArmorParts(p, item?.Sprites);
             }
 
@@ -305,7 +305,7 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
                 {
                     foreach (var p in GetEquipmentSubPartNames(dependentPart))
                     {
-                        Debug.Log($"Setting armor part: {p} for {dependentPart} (from {part}) with item: {item?.Id}");
+                        // Debug.Log($"Setting armor part: {p} for {dependentPart} (from {part}) with item: {item?.Id}");
                         SetArmorParts(p, item?.Sprites);
                     }
                 }

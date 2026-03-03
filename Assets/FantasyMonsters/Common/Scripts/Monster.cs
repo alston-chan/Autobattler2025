@@ -93,7 +93,7 @@ namespace Assets.FantasyMonsters.Common.Scripts
 
             yield return new WaitForSeconds(waitTime);
 
-            for (var i = 0; i < renderers.Length; i++) renderers[i].color = _colors[i];
+            for (var i = 0; i < renderers.Length && i < _colors.Count; i++) renderers[i].color = _colors[i];
         }
 
         // Play Die animation.

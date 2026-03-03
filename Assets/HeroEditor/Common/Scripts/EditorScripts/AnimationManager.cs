@@ -28,7 +28,7 @@ namespace Assets.HeroEditor.Common.Scripts.EditorScripts
             {
                 Character.Hit();
                 Character.HitAsScale();
-                StartCoroutine(Character.HitAsRed(0.1f));
+                Character.HitAsRed(0.1f);
             }
         }
 

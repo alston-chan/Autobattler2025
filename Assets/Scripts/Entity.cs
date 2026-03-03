@@ -174,6 +174,28 @@ public class Entity : MonoBehaviour
         Health.TakeDamage(amount);
     }
 
+    /// <summary>
+    /// Flash the entity red then restore. Delegates to Character or Monster.
+    /// </summary>
+    public void HitAsRed(float waitTime)
+    {
+        if (character != null)
+            StartCoroutine(character.HitAsRed(waitTime));
+        else if (monster != null)
+            StartCoroutine(monster.HitAsRed(waitTime));
+    }
+
+    /// <summary>
+    /// Play hit scale animation. Delegates to Character or Monster.
+    /// </summary>
+    public void HitScale()
+    {
+        if (character != null)
+            character.HitAsScale();
+        else if (monster != null)
+            monster.Spring();
+    }
+
     public void ApplyKnockback(Vector3 direction, float force)
     {
         Knockback.Apply(direction, force);
