@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using UnityEngine;
@@ -97,14 +98,14 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
                 }
             }
 
-            dict.Add("ItemInfo.Weight", $"{item.Params.Weight / 10f:0.##} kg");
+            // dict.Add("ItemInfo.Weight", $"{item.Params.Weight / 10f:0.##} kg");
 
-            if (Price && item.Params.Type != ItemType.Currency)
-            {
-                dict.Add("ItemInfo.Price", $"{item.Params.Price} gold");
-            }
+            // if (Price && item.Params.Type != ItemType.Currency)
+            // {
+            //     dict.Add("ItemInfo.Price", $"{item.Params.Price} gold");
+            // }
 
-            Labels.text = string.Join("\n", dict.Keys);
+            Labels.text = string.Join("\n", dict.Keys.Select(k => PrettyLabel(k)));
             Values.text = string.Join("\n", dict.Values);
         }
 
@@ -120,6 +121,19 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             {
                 Price.text = trader ? $"Buy price: {price}G" : $"Sell price: {price}G";
             }
+        }
+
+        /// <summary>
+        /// Convert "ItemInfo.HealthMax" → "Health Max", etc.
+        /// </summary>
+        private static string PrettyLabel(string key)
+        {
+            // Strip the "ItemInfo." prefix
+            if (key.StartsWith("ItemInfo."))
+                key = key.Substring("ItemInfo.".Length);
+
+            // Insert space before each uppercase letter that follows a lowercase letter
+            return Regex.Replace(key, @"(?<=\p{Ll})(\p{Lu})", " $1");
         }
     }
 }

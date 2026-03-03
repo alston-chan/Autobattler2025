@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
 
 public class GameManager : Singleton<GameManager>
@@ -125,6 +126,14 @@ public class GameManager : Singleton<GameManager>
             // Equip ally with random items from ItemCollection and add to Equipment UI
             var equippedItems = characterEntity.EquipmentManagement.EquipRandomFromCollection(characterEntity.IsRanged);
             characterInventory.Equipment.Initialize(ref equippedItems);
+
+            // Apply stat modifiers for initially equipped items
+            foreach (var item in equippedItems)
+            {
+                var itemParams = ItemCollection.Active.GetItemParams(item);
+                characterEntity.Stats.ApplyItemModifiers(itemParams, item.Id);
+            }
+            characterInventory.RefreshStatsUI();
         }
     }
 

@@ -40,7 +40,7 @@ public class BowAttackSpell : Spell
             var projectile = arrow.GetComponent<Assets.HeroEditor.Common.Scripts.ExampleScripts.Projectile>();
             if (projectile != null)
             {
-                projectile.damage = damage;
+                projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
                 projectile.knockbackForce = knockbackForce;
                 projectile.shooter = caster;
                 projectile.target = target;

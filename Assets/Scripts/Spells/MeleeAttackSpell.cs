@@ -34,7 +34,8 @@ public class MeleeAttackSpell : Spell
         yield return new WaitForSeconds(0.2f);
 
         bool isCrit = Random.value < critChance;
-        target.TakeDamage(damage);
+        float finalDamage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
+        target.TakeDamage(finalDamage);
 
         if (isCrit && target != null)
         {

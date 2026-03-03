@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour
     public Health Health { get; private set; }
     public Knockback Knockback { get; private set; }
     public CombatAI CombatAI { get; private set; }
+    public EntityStats Stats { get; private set; }
     #endregion
 
     #region Bow Aiming
@@ -86,6 +87,9 @@ public class Entity : MonoBehaviour
         CombatAI = GetComponent<CombatAI>();
         if (CombatAI == null) CombatAI = gameObject.AddComponent<CombatAI>();
 
+        Stats = GetComponent<EntityStats>();
+        if (Stats == null) Stats = gameObject.AddComponent<EntityStats>();
+
         // Apply UnitData if assigned, otherwise use serialized fields
         if (unitData != null)
         {
@@ -104,6 +108,7 @@ public class Entity : MonoBehaviour
         Health.Initialize(this);
 
         CombatAI.Initialize(this);
+        Stats.Initialize(this);
 
         // Subscribe to death event for cleanup and round-end checks
         Health.OnDied += HandleDeath;

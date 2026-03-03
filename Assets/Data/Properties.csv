@@ -1,5 +1,2555 @@
 ItemId,PropertyId,Value
-sword1,Damage,5-10
-bow1,Damage,4-8
-bow1,Range,5
-shield1,Blocking,15
+Extensions.Epic.Armor.AngelicDress.vest,HealthMax,15
+Extensions.Epic.Armor.AngelicDress.vest,Blocking,3
+Extensions.Epic.Armor.AngelicDress.gloves,Damage,2
+Extensions.Epic.Armor.AngelicDress.gloves,Speed,0.5
+Extensions.Epic.Armor.AngelicDress.boots,Speed,1
+Extensions.Epic.Armor.AngelicDressTypeB.vest,HealthMax,15
+Extensions.Epic.Armor.AngelicDressTypeB.vest,Blocking,3
+Extensions.Epic.Armor.AngelicDressTypeB.gloves,Damage,2
+Extensions.Epic.Armor.AngelicDressTypeB.gloves,Speed,0.5
+Extensions.Epic.Armor.AngelicDressTypeB.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ArcaneRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ArcaneRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ArcaneRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ArcaneRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ArcaneRobe.boots,Speed,1
+FantasyHeroes.Basic.Armor.ArielDress [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.ArielDress [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.ArielDress [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.ArielDress [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.ArielDress [Paint].boots,Speed,1
+UndeadHeroes.Furry.Armor.ArmoredLoincloth.vest,HealthMax,15
+UndeadHeroes.Furry.Armor.ArmoredLoincloth.vest,Blocking,3
+UndeadHeroes.Furry.Armor.ArmoredLoincloth.gloves,Damage,2
+UndeadHeroes.Furry.Armor.ArmoredLoincloth.gloves,Speed,0.5
+UndeadHeroes.Furry.Armor.ArmoredLoincloth.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfAncestors.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfAncestors.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfAncestors.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfAncestors.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfAncestors.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfCorruption.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfCorruption.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfCorruption.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfCorruption.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfCorruption.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfCorruptionTypeB.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfCorruptionTypeB.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfCorruptionTypeB.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfCorruptionTypeB.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfCorruptionTypeB.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfCryingDemon.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfCryingDemon.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfCryingDemon.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfCryingDemon.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfCryingDemon.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfEndingLight.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfEndingLight.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfEndingLight.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfEndingLight.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfEndingLight.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfFadedHeavens.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfFadedHeavens.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfFadedHeavens.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfFadedHeavens.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfFadedHeavens.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfFortune.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfFortune.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfFortune.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfFortune.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfFortune.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfImmortality.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfImmortality.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfImmortality.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfImmortality.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfImmortality.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfJerome.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfJerome.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfJerome.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfJerome.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfJerome.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfLoneWolf.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfLoneWolf.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfLoneWolf.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfLoneWolf.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfLoneWolf.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfRagingCrux.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfRagingCrux.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfRagingCrux.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfRagingCrux.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfRagingCrux.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfRelentlessNightmares.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfRelentlessNightmares.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfRelentlessNightmares.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfRelentlessNightmares.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfRelentlessNightmares.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfSunwalker.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfSunwalker.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfSunwalker.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfSunwalker.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfSunwalker.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfTheForgottenFoe.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfTheForgottenFoe.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfTheForgottenFoe.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfTheForgottenFoe.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfTheForgottenFoe.boots,Speed,1
+Extensions.Epic.Armor.ArmorOfTorment.vest,HealthMax,15
+Extensions.Epic.Armor.ArmorOfTorment.vest,Blocking,3
+Extensions.Epic.Armor.ArmorOfTorment.gloves,Damage,2
+Extensions.Epic.Armor.ArmorOfTorment.gloves,Speed,0.5
+Extensions.Epic.Armor.ArmorOfTorment.boots,Speed,1
+FantasyHeroes.Basic.Armor.AssassinArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.AssassinArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.AssassinArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.AssassinArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.AssassinArmor [Paint].boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.AsteraArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.AsteraArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.AsteraArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.AsteraArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.AsteraArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.BanditArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.BanditArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.BanditArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.BanditArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.BanditArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.BaseballOutfit.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.BaseballOutfit.vest,Blocking,3
+FantasyHeroes.Basic.Armor.BaseballOutfit.gloves,Damage,2
+FantasyHeroes.Basic.Armor.BaseballOutfit.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.BaseballOutfit.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.BattleguardArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.BattleguardArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.BattleguardArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.BattleguardArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.BattleguardArmor.boots,Speed,1
+Extensions.Epic.Armor.BennuRobe.vest,HealthMax,15
+Extensions.Epic.Armor.BennuRobe.vest,Blocking,3
+Extensions.Epic.Armor.BennuRobe.gloves,Damage,2
+Extensions.Epic.Armor.BennuRobe.gloves,Speed,0.5
+Extensions.Epic.Armor.BennuRobe.boots,Speed,1
+Extensions.Epic.Armor.BennuRobeTypeB.vest,HealthMax,15
+Extensions.Epic.Armor.BennuRobeTypeB.vest,Blocking,3
+Extensions.Epic.Armor.BennuRobeTypeB.gloves,Damage,2
+Extensions.Epic.Armor.BennuRobeTypeB.gloves,Speed,0.5
+Extensions.Epic.Armor.BennuRobeTypeB.boots,Speed,1
+FantasyHeroes.Basic.Armor.BerserkArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.BerserkArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.BerserkArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.BerserkArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.BerserkArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.BishopArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.BishopArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.BishopArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.BishopArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.BishopArmor.boots,Speed,1
+Extensions.Epic.Armor.BishopRobe.vest,HealthMax,15
+Extensions.Epic.Armor.BishopRobe.vest,Blocking,3
+Extensions.Epic.Armor.BishopRobe.gloves,Damage,2
+Extensions.Epic.Armor.BishopRobe.gloves,Speed,0.5
+Extensions.Epic.Armor.BishopRobe.boots,Speed,1
+FantasyHeroes.Basic.Armor.BlacksmithCostume.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.BlacksmithCostume.vest,Blocking,3
+FantasyHeroes.Basic.Armor.BlacksmithCostume.gloves,Damage,2
+FantasyHeroes.Basic.Armor.BlacksmithCostume.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.BlacksmithCostume.boots,Speed,1
+Extensions.Epic.Armor.BlazewingArmor.vest,HealthMax,15
+Extensions.Epic.Armor.BlazewingArmor.vest,Blocking,3
+Extensions.Epic.Armor.BlazewingArmor.gloves,Damage,2
+Extensions.Epic.Armor.BlazewingArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.BlazewingArmor.boots,Speed,1
+Extensions.Epic.Armor.BlessedOutfit.vest,HealthMax,15
+Extensions.Epic.Armor.BlessedOutfit.vest,Blocking,3
+Extensions.Epic.Armor.BlessedOutfit.gloves,Damage,2
+Extensions.Epic.Armor.BlessedOutfit.gloves,Speed,0.5
+Extensions.Epic.Armor.BlessedOutfit.boots,Speed,1
+Extensions.Epic.Armor.BloodiedSpiritArmor.vest,HealthMax,15
+Extensions.Epic.Armor.BloodiedSpiritArmor.vest,Blocking,3
+Extensions.Epic.Armor.BloodiedSpiritArmor.gloves,Damage,2
+Extensions.Epic.Armor.BloodiedSpiritArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.BloodiedSpiritArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.CardinalArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.CardinalArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.CardinalArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.CardinalArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.CardinalArmor.boots,Speed,1
+Extensions.Epic.Armor.CataclysmArmor.vest,HealthMax,15
+Extensions.Epic.Armor.CataclysmArmor.vest,Blocking,3
+Extensions.Epic.Armor.CataclysmArmor.gloves,Damage,2
+Extensions.Epic.Armor.CataclysmArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.CataclysmArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.CataphractArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.CataphractArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.CataphractArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.CataphractArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.CataphractArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.ChampionArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.ChampionArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.ChampionArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.ChampionArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.ChampionArmor.boots,Speed,1
+Common.Christmas.Armor.ChristmasCostume.vest,HealthMax,15
+Common.Christmas.Armor.ChristmasCostume.vest,Blocking,3
+Common.Christmas.Armor.ChristmasCostume.gloves,Damage,2
+Common.Christmas.Armor.ChristmasCostume.gloves,Speed,0.5
+Common.Christmas.Armor.ChristmasCostume.boots,Speed,1
+FantasyHeroes.Basic.Armor.Cleric [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Cleric [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.Cleric [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.Cleric [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Cleric [Paint].boots,Speed,1
+Extensions.Epic.Armor.Cossack.vest,HealthMax,15
+Extensions.Epic.Armor.Cossack.vest,Blocking,3
+Extensions.Epic.Armor.Cossack.gloves,Damage,2
+Extensions.Epic.Armor.Cossack.gloves,Speed,0.5
+Extensions.Epic.Armor.Cossack.boots,Speed,1
+FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint].vest,HealthMax,15
+FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint].vest,Blocking,3
+FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint].gloves,Damage,2
+FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint].gloves,Speed,0.5
+FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.DarkKnight.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.DarkKnight.vest,Blocking,3
+FantasyHeroes.Basic.Armor.DarkKnight.gloves,Damage,2
+FantasyHeroes.Basic.Armor.DarkKnight.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.DarkKnight.boots,Speed,1
+Extensions.Epic.Armor.DarkLordArmor.vest,HealthMax,15
+Extensions.Epic.Armor.DarkLordArmor.vest,Blocking,3
+Extensions.Epic.Armor.DarkLordArmor.gloves,Damage,2
+Extensions.Epic.Armor.DarkLordArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.DarkLordArmor.boots,Speed,1
+FantasyHeroes.Thrones.Armor.DarkMountain.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.DarkMountain.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.DarkMountain.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.DarkMountain.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.DarkMountain.boots,Speed,1
+Common.Halloween.Armor.DeathCostume.vest,HealthMax,15
+Common.Halloween.Armor.DeathCostume.vest,Blocking,3
+Common.Halloween.Armor.DeathCostume.gloves,Damage,2
+Common.Halloween.Armor.DeathCostume.gloves,Speed,0.5
+Common.Halloween.Armor.DeathCostume.boots,Speed,1
+Common.Halloween.Armor.DeerCostume.vest,HealthMax,15
+Common.Halloween.Armor.DeerCostume.vest,Blocking,3
+Common.Halloween.Armor.DeerCostume.gloves,Damage,2
+Common.Halloween.Armor.DeerCostume.gloves,Speed,0.5
+Common.Halloween.Armor.DeerCostume.boots,Speed,1
+FantasyHeroes.Basic.Armor.Deserter.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Deserter.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Deserter.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Deserter.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Deserter.boots,Speed,1
+FantasyHeroes.Basic.Armor.DestroyerArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.DestroyerArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.DestroyerArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.DestroyerArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.DestroyerArmor [Paint].boots,Speed,1
+Extensions.Epic.Armor.DevotionOutfit.vest,HealthMax,15
+Extensions.Epic.Armor.DevotionOutfit.vest,Blocking,3
+Extensions.Epic.Armor.DevotionOutfit.gloves,Damage,2
+Extensions.Epic.Armor.DevotionOutfit.gloves,Speed,0.5
+Extensions.Epic.Armor.DevotionOutfit.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.DraconicArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.DraconicArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.DraconicArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.DraconicArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.DraconicArmor.boots,Speed,1
+Extensions.Epic.Armor.DressOfInfinity.vest,HealthMax,15
+Extensions.Epic.Armor.DressOfInfinity.vest,Blocking,3
+Extensions.Epic.Armor.DressOfInfinity.gloves,Damage,2
+Extensions.Epic.Armor.DressOfInfinity.gloves,Speed,0.5
+Extensions.Epic.Armor.DressOfInfinity.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.DrifterLightArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.DrifterLightArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.DrifterLightArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.DrifterLightArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.DrifterLightArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.DruidArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.DruidArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.DruidArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.DruidArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.DruidArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.DwellerArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.DwellerArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.DwellerArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.DwellerArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.DwellerArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ElegantArcherVest.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ElegantArcherVest.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ElegantArcherVest.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ElegantArcherVest.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ElegantArcherVest.boots,Speed,1
+Extensions.Epic.Armor.ElementalArcherArmor.vest,HealthMax,15
+Extensions.Epic.Armor.ElementalArcherArmor.vest,Blocking,3
+Extensions.Epic.Armor.ElementalArcherArmor.gloves,Damage,2
+Extensions.Epic.Armor.ElementalArcherArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.ElementalArcherArmor.boots,Speed,1
+Extensions.Epic.Armor.ElementalArmor.vest,HealthMax,15
+Extensions.Epic.Armor.ElementalArmor.vest,Blocking,3
+Extensions.Epic.Armor.ElementalArmor.gloves,Damage,2
+Extensions.Epic.Armor.ElementalArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.ElementalArmor.boots,Speed,1
+Extensions.Epic.Armor.ElementalMageArmor.vest,HealthMax,15
+Extensions.Epic.Armor.ElementalMageArmor.vest,Blocking,3
+Extensions.Epic.Armor.ElementalMageArmor.gloves,Damage,2
+Extensions.Epic.Armor.ElementalMageArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.ElementalMageArmor.boots,Speed,1
+FantasyHeroes.Knights.Armor.EliteGuardArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Knights.Armor.EliteGuardArmor [Paint].vest,Blocking,3
+FantasyHeroes.Knights.Armor.EliteGuardArmor [Paint].gloves,Damage,2
+FantasyHeroes.Knights.Armor.EliteGuardArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Knights.Armor.EliteGuardArmor [Paint].boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.EmbroidedVest.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.EmbroidedVest.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.EmbroidedVest.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.EmbroidedVest.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.EmbroidedVest.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.EnchantedScarletArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.EnchantedScarletArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.EnchantedScarletArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.EnchantedScarletArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.EnchantedScarletArmor.boots,Speed,1
+FantasyHeroes.Knights.Armor.FalconLightArmor.vest,HealthMax,15
+FantasyHeroes.Knights.Armor.FalconLightArmor.vest,Blocking,3
+FantasyHeroes.Knights.Armor.FalconLightArmor.gloves,Damage,2
+FantasyHeroes.Knights.Armor.FalconLightArmor.gloves,Speed,0.5
+FantasyHeroes.Knights.Armor.FalconLightArmor.boots,Speed,1
+Extensions.Epic.Armor.FallenlordRobe.vest,HealthMax,15
+Extensions.Epic.Armor.FallenlordRobe.vest,Blocking,3
+Extensions.Epic.Armor.FallenlordRobe.gloves,Damage,2
+Extensions.Epic.Armor.FallenlordRobe.gloves,Speed,0.5
+Extensions.Epic.Armor.FallenlordRobe.boots,Speed,1
+FantasyHeroes.Basic.Armor.FarmerClothes.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.FarmerClothes.vest,Blocking,3
+FantasyHeroes.Basic.Armor.FarmerClothes.gloves,Damage,2
+FantasyHeroes.Basic.Armor.FarmerClothes.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.FarmerClothes.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female01.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female01.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female01.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female01.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female01.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female02.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female02.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female02.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female02.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female02.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female03.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female03.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female03.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female03.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female03.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female04.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female04.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female04.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female04.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female04.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female05.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female05.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female05.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female05.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female05.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female06.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female06.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female06.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female06.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female06.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female07.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female07.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female07.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female07.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female07.boots,Speed,1
+Extensions.FemaleCostumes.Armor.Female08.vest,HealthMax,15
+Extensions.FemaleCostumes.Armor.Female08.vest,Blocking,3
+Extensions.FemaleCostumes.Armor.Female08.gloves,Damage,2
+Extensions.FemaleCostumes.Armor.Female08.gloves,Speed,0.5
+Extensions.FemaleCostumes.Armor.Female08.boots,Speed,1
+FantasyHeroes.Basic.Armor.FireAdept.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.FireAdept.vest,Blocking,3
+FantasyHeroes.Basic.Armor.FireAdept.gloves,Damage,2
+FantasyHeroes.Basic.Armor.FireAdept.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.FireAdept.boots,Speed,1
+Extensions.Epic.Armor.FireBeastArmor.vest,HealthMax,15
+Extensions.Epic.Armor.FireBeastArmor.vest,Blocking,3
+Extensions.Epic.Armor.FireBeastArmor.gloves,Damage,2
+Extensions.Epic.Armor.FireBeastArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.FireBeastArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.FireKnightArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.FireKnightArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.FireKnightArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.FireKnightArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.FireKnightArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.FireWarriorArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.FireWarriorArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.FireWarriorArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.FireWarriorArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.FireWarriorArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.FireWizardArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.FireWizardArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.FireWizardArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.FireWizardArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.FireWizardArmor.boots,Speed,1
+Extensions.Epic.Armor.FlexureArmor.vest,HealthMax,15
+Extensions.Epic.Armor.FlexureArmor.vest,Blocking,3
+Extensions.Epic.Armor.FlexureArmor.gloves,Damage,2
+Extensions.Epic.Armor.FlexureArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.FlexureArmor.boots,Speed,1
+Extensions.Epic.Armor.FlexureArmorTypeB.vest,HealthMax,15
+Extensions.Epic.Armor.FlexureArmorTypeB.vest,Blocking,3
+Extensions.Epic.Armor.FlexureArmorTypeB.gloves,Damage,2
+Extensions.Epic.Armor.FlexureArmorTypeB.gloves,Speed,0.5
+Extensions.Epic.Armor.FlexureArmorTypeB.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ForesterTunic.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ForesterTunic.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ForesterTunic.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ForesterTunic.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ForesterTunic.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment.boots,Speed,1
+Extensions.Epic.Armor.ForestWhispererOutfit.vest,HealthMax,15
+Extensions.Epic.Armor.ForestWhispererOutfit.vest,Blocking,3
+Extensions.Epic.Armor.ForestWhispererOutfit.gloves,Damage,2
+Extensions.Epic.Armor.ForestWhispererOutfit.gloves,Speed,0.5
+Extensions.Epic.Armor.ForestWhispererOutfit.boots,Speed,1
+FantasyHeroes.Thrones.Armor.FreeFolk [Paint].vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.FreeFolk [Paint].vest,Blocking,3
+FantasyHeroes.Thrones.Armor.FreeFolk [Paint].gloves,Damage,2
+FantasyHeroes.Thrones.Armor.FreeFolk [Paint].gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.FreeFolk [Paint].boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.FrostRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.FrostRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.FrostRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.FrostRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.FrostRobe.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.FrozenMightRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.FrozenMightRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.FrozenMightRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.FrozenMightRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.FrozenMightRobe.boots,Speed,1
+UndeadHeroes.Furry.Armor.GadiatorLoincloth.vest,HealthMax,15
+UndeadHeroes.Furry.Armor.GadiatorLoincloth.vest,Blocking,3
+UndeadHeroes.Furry.Armor.GadiatorLoincloth.gloves,Damage,2
+UndeadHeroes.Furry.Armor.GadiatorLoincloth.gloves,Speed,0.5
+UndeadHeroes.Furry.Armor.GadiatorLoincloth.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.GenieVestment.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.GenieVestment.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.GenieVestment.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.GenieVestment.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.GenieVestment.boots,Speed,1
+FantasyHeroes.Knights.Armor.GguardsmenArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Knights.Armor.GguardsmenArmor [Paint].vest,Blocking,3
+FantasyHeroes.Knights.Armor.GguardsmenArmor [Paint].gloves,Damage,2
+FantasyHeroes.Knights.Armor.GguardsmenArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Knights.Armor.GguardsmenArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.GladiatorArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.GladiatorArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.GladiatorArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.GladiatorArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.GladiatorArmor.boots,Speed,1
+FantasyHeroes.Thrones.Armor.GoldLion.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.GoldLion.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.GoldLion.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.GoldLion.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.GoldLion.boots,Speed,1
+FantasyHeroes.Basic.Armor.GreyKnight.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.GreyKnight.vest,Blocking,3
+FantasyHeroes.Basic.Armor.GreyKnight.gloves,Damage,2
+FantasyHeroes.Basic.Armor.GreyKnight.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.GreyKnight.boots,Speed,1
+Extensions.Epic.Armor.GrimReaperRobe.vest,HealthMax,15
+Extensions.Epic.Armor.GrimReaperRobe.vest,Blocking,3
+Extensions.Epic.Armor.GrimReaperRobe.gloves,Damage,2
+Extensions.Epic.Armor.GrimReaperRobe.gloves,Speed,0.5
+Extensions.Epic.Armor.GrimReaperRobe.boots,Speed,1
+FantasyHeroes.Basic.Armor.GuardArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.GuardArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.GuardArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.GuardArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.GuardArmor [Paint].boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.GuildArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.GuildArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.GuildArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.GuildArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.GuildArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.HalberdierArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.HalberdierArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.HalberdierArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.HalberdierArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.HalberdierArmor [Paint].boots,Speed,1
+Extensions.Epic.Armor.HeavenlyArmor.vest,HealthMax,15
+Extensions.Epic.Armor.HeavenlyArmor.vest,Blocking,3
+Extensions.Epic.Armor.HeavenlyArmor.gloves,Damage,2
+Extensions.Epic.Armor.HeavenlyArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.HeavenlyArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.HeavyArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.HeavyArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.HeavyArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.HeavyArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.HeavyArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.Hermit.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Hermit.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Hermit.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Hermit.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Hermit.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.HighKnightArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.HighKnightArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.HighKnightArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.HighKnightArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.HighKnightArmor.boots,Speed,1
+FantasyHeroes.Thrones.Armor.HorseLord.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.HorseLord.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.HorseLord.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.HorseLord.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.HorseLord.boots,Speed,1
+FantasyHeroes.Basic.Armor.Hunter.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Hunter.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Hunter.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Hunter.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Hunter.boots,Speed,1
+FantasyHeroes.Basic.Armor.HunterLightArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.HunterLightArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.HunterLightArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.HunterLightArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.HunterLightArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.HunterTunic.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.HunterTunic.vest,Blocking,3
+FantasyHeroes.Basic.Armor.HunterTunic.gloves,Damage,2
+FantasyHeroes.Basic.Armor.HunterTunic.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.HunterTunic.boots,Speed,1
+FantasyHeroes.Basic.Armor.IceWizardArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.IceWizardArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.IceWizardArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.IceWizardArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.IceWizardArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.IllusionMantle.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.IllusionMantle.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.IllusionMantle.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.IllusionMantle.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.IllusionMantle.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Imperial TemplarArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Imperial TemplarArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Imperial TemplarArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Imperial TemplarArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Imperial TemplarArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ImperialKnight Cuirass.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ImperialKnight Cuirass.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ImperialKnight Cuirass.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ImperialKnight Cuirass.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ImperialKnight Cuirass.boots,Speed,1
+Extensions.Epic.Armor.IncorruptibleArmor.vest,HealthMax,15
+Extensions.Epic.Armor.IncorruptibleArmor.vest,Blocking,3
+Extensions.Epic.Armor.IncorruptibleArmor.gloves,Damage,2
+Extensions.Epic.Armor.IncorruptibleArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.IncorruptibleArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.InquisitorArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.InquisitorArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.InquisitorArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.InquisitorArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.InquisitorArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.IronArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.IronArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.IronArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.IronArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.IronArmor [Paint].boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.IronCuirass.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.IronCuirass.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.IronCuirass.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.IronCuirass.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.IronCuirass.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.IronHunterArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.IronHunterArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.IronHunterArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.IronHunterArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.IronHunterArmor.boots,Speed,1
+FantasyHeroes.Thrones.Armor.IronIslands.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.IronIslands.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.IronIslands.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.IronIslands.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.IronIslands.boots,Speed,1
+FantasyHeroes.Basic.Armor.IronPlateArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.IronPlateArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.IronPlateArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.IronPlateArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.IronPlateArmor [Paint].boots,Speed,1
+FantasyHeroes.Knights.Armor.KnightArmor.vest,HealthMax,15
+FantasyHeroes.Knights.Armor.KnightArmor.vest,Blocking,3
+FantasyHeroes.Knights.Armor.KnightArmor.gloves,Damage,2
+FantasyHeroes.Knights.Armor.KnightArmor.gloves,Speed,0.5
+FantasyHeroes.Knights.Armor.KnightArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.KnightArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.KnightArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.KnightArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.KnightArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.KnightArmor [Paint].boots,Speed,1
+Extensions.Epic.Armor.Knyaz.vest,HealthMax,15
+Extensions.Epic.Armor.Knyaz.vest,Blocking,3
+Extensions.Epic.Armor.Knyaz.gloves,Damage,2
+Extensions.Epic.Armor.Knyaz.gloves,Speed,0.5
+Extensions.Epic.Armor.Knyaz.boots,Speed,1
+Extensions.Epic.Armor.Kopeynik.vest,HealthMax,15
+Extensions.Epic.Armor.Kopeynik.vest,Blocking,3
+Extensions.Epic.Armor.Kopeynik.gloves,Damage,2
+Extensions.Epic.Armor.Kopeynik.gloves,Speed,0.5
+Extensions.Epic.Armor.Kopeynik.boots,Speed,1
+FantasyHeroes.Basic.Armor.LandsknechtArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.LandsknechtArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.LandsknechtArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.LandsknechtArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.LandsknechtArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.LeatherJacket.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.LeatherJacket.vest,Blocking,3
+FantasyHeroes.Basic.Armor.LeatherJacket.gloves,Damage,2
+FantasyHeroes.Basic.Armor.LeatherJacket.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.LeatherJacket.boots,Speed,1
+FantasyHeroes.Basic.Armor.LeatherLightArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.LeatherLightArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.LeatherLightArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.LeatherLightArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.LeatherLightArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.LeatherRivetedArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.LeatherRivetedArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.LeatherRivetedArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.LeatherRivetedArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.LeatherRivetedArmor.boots,Speed,1
+FantasyHeroes.Thrones.Armor.LittleLion.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.LittleLion.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.LittleLion.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.LittleLion.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.LittleLion.boots,Speed,1
+Extensions.Epic.Armor.Luchnik.vest,HealthMax,15
+Extensions.Epic.Armor.Luchnik.vest,Blocking,3
+Extensions.Epic.Armor.Luchnik.gloves,Damage,2
+Extensions.Epic.Armor.Luchnik.gloves,Speed,0.5
+Extensions.Epic.Armor.Luchnik.boots,Speed,1
+Extensions.Epic.Armor.LushKnight.vest,HealthMax,15
+Extensions.Epic.Armor.LushKnight.vest,Blocking,3
+Extensions.Epic.Armor.LushKnight.gloves,Damage,2
+Extensions.Epic.Armor.LushKnight.gloves,Speed,0.5
+Extensions.Epic.Armor.LushKnight.boots,Speed,1
+Extensions.Epic.Armor.MagnetismArmor.vest,HealthMax,15
+Extensions.Epic.Armor.MagnetismArmor.vest,Blocking,3
+Extensions.Epic.Armor.MagnetismArmor.gloves,Damage,2
+Extensions.Epic.Armor.MagnetismArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.MagnetismArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.ManticoreArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.ManticoreArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.ManticoreArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.ManticoreArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.ManticoreArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.MarauderArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.MarauderArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.MarauderArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.MarauderArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.MarauderArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.MedievalBartender.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.MedievalBartender.vest,Blocking,3
+FantasyHeroes.Basic.Armor.MedievalBartender.gloves,Damage,2
+FantasyHeroes.Basic.Armor.MedievalBartender.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.MedievalBartender.boots,Speed,1
+FantasyHeroes.Basic.Armor.MedievalCook.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.MedievalCook.vest,Blocking,3
+FantasyHeroes.Basic.Armor.MedievalCook.gloves,Damage,2
+FantasyHeroes.Basic.Armor.MedievalCook.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.MedievalCook.boots,Speed,1
+FantasyHeroes.Basic.Armor.MercenaryArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.MercenaryArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.MercenaryArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.MercenaryArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.MercenaryArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.Militiaman.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Militiaman.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Militiaman.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Militiaman.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Militiaman.boots,Speed,1
+FantasyHeroes.Basic.Armor.MinerCostume.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.MinerCostume.vest,Blocking,3
+FantasyHeroes.Basic.Armor.MinerCostume.gloves,Damage,2
+FantasyHeroes.Basic.Armor.MinerCostume.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.MinerCostume.boots,Speed,1
+Extensions.Epic.Armor.MoonlightRobe.vest,HealthMax,15
+Extensions.Epic.Armor.MoonlightRobe.vest,Blocking,3
+Extensions.Epic.Armor.MoonlightRobe.gloves,Damage,2
+Extensions.Epic.Armor.MoonlightRobe.gloves,Speed,0.5
+Extensions.Epic.Armor.MoonlightRobe.boots,Speed,1
+FantasyHeroes.Thrones.Armor.Mountain [Paint].vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.Mountain [Paint].vest,Blocking,3
+FantasyHeroes.Thrones.Armor.Mountain [Paint].gloves,Damage,2
+FantasyHeroes.Thrones.Armor.Mountain [Paint].gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.Mountain [Paint].boots,Speed,1
+UndeadHeroes.Mummies.Armor.MummyClothes1.vest,HealthMax,15
+UndeadHeroes.Mummies.Armor.MummyClothes1.vest,Blocking,3
+UndeadHeroes.Mummies.Armor.MummyClothes1.gloves,Damage,2
+UndeadHeroes.Mummies.Armor.MummyClothes1.gloves,Speed,0.5
+UndeadHeroes.Mummies.Armor.MummyClothes1.boots,Speed,1
+UndeadHeroes.Mummies.Armor.MummyClothes2.vest,HealthMax,15
+UndeadHeroes.Mummies.Armor.MummyClothes2.vest,Blocking,3
+UndeadHeroes.Mummies.Armor.MummyClothes2.gloves,Damage,2
+UndeadHeroes.Mummies.Armor.MummyClothes2.gloves,Speed,0.5
+UndeadHeroes.Mummies.Armor.MummyClothes2.boots,Speed,1
+UndeadHeroes.Mummies.Armor.MummyClothes3.vest,HealthMax,15
+UndeadHeroes.Mummies.Armor.MummyClothes3.vest,Blocking,3
+UndeadHeroes.Mummies.Armor.MummyClothes3.gloves,Damage,2
+UndeadHeroes.Mummies.Armor.MummyClothes3.gloves,Speed,0.5
+UndeadHeroes.Mummies.Armor.MummyClothes3.boots,Speed,1
+UndeadHeroes.Mummies.Armor.MummyClothes4.vest,HealthMax,15
+UndeadHeroes.Mummies.Armor.MummyClothes4.vest,Blocking,3
+UndeadHeroes.Mummies.Armor.MummyClothes4.gloves,Damage,2
+UndeadHeroes.Mummies.Armor.MummyClothes4.gloves,Speed,0.5
+UndeadHeroes.Mummies.Armor.MummyClothes4.boots,Speed,1
+FantasyHeroes.Basic.Armor.NativeVillager01.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.NativeVillager01.vest,Blocking,3
+FantasyHeroes.Basic.Armor.NativeVillager01.gloves,Damage,2
+FantasyHeroes.Basic.Armor.NativeVillager01.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.NativeVillager01.boots,Speed,1
+FantasyHeroes.Basic.Armor.NativeVillager02.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.NativeVillager02.vest,Blocking,3
+FantasyHeroes.Basic.Armor.NativeVillager02.gloves,Damage,2
+FantasyHeroes.Basic.Armor.NativeVillager02.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.NativeVillager02.boots,Speed,1
+FantasyHeroes.Basic.Armor.NecromancerArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.NecromancerArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.NecromancerArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.NecromancerArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.NecromancerArmor.boots,Speed,1
+Extensions.Epic.Armor.NemeanArmorTypeA.vest,HealthMax,15
+Extensions.Epic.Armor.NemeanArmorTypeA.vest,Blocking,3
+Extensions.Epic.Armor.NemeanArmorTypeA.gloves,Damage,2
+Extensions.Epic.Armor.NemeanArmorTypeA.gloves,Speed,0.5
+Extensions.Epic.Armor.NemeanArmorTypeA.boots,Speed,1
+Extensions.Epic.Armor.NemeanArmorTypeB.vest,HealthMax,15
+Extensions.Epic.Armor.NemeanArmorTypeB.vest,Blocking,3
+Extensions.Epic.Armor.NemeanArmorTypeB.gloves,Damage,2
+Extensions.Epic.Armor.NemeanArmorTypeB.gloves,Speed,0.5
+Extensions.Epic.Armor.NemeanArmorTypeB.boots,Speed,1
+FantasyHeroes.Thrones.Armor.NightsWatch [Paint].vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.NightsWatch [Paint].vest,Blocking,3
+FantasyHeroes.Thrones.Armor.NightsWatch [Paint].gloves,Damage,2
+FantasyHeroes.Thrones.Armor.NightsWatch [Paint].gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.NightsWatch [Paint].boots,Speed,1
+FantasyHeroes.Samurai.Armor.Ninja1 [Paint].vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.Ninja1 [Paint].vest,Blocking,3
+FantasyHeroes.Samurai.Armor.Ninja1 [Paint].gloves,Damage,2
+FantasyHeroes.Samurai.Armor.Ninja1 [Paint].gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.Ninja1 [Paint].boots,Speed,1
+FantasyHeroes.Samurai.Armor.Ninja2 [Paint].vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.Ninja2 [Paint].vest,Blocking,3
+FantasyHeroes.Samurai.Armor.Ninja2 [Paint].gloves,Damage,2
+FantasyHeroes.Samurai.Armor.Ninja2 [Paint].gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.Ninja2 [Paint].boots,Speed,1
+FantasyHeroes.Samurai.Armor.Ninja3.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.Ninja3.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.Ninja3.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.Ninja3.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.Ninja3.boots,Speed,1
+FantasyHeroes.Basic.Armor.NinjaOutfit.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.NinjaOutfit.vest,Blocking,3
+FantasyHeroes.Basic.Armor.NinjaOutfit.gloves,Damage,2
+FantasyHeroes.Basic.Armor.NinjaOutfit.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.NinjaOutfit.boots,Speed,1
+Extensions.Epic.Armor.NobleKingArmor.vest,HealthMax,15
+Extensions.Epic.Armor.NobleKingArmor.vest,Blocking,3
+Extensions.Epic.Armor.NobleKingArmor.gloves,Damage,2
+Extensions.Epic.Armor.NobleKingArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.NobleKingArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.Nomad.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Nomad.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Nomad.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Nomad.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Nomad.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.NordicArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.NordicArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.NordicArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.NordicArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.NordicArmor.boots,Speed,1
+Extensions.Epic.Armor.NorthmanArmor.vest,HealthMax,15
+Extensions.Epic.Armor.NorthmanArmor.vest,Blocking,3
+Extensions.Epic.Armor.NorthmanArmor.gloves,Damage,2
+Extensions.Epic.Armor.NorthmanArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.NorthmanArmor.boots,Speed,1
+FantasyHeroes.Thrones.Armor.NorthWarden.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.NorthWarden.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.NorthWarden.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.NorthWarden.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.NorthWarden.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor.boots,Speed,1
+Common.Christmas.Armor.NutcrackerOutfit.vest,HealthMax,15
+Common.Christmas.Armor.NutcrackerOutfit.vest,Blocking,3
+Common.Christmas.Armor.NutcrackerOutfit.gloves,Damage,2
+Common.Christmas.Armor.NutcrackerOutfit.gloves,Speed,0.5
+Common.Christmas.Armor.NutcrackerOutfit.boots,Speed,1
+Extensions.Epic.Armor.OminousArmor.vest,HealthMax,15
+Extensions.Epic.Armor.OminousArmor.vest,Blocking,3
+Extensions.Epic.Armor.OminousArmor.gloves,Damage,2
+Extensions.Epic.Armor.OminousArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.OminousArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.OrcArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.OrcArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.OrcArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.OrcArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.OrcArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.OzeriasRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.OzeriasRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.OzeriasRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.OzeriasRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.OzeriasRobe.boots,Speed,1
+FantasyHeroes.Basic.Armor.PaladinArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.PaladinArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.PaladinArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.PaladinArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.PaladinArmor [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.PathfinderArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.PathfinderArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.PathfinderArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.PathfinderArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.PathfinderArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.PeasantClothing.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.PeasantClothing.vest,Blocking,3
+FantasyHeroes.Basic.Armor.PeasantClothing.gloves,Damage,2
+FantasyHeroes.Basic.Armor.PeasantClothing.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.PeasantClothing.boots,Speed,1
+Extensions.Epic.Armor.PersianArcher.vest,HealthMax,15
+Extensions.Epic.Armor.PersianArcher.vest,Blocking,3
+Extensions.Epic.Armor.PersianArcher.gloves,Damage,2
+Extensions.Epic.Armor.PersianArcher.gloves,Speed,0.5
+Extensions.Epic.Armor.PersianArcher.boots,Speed,1
+Extensions.Epic.Armor.PersianDuelist.vest,HealthMax,15
+Extensions.Epic.Armor.PersianDuelist.vest,Blocking,3
+Extensions.Epic.Armor.PersianDuelist.gloves,Damage,2
+Extensions.Epic.Armor.PersianDuelist.gloves,Speed,0.5
+Extensions.Epic.Armor.PersianDuelist.boots,Speed,1
+Extensions.Epic.Armor.PersianLancerArmor.vest,HealthMax,15
+Extensions.Epic.Armor.PersianLancerArmor.vest,Blocking,3
+Extensions.Epic.Armor.PersianLancerArmor.gloves,Damage,2
+Extensions.Epic.Armor.PersianLancerArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.PersianLancerArmor.boots,Speed,1
+Extensions.Epic.Armor.PersianWarrior.vest,HealthMax,15
+Extensions.Epic.Armor.PersianWarrior.vest,Blocking,3
+Extensions.Epic.Armor.PersianWarrior.gloves,Damage,2
+Extensions.Epic.Armor.PersianWarrior.gloves,Speed,0.5
+Extensions.Epic.Armor.PersianWarrior.boots,Speed,1
+Extensions.Epic.Armor.PhobosHeavyArmor.vest,HealthMax,15
+Extensions.Epic.Armor.PhobosHeavyArmor.vest,Blocking,3
+Extensions.Epic.Armor.PhobosHeavyArmor.gloves,Damage,2
+Extensions.Epic.Armor.PhobosHeavyArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.PhobosHeavyArmor.boots,Speed,1
+Extensions.Epic.Armor.PorcelainArmor.vest,HealthMax,15
+Extensions.Epic.Armor.PorcelainArmor.vest,Blocking,3
+Extensions.Epic.Armor.PorcelainArmor.gloves,Damage,2
+Extensions.Epic.Armor.PorcelainArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.PorcelainArmor.boots,Speed,1
+Common.Halloween.Armor.PumpkinCostume.vest,HealthMax,15
+Common.Halloween.Armor.PumpkinCostume.vest,Blocking,3
+Common.Halloween.Armor.PumpkinCostume.gloves,Damage,2
+Common.Halloween.Armor.PumpkinCostume.gloves,Speed,0.5
+Common.Halloween.Armor.PumpkinCostume.boots,Speed,1
+FantasyHeroes.Basic.Armor.PyromancerArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.PyromancerArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.PyromancerArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.PyromancerArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.PyromancerArmor.boots,Speed,1
+UndeadHeroes.Furry.Armor.RagLoincloth.vest,HealthMax,15
+UndeadHeroes.Furry.Armor.RagLoincloth.vest,Blocking,3
+UndeadHeroes.Furry.Armor.RagLoincloth.gloves,Damage,2
+UndeadHeroes.Furry.Armor.RagLoincloth.gloves,Speed,0.5
+UndeadHeroes.Furry.Armor.RagLoincloth.boots,Speed,1
+FantasyHeroes.Basic.Armor.Rags1.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Rags1.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Rags1.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Rags1.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Rags1.boots,Speed,1
+FantasyHeroes.Basic.Armor.Rags2.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Rags2.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Rags2.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Rags2.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Rags2.boots,Speed,1
+FantasyHeroes.Basic.Armor.Rags3.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Rags3.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Rags3.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Rags3.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Rags3.boots,Speed,1
+FantasyHeroes.Basic.Armor.RangerArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.RangerArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.RangerArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.RangerArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.RangerArmor.boots,Speed,1
+Extensions.Epic.Armor.Ratnik.vest,HealthMax,15
+Extensions.Epic.Armor.Ratnik.vest,Blocking,3
+Extensions.Epic.Armor.Ratnik.gloves,Damage,2
+Extensions.Epic.Armor.Ratnik.gloves,Speed,0.5
+Extensions.Epic.Armor.Ratnik.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.RedGuardianArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.RedGuardianArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.RedGuardianArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.RedGuardianArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.RedGuardianArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.RedKittyRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.RedKittyRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.RedKittyRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.RedKittyRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.RedKittyRobe.boots,Speed,1
+FantasyHeroes.Thrones.Armor.RedLion.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.RedLion.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.RedLion.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.RedLion.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.RedLion.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.RedLunarRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.RedLunarRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.RedLunarRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.RedLunarRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.RedLunarRobe.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherTunic.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherTunic.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherTunic.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherTunic.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherTunic.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.RenovatedArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.RenovatedArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.RenovatedArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.RenovatedArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.RenovatedArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.Robe.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Robe.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Robe.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Robe.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Robe.boots,Speed,1
+FantasyHeroes.Basic.Armor.RoyalArcherArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.RoyalArcherArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.RoyalArcherArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.RoyalArcherArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.RoyalArcherArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.RoyalGuard.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.RoyalGuard.vest,Blocking,3
+FantasyHeroes.Basic.Armor.RoyalGuard.gloves,Damage,2
+FantasyHeroes.Basic.Armor.RoyalGuard.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.RoyalGuard.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.RoyalTunic.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.RoyalTunic.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.RoyalTunic.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.RoyalTunic.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.RoyalTunic.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.SacredWolfyRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.SacredWolfyRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.SacredWolfyRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.SacredWolfyRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.SacredWolfyRobe.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.SaintPatrickOutfit.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.SaintPatrickOutfit.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.SaintPatrickOutfit.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.SaintPatrickOutfit.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.SaintPatrickOutfit.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiElder.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiElder.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiElder.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiElder.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiElder.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiHeavy1.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiHeavy1.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiHeavy1.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiHeavy1.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiHeavy1.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiHeavy2.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiHeavy2.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiHeavy2.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiHeavy2.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiHeavy2.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiHeavy3.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiHeavy3.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiHeavy3.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiHeavy3.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiHeavy3.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiLight1.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiLight1.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiLight1.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiLight1.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiLight1.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiLight2.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiLight2.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiLight2.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiLight2.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiLight2.boots,Speed,1
+FantasyHeroes.Samurai.Armor.SamuraiLight3.vest,HealthMax,15
+FantasyHeroes.Samurai.Armor.SamuraiLight3.vest,Blocking,3
+FantasyHeroes.Samurai.Armor.SamuraiLight3.gloves,Damage,2
+FantasyHeroes.Samurai.Armor.SamuraiLight3.gloves,Speed,0.5
+FantasyHeroes.Samurai.Armor.SamuraiLight3.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandElder.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandElder.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandElder.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandElder.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandElder.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandHealer1.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandHealer1.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandHealer1.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandHealer1.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandHealer1.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandHealer2.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandHealer2.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandHealer2.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandHealer2.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandHealer2.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandMage1.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandMage1.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandMage1.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandMage1.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandMage1.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandMage2.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandMage2.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandMage2.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandMage2.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandMage2.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandShooter1.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandShooter1.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandShooter1.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandShooter1.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandShooter1.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandShooter2.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandShooter2.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandShooter2.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandShooter2.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandShooter2.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.SandTunic.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.SandTunic.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.SandTunic.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.SandTunic.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.SandTunic.boots,Speed,1
+FantasyHeroes.Thrones.Armor.SandWarrior.vest,HealthMax,15
+FantasyHeroes.Thrones.Armor.SandWarrior.vest,Blocking,3
+FantasyHeroes.Thrones.Armor.SandWarrior.gloves,Damage,2
+FantasyHeroes.Thrones.Armor.SandWarrior.gloves,Speed,0.5
+FantasyHeroes.Thrones.Armor.SandWarrior.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandWarrior1.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandWarrior1.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandWarrior1.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandWarrior1.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandWarrior1.boots,Speed,1
+FantasyHeroes.SandLords.Armor.SandWarrior2.vest,HealthMax,15
+FantasyHeroes.SandLords.Armor.SandWarrior2.vest,Blocking,3
+FantasyHeroes.SandLords.Armor.SandWarrior2.gloves,Damage,2
+FantasyHeroes.SandLords.Armor.SandWarrior2.gloves,Speed,0.5
+FantasyHeroes.SandLords.Armor.SandWarrior2.boots,Speed,1
+FantasyHeroes.Christmas.Armor.Santa1.vest,HealthMax,15
+FantasyHeroes.Christmas.Armor.Santa1.vest,Blocking,3
+FantasyHeroes.Christmas.Armor.Santa1.gloves,Damage,2
+FantasyHeroes.Christmas.Armor.Santa1.gloves,Speed,0.5
+FantasyHeroes.Christmas.Armor.Santa1.boots,Speed,1
+UndeadHeroes.Christmas.Armor.Santa1.vest,HealthMax,15
+UndeadHeroes.Christmas.Armor.Santa1.vest,Blocking,3
+UndeadHeroes.Christmas.Armor.Santa1.gloves,Damage,2
+UndeadHeroes.Christmas.Armor.Santa1.gloves,Speed,0.5
+UndeadHeroes.Christmas.Armor.Santa1.boots,Speed,1
+FantasyHeroes.Christmas.Armor.Santa2.vest,HealthMax,15
+FantasyHeroes.Christmas.Armor.Santa2.vest,Blocking,3
+FantasyHeroes.Christmas.Armor.Santa2.gloves,Damage,2
+FantasyHeroes.Christmas.Armor.Santa2.gloves,Speed,0.5
+FantasyHeroes.Christmas.Armor.Santa2.boots,Speed,1
+UndeadHeroes.Christmas.Armor.Santa2.vest,HealthMax,15
+UndeadHeroes.Christmas.Armor.Santa2.vest,Blocking,3
+UndeadHeroes.Christmas.Armor.Santa2.gloves,Damage,2
+UndeadHeroes.Christmas.Armor.Santa2.gloves,Speed,0.5
+UndeadHeroes.Christmas.Armor.Santa2.boots,Speed,1
+FantasyHeroes.Christmas.Armor.SantaHelper.vest,HealthMax,15
+FantasyHeroes.Christmas.Armor.SantaHelper.vest,Blocking,3
+FantasyHeroes.Christmas.Armor.SantaHelper.gloves,Damage,2
+FantasyHeroes.Christmas.Armor.SantaHelper.gloves,Speed,0.5
+FantasyHeroes.Christmas.Armor.SantaHelper.boots,Speed,1
+UndeadHeroes.Christmas.Armor.SantaHelper.vest,HealthMax,15
+UndeadHeroes.Christmas.Armor.SantaHelper.vest,Blocking,3
+UndeadHeroes.Christmas.Armor.SantaHelper.gloves,Damage,2
+UndeadHeroes.Christmas.Armor.SantaHelper.gloves,Speed,0.5
+UndeadHeroes.Christmas.Armor.SantaHelper.boots,Speed,1
+Extensions.Epic.Armor.ScintillateOutfit.vest,HealthMax,15
+Extensions.Epic.Armor.ScintillateOutfit.vest,Blocking,3
+Extensions.Epic.Armor.ScintillateOutfit.gloves,Damage,2
+Extensions.Epic.Armor.ScintillateOutfit.gloves,Speed,0.5
+Extensions.Epic.Armor.ScintillateOutfit.boots,Speed,1
+FantasyHeroes.Basic.Armor.Scout [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Scout [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.Scout [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.Scout [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Scout [Paint].boots,Speed,1
+FantasyHeroes.Basic.Armor.ShamanArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.ShamanArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.ShamanArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.ShamanArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.ShamanArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.SiegeArcherArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.SiegeArcherArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.SiegeArcherArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.SiegeArcherArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.SiegeArcherArmor.boots,Speed,1
+Extensions.Epic.Armor.SilkKingOutfit.vest,HealthMax,15
+Extensions.Epic.Armor.SilkKingOutfit.vest,Blocking,3
+Extensions.Epic.Armor.SilkKingOutfit.gloves,Damage,2
+Extensions.Epic.Armor.SilkKingOutfit.gloves,Speed,0.5
+Extensions.Epic.Armor.SilkKingOutfit.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonArmor1.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonArmor1.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonArmor1.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonArmor1.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonArmor1.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonArmor2.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonArmor2.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonArmor2.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonArmor2.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonArmor2.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonArmor3.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonArmor3.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonArmor3.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonArmor3.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonArmor3.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonArmor4.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonArmor4.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonArmor4.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonArmor4.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonArmor4.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonArmor5.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonArmor5.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonArmor5.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonArmor5.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonArmor5.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonArmor6.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonArmor6.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonArmor6.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonArmor6.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonArmor6.boots,Speed,1
+UndeadHeroes.Skeletons.Armor.SkeletonKing.vest,HealthMax,15
+UndeadHeroes.Skeletons.Armor.SkeletonKing.vest,Blocking,3
+UndeadHeroes.Skeletons.Armor.SkeletonKing.gloves,Damage,2
+UndeadHeroes.Skeletons.Armor.SkeletonKing.gloves,Speed,0.5
+UndeadHeroes.Skeletons.Armor.SkeletonKing.boots,Speed,1
+FantasyHeroes.Basic.Armor.Slave.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Slave.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Slave.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Slave.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Slave.boots,Speed,1
+FantasyHeroes.Basic.Armor.SniperArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.SniperArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.SniperArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.SniperArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.SniperArmor.boots,Speed,1
+Common.Christmas.Armor.SnowMaidenCostume.vest,HealthMax,15
+Common.Christmas.Armor.SnowMaidenCostume.vest,Blocking,3
+Common.Christmas.Armor.SnowMaidenCostume.gloves,Damage,2
+Common.Christmas.Armor.SnowMaidenCostume.gloves,Speed,0.5
+Common.Christmas.Armor.SnowMaidenCostume.boots,Speed,1
+Extensions.Epic.Armor.SoulHeavyArmor.vest,HealthMax,15
+Extensions.Epic.Armor.SoulHeavyArmor.vest,Blocking,3
+Extensions.Epic.Armor.SoulHeavyArmor.gloves,Damage,2
+Extensions.Epic.Armor.SoulHeavyArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.SoulHeavyArmor.boots,Speed,1
+Extensions.Epic.Armor.SpartanArmor.vest,HealthMax,15
+Extensions.Epic.Armor.SpartanArmor.vest,Blocking,3
+Extensions.Epic.Armor.SpartanArmor.gloves,Damage,2
+Extensions.Epic.Armor.SpartanArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.SpartanArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.SpearmanArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.SpearmanArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.SpearmanArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.SpearmanArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.SpearmanArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.SpikedArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.SpikedArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.SpikedArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.SpikedArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.SpikedArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.StormBringerArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.StormBringerArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.StormBringerArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.StormBringerArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.StormBringerArmor.boots,Speed,1
+Extensions.Epic.Armor.StormcallerArmor.vest,HealthMax,15
+Extensions.Epic.Armor.StormcallerArmor.vest,Blocking,3
+Extensions.Epic.Armor.StormcallerArmor.gloves,Damage,2
+Extensions.Epic.Armor.StormcallerArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.StormcallerArmor.boots,Speed,1
+Extensions.Epic.Armor.Strelets.vest,HealthMax,15
+Extensions.Epic.Armor.Strelets.vest,Blocking,3
+Extensions.Epic.Armor.Strelets.gloves,Damage,2
+Extensions.Epic.Armor.Strelets.gloves,Speed,0.5
+Extensions.Epic.Armor.Strelets.boots,Speed,1
+Extensions.Epic.Armor.SunlightRobe.vest,HealthMax,15
+Extensions.Epic.Armor.SunlightRobe.vest,Blocking,3
+Extensions.Epic.Armor.SunlightRobe.gloves,Damage,2
+Extensions.Epic.Armor.SunlightRobe.gloves,Speed,0.5
+Extensions.Epic.Armor.SunlightRobe.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampElder.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampElder.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampElder.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampElder.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampElder.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampHealer1.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampHealer1.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampHealer1.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampHealer1.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampHealer1.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampHealer2.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampHealer2.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampHealer2.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampHealer2.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampHealer2.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampMage1.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampMage1.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampMage1.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampMage1.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampMage1.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampMage2.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampMage2.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampMage2.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampMage2.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampMage2.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampShooter1.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampShooter1.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampShooter1.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampShooter1.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampShooter1.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampShooter2.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampShooter2.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampShooter2.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampShooter2.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampShooter2.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampWarrior1.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampWarrior1.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampWarrior1.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampWarrior1.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampWarrior1.boots,Speed,1
+FantasyHeroes.SwampLords.Armor.SwampWarrior2.vest,HealthMax,15
+FantasyHeroes.SwampLords.Armor.SwampWarrior2.vest,Blocking,3
+FantasyHeroes.SwampLords.Armor.SwampWarrior2.gloves,Damage,2
+FantasyHeroes.SwampLords.Armor.SwampWarrior2.gloves,Speed,0.5
+FantasyHeroes.SwampLords.Armor.SwampWarrior2.boots,Speed,1
+Extensions.Epic.Armor.SweetnessDress.vest,HealthMax,15
+Extensions.Epic.Armor.SweetnessDress.vest,Blocking,3
+Extensions.Epic.Armor.SweetnessDress.gloves,Damage,2
+Extensions.Epic.Armor.SweetnessDress.gloves,Speed,0.5
+Extensions.Epic.Armor.SweetnessDress.boots,Speed,1
+Extensions.Epic.Armor.SweetnessDressTypeB.vest,HealthMax,15
+Extensions.Epic.Armor.SweetnessDressTypeB.vest,Blocking,3
+Extensions.Epic.Armor.SweetnessDressTypeB.gloves,Damage,2
+Extensions.Epic.Armor.SweetnessDressTypeB.gloves,Speed,0.5
+Extensions.Epic.Armor.SweetnessDressTypeB.boots,Speed,1
+Extensions.Epic.Armor.SweetnessDressTypeC.vest,HealthMax,15
+Extensions.Epic.Armor.SweetnessDressTypeC.vest,Blocking,3
+Extensions.Epic.Armor.SweetnessDressTypeC.gloves,Damage,2
+Extensions.Epic.Armor.SweetnessDressTypeC.gloves,Speed,0.5
+Extensions.Epic.Armor.SweetnessDressTypeC.boots,Speed,1
+Extensions.Epic.Armor.TechnomancerArmor.vest,HealthMax,15
+Extensions.Epic.Armor.TechnomancerArmor.vest,Blocking,3
+Extensions.Epic.Armor.TechnomancerArmor.gloves,Damage,2
+Extensions.Epic.Armor.TechnomancerArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.TechnomancerArmor.boots,Speed,1
+Extensions.Epic.Armor.TennoHeavyArmor.vest,HealthMax,15
+Extensions.Epic.Armor.TennoHeavyArmor.vest,Blocking,3
+Extensions.Epic.Armor.TennoHeavyArmor.gloves,Damage,2
+Extensions.Epic.Armor.TennoHeavyArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.TennoHeavyArmor.boots,Speed,1
+Extensions.Epic.Armor.TerraArmor.vest,HealthMax,15
+Extensions.Epic.Armor.TerraArmor.vest,Blocking,3
+Extensions.Epic.Armor.TerraArmor.gloves,Damage,2
+Extensions.Epic.Armor.TerraArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.TerraArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.ThiefArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.ThiefArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.ThiefArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.ThiefArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.ThiefArmor.boots,Speed,1
+Extensions.Epic.Armor.ThunderguardArmor.vest,HealthMax,15
+Extensions.Epic.Armor.ThunderguardArmor.vest,Blocking,3
+Extensions.Epic.Armor.ThunderguardArmor.gloves,Damage,2
+Extensions.Epic.Armor.ThunderguardArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.ThunderguardArmor.boots,Speed,1
+UndeadHeroes.Furry.Armor.TribalLoincloth.vest,HealthMax,15
+UndeadHeroes.Furry.Armor.TribalLoincloth.vest,Blocking,3
+UndeadHeroes.Furry.Armor.TribalLoincloth.gloves,Damage,2
+UndeadHeroes.Furry.Armor.TribalLoincloth.gloves,Speed,0.5
+UndeadHeroes.Furry.Armor.TribalLoincloth.boots,Speed,1
+Extensions.Epic.Armor.UncleSamOutfit.vest,HealthMax,15
+Extensions.Epic.Armor.UncleSamOutfit.vest,Blocking,3
+Extensions.Epic.Armor.UncleSamOutfit.gloves,Damage,2
+Extensions.Epic.Armor.UncleSamOutfit.gloves,Speed,0.5
+Extensions.Epic.Armor.UncleSamOutfit.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants1.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants1.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants1.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants1.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants1.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants10.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants10.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants10.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants10.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants10.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants2.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants2.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants2.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants2.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants2.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants3.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants3.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants3.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants3.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants3.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants4.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants4.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants4.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants4.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants4.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants5.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants5.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants5.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants5.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants5.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants6.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants6.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants6.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants6.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants6.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants7.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants7.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants7.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants7.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants7.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants8.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants8.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants8.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants8.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants8.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.Underpants9.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.Underpants9.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.Underpants9.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.Underpants9.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.Underpants9.boots,Speed,1
+Extensions.Epic.Armor.ViciousArmor.vest,HealthMax,15
+Extensions.Epic.Armor.ViciousArmor.vest,Blocking,3
+Extensions.Epic.Armor.ViciousArmor.gloves,Damage,2
+Extensions.Epic.Armor.ViciousArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.ViciousArmor.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingFurArmor.vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingFurArmor.vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingFurArmor.gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingFurArmor.gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingFurArmor.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingLightArmor1.vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingLightArmor1.vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingLightArmor1.gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingLightArmor1.gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingLightArmor1.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingLightArmor2.vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingLightArmor2.vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingLightArmor2.gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingLightArmor2.gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingLightArmor2.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingLightArmor3.vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingLightArmor3.vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingLightArmor3.gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingLightArmor3.gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingLightArmor3.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingRoughArmor1.vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingRoughArmor1.vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingRoughArmor1.gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingRoughArmor1.gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingRoughArmor1.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingRoughArmor2.vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingRoughArmor2.vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingRoughArmor2.gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingRoughArmor2.gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingRoughArmor2.boots,Speed,1
+FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint].vest,HealthMax,15
+FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint].vest,Blocking,3
+FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint].gloves,Damage,2
+FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint].gloves,Speed,0.5
+FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint].boots,Speed,1
+Extensions.Epic.Armor.Vityaz.vest,HealthMax,15
+Extensions.Epic.Armor.Vityaz.vest,Blocking,3
+Extensions.Epic.Armor.Vityaz.gloves,Damage,2
+Extensions.Epic.Armor.Vityaz.gloves,Speed,0.5
+Extensions.Epic.Armor.Vityaz.boots,Speed,1
+Extensions.Epic.Armor.Voivode.vest,HealthMax,15
+Extensions.Epic.Armor.Voivode.vest,Blocking,3
+Extensions.Epic.Armor.Voivode.gloves,Damage,2
+Extensions.Epic.Armor.Voivode.gloves,Speed,0.5
+Extensions.Epic.Armor.Voivode.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.Wanderer.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.Wanderer.vest,Blocking,3
+FantasyHeroes.Basic.Armor.Wanderer.gloves,Damage,2
+FantasyHeroes.Basic.Armor.Wanderer.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.Wanderer.boots,Speed,1
+FantasyHeroes.Basic.Armor.WarlockArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.WarlockArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.WarlockArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.WarlockArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.WarlockArmor.boots,Speed,1
+UndeadHeroes.Furry.Armor.WarriorLoincloth.vest,HealthMax,15
+UndeadHeroes.Furry.Armor.WarriorLoincloth.vest,Blocking,3
+UndeadHeroes.Furry.Armor.WarriorLoincloth.gloves,Damage,2
+UndeadHeroes.Furry.Armor.WarriorLoincloth.gloves,Speed,0.5
+UndeadHeroes.Furry.Armor.WarriorLoincloth.boots,Speed,1
+FantasyHeroes.Basic.Armor.WaterAdept.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.WaterAdept.vest,Blocking,3
+FantasyHeroes.Basic.Armor.WaterAdept.gloves,Damage,2
+FantasyHeroes.Basic.Armor.WaterAdept.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.WaterAdept.boots,Speed,1
+Extensions.Epic.Armor.WaterElementalArmor.vest,HealthMax,15
+Extensions.Epic.Armor.WaterElementalArmor.vest,Blocking,3
+Extensions.Epic.Armor.WaterElementalArmor.gloves,Damage,2
+Extensions.Epic.Armor.WaterElementalArmor.gloves,Speed,0.5
+Extensions.Epic.Armor.WaterElementalArmor.boots,Speed,1
+FantasyHeroes.Basic.Armor.WaterWizardArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.WaterWizardArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.WaterWizardArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.WaterWizardArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.WaterWizardArmor.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.WhiteGuardian.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.WhiteGuardian.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.WhiteGuardian.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.WhiteGuardian.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.WhiteGuardian.boots,Speed,1
+Extensions.AbandonedWorkshop.Armor.WhiteKittyRobe.vest,HealthMax,15
+Extensions.AbandonedWorkshop.Armor.WhiteKittyRobe.vest,Blocking,3
+Extensions.AbandonedWorkshop.Armor.WhiteKittyRobe.gloves,Damage,2
+Extensions.AbandonedWorkshop.Armor.WhiteKittyRobe.gloves,Speed,0.5
+Extensions.AbandonedWorkshop.Armor.WhiteKittyRobe.boots,Speed,1
+FantasyHeroes.Basic.Armor.WitchArmor.vest,HealthMax,15
+FantasyHeroes.Basic.Armor.WitchArmor.vest,Blocking,3
+FantasyHeroes.Basic.Armor.WitchArmor.gloves,Damage,2
+FantasyHeroes.Basic.Armor.WitchArmor.gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.WitchArmor.boots,Speed,1
+Common.Halloween.Armor.WitchCostume.vest,HealthMax,15
+Common.Halloween.Armor.WitchCostume.vest,Blocking,3
+Common.Halloween.Armor.WitchCostume.gloves,Damage,2
+Common.Halloween.Armor.WitchCostume.gloves,Speed,0.5
+Common.Halloween.Armor.WitchCostume.boots,Speed,1
+FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint].vest,HealthMax,15
+FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint].vest,Blocking,3
+FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint].gloves,Damage,2
+FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint].gloves,Speed,0.5
+FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint].boots,Speed,1
+UndeadHeroes.Zombies.Armor.ZombieClothes1.vest,HealthMax,15
+UndeadHeroes.Zombies.Armor.ZombieClothes1.vest,Blocking,3
+UndeadHeroes.Zombies.Armor.ZombieClothes1.gloves,Damage,2
+UndeadHeroes.Zombies.Armor.ZombieClothes1.gloves,Speed,0.5
+UndeadHeroes.Zombies.Armor.ZombieClothes1.boots,Speed,1
+UndeadHeroes.Zombies.Armor.ZombieClothes2.vest,HealthMax,15
+UndeadHeroes.Zombies.Armor.ZombieClothes2.vest,Blocking,3
+UndeadHeroes.Zombies.Armor.ZombieClothes2.gloves,Damage,2
+UndeadHeroes.Zombies.Armor.ZombieClothes2.gloves,Speed,0.5
+UndeadHeroes.Zombies.Armor.ZombieClothes2.boots,Speed,1
+UndeadHeroes.Zombies.Armor.ZombieClothes3.vest,HealthMax,15
+UndeadHeroes.Zombies.Armor.ZombieClothes3.vest,Blocking,3
+UndeadHeroes.Zombies.Armor.ZombieClothes3.gloves,Damage,2
+UndeadHeroes.Zombies.Armor.ZombieClothes3.gloves,Speed,0.5
+UndeadHeroes.Zombies.Armor.ZombieClothes3.boots,Speed,1
+UndeadHeroes.Zombies.Armor.ZombieClothes4.vest,HealthMax,15
+UndeadHeroes.Zombies.Armor.ZombieClothes4.vest,Blocking,3
+UndeadHeroes.Zombies.Armor.ZombieClothes4.gloves,Damage,2
+UndeadHeroes.Zombies.Armor.ZombieClothes4.gloves,Speed,0.5
+UndeadHeroes.Zombies.Armor.ZombieClothes4.boots,Speed,1
+UndeadHeroes.Zombies.Armor.ZombieClothes5.vest,HealthMax,15
+UndeadHeroes.Zombies.Armor.ZombieClothes5.vest,Blocking,3
+UndeadHeroes.Zombies.Armor.ZombieClothes5.gloves,Damage,2
+UndeadHeroes.Zombies.Armor.ZombieClothes5.gloves,Speed,0.5
+UndeadHeroes.Zombies.Armor.ZombieClothes5.boots,Speed,1
+FantasyHeroes.Basic.Helmet.AdvancedDipperHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.AgileHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.AmateurDipperHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.AmateurDodgeHat,HealthMax,8
+Extensions.Epic.Helmet.AngelicRibbon [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.ArcaneHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.ArcherHat,HealthMax,8
+UndeadHeroes.Zombies.Helmet.Arrows [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.AssassinHood [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.AsteraHood,HealthMax,8
+UndeadHeroes.Zombies.Helmet.Axe [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.BaboonMask,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.BattleguardHelm,HealthMax,8
+Extensions.Epic.Helmet.BennuEarpiece [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.BerserkHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.BishopHat [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.BlacksmithHeadband,HealthMax,8
+Extensions.Epic.Helmet.BlazewingHelmet,HealthMax,8
+Extensions.Epic.Helmet.BlessedHalo [FullHair],HealthMax,8
+Extensions.Epic.Helmet.BloodiedSpiritHelmet,HealthMax,8
+Extensions.Style.Helmet.Blossom [Paint] [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.BootlegHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.BowmanHat [Paint],HealthMax,8
+UndeadHeroes.Zombies.Helmet.Brainz [Paint] [FullHair],HealthMax,8
+Extensions.Style.Helmet.BunnyEarsA1 [Paint] [FullHair],HealthMax,8
+Extensions.Style.Helmet.BunnyEarsA2 [Paint] [FullHair],HealthMax,8
+Extensions.Style.Helmet.BunnyEarsB1 [Paint] [FullHair],HealthMax,8
+Extensions.Style.Helmet.BunnyEarsB2 [Paint] [FullHair],HealthMax,8
+Extensions.Style.Helmet.BunnyPin [Paint] [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.CardinalHat [Paint],HealthMax,8
+Extensions.Epic.Helmet.CataclysmHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.CataphractHelm [Paint],HealthMax,8
+Extensions.Style.Helmet.CatEars [Paint] [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.ChampionHelm,HealthMax,8
+Common.Chrismas.Helmet.ChristmasHat [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.ClericHood [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.ClothHeadband,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.CommanderOrcHelm,HealthMax,8
+Extensions.Style.Helmet.Crown [Paint] [FullHair],HealthMax,8
+Extensions.Epic.Helmet.CrownOfFortune [FullHair],HealthMax,8
+Extensions.Epic.Helmet.CrownOfJerome [FullHair],HealthMax,8
+FantasyHeroes.Knights.Helmet.CrusaderHelm [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.CrystalCrown,HealthMax,8
+UndeadHeroes.Zombies.Helmet.Dagger [FullHair],HealthMax,8
+Extensions.Epic.Helmet.DarkLordHelmet,HealthMax,8
+FantasyHeroes.Thrones.Helmet.DarkMountainHelm [Paint],HealthMax,8
+Common.Halloween.Helmet.DeathHood,HealthMax,8
+Common.Halloween.Helmet.DeerHorns [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.DeserterBandage [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.DestroyerHelm [Paint],HealthMax,8
+Extensions.Epic.Helmet.DevotionHat,HealthMax,8
+Extensions.Style.Helmet.Diadem [FullHair],HealthMax,8
+Extensions.Epic.Helmet.DivinePreciousCrown [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.DraconicHelmet,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.DrifterForehead,HealthMax,8
+FantasyHeroes.Basic.Helmet.DruidHat [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.DwellerHood [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood,HealthMax,8
+Extensions.Epic.Helmet.ElementalArcherCrown [FullHair],HealthMax,8
+Extensions.Epic.Helmet.ElementalHelmet,HealthMax,8
+Extensions.Epic.Helmet.ElementalMageHood,HealthMax,8
+Extensions.Epic.Helmet.ElementalMageHood2,HealthMax,8
+FantasyHeroes.Knights.Helmet.EliteKnightHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.EliteTowerKeeperHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.EnchantedScarletHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.EnforcedHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.ExpertBowmanHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.ExpertHunterHat,HealthMax,8
+Extensions.Epic.Helmet.EyeguardOfTorment [FullHair],HealthMax,8
+FantasyHeroes.Knights.Helmet.FalconIronHelm,HealthMax,8
+Extensions.Epic.Helmet.FallenlordMask,HealthMax,8
+FantasyHeroes.Basic.Helmet.FireAdeptHood,HealthMax,8
+Extensions.Epic.Helmet.FireBeastHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.FireWizardHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.FlameSalamanderHelm,HealthMax,8
+Extensions.Epic.Helmet.FlexureHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.ForestKeeperHat,HealthMax,8
+Extensions.Epic.Helmet.ForestWhispererHat,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.FrozenMightHat,HealthMax,8
+UndeadHeroes.Furry.Helmet.FurryEars1 [Paint],HealthMax,8
+UndeadHeroes.Furry.Helmet.FurryEars2 [Paint],HealthMax,8
+UndeadHeroes.Furry.Helmet.FurryEars3 [Paint],HealthMax,8
+UndeadHeroes.Furry.Helmet.FurryEars4 [Paint],HealthMax,8
+Extensions.Epic.Helmet.GearOfInfinity [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.GenieTurban,HealthMax,8
+FantasyHeroes.Basic.Helmet.GladiatorHelm1,HealthMax,8
+FantasyHeroes.Basic.Helmet.GladiatorHelm2,HealthMax,8
+Extensions.Epic.Helmet.GrimReaperHood,HealthMax,8
+FantasyHeroes.Knights.Helmet.GuardHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.GuardHelm1 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.GuardHelm2 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.GuardHelm3 [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.GuildHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.GypsyHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.HalberdierHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.HalfmoonHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.HawkHelm,HealthMax,8
+Extensions.Epic.Helmet.HeavenlyHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.HeavyHelm [Paint],HealthMax,8
+Extensions.Epic.Helmet.HelmetOfCorruption,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfCorruptionTypeB,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfCryingDemon,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfEndingLight,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfFadedHeavens,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfForgottenFoe [FullHair],HealthMax,8
+Extensions.Epic.Helmet.HelmetOfImmortality,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfImmortalityTypeB,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfLoneWolf,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfRagingCrux,HealthMax,8
+Extensions.Epic.Helmet.HelmetOfRelentlessNightmares [FullHair],HealthMax,8
+Extensions.Epic.Helmet.HelmOfAncestors [FullHair],HealthMax,8
+Extensions.Epic.Helmet.HelmOfSunwalker,HealthMax,8
+FantasyHeroes.Basic.Helmet.HermitHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.HermitHood [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.HighCrusaderHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.HighKnightHelm,HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns1 [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns1 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns1 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns10 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns11 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns12 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns13 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns14 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns15[Paint] [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns2 [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns2 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns2 [Paint] [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns3 [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns3 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns3 [Paint] [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns4 [FullHair],HealthMax,8
+UndeadHeroes.Horns (FM).Helmet.Horns4 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns4 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns5 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns6 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns7 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns8 [Paint] [FullHair],HealthMax,8
+Extensions.Horns (Style).Helmet.Horns9 [Paint] [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.HunterHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.HunterHat1,HealthMax,8
+FantasyHeroes.Basic.Helmet.HunterHat2,HealthMax,8
+FantasyHeroes.Basic.Helmet.HunterHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.IceWizardHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.Imperial TemplarHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.ImperialKnightHelm,HealthMax,8
+Extensions.Epic.Helmet.IncorruptibleHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.InquisitorHat1 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.InquisitorHat2 [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.IronHeavyHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.IronHunterHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.JesterHat,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.KingCrown,HealthMax,8
+FantasyHeroes.Basic.Helmet.KnightHelm [Paint],HealthMax,8
+Extensions.Epic.Helmet.Knyaz,HealthMax,8
+Extensions.Epic.Helmet.Kopeynik,HealthMax,8
+FantasyHeroes.Basic.Helmet.LandsknechtHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.LeatherCap,HealthMax,8
+FantasyHeroes.Basic.Helmet.LeatherHelm,HealthMax,8
+Extensions.Epic.Helmet.Luchnik,HealthMax,8
+Extensions.Epic.Helmet.LushKnightHelmet,HealthMax,8
+Extensions.Epic.Helmet.MagnetismHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.ManticoreHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.MarauderHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.MarkedScoutOrcHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.MarketCommanderOrcHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.MasterDodgeHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.MedievalBartender [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.MedievalCook [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.MercenaryHelm1 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.MercenaryHelm2 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.MilitiamanHelmet1 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.MilitiamanHelmet2 [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.MinerHelmet,HealthMax,8
+FantasyHeroes.Thrones.Helmet.MountainHelm [Paint],HealthMax,8
+UndeadHeroes.Mummies.Helmet.MummyHat1,HealthMax,8
+UndeadHeroes.Mummies.Helmet.MummyHat2,HealthMax,8
+UndeadHeroes.Mummies.Helmet.MummyHat3,HealthMax,8
+UndeadHeroes.Mummies.Helmet.MummyHat4,HealthMax,8
+FantasyHeroes.Basic.Helmet.NativeVillagerHeadband01 [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.NativeVillagerHeadband02 [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.NecromancerHood,HealthMax,8
+Extensions.Epic.Helmet.NemeanHelmet,HealthMax,8
+FantasyHeroes.Samurai.Helmet.NinjaHelm1 [Paint],HealthMax,8
+FantasyHeroes.Samurai.Helmet.NinjaHelm2 [Paint],HealthMax,8
+FantasyHeroes.Samurai.Helmet.NinjaHelm3 [Paint],HealthMax,8
+Extensions.Epic.Helmet.NobleKingCrown [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.NordicHelm,HealthMax,8
+Extensions.Epic.Helmet.NorthmanHelmet,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.NosrossArcherHelm,HealthMax,8
+Extensions.Epic.Helmet.NunVeil,HealthMax,8
+Extensions.Epic.Helmet.NunVeilTypeB,HealthMax,8
+Common.Chrismas.Helmet.NutcrackerHat,HealthMax,8
+UndeadHeroes.Zombies.Helmet.OldCap,HealthMax,8
+UndeadHeroes.Skeletons.Helmet.OldGladiatorHelm,HealthMax,8
+UndeadHeroes.Skeletons.Helmet.OldHornHelm,HealthMax,8
+UndeadHeroes.Skeletons.Helmet.OldLeatherHelm,HealthMax,8
+UndeadHeroes.Skeletons.Helmet.OldPirateHat,HealthMax,8
+Extensions.Epic.Helmet.OminousHelmet,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.OzeriasHood,HealthMax,8
+FantasyHeroes.Basic.Helmet.PaladinHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.PathfinderHat [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.PathfinderHood,HealthMax,8
+FantasyHeroes.Basic.Helmet.PeasantCap,HealthMax,8
+Extensions.Epic.Helmet.PersianArcherHelmet,HealthMax,8
+Extensions.Epic.Helmet.PersianDuelistHelmet,HealthMax,8
+Extensions.Epic.Helmet.PersianLancerHelmet,HealthMax,8
+Extensions.Epic.Helmet.PersianWarriorHelmet,HealthMax,8
+Extensions.Epic.Helmet.PhobosHelmet,HealthMax,8
+Extensions.Epic.Helmet.PorcelainMask [FullHair],HealthMax,8
+Extensions.Epic.Helmet.PrincessTiara [FullHair],HealthMax,8
+Common.Halloween.Helmet.PumpkinHead,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.QueenCrown,HealthMax,8
+FantasyHeroes.Basic.Helmet.RangerHat [Paint],HealthMax,8
+Extensions.Epic.Helmet.Ratnik,HealthMax,8
+UndeadHeroes.Skeletons.Helmet.RedBandana [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.RedKittyHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.RedLunarHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.RenovatedHelm,HealthMax,8
+Extensions.Style.Helmet.Ribbon1 [FullHair],HealthMax,8
+Extensions.Style.Helmet.Ribbon1 [Paint] [FullHair],HealthMax,8
+Extensions.Style.Helmet.Ribbon2 [FullHair],HealthMax,8
+Extensions.Style.Helmet.Ribbon2 [Paint] [FullHair],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.RobberCap,HealthMax,8
+Extensions.Style.Helmet.Rocky [Paint] [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.RoyalArcherHat,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.RoyalHeaddress,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.SacredWolfyHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.SaintPatrickHat,HealthMax,8
+FantasyHeroes.Samurai.Helmet.SamuraiElderHelm,HealthMax,8
+FantasyHeroes.Samurai.Helmet.SamuraiHelm1,HealthMax,8
+FantasyHeroes.Samurai.Helmet.SamuraiHelm2,HealthMax,8
+FantasyHeroes.Samurai.Helmet.SamuraiHelm3,HealthMax,8
+FantasyHeroes.SandLords.Helmet.SandElderTurban,HealthMax,8
+FantasyHeroes.SandLords.Helmet.SandHealerHood,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.SandHijab,HealthMax,8
+FantasyHeroes.SandLords.Helmet.SandShooterTurban,HealthMax,8
+FantasyHeroes.SandLords.Helmet.SandWarriorHelm1,HealthMax,8
+FantasyHeroes.SandLords.Helmet.SandWarriorHelm2,HealthMax,8
+FantasyHeroes.Christmas.Helmet.SantaHat,HealthMax,8
+UndeadHeroes.Christmas.Helmet.SantaHat,HealthMax,8
+FantasyHeroes.Christmas.Helmet.SantaHelperHat1,HealthMax,8
+UndeadHeroes.Christmas.Helmet.SantaHelperHat1,HealthMax,8
+FantasyHeroes.Christmas.Helmet.SantaHelperHat2,HealthMax,8
+UndeadHeroes.Christmas.Helmet.SantaHelperHat2,HealthMax,8
+FantasyHeroes.Christmas.Helmet.SantaHelperHat3,HealthMax,8
+UndeadHeroes.Christmas.Helmet.SantaHelperHat3,HealthMax,8
+Extensions.Epic.Helmet.ScintillateCrown,HealthMax,8
+FantasyHeroes.Basic.Helmet.ScoutHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.ScoutOrcHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.ShamanHelm,HealthMax,8
+FantasyHeroes.SwampLords.Helmet.ShamanMask [FullHair],HealthMax,8
+FantasyHeroes.SwampLords.Helmet.ShamanMask2 [FullHair],HealthMax,8
+FantasyHeroes.SwampLords.Helmet.ShamanMask3 [FullHair],HealthMax,8
+FantasyHeroes.Knights.Helmet.SharpHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.SiegeArcherHelm [Paint],HealthMax,8
+Extensions.Epic.Helmet.SilkKingGear [FullHair],HealthMax,8
+UndeadHeroes.Skeletons.Helmet.SkeletonBrains [FullHair],HealthMax,8
+UndeadHeroes.Skeletons.Helmet.SkeletonKing [FullHair],HealthMax,8
+Extensions.Style.Helmet.SkullPin [Paint] [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.SlaveHeadband [FullHair],HealthMax,8
+Common.Chrismas.Helmet.SnowMaiden [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.SnperHood,HealthMax,8
+Extensions.Epic.Helmet.SoulHeavyHelm,HealthMax,8
+Extensions.Epic.Helmet.SpartanHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.SpearmanHelm1,HealthMax,8
+FantasyHeroes.Basic.Helmet.SpearmanHelm2,HealthMax,8
+FantasyHeroes.Basic.Helmet.SteelHelm [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.SteelPotHelm,HealthMax,8
+UndeadHeroes.Zombies.Helmet.Stiches [FullHair],HealthMax,8
+Extensions.Epic.Helmet.StormcallerHelmet [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.StrawHat,HealthMax,8
+Extensions.Epic.Helmet.Strelets,HealthMax,8
+Extensions.Epic.Helmet.SunlightHelmet,HealthMax,8
+FantasyHeroes.SwampLords.Helmet.SwampLordMask1 [FullHair],HealthMax,8
+FantasyHeroes.SwampLords.Helmet.SwampLordMask2  [FullHair],HealthMax,8
+Extensions.Epic.Helmet.SweetnessRibbon [FullHair],HealthMax,8
+Extensions.Epic.Helmet.TechnomancerHelmet,HealthMax,8
+Extensions.Epic.Helmet.TennoCrown [FullHair],HealthMax,8
+Extensions.Epic.Helmet.TerraHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.ThiefHelm [Paint],HealthMax,8
+Extensions.Epic.Helmet.ThunderguardHelmet,HealthMax,8
+Extensions.Epic.Helmet.UncleSamHat [FullHair],HealthMax,8
+Extensions.Epic.Helmet.ViciousHelmet,HealthMax,8
+FantasyHeroes.Vikings.Helmet.VikingIronHelm1,HealthMax,8
+FantasyHeroes.Vikings.Helmet.VikingIronHelm2,HealthMax,8
+FantasyHeroes.Vikings.Helmet.VikingIronHelm3,HealthMax,8
+FantasyHeroes.Vikings.Helmet.VikingLeatherHelm,HealthMax,8
+Extensions.Epic.Helmet.VillainCrown [FullHair],HealthMax,8
+FantasyHeroes.Basic.Helmet.VisorKnightHelm [Paint],HealthMax,8
+Extensions.Epic.Helmet.Vityaz,HealthMax,8
+Extensions.Epic.Helmet.Voivode,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm,HealthMax,8
+FantasyHeroes.Basic.Helmet.WarlockHood,HealthMax,8
+FantasyHeroes.Knights.Helmet.WarriorHelm [Paint],HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.WarriorOrcHelm,HealthMax,8
+Extensions.Epic.Helmet.WaterElementalHelmet,HealthMax,8
+FantasyHeroes.Basic.Helmet.WaterWizardHelm,HealthMax,8
+Extensions.AbandonedWorkshop.Helmet.WhiteKittyHood,HealthMax,8
+Common.Halloween.Helmet.WitchHat,HealthMax,8
+FantasyHeroes.Basic.Helmet.WitchHat [Paint],HealthMax,8
+FantasyHeroes.Basic.Helmet.WitchHunterHat [Paint],HealthMax,8
+FantasyHeroes.Basic.Shield.AdvancedGladiatorShield,Blocking,12
+FantasyHeroes.Basic.Shield.AdvancedKnightShield,Blocking,12
+FantasyHeroes.Basic.Shield.BasicIronShield,Blocking,12
+Extensions.Patreon.Shield.BattleShield,Blocking,12
+Extensions.Epic.Shield.BlazeShield,Blocking,12
+Extensions.Epic.Shield.BloodiedSpiritShield,Blocking,12
+FantasyHeroes.Knights.Shield.BlueKnightShield,Blocking,12
+FantasyHeroes.Basic.Shield.BottleBomb,Blocking,12
+Extensions.Patreon.Shield.BulkyShield,Blocking,12
+Common.Christmas.Shield.CaramelShield,Blocking,12
+FantasyHeroes.Basic.Shield.CardinalBook,Blocking,12
+Extensions.Epic.Shield.CataclysmShield,Blocking,12
+FantasyHeroes.Basic.Shield.CataphractShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.CebertShield,Blocking,12
+FantasyHeroes.Basic.Shield.ChampionShield,Blocking,12
+FantasyHeroes.Basic.Shield.CrusaderShield,Blocking,12
+FantasyHeroes.Knights.Shield.CrusaderShield,Blocking,12
+FantasyHeroes.Basic.Shield.DarkKnightShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.DragoniteShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.DreytonShield,Blocking,12
+Extensions.Epic.Shield.ElementalShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.EliteGuardShield,Blocking,12
+Extensions.Epic.Shield.FireBeastShield,Blocking,12
+FantasyHeroes.Basic.Shield.FireKnightShield,Blocking,12
+FantasyHeroes.Basic.Shield.FireWarriorShield,Blocking,12
+FantasyHeroes.Basic.Shield.GladiatorShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.GoldenShield,Blocking,12
+FantasyHeroes.Thrones.Shield.GoldLionShield,Blocking,12
+Extensions.Patreon.Shield.GreatShield,Blocking,12
+FantasyHeroes.Basic.Shield.GreyKnightShield,Blocking,12
+FantasyHeroes.Basic.Shield.GuardShield,Blocking,12
+FantasyHeroes.Basic.Shield.GuardShield1,Blocking,12
+FantasyHeroes.Basic.Shield.GuardShield2,Blocking,12
+Extensions.AbandonedWorkshop.Shield.GuildShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.HeavyWoodenShield,Blocking,12
+FantasyHeroes.Basic.Shield.HermitLamp,Blocking,12
+Extensions.AbandonedWorkshop.Shield.HexWoodenShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.HighCrusaderShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.HighGuardianShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.HighKnightShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.ImperialKnightShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.ImperialTemplarShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.IronHunterShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.IronShield,Blocking,12
+FantasyHeroes.Vikings.Shield.IronShield1,Blocking,12
+FantasyHeroes.Vikings.Shield.IronShield2,Blocking,12
+FantasyHeroes.Vikings.Shield.IronShield3,Blocking,12
+FantasyHeroes.Basic.Shield.KiteShield,Blocking,12
+FantasyHeroes.Basic.Shield.KnightShield,Blocking,12
+FantasyHeroes.Basic.Shield.LandsknechtShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.MagicShield,Blocking,12
+FantasyHeroes.Basic.Shield.ManticoreShield,Blocking,12
+FantasyHeroes.Basic.Shield.MilitiamanShield,Blocking,12
+Extensions.Patreon.Shield.MonsterShield,Blocking,12
+FantasyHeroes.Thrones.Shield.MountainShield,Blocking,12
+FantasyHeroes.Basic.Shield.NecromancerShield,Blocking,12
+FantasyHeroes.Samurai.Shield.NinjaShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.NordicShield,Blocking,12
+Extensions.Epic.Shield.ObsidianShield,Blocking,12
+FantasyHeroes.Basic.Shield.OldHeavyShield,Blocking,12
+Extensions.Epic.Shield.OmniShield,Blocking,12
+Extensions.Epic.Shield.OniShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.OrkShield,Blocking,12
+Extensions.Epic.Shield.PersianLancerShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.PlateShield,Blocking,12
+Extensions.Epic.Shield.PorcelainShield,Blocking,12
+FantasyHeroes.Thrones.Shield.RedLionShield,Blocking,12
+Extensions.Patreon.Shield.ReinforcedIronShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.RunicShield,Blocking,12
+Extensions.Epic.Shield.SacredBeastShield,Blocking,12
+Extensions.Epic.Shield.SacredBeastShieldTypeB,Blocking,12
+Extensions.AbandonedWorkshop.Shield.SaintPatrickShield,Blocking,12
+FantasyHeroes.Samurai.Shield.SamuraiShield1,Blocking,12
+FantasyHeroes.Samurai.Shield.SamuraiShield2,Blocking,12
+FantasyHeroes.Samurai.Shield.SamuraiShield3,Blocking,12
+Extensions.Epic.Shield.ShieldOfCollapse,Blocking,12
+Extensions.Epic.Shield.ShieldOfCryingDemon,Blocking,12
+Extensions.Epic.Shield.ShieldOfEndingLight,Blocking,12
+Extensions.Epic.Shield.ShieldOfLoneWolf,Blocking,12
+Extensions.Epic.Shield.ShieldOfRagingCrux,Blocking,12
+Extensions.Epic.Shield.ShieldOfRelentlessNightmares,Blocking,12
+Extensions.Epic.Shield.ShieldOfSincerity,Blocking,12
+Extensions.AbandonedWorkshop.Shield.SilverShield,Blocking,12
+UndeadHeroes.Undead.Shield.SkeletonLeftArmHook,Blocking,12
+UndeadHeroes.Undead.Shield.SkeletonShield1,Blocking,12
+UndeadHeroes.Undead.Shield.SkeletonShield2,Blocking,12
+UndeadHeroes.Undead.Shield.SkeletonShield3,Blocking,12
+Extensions.Epic.Shield.SlavicRoundShield,Blocking,12
+Extensions.Epic.Shield.SlavicTowerShield,Blocking,12
+Extensions.Epic.Shield.SpartanShield,Blocking,12
+FantasyHeroes.Basic.Shield.SpikedShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.SpikeShield,Blocking,12
+FantasyHeroes.Knights.Shield.SteelShield,Blocking,12
+FantasyHeroes.Basic.Shield.SteelTowerShield,Blocking,12
+Extensions.Epic.Shield.StormcallerShield,Blocking,12
+Extensions.Epic.Shield.TennoShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.TitanShield,Blocking,12
+FantasyHeroes.Basic.Shield.TowerShield,Blocking,12
+Extensions.Epic.Shield.UnlimitedShield,Blocking,12
+Extensions.Epic.Shield.VarangianShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.WallKeeperShield,Blocking,12
+FantasyHeroes.Knights.Shield.WarriorShield,Blocking,12
+FantasyHeroes.Basic.Shield.WoodenBuckler,Blocking,12
+FantasyHeroes.Basic.Shield.WoodenShield,Blocking,12
+Extensions.AbandonedWorkshop.Shield.WoodenShield,Blocking,12
+FantasyHeroes.Vikings.Shield.WoodenShield1,Blocking,12
+FantasyHeroes.Vikings.Shield.WoodenShield2,Blocking,12
+FantasyHeroes.Vikings.Shield.WoodenShield3,Blocking,12
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ApprenticeWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ApprenticeWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.AspenStake,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint],Damage,6
+FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint],Speed,1
+Extensions.AbandonedWorkshop.MeleeWeapon1H.AzureStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.AzureStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BalancedAxe,Damage,10
+FantasyHeroes.Knights.MeleeWeapon1H.BalancedSword [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BarbarianAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BarbedClub,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.Bilbo,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.BishopWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.BishopWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.BlacksmithHammer,Damage,9
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BlackSteelAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BlackSteelClub,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BlackSteelHammer,Damage,9
+Extensions.Epic.MeleeWeapon1H.BlazeSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.BlazewingSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BleedingMace,Damage,9
+Extensions.Epic.MeleeWeapon1H.BloodiedSpiritSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BlueWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BlueWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.BoneClub,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.BoneClub,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BroadCurvedSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.Broadsword,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.BrokenSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BrokenSwordTypeA,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BrokenSwordTypeB,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.BrokenSwordTypeC,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.BronzeDagger,Damage,6
+FantasyHeroes.Basic.MeleeWeapon1H.BronzeDagger,Speed,1
+Extensions.Basic.MeleeWeapon1H.Broom,Damage,8
+Extensions.Patreon.MeleeWeapon1H.BulkyHammer,Damage,9
+Common.Christmas.MeleeWeapon1H.CandyHammer,Damage,9
+Extensions.Epic.MeleeWeapon1H.CaneOfTSummoner,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.CardinalWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.CardinalWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.Cleaver,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.ClericWand1,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.ClericWand1,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.ClericWand2,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.ClericWand2,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CommonAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CommonHammer,Damage,9
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CommonMace,Damage,9
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CommonSwordTypeA,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CommonSwordTypeB,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CorruptedEyeStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CorruptedEyeStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.CosmosStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.CosmosStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CrimsonCrossSword,Damage,8
+Extensions.Basic.MeleeWeapon1H.Crowbar,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CrystalClawWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CrystalClawWand,HealthMax,10
+Extensions.Patreon.MeleeWeapon1H.CrystalicStaff,Damage,5
+Extensions.Patreon.MeleeWeapon1H.CrystalicStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.CursedBone,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.CursedStaff,Damage,5
+UndeadHeroes.Undead.MeleeWeapon1H.CursedStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CuttingDagger,Damage,6
+Extensions.AbandonedWorkshop.MeleeWeapon1H.CuttingDagger,Speed,1
+Extensions.Epic.MeleeWeapon1H.DarkLordStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.DarkLordStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.DarkStoneHammer,Damage,9
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DemonArm,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint],Damage,6
+FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint],Speed,1
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DoomWing,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DragoniteHammer,Damage,9
+FantasyHeroes.Basic.MeleeWeapon1H.DreadCleaver,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.DreadCleaver,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DreamcallerRod,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DreamwatcherStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DreamwatcherStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.DrownedGoblinHand,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.DruidWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.DruidWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.DwarvenSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.DwellerWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.DwellerWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EdgyHandleSword,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.EgyptianSword,Damage,8
+FantasyHeroes.SwampLords.MeleeWeapon1H.ElderStaff,Damage,5
+FantasyHeroes.SwampLords.MeleeWeapon1H.ElderStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.ElementalStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.ElementalStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.ElementalSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.ElementalSwordTypeB,Damage,8
+Extensions.Epic.MeleeWeapon1H.ElementalSwordTypeC,Damage,8
+FantasyHeroes.Knights.MeleeWeapon1H.EliteGuardSword [Paint],Damage,8
+FantasyHeroes.Knights.MeleeWeapon1H.EliteKnightSword [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ElvenSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.EmberHarbinger,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EnhancedDagger,Damage,6
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EnhancedDagger,Speed,1
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EnlightenmentStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EnlightenmentStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EpicAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EpicHammer,Damage,9
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EpicSwordTypeA,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.EpicSwordTypeB,Damage,8
+Extensions.Epic.MeleeWeapon1H.FallenlordStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.FallenlordStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.FamilySword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.FineSteelSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.FireAdeptWand1,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.FireAdeptWand1,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.FireAdeptWand2,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.FireAdeptWand2,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.FireBeastBlade,Damage,8
+Extensions.Epic.MeleeWeapon1H.FireBeastCane,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.FireWarriorSword1,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.FireWarriorSword2,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.FireWizardWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.FireWizardWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.FishingRod,Damage,8
+Extensions.Patreon.MeleeWeapon1H.FlameSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.FortuityStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.FortuityStaff,HealthMax,10
+FantasyHeroes.Thrones.MeleeWeapon1H.FreeFolkAxe,Damage,10
+Extensions.Epic.MeleeWeapon1H.FrostbiteSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.GoldenWings,Damage,8
+Extensions.Patreon.MeleeWeapon1H.GreatLance,Damage,11
+Extensions.AbandonedWorkshop.MeleeWeapon1H.GreenCrystalClub,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.GuardianSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.GuardSword1 [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.GuardSword2 [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.GuildSword,Damage,8
+Extensions.Patreon.MeleeWeapon1H.GunLance,Damage,11
+Extensions.AbandonedWorkshop.MeleeWeapon1H.HailstormStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.HailstormStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.HardwoodWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.HardwoodWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.HeavyMace,Damage,9
+FantasyHeroes.Basic.MeleeWeapon1H.HermitWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.HermitWand,HealthMax,10
+Extensions.Basic.MeleeWeapon1H.Hoe,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.HollowAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.HolyGrandstaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.HolyGrandstaff,HealthMax,10
+FantasyHeroes.Thrones.MeleeWeapon1H.HorseLordSickle,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.HunterKnife [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.IceWizardWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.IceWizardWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.InquisitorSword1 [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.InquisitorSword2 [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.InquisitorSword3 [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.InquisitorSword4 [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.IronHammer,Damage,9
+FantasyHeroes.Thrones.MeleeWeapon1H.IronIslandsSword [Paint],Damage,8
+FantasyHeroes.Samurai.MeleeWeapon1H.Katana1 [Paint],Damage,8
+FantasyHeroes.Samurai.MeleeWeapon1H.Katana2 [Paint],Damage,8
+FantasyHeroes.Samurai.MeleeWeapon1H.Katana3 [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.KnightSword [Paint],Damage,8
+FantasyHeroes.Samurai.MeleeWeapon1H.Kunai,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.LegendarySword,Damage,8
+FantasyHeroes.Thrones.MeleeWeapon1H.LionSword [Paint],Damage,8
+FantasyHeroes.Thrones.MeleeWeapon1H.LittleLionSword [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.Machete [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.MagicSword [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.MagicWandTypeA,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.MagicWandTypeA,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.MagicWandTypeB,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.MagicWandTypeB,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.MagicWandTypeC,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.MagicWandTypeC,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.MajesticAxe,Damage,10
+Extensions.Epic.MeleeWeapon1H.MajesticAxeTypeB,Damage,10
+FantasyHeroes.Basic.MeleeWeapon1H.MalformedStaff,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.MalformedStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.ManticoreSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.MechanicalStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.MechanicalStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.MilitiamanShortSword [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.MiniSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.MoonlightSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.MoonNekoWand,Damage,5
+Extensions.Epic.MeleeWeapon1H.MoonNekoWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.MoonshadowGreatstaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.MoonshadowGreatstaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.Morgana,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.Morgenstern,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.MummyArm,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.MummyWand,Damage,5
+UndeadHeroes.Undead.MeleeWeapon1H.MummyWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NativeWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NativeWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NightCharmsWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NightCharmsWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NightStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NightStaff,HealthMax,10
+FantasyHeroes.Samurai.MeleeWeapon1H.Ninjato [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NobleDagger,Damage,6
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NobleDagger,Speed,1
+Extensions.Epic.MeleeWeapon1H.NobleKingSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.NorthmanSword,Damage,8
+FantasyHeroes.Thrones.MeleeWeapon1H.NorthWardenSword [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NoviceStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.NoviceStaff,HealthMax,10
+Common.Christmas.MeleeWeapon1H.NutcrackerHammer,Damage,9
+Extensions.Epic.MeleeWeapon1H.ObsidianSword,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.OldBattleAxe,Damage,10
+UndeadHeroes.Undead.MeleeWeapon1H.OldPirateSaber,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.OldThrowingAxe,Damage,10
+UndeadHeroes.Undead.MeleeWeapon1H.OldWarriorSword,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.OldWoodcutterAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.OmegaGreatstaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.OmegaGreatstaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.OminousStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.OminousStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.OmniSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.OrcSword,Damage,8
+Extensions.Basic.MeleeWeapon1H.Pan,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.Pappenheimer,Damage,8
+Extensions.Epic.MeleeWeapon1H.PersianDuelistSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.PersianLance,Damage,11
+Extensions.Epic.MeleeWeapon1H.PersianWarriorSword,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.PharaohStaff,Damage,5
+UndeadHeroes.Undead.MeleeWeapon1H.PharaohStaff,HealthMax,10
+Extensions.Patreon.MeleeWeapon1H.PhoenixWand,Damage,5
+Extensions.Patreon.MeleeWeapon1H.PhoenixWand,HealthMax,10
+Extensions.Basic.MeleeWeapon1H.Poker,Damage,8
+Extensions.Epic.MeleeWeapon1H.PorcelainSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.PyromancerWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.PyromancerWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RaiderSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RareSwordTypeA,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RareSwordTypeB,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RareWand1,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RareWand1,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ReckoningStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ReckoningStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RedGuardianSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ReinforcedMace,Damage,9
+FantasyHeroes.Basic.MeleeWeapon1H.RunicAxe,Damage,10
+FantasyHeroes.Basic.MeleeWeapon1H.RustedHammer,Damage,9
+UndeadHeroes.Undead.MeleeWeapon1H.RustedSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.RustySword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RybyReflectionGreatstaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.RybyReflectionGreatstaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.Saber,Damage,8
+Extensions.Epic.MeleeWeapon1H.SacredBeastStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.SacredBeastStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.SacredBeastSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SagewoodWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SagewoodWand,HealthMax,10
+FantasyHeroes.Samurai.MeleeWeapon1H.Sai [Paint],Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SaintPatrickAxe,Damage,10
+FantasyHeroes.SandLords.MeleeWeapon1H.SandElderStaff,Damage,5
+FantasyHeroes.SandLords.MeleeWeapon1H.SandElderStaff,HealthMax,10
+FantasyHeroes.SandLords.MeleeWeapon1H.SandHealerStaff1,Damage,5
+FantasyHeroes.SandLords.MeleeWeapon1H.SandHealerStaff1,HealthMax,10
+FantasyHeroes.SandLords.MeleeWeapon1H.SandHealerStaff2,Damage,5
+FantasyHeroes.SandLords.MeleeWeapon1H.SandHealerStaff2,HealthMax,10
+FantasyHeroes.SandLords.MeleeWeapon1H.SandMageStaff1,Damage,5
+FantasyHeroes.SandLords.MeleeWeapon1H.SandMageStaff1,HealthMax,10
+FantasyHeroes.SandLords.MeleeWeapon1H.SandMageStaff2,Damage,5
+FantasyHeroes.SandLords.MeleeWeapon1H.SandMageStaff2,HealthMax,10
+FantasyHeroes.SandLords.MeleeWeapon1H.SandWarriorSword1,Damage,8
+FantasyHeroes.SandLords.MeleeWeapon1H.SandWarriorSword2,Damage,8
+FantasyHeroes.Christmas.MeleeWeapon1H.SantaHelperWand,Damage,5
+FantasyHeroes.Christmas.MeleeWeapon1H.SantaHelperWand,HealthMax,10
+UndeadHeroes.Christmas.MeleeWeapon1H.SantaHelperWand,Damage,5
+UndeadHeroes.Christmas.MeleeWeapon1H.SantaHelperWand,HealthMax,10
+FantasyHeroes.Christmas.MeleeWeapon1H.SantaWand,Damage,5
+FantasyHeroes.Christmas.MeleeWeapon1H.SantaWand,HealthMax,10
+UndeadHeroes.Christmas.MeleeWeapon1H.SantaWand,Damage,5
+UndeadHeroes.Christmas.MeleeWeapon1H.SantaWand,HealthMax,10
+Extensions.Basic.MeleeWeapon1H.Saw,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ShadowFang,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.ShamanWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.ShamanWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SharpenedInfantrySword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.Shestoper,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.ShortDagger [Paint],Damage,6
+FantasyHeroes.Basic.MeleeWeapon1H.ShortDagger [Paint],Speed,1
+FantasyHeroes.Basic.MeleeWeapon1H.ShortIronKatana [Paint],Damage,8
+FantasyHeroes.Knights.MeleeWeapon1H.ShortKnightSword [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.ShortSword [Paint],Damage,8
+Extensions.Basic.MeleeWeapon1H.Showel,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.Sickle,Damage,8
+Extensions.Basic.MeleeWeapon1H.Sickle,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SiegeAxe,Damage,10
+Extensions.Epic.MeleeWeapon1H.SilkKingStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.SilkKingStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SkeletonArm,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.SkeletonHandLHook,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.SkeletonHandRKnife,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.SlaveSword [Paint],Damage,8
+Extensions.Epic.MeleeWeapon1H.SlavicAxe,Damage,10
+Extensions.Epic.MeleeWeapon1H.SlavicLance,Damage,11
+Extensions.Epic.MeleeWeapon1H.SlavicSword,Damage,8
+Extensions.Epic.MeleeWeapon1H.SliceOfHeavenSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.SmallAxe,Damage,10
+Extensions.Basic.MeleeWeapon1H.SmallAxe,Damage,10
+Extensions.Basic.MeleeWeapon1H.SmallHammer,Damage,9
+UndeadHeroes.Undead.MeleeWeapon1H.SmallShowel,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.Smallsword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SnakeEye,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SolarStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SolarStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SoulCrystalSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SoulReaver,Damage,8
+Extensions.Epic.MeleeWeapon1H.SpartanSpear,Damage,11
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SpellbinderStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SpellbinderStaff,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SpiritbinderStaff,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.SpiritbinderStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.StaffOfAncestors,Damage,5
+Extensions.Epic.MeleeWeapon1H.StaffOfAncestors,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.StaffOfIllusions,Damage,5
+Extensions.Epic.MeleeWeapon1H.StaffOfIllusions,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.StaffOfInfinity,Damage,5
+Extensions.Epic.MeleeWeapon1H.StaffOfInfinity,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.Stoccata,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.StoneAxe,Damage,10
+UndeadHeroes.Undead.MeleeWeapon1H.StoneAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.StoneWarAxe,Damage,10
+FantasyHeroes.Basic.MeleeWeapon1H.StormBringerWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.StormBringerWand,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.StormcallerSword,Damage,8
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampHealer1Staff,Damage,5
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampHealer1Staff,HealthMax,10
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampHealer2Staff,Damage,5
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampHealer2Staff,HealthMax,10
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampMage1Staff,Damage,5
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampMage1Staff,HealthMax,10
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampMage2Staff,Damage,5
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampMage2Staff,HealthMax,10
+FantasyHeroes.SwampLords.MeleeWeapon1H.SwampWarriorSpear,Damage,11
+Extensions.Epic.MeleeWeapon1H.SweetnessStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.SweetnessStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.SwordOfBlessing,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfBlessingTypeB,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfCollapse,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfCryingDemon,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfEndingLight,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfFadedHeavens,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfForgottenFoe,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfJerome,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfLoneWolf,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfRagingCrux,Damage,8
+Extensions.Epic.MeleeWeapon1H.SwordOfRelentlessNightmares,Damage,8
+Extensions.Epic.MeleeWeapon1H.TechnomancerStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.TechnomancerStaff,HealthMax,10
+Extensions.Epic.MeleeWeapon1H.TerraSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ThirstyTreeWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.ThirstyTreeWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.TrainingSword [Paint],Damage,8
+Extensions.Patreon.MeleeWeapon1H.TwistedDagger,Damage,6
+Extensions.Patreon.MeleeWeapon1H.TwistedDagger,Speed,1
+Extensions.AbandonedWorkshop.MeleeWeapon1H.TwitchWand,Damage,5
+Extensions.AbandonedWorkshop.MeleeWeapon1H.TwitchWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.TyrantMace,Damage,9
+FantasyHeroes.Vikings.MeleeWeapon1H.VikingAxe1,Damage,10
+FantasyHeroes.Vikings.MeleeWeapon1H.VikingAxe2,Damage,10
+FantasyHeroes.Vikings.MeleeWeapon1H.VikingAxe3,Damage,10
+FantasyHeroes.Vikings.MeleeWeapon1H.VikingSword1,Damage,8
+FantasyHeroes.Vikings.MeleeWeapon1H.VikingSword2 [Paint],Damage,8
+FantasyHeroes.Vikings.MeleeWeapon1H.VikingSword3 [Paint],Damage,8
+Extensions.Epic.MeleeWeapon1H.VoivodeLance,Damage,11
+Extensions.Epic.MeleeWeapon1H.VolcanicGlassSword,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.WarHammer,Damage,9
+FantasyHeroes.Basic.MeleeWeapon1H.WarlockWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.WarlockWand,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.WaterAdeptWand1,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.WaterAdeptWand1,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.WaterAdeptWand2,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.WaterAdeptWand2,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.WaterWizardWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.WaterWizardWand,HealthMax,10
+Extensions.AbandonedWorkshop.MeleeWeapon1H.WickerSword,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.WideDagger,Damage,6
+Extensions.AbandonedWorkshop.MeleeWeapon1H.WideDagger,Speed,1
+Extensions.Epic.MeleeWeapon1H.WingedStaff,Damage,5
+Extensions.Epic.MeleeWeapon1H.WingedStaff,HealthMax,10
+FantasyHeroes.Basic.MeleeWeapon1H.WitchWand,Damage,5
+FantasyHeroes.Basic.MeleeWeapon1H.WitchWand,HealthMax,10
+FantasyHeroes.Thrones.MeleeWeapon1H.WolfSword [Paint],Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.WoodcutterAxe,Damage,10
+FantasyHeroes.Basic.MeleeWeapon1H.WoodenClub,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.WoodenClub,Damage,8
+FantasyHeroes.Basic.MeleeWeapon1H.WoodenMace,Damage,9
+FantasyHeroes.Basic.MeleeWeapon1H.WoodenSpikedClub,Damage,8
+UndeadHeroes.Undead.MeleeWeapon1H.WoodenStake,Damage,8
+Extensions.Basic.MeleeWeapon1H.WoodenStick,Damage,8
+Extensions.AbandonedWorkshop.MeleeWeapon1H.WyvernAxe,Damage,10
+Extensions.AbandonedWorkshop.MeleeWeapon2H.AriostinGreatsword,Damage,14
+Extensions.Epic.MeleeWeapon2H.AxeOfImmortality,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.BaseballBat,Damage,14
+Extensions.Epic.MeleeWeapon2H.Berdysh01,Damage,14
+Extensions.Epic.MeleeWeapon2H.Berdysh02,Damage,14
+Extensions.Epic.MeleeWeapon2H.Berdysh03,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.BerserkAxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.BlackHammer,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.BlacksmithHammer,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.BlackSteelMace,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.BlessedAxe,Damage,16
+UndeadHeroes.Undead.MeleeWeapon2H.BloodAxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.BrassPickaxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.BroadSword,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.BronzePickaxe,Damage,16
+Extensions.Basic.MeleeWeapon2H.Broomstick,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.BulletHammerTypeA,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.BulletHammerTypeB,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.ButcherKnife,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.CataphractSpear,Damage,18
+Extensions.AbandonedWorkshop.MeleeWeapon2H.CommonGreataxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.CopperPickaxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.CricketBatTypeA,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.CricketBatTypeB,Damage,14
+UndeadHeroes.Undead.MeleeWeapon2H.CursedSword,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.DarkSword,Damage,14
+Common.Halloween.MeleeWeapon2H.DeathScythe,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.DestroyerAxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.DireGreataxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.DragonEyeBlade,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.DragonGuardBroadsword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.DragonGuardLongsword,Damage,14
+Extensions.Patreon.MeleeWeapon2H.DragonHead,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.DragoniteAxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.DrifterSword,Damage,14
+Extensions.Patreon.MeleeWeapon2H.EagleGreataxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.FateLongsword,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.FireKnightSword [Paint],Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.ForgottenGreatswordTypeA,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.ForgottenGreatswordTypeB,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.GateCrusher,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.GoldenHawkGreatsword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.GreenCrystalMace,Damage,15
+Extensions.Epic.MeleeWeapon2H.GrimReaperScythe,Damage,14
+Extensions.Epic.MeleeWeapon2H.GunAxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.GustHammer,Damage,15
+FantasyHeroes.Basic.MeleeWeapon2H.Halberd,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.Harpoon,Damage,14
+UndeadHeroes.Undead.MeleeWeapon2H.HeavyAxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.HeavyBroadsword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.HeavyHammer,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.HeavyPoleaxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.HeavySword [Paint],Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.IronLongsword,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.IronPickaxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.LightenedPoleaxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.LongHammer,Damage,15
+Extensions.Basic.MeleeWeapon2H.LumberjackAxe,Damage,16
+Extensions.Epic.MeleeWeapon2H.LushHammer,Damage,15
+Extensions.Epic.MeleeWeapon2H.MechanicalSword,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.MercenarySword1 [Paint],Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.MercenarySword2 [Paint],Damage,14
+FantasyHeroes.Thrones.MeleeWeapon2H.MountainSword [Paint],Damage,14
+Extensions.Epic.MeleeWeapon2H.NemeanMace,Damage,15
+FantasyHeroes.Basic.MeleeWeapon2H.OldPoleaxe,Damage,16
+Extensions.Epic.MeleeWeapon2H.OminousLance,Damage,18
+FantasyHeroes.Basic.MeleeWeapon2H.PaladinSword [Paint],Damage,14
+Extensions.Patreon.MeleeWeapon2H.PatronGunAxe,Damage,16
+Extensions.Basic.MeleeWeapon2H.Pitchfork,Damage,14
+Extensions.Basic.MeleeWeapon2H.PotGrip,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.PunishmentMace,Damage,15
+Extensions.Basic.MeleeWeapon2H.Rake,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.RareAxe,Damage,16
+Extensions.AbandonedWorkshop.MeleeWeapon2H.RareHammer,Damage,15
+FantasyHeroes.Basic.MeleeWeapon2H.RustedPickaxe,Damage,16
+UndeadHeroes.Undead.MeleeWeapon2H.RustyPaleSword,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.SamuraiElderSword,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.SamuraiSword1,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.SamuraiSword2,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.SamuraiSword2 [Paint],Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.SamuraiSword3,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.SamuraiSword3 [Paint],Damage,14
+FantasyHeroes.Thrones.MeleeWeapon2H.SandWarriorHalberd,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.Scythe,Damage,14
+Extensions.Basic.MeleeWeapon2H.Scythe,Damage,14
+FantasyHeroes.Samurai.MeleeWeapon2H.ShadowSword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.ShiningStarMace,Damage,15
+FantasyHeroes.Basic.MeleeWeapon2H.SiegeSpear,Damage,18
+Extensions.Epic.MeleeWeapon2H.SilkKingLance,Damage,18
+UndeadHeroes.Undead.MeleeWeapon2H.SkeletonKingAxe,Damage,16
+UndeadHeroes.Undead.MeleeWeapon2H.SkeletonKingAxeImproved,Damage,16
+UndeadHeroes.Undead.MeleeWeapon2H.SkeletonSword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.SkullCrusher,Damage,14
+Extensions.Patreon.MeleeWeapon2H.SoulReaper,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.Spear,Damage,18
+FantasyHeroes.Basic.MeleeWeapon2H.SteelAxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.SteelPickaxe,Damage,16
+FantasyHeroes.Samurai.MeleeWeapon2H.SunriseSword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.TemplarSword,Damage,14
+Extensions.Epic.MeleeWeapon2H.TerraLongsword,Damage,14
+Extensions.AbandonedWorkshop.MeleeWeapon2H.TitanGreatsword,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.TitanHammer,Damage,15
+FantasyHeroes.Knights.MeleeWeapon2H.TwoHandedSword [Paint],Damage,14
+FantasyHeroes.Vikings.MeleeWeapon2H.TwoHandedVikingAxe1,Damage,16
+FantasyHeroes.Vikings.MeleeWeapon2H.TwoHandedVikingAxe2,Damage,16
+FantasyHeroes.Vikings.MeleeWeapon2H.TwoHandedVikingAxe3,Damage,16
+FantasyHeroes.Vikings.MeleeWeapon2H.TwoHandedVikingSword1,Damage,14
+FantasyHeroes.Vikings.MeleeWeapon2H.TwoHandedVikingSword2 [Paint],Damage,14
+FantasyHeroes.Vikings.MeleeWeapon2H.TwoHandedVikingSword3 [Paint],Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.TwoHandedWoodenMace,Damage,15
+Extensions.AbandonedWorkshop.MeleeWeapon2H.UnderworldHammer,Damage,15
+FantasyHeroes.Basic.MeleeWeapon2H.WarClub,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.WoodcutterPoleaxe,Damage,16
+FantasyHeroes.Basic.MeleeWeapon2H.WoodenStake,Damage,14
+FantasyHeroes.Basic.MeleeWeapon2H.Zweihander [Paint],Damage,14
+Extensions.Epic.Bow.AuthenticityBow,Damage,7
+FantasyHeroes.Basic.Bow.BattleBow,Damage,7
+Extensions.Epic.Bow.BennuBow,Damage,7
+UndeadHeroes.Undead.Bow.BladeBow,Damage,7
+UndeadHeroes.Undead.Bow.BoneBow,Damage,7
+Extensions.Epic.Bow.BowOfDevotion,Damage,7
+Extensions.Epic.Bow.BowOfElegance,Damage,7
+Extensions.Epic.Bow.BowOfFortune,Damage,7
+Common.Christmas.Bow.ChristmasBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.CurvedBow,Damage,7
+UndeadHeroes.Undead.Bow.EgyptianBow,Damage,7
+Extensions.Epic.Bow.ElementalBow,Damage,7
+Extensions.Epic.Bow.ElementalBowTypeB,Damage,7
+Extensions.Epic.Bow.EmeraldBow,Damage,7
+FantasyHeroes.Basic.Bow.FamilyBow,Damage,7
+Common.Christmas.Bow.FestiveBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.FlameSalamanderBow,Damage,7
+FantasyHeroes.Basic.Bow.GoldDragon,Damage,7
+Extensions.AbandonedWorkshop.Bow.HeavyBow,Damage,7
+FantasyHeroes.Basic.Bow.HornBow,Damage,7
+FantasyHeroes.Basic.Bow.HunterBow,Damage,7
+FantasyHeroes.Basic.Bow.HunterShortBow,Damage,7
+Extensions.Epic.Bow.MagnetismBow,Damage,7
+FantasyHeroes.Basic.Bow.MarauderBow,Damage,7
+Extensions.Epic.Bow.MechicalBow,Damage,7
+Extensions.Patreon.Bow.MonsterBow,Damage,7
+FantasyHeroes.Basic.Bow.OrcBow,Damage,7
+FantasyHeroes.Basic.Bow.PathFinderBow,Damage,7
+Extensions.Epic.Bow.PersianArcherBow,Damage,7
+FantasyHeroes.Basic.Bow.RangerBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.RedwoodBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.RetributionBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.RisenBow,Damage,7
+FantasyHeroes.Basic.Bow.RoyalArcherBow,Damage,7
+FantasyHeroes.Samurai.Bow.SamuraiBow1,Damage,7
+FantasyHeroes.Samurai.Bow.SamuraiBow2,Damage,7
+FantasyHeroes.Samurai.Bow.SamuraiBow3,Damage,7
+FantasyHeroes.SandLords.Bow.SandShooterBow1,Damage,7
+FantasyHeroes.SandLords.Bow.SandShooterBow2,Damage,7
+Extensions.Epic.Bow.ScintillateBow,Damage,7
+FantasyHeroes.Basic.Bow.ScoutBow,Damage,7
+FantasyHeroes.Basic.Bow.ScoutShortBow,Damage,7
+UndeadHeroes.Undead.Bow.SkeletonBow,Damage,7
+UndeadHeroes.Undead.Bow.SkeletonBow2,Damage,7
+Extensions.Epic.Bow.SlavicLongBow,Damage,7
+Extensions.Epic.Bow.SlavicShortBow,Damage,7
+FantasyHeroes.Basic.Bow.SniperBow,Damage,7
+UndeadHeroes.Undead.Bow.SpineBow,Damage,7
+FantasyHeroes.SwampLords.Bow.SwampShooter1Bow,Damage,7
+FantasyHeroes.SwampLords.Bow.SwampShooter2Bow,Damage,7
+Extensions.Epic.Bow.TennoBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.TwinEdgeBow,Damage,7
+FantasyHeroes.Vikings.Bow.VikingIronBow1,Damage,7
+FantasyHeroes.Vikings.Bow.VikingIronBow2,Damage,7
+FantasyHeroes.Vikings.Bow.VikingIronBow3,Damage,7
+FantasyHeroes.Vikings.Bow.VikingLongBow,Damage,7
+FantasyHeroes.Vikings.Bow.VikingShortBow,Damage,7
+FantasyHeroes.Vikings.Bow.VikingWoodenBow,Damage,7
+Extensions.Epic.Bow.WaterElementalBow,Damage,7
+Extensions.Epic.Bow.WaterElementalBowTypeB,Damage,7
+FantasyHeroes.Basic.Bow.WitchHunterBow,Damage,7
+Extensions.AbandonedWorkshop.Bow.WyvernHornBow,Damage,7
+Common.Christmas.Firearm1H.CandyCannon,Damage,9
+FantasyHeroes.Basic.Firearm1H.FlintPistolTypeA,Damage,9
+FantasyHeroes.Basic.Firearm1H.FlintPistolTypeB,Damage,9
+FantasyHeroes.Basic.Firearm1H.FlintPistolTypeC,Damage,9
+FantasyHeroes.Basic.Firearm1H.RevolverTypeA,Damage,9
+FantasyHeroes.Basic.Firearm1H.RevolverTypeB,Damage,9
+FantasyHeroes.Basic.Firearm1H.RevolverTypeC,Damage,9
+FantasyHeroes.Crossbows.Firearm2H.AutomaticCrossbow,Damage,13
+Extensions.PatreonExclusive.Firearm2H.BigGun,Damage,13
+FantasyHeroes.Crossbows.Firearm2H.BronzeCrossbow,Damage,13
+FantasyHeroes.Crossbows.Firearm2H.Dragonizer,Damage,13
+Extensions.Epic.Firearm2H.GunAxe,Damage,13
+Extensions.PatreonExclusive.Firearm2H.GunLance,Damage,13
+Extensions.Epic.Firearm2H.Musket,Damage,13
+FantasyHeroes.Basic.Firearm2H.OldShotgun,Damage,13
+Extensions.PatreonExclusive.Firearm2H.PatronGunAxe,Damage,13
+Extensions.Epic.Firearm2H.Pischal,Damage,13
+FantasyHeroes.Basic.Firearm2H.RifleTypeA,Damage,13
+FantasyHeroes.Basic.Firearm2H.RifleTypeB,Damage,13
+FantasyHeroes.Basic.Firearm2H.RifleTypeC,Damage,13
+FantasyHeroes.Basic.Firearm2H.RifleTypeD,Damage,13
+FantasyHeroes.Basic.Firearm2H.RifleTypeE,Damage,13
+FantasyHeroes.Basic.Firearm2H.RifleTypeF,Damage,13
+FantasyHeroes.Crossbows.Firearm2H.SmallCrossbow,Damage,13
+FantasyHeroes.Crossbows.Firearm2H.Snarebow,Damage,13
+FantasyHeroes.Crossbows.Firearm2H.SniperCrossbow,Damage,13
+FantasyHeroes.Crossbows.Firearm2H.WitchHunter,Damage,13
+Extensions.Epic.Cape.AngelicCape,HealthMax,5
+Extensions.Wings.Cape.AngelWings,HealthMax,5
+FantasyHeroes.Basic.Cape.BatCape [Paint],HealthMax,5
+Extensions.Epic.Cape.BishopCape,HealthMax,5
+Extensions.Epic.Cape.BlazewingCape,HealthMax,5
+Extensions.Epic.Cape.BlessedCape,HealthMax,5
+Extensions.Epic.Cape.BloodiedSpiritCape,HealthMax,5
+Common.Christmas.Cape.Candycane,HealthMax,5
+Extensions.Epic.Cape.CapeOfCorruption,HealthMax,5
+Extensions.Epic.Cape.CapeOfCorruptionTypeB,HealthMax,5
+Extensions.Epic.Cape.CapeOfEndingLight,HealthMax,5
+Extensions.Epic.Cape.CapeOfImmortality,HealthMax,5
+Extensions.Epic.Cape.CapeOfInfinity,HealthMax,5
+Extensions.Epic.Cape.CapeOfInfinityTypeB,HealthMax,5
+Extensions.Epic.Cape.CapeOfJerome,HealthMax,5
+Extensions.Epic.Cape.CapeOfRagingCrux,HealthMax,5
+Extensions.Epic.Cape.CapeOfRelentlessNightmares,HealthMax,5
+Extensions.Epic.Cape.CapeOfSunwalker,HealthMax,5
+Extensions.Epic.Cape.CataclysmCape,HealthMax,5
+Common.Christmas.Cape.ChristmasCape,HealthMax,5
+FantasyHeroes.Basic.Cape.CotttonCape [Paint],HealthMax,5
+Extensions.Wings.Cape.DevilWings,HealthMax,5
+Extensions.Epic.Cape.DevotionCape,HealthMax,5
+Extensions.Epic.Cape.FallenlordWings,HealthMax,5
+Extensions.Epic.Cape.FireBeastWings,HealthMax,5
+Extensions.Epic.Cape.FlexureCape,HealthMax,5
+FantasyHeroes.Basic.Cape.GrandmaCape [Paint],HealthMax,5
+Extensions.Wings.Cape.GriffinWings [Paint],HealthMax,5
+Extensions.Epic.Cape.GrimReaperWings,HealthMax,5
+Extensions.Epic.Cape.HeavenlyCape,HealthMax,5
+FantasyHeroes.Basic.Cape.HeroicCape [Paint],HealthMax,5
+FantasyHeroes.Basic.Cape.HeroicCape2 [Paint],HealthMax,5
+Extensions.Epic.Cape.MoonlightOrnament,HealthMax,5
+Extensions.Epic.Cape.NemeanCape,HealthMax,5
+Extensions.Epic.Cape.NobleKingCape,HealthMax,5
+FantasyHeroes.Basic.Cape.OldCape [Paint],HealthMax,5
+FantasyHeroes.Basic.Cape.OldCape2 [Paint],HealthMax,5
+Extensions.Epic.Cape.OminousCape,HealthMax,5
+Extensions.Epic.Cape.PeaksOfTorment,HealthMax,5
+Extensions.Epic.Cape.PorcelainCape,HealthMax,5
+Extensions.AbandonedWorkshop.Cape.PotOfGold,HealthMax,5
+Extensions.Wings.Cape.RedDevilWings,HealthMax,5
+FantasyHeroes.Basic.Cape.RoyalCape [Paint],HealthMax,5
+Extensions.Epic.Cape.SilkKingFists,HealthMax,5
+Common.Christmas.Cape.SnowMaidenCape,HealthMax,5
+Extensions.Epic.Cape.SoulCape,HealthMax,5
+Extensions.Epic.Cape.SpartanCape,HealthMax,5
+Extensions.Epic.Cape.StormcallerCape,HealthMax,5
+Extensions.Epic.Cape.SunlightCape,HealthMax,5
+Extensions.Epic.Cape.SweetnessCandy,HealthMax,5
+Extensions.Epic.Cape.TennoCape,HealthMax,5
+Extensions.Epic.Cape.ThunderguardGear,HealthMax,5
+FantasyHeroes.Basic.Cape.VampireCape [Paint],HealthMax,5
+Extensions.Epic.Cape.ViciousCape,HealthMax,5
+Extensions.Epic.Cape.WingsOfAncestors,HealthMax,5
+FantasyHeroes.Basic.Back.ArrowQuiver,HealthMax,5
+UndeadHeroes.Undead.Back.ArrowQuiver,HealthMax,5
+FantasyHeroes.Basic.Back.ArrowQuiver2,HealthMax,5
+FantasyHeroes.Basic.Back.ArrowQuiver3,HealthMax,5
+FantasyHeroes.Basic.Back.ArrowQuiverBig,HealthMax,5
+FantasyHeroes.Basic.Back.ExplorerBackpack,HealthMax,5
+FantasyHeroes.Basic.Back.SmallBackpack,HealthMax,5
+FantasyHeroes.Basic.Back.TraderBackpack,HealthMax,5
+FantasyHeroes.Basic.Back.TravallerBackpack,HealthMax,5

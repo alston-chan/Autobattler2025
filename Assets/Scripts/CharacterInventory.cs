@@ -12,7 +12,7 @@ using HeroEditor.Common.Enums;
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.HeroEditor.InventorySystem.Scripts;
-// using Kryz.CharacterStats;
+using Kryz.CharacterStats;
 using TMPro;
 
 /// <summary>
@@ -60,6 +60,9 @@ public class CharacterInventory : ItemWorkspace
 
         var equipped = new List<Item>();
         Equipment.Initialize(ref equipped);
+
+        // Show initial stats
+        RefreshStatsUI();
     }
 
     public void InitializePlayerInventory()
@@ -172,28 +175,41 @@ public class CharacterInventory : ItemWorkspace
 
     public void EquipStats()
     {
+        if (CharacterEntity == null || CharacterEntity.Stats == null) return;
+
         ItemParams itemParams = ItemCollection.Active.GetItemParams(SelectedItem);
-
-        // if (itemParams.PhysicalDamageBonus != 0)
-        //     CharacterEntity.PhysicalDamage.AddModifier(new StatModifier(itemParams.PhysicalDamageBonus, StatModType.Flat, SelectedItem.Id));
-
-        // if (itemParams.PhysicalDamagePercentBonus != 0)
-        //     CharacterEntity.PhysicalDamage.AddModifier(new StatModifier(itemParams.PhysicalDamagePercentBonus, StatModType.PercentMult, SelectedItem.Id));
-
-        // statsValues.text = CharacterEntity.PhysicalDamage.Value.ToString();
+        CharacterEntity.Stats.ApplyItemModifiers(itemParams, SelectedItem.Id);
+        RefreshStatsUI();
     }
 
     public void UnequipStats(Item item = null)
     {
-        Item source = SelectedItem;
-        if (item != null)
+        if (CharacterEntity == null || CharacterEntity.Stats == null) return;
+
+        Item source = item ?? SelectedItem;
+        CharacterEntity.Stats.RemoveItemModifiers(source.Id);
+        RefreshStatsUI();
+    }
+
+    /// <summary>
+    /// Update the stats panel text from the entity's current stat values.
+    /// </summary>
+    public void RefreshStatsUI()
+    {
+        if (CharacterEntity == null || CharacterEntity.Stats == null) return;
+
+        var stats = CharacterEntity.Stats.GetDisplayStats();
+        var keys = new System.Text.StringBuilder();
+        var vals = new System.Text.StringBuilder();
+
+        foreach (var kvp in stats)
         {
-            source = item;
+            keys.AppendLine(kvp.Key);
+            vals.AppendLine(kvp.Value.ToString("0.##"));
         }
 
-        // CharacterEntity.PhysicalDamage.RemoveAllModifiersFromSource(source.Id);
-
-        // statsValues.text = CharacterEntity.PhysicalDamage.Value.ToString();
+        if (statsKeys != null) statsKeys.text = keys.ToString();
+        if (statsValues != null) statsValues.text = vals.ToString();
     }
 
     public void Craft()
