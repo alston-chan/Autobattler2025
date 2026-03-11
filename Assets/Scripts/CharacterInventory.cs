@@ -150,12 +150,12 @@ public class CharacterInventory : ItemWorkspace
             AutoRemove(equipped, Equipment.Slots.Count(i => i.Supports(SelectedItem)));
         }
 
-        if (SelectedItem.IsTwoHanded) AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
-        if (SelectedItem.IsShield) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded).ToList());
+        if (SelectedItem.IsTwoHanded && !SelectedItem.IsBow) AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
+        if (SelectedItem.IsShield) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded && !i.IsBow).ToList());
 
         if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
-        if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded).ToList());
-        if (SelectedItem.IsTwoHanded || SelectedItem.IsShield) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsFirearm).ToList());
+        if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded && !i.IsBow).ToList());
+        if ((SelectedItem.IsTwoHanded && !SelectedItem.IsBow) || SelectedItem.IsShield) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsFirearm).ToList());
 
         MoveItem(SelectedItem, PlayerInventory, Equipment);
         AudioSource.PlayOneShot(EquipSound, SfxVolume);
