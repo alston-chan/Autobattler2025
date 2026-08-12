@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Equipment Designer — Autobattler2025</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#0f1319; --panel:#171d26; --panel2:#1e2530; --line:#2b3441;
+    --ink:#e8edf4; --muted:#93a2b4; --accent:#4ea1ff; --good:#3ecf8e; --warn:#e0a24a;
+    --r-Common:#8b97a6; --r-Uncommon:#3ecf8e; --r-Rare:#4ea1ff; --r-Epic:#b06ef5; --r-Legendary:#f0a13a;
+    --mono:ui-monospace,"Cascadia Code",Consolas,monospace;
+  }
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f4f6f9;--panel:#fff;--panel2:#eef1f5;--line:#d7dde6;--ink:#131820;--muted:#5d6b7d;}
+  }
+  *{box-sizing:border-box}
+  html,body{max-width:100%;overflow-x:hidden}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+  h1{font-size:15px;margin:0;font-weight:700;white-space:nowrap}
+  .tabs{display:flex;gap:4px;background:var(--panel2);padding:3px;border-radius:9px}
+  .tab{padding:5px 13px;border-radius:6px;cursor:pointer;font-size:13px;border:0;background:transparent;color:var(--muted)}
+  .tab.on{background:var(--accent);color:#06131f;font-weight:650}
+  .stat{font:12px var(--mono);color:var(--muted)}
+  .stat b{color:var(--good)}
+  .spacer{flex:1}
+  button,select,input,textarea{font:inherit;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:6px 10px}
+  button{cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#06131f;font-weight:650}
+  .view{display:none}
+  .view.on{display:block}
+
+  /* ---- items view ---- */
+  /* minmax(0,1fr) is essential — a bare 1fr means minmax(auto,1fr), and `auto`
+     resolves to content width, which forces the whole page to scroll sideways. */
+  #vItems{display:grid;grid-template-columns:232px minmax(0,1fr) 360px;height:calc(100vh - 53px)}
+  aside,section,.editor{overflow-y:auto;overflow-x:hidden;height:100%;min-width:0}
+  aside{background:var(--panel);border-right:1px solid var(--line);padding:14px}
+  aside h3{font:11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 0 7px}
+  aside h3:first-child{margin-top:0}
+  .filt{display:flex;flex-direction:column;gap:3px}
+  .filt label{display:flex;align-items:center;gap:7px;padding:3px 6px;border-radius:5px;cursor:pointer;font-size:12.5px;min-width:0}
+  .filt label:hover{background:var(--panel2)}
+  .filt label>span:first-of-type{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .filt label>input{flex:none}
+  .filt .n{flex:none;font:11px var(--mono);color:var(--muted)}
+  @media (max-width:1180px){ #vItems{grid-template-columns:200px minmax(0,1fr) 310px} }
+  @media (max-width:900px){ #vItems{grid-template-columns:minmax(0,1fr) 300px} aside{display:none} }
+  section{padding:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 5px 5px;text-align:center;cursor:pointer;position:relative;transition:transform .07s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card.sel{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+  .card.done::after{content:"";position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--good)}
+  .card img{width:52px;height:52px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto}
+  .card .nm{font-size:10px;line-height:1.25;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card .rr{position:absolute;top:5px;left:5px;width:7px;height:7px;border-radius:2px}
+  /* set view */
+  .set{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:10px}
+  .set-h{display:flex;align-items:baseline;gap:10px;margin-bottom:9px}
+  .set-h b{font-size:14px}
+  .set-h .th{font:11px var(--mono);color:var(--accent)}
+  .set-h .ct{font:11px var(--mono);color:var(--muted);margin-left:auto}
+  .set-row{display:flex;gap:9px;flex-wrap:wrap}
+  .piece{width:74px;text-align:center;cursor:pointer;border:1px solid transparent;border-radius:8px;padding:5px 3px;position:relative}
+  .piece:hover{border-color:var(--accent);background:var(--panel2)}
+  .piece.sel{border-color:var(--accent);background:var(--panel2)}
+  .piece.done::after{content:"";position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--good)}
+  .piece img{width:46px;height:46px;object-fit:contain;image-rendering:pixelated}
+  .piece .sl{font-size:9.5px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+  .editor{background:var(--panel);border-left:1px solid var(--line);padding:14px}
+  .editor .big{width:72px;height:72px;flex:none;object-fit:contain;image-rendering:pixelated;background:var(--panel2);border-radius:10px;padding:6px;border:1px solid var(--line)}
+  /* Rows wrap instead of overflowing; every control may shrink below its content. */
+  .row{display:flex;gap:7px;align-items:center;margin:9px 0;flex-wrap:wrap;min-width:0}
+  .row>label{font:10.5px var(--mono);color:var(--muted);width:74px;flex:none;text-transform:uppercase;letter-spacing:.06em}
+  .row>input,.row>select{flex:1 1 60px;min-width:0;max-width:100%}
+  .editor input,.editor select,.editor textarea{max-width:100%}
+  textarea{resize:vertical;width:100%;max-width:100%;box-sizing:border-box}
+  .idline{font:11px var(--mono);color:var(--muted);word-break:break-all;margin:8px 0 12px}
+  .verb{font:11px var(--mono);padding:2px 7px;border-radius:99px;background:var(--panel2);border:1px solid var(--line)}
+  .hint{font-size:12px;color:var(--muted);margin:6px 0 0;line-height:1.45}
+  .empty{color:var(--muted);text-align:center;padding:50px 20px;font-size:13px}
+  .tiers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+
+  /* ---- pool views ---- */
+  .pool{padding:18px 22px;max-width:1500px}
+  .pool h2{font-size:17px;margin:0 0 4px}
+  .pool .sub{color:var(--muted);font-size:13px;margin:0 0 16px;max-width:76ch}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);background:var(--panel2)}
+  td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  td input,td select,td textarea{width:100%;padding:5px 7px;background:transparent;border:1px solid transparent;border-radius:5px}
+  td input:hover,td select:hover,td textarea:hover{border-color:var(--line)}
+  td input:focus,td select:focus,td textarea:focus{border-color:var(--accent);background:var(--panel2);outline:none}
+  .del{background:transparent;border:0;color:var(--muted);cursor:pointer;padding:4px 8px;font-size:15px}
+  .del:hover{color:#f0685f}
+  .addbar{margin-top:12px;display:flex;gap:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚔️ Equipment Designer</h1>
+  <div class="tabs">
+    <button class="tab on" data-v="vItems">Items</button>
+    <button class="tab" data-v="vAffix">Affix Pool</button>
+    <button class="tab" data-v="vEng">Engraving Pool</button>
+  </div>
+  <span class="stat"><b id="doneN">0</b> / <span id="totN">0</span> designed · <span id="shown">—</span> · <span id="saveState">…</span></span>
+  <input id="search" placeholder="Search name…" style="width:170px">
+  <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
+    <input type="checkbox" id="bySet"> 🧩 Group by set
+  </label>
+  <span class="spacer"></span>
+  <button id="next">Next undesigned →</button>
+  <button id="imp">Import</button>
+  <button class="primary" id="exp">Export JSON</button>
+</header>
+
+<!-- ITEMS -->
+<div class="view on" id="vItems">
+  <aside>
+    <h3>Pack</h3><div class="filt" id="fPack"></div>
+    <p class="hint" style="margin-top:6px">From the SpriteId — <b>real metadata</b>, unlike Theme below.</p>
+    <h3>Slot</h3><div class="filt" id="fSlot"></div>
+    <h3>Theme <span style="text-transform:none;letter-spacing:0">(guessed)</span></h3><div class="filt" id="fTheme"></div>
+    <h3>Rarity</h3><div class="filt" id="fRarity"></div>
+    <p class="hint" style="margin-top:6px">Every item ships as <b>Common</b> — rarity is what <i>you</i> assign here, so the other tiers start empty.</p>
+    <h3>Status</h3>
+    <div class="filt">
+      <label><input type="radio" name="st" value="all" checked> All</label>
+      <label><input type="radio" name="st" value="todo"> Not designed</label>
+      <label><input type="radio" name="st" value="done"> Designed</label>
+    </div>
+  </aside>
+  <section><div class="grid" id="grid"></div></section>
+  <div class="editor" id="editor"><div class="empty">Select an item to design it.</div></div>
+</div>
+
+<!-- AFFIX POOL -->
+<div class="view" id="vAffix">
+  <div class="pool">
+    <h2>Affix Pool</h2>
+    <p class="sub">The rolled stat modifiers. Every item draws one; the value rolls between <b>Min</b> and
+      <b>Max</b> (base values — scale up by rarity and act). <b>Slots</b>/<b>Themes</b> restrict where an
+      affix can appear (blank = anywhere). Higher <b>Weight</b> = rolls more often.</p>
+    <table><thead><tr>
+      <th style="width:15%">Name</th><th style="width:17%">Stat</th><th style="width:8%">Unit</th>
+      <th style="width:7%">Min</th><th style="width:7%">Max</th>
+      <th style="width:17%">Slots</th><th style="width:17%">Themes</th><th style="width:8%">Weight</th><th style="width:4%"></th>
+    </tr></thead><tbody id="tAffix"></tbody></table>
+    <div class="addbar"><button id="addAffix">+ Add affix</button><button id="seedAffix">Seed starter set</button></div>
+  </div>
+</div>
+
+<!-- ENGRAVING POOL -->
+<div class="view" id="vEng">
+  <div class="pool">
+    <h2>Engraving Pool</h2>
+    <p class="sub">Secondary Engravings rolled onto <b>Epic</b> and <b>Legendary</b> items at drop time —
+      the surprise layer beside each item's fixed signature. An item's <b>Roll pool</b> field selects which
+      tag(s) it draws from. Keep <b>Verb</b> one tier below the item's own rarity so the signature stays the star.</p>
+    <table><thead><tr>
+      <th style="width:15%">Name</th><th style="width:38%">Text</th><th style="width:11%">Verb</th>
+      <th style="width:14%">Pools</th><th style="width:14%">Slots</th><th style="width:6%">Weight</th><th style="width:4%"></th>
+    </tr></thead><tbody id="tEng"></tbody></table>
+    <div class="addbar"><button id="addEng">+ Add engraving</button><button id="seedEng">Seed starter set</button></div>
+  </div>
+</div>
+
+<!--DATA-->
+<script>
+if (typeof ITEMS === 'undefined' || !Array.isArray(ITEMS) || !ITEMS.length) {
+  document.body.innerHTML =
+    '<div style="max-width:640px;margin:80px auto;padding:28px;background:#171d26;border:1px solid #e0a24a;border-radius:12px;color:#e8edf4;font:15px/1.6 system-ui">'
+    + '<h2 style="margin:0 0 12px;color:#e0a24a">No item data loaded</h2>'
+    + '<p>This file should have its catalog baked in. Regenerate it from the project root:</p>'
+    + '<pre style="background:#0f1319;padding:12px;border-radius:8px;overflow:auto">node Tools/build-data.js</pre>'
+    + '<p>Then open <b>Tools/EquipmentDesigner.html</b> from disk in a real browser (Chrome/Edge). '
+    + 'Embedded preview panes render pages as <code>data:</code> URLs, which cannot load the sprite images.</p></div>';
+  throw new Error('ITEMS not loaded');
+}
+const VERBS={Common:'— (affix only)',Uncommon:'HOOK — a conditional reaction',Rare:'AMPLIFY — reach / repetition / spread',Epic:'BREAK — violates a rule',Legendary:'REDEFINE — transforms the hero (+ drawback)'};
+const RARITIES=['Common','Uncommon','Rare','Epic','Legendary'];
+const VERBNAMES=['HOOK','AMPLIFY','BREAK','REDEFINE'];
+const THEMES=[...new Set(ITEMS.map(i=>i.theme))].sort();
+const SLOTS=[...new Set(ITEMS.map(i=>i.slot))].sort();
+// Packs sorted by size so the big ones sit at the top of a long list.
+const PACKS=[...new Set(ITEMS.map(i=>i.pack))]
+  .sort((a,b)=>ITEMS.filter(i=>i.pack===b).length-ITEMS.filter(i=>i.pack===a).length);
+
+const DB=Object.assign({items:{},affixPool:[],engPool:[]},
+                       JSON.parse(localStorage.getItem('eqDB')||'null')||{});
+if(!DB.items)DB.items={}; if(!Array.isArray(DB.affixPool))DB.affixPool=[]; if(!Array.isArray(DB.engPool))DB.engPool=[];
+let design=DB.items, affixPool=DB.affixPool, engPool=DB.engPool;
+
+// migrate from the older items-only key
+const legacy=localStorage.getItem('eqDesign');
+if(legacy && !Object.keys(design).length){ design=JSON.parse(legacy); DB.items=design; }
+
+let sel=null;
+const F={pack:new Set(),slot:new Set(),theme:new Set(),rarity:new Set(),status:'all',q:''};
+// ---------- persistence ----------
+// Served by Tools/serve.js  → auto-saves to Tools/equipment-design.json
+// Opened from disk (file://) → localStorage only, export by hand
+let serverMode=false, saveTimer=null;
+const bundle=()=>({items:Object.entries(design).filter(([id])=>isDone(id)).map(([id,d])=>({id,...d})),
+                   affixPool,engravingPool:engPool});
+function applyBundle(j){
+  const list=Array.isArray(j)?j:(j.items||[]);
+  list.forEach(d=>{const {id,...rest}=d;design[id]=rest;});
+  if(j.affixPool) affixPool.splice(0,affixPool.length,...j.affixPool);
+  if(j.engravingPool) engPool.splice(0,engPool.length,...j.engravingPool);
+}
+function setSaveState(t,c){const el=document.getElementById('saveState');
+  if(el){el.textContent=t;el.style.color=c||'var(--muted)';}}
+
+const save=()=>{
+  DB.items=design;DB.affixPool=affixPool;DB.engPool=engPool;
+  localStorage.setItem('eqDB',JSON.stringify(DB));   // always keep a local backup
+  stats();
+  if(!serverMode) return;
+  clearTimeout(saveTimer); setSaveState('saving…');
+  saveTimer=setTimeout(()=>{
+    fetch('/api/design',{method:'POST',headers:{'Content-Type':'application/json'},
+                         body:JSON.stringify(bundle(),null,2)})
+      .then(r=>setSaveState(r.ok?'✓ saved to file':'save failed',r.ok?'var(--good)':'#f0685f'))
+      .catch(()=>setSaveState('save failed','#f0685f'));
+  },500);
+};
+const isDone=id=>{const d=design[id];return !!(d&&(d.engraving||d.affix));};
+const esc=s=>(s||'').replace(/"/g,'&quot;');
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===t.dataset.v));
+});
+
+/* ---------- items ---------- */
+// Effective value = whatever you assigned in the tool, falling back to the CSV.
+const eff=(i,key)=>(design[i.id]&&design[i.id][key])||i[key];
+const art=i=>i.icon;
+
+function mkFilter(el,vals,key){
+  el.innerHTML='';
+  vals.forEach(v=>{
+    const l=document.createElement('label');
+    l.title=v;   // full value on hover, since long names are ellipsised
+    l.innerHTML=`<input type="checkbox" value="${v}"><span>${v}</span><span class="n" data-c="${key}:${v}">0</span>`;
+    l.querySelector('input').onchange=e=>{e.target.checked?F[key].add(v):F[key].delete(v);renderGrid();};
+    el.appendChild(l);
+  });
+}
+// Counts are live — they track rarity/theme you reassign.
+function counts(){
+  document.querySelectorAll('[data-c]').forEach(el=>{
+    const [key,val]=el.dataset.c.split(':');
+    el.textContent=ITEMS.filter(i=>eff(i,key)===val).length;
+  });
+}
+function visible(){
+  return ITEMS.filter(i=>{
+    if(F.pack.size&&!F.pack.has(i.pack))return false;
+    if(F.slot.size&&!F.slot.has(i.slot))return false;
+    if(F.theme.size&&!F.theme.has(eff(i,'theme')))return false;
+    if(F.rarity.size&&!F.rarity.has(eff(i,'rarity')))return false;
+    if(F.status==='todo'&&isDone(i.id))return false;
+    if(F.status==='done'&&!isDone(i.id))return false;
+    if(F.q&&!(i.name+i.id).toLowerCase().includes(F.q))return false;
+    return true;
+  });
+}
+const SLOT_ORDER=['Helmet','VestBeltPauldron','Armor','Gloves','Boots','Shield','Weapon'];
+const SLOT_SHORT={VestBeltPauldron:'Vest',Helmet:'Helm',Gloves:'Gloves',Boots:'Boots',Armor:'Armor',Shield:'Shield',Weapon:'Weapon'};
+
+function renderGrid(){
+  counts();
+  const all=visible();
+  grid.classList.toggle('grid',!bySet.checked);
+  if(bySet.checked) return renderSets(all);
+
+  const list=all.slice(0,600);
+  shown.textContent=all.length>600?`showing 600 of ${all.length}`:`${all.length} shown`;
+  grid.innerHTML=list.map(i=>{
+    const r=eff(i,'rarity');
+    return `<div class="card ${isDone(i.id)?'done':''} ${sel===i.id?'sel':''}" data-id="${i.id}" title="${i.name}">
+      <span class="rr" style="background:var(--r-${r})"></span>
+      <img src="../${art(i)}" loading="lazy" alt=""><div class="nm">${i.sprite}</div></div>`;
+  }).join('')||'<div class="empty">Nothing matches those filters.</div>';
+  bindPick('.card');
+}
+
+// Group by set family — "show me all the AngelicDress gear together", helmet included.
+// `family` normalises both naming conventions, so BerserkArmor + BerserkHelm, and
+// ArmorOfAncestors + HelmOfAncestors, land in the same group.
+function renderSets(all){
+  const fams=new Map();
+  all.forEach(i=>{ const k=i.family||i.sprite; if(!fams.has(k)) fams.set(k,[]); fams.get(k).push(i); });
+  const list=[...fams.entries()].slice(0,250);
+  shown.textContent=`${fams.size} sets${fams.size>250?' (showing 250)':''}`;
+  grid.innerHTML=list.map(([fam,pieces])=>{
+    pieces.sort((a,b)=>SLOT_ORDER.indexOf(a.slot)-SLOT_ORDER.indexOf(b.slot));
+    const done=pieces.filter(p=>isDone(p.id)).length;
+    const hasHelm=pieces.some(p=>p.slot==='Helmet');
+    return `<div class="set">
+      <div class="set-h"><b>${pieces[0].sprite}</b><span class="th">${eff(pieces[0],'theme')}</span>
+        ${hasHelm?'':'<span class="th" style="color:var(--warn)" title="no matching helmet found">no helm</span>'}
+        <span class="ct">${done}/${pieces.length} designed</span></div>
+      <div class="set-row">${pieces.map(p=>`
+        <div class="piece ${isDone(p.id)?'done':''} ${sel===p.id?'sel':''}" data-id="${p.id}" title="${p.name}">
+          <img src="../${art(p)}" loading="lazy" alt="">
+          <div class="sl">${SLOT_SHORT[p.slot]||p.slot}</div></div>`).join('')}</div></div>`;
+  }).join('')||'<div class="empty">Nothing matches those filters.</div>';
+  bindPick('.piece');
+}
+
+function bindPick(selector){
+  grid.querySelectorAll(selector).forEach(c=>c.onclick=()=>{
+    sel=c.dataset.id;renderGrid();editorFor(ITEMS.find(i=>i.id===sel));});
+}
+function editorFor(it){
+  const d=design[it.id]||{};
+  const rarity=d.rarity||it.rarity, theme=d.theme||it.theme;
+  const poolNames=[...new Set(engPool.flatMap(e=>(e.pools||'').split(',').map(s=>s.trim()).filter(Boolean)))];
+  editor.innerHTML=`
+    <div style="display:flex;gap:10px;align-items:center;min-width:0;flex-wrap:wrap">
+      <img class="big" src="../${it.icon}" alt="" title="icon">
+      <div style="min-width:0;flex:1">
+        <div style="font-weight:700;font-size:14px;overflow-wrap:anywhere">${it.sprite}</div>
+        <div style="font-size:12px;color:var(--muted)">${it.slot}${it.cls?' · '+it.cls:''}</div>
+        <div style="font:10.5px var(--mono);color:var(--accent);overflow-wrap:anywhere">${it.pack}</div>
+      </div>
+    </div>
+    <div class="idline">${it.id}</div>
+    <div class="row"><label>Theme</label><select id="eTheme">${THEMES.map(t=>`<option ${t===theme?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="row"><label>Rarity</label><select id="eRarity">${RARITIES.map(r=>`<option ${r===rarity?'selected':''}>${r}</option>`).join('')}</select></div>
+    <div class="row"><label>Verb</label><span class="verb" id="eVerb">${VERBS[rarity]}</span></div>
+    <hr>
+    <div class="row"><label>Item name</label><input id="eName" value="${esc(d.title||it.name)}" placeholder="Cinderking's Crown"></div>
+    <div class="row"><label>Affix</label><input id="eAffix" value="${esc(d.affix)}" placeholder="Max Health"></div>
+    <div class="row"><label>Roll range</label>
+      <input id="eMin" value="${esc(d.min)}" placeholder="min"><input id="eMax" value="${esc(d.max)}" placeholder="max">
+      <select id="eUnit" style="flex:0 0 70px"><option ${d.unit==='%'?'selected':''}>%</option><option ${d.unit==='flat'?'selected':''}>flat</option></select>
+    </div>
+    <p class="hint">Leave blank to roll from the <b>Affix Pool</b> instead.</p>
+    <hr>
+    <div class="row"><label>Signature</label><input id="eEngName" value="${esc(d.engName)}" placeholder="Bulwark"></div>
+    <textarea id="eEngraving" rows="3" placeholder="Start combat with a Shield equal to 15% Max Health">${d.engraving||''}</textarea>
+    <p class="hint" id="verbHint"></p>
+    <p class="hint">🔒 The signature is <b>fixed</b> — the item's identity, what players hunt and attune toward.</p>
+    <div id="rolledBox"></div>
+    <hr>
+    <div class="row"><label>Resonance</label><input id="eReq" value="${esc(d.req)}" placeholder="Absorb damage"></div>
+    <div class="tiers"><input id="eT1" value="${esc(d.t1)}" placeholder="T1"><input id="eT2" value="${esc(d.t2)}" placeholder="T2"><input id="eT3" value="${esc(d.t3)}" placeholder="T3"></div>
+    <hr>
+    <div class="row"><label>Notes</label></div>
+    <textarea id="eNotes" rows="2">${d.notes||''}</textarea>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="primary" style="flex:1" id="bSave">Save</button><button id="bClear">Clear</button>
+    </div>`;
+
+  const hint=()=>{
+    const r=eRarity.value;
+    eVerb.textContent=VERBS[r]; verbHint.innerHTML='<b>'+r+'</b>: '+VERBS[r];
+    rolledBox.innerHTML=(r==='Epic'||r==='Legendary')
+      ? `<p class="hint" style="color:var(--warn)">🎲 <b>${r}</b> also rolls a <b>second Engraving</b> from the pool at drop time. Which pool?</p>
+         <div class="row"><label>Roll pool</label><input id="ePool" list="poolList" value="${esc(d.pool)}" placeholder="defensive, ${theme}"></div>
+         <datalist id="poolList">${poolNames.map(p=>`<option value="${p}">`).join('')}</datalist>`
+      : '';
+  };
+  hint(); eRarity.onchange=hint;
+
+  bSave.onclick=()=>{
+    const p=document.getElementById('ePool');
+    design[it.id]={theme:eTheme.value,rarity:eRarity.value,title:eName.value.trim(),
+      affix:eAffix.value.trim(),min:eMin.value.trim(),max:eMax.value.trim(),unit:eUnit.value,
+      engName:eEngName.value.trim(),engraving:eEngraving.value.trim(),pool:p?p.value.trim():'',
+      req:eReq.value.trim(),t1:eT1.value.trim(),t2:eT2.value.trim(),t3:eT3.value.trim(),
+      notes:eNotes.value.trim(),slot:it.slot,sprite:it.sprite,icon:it.icon};
+    save();renderGrid();
+  };
+  bClear.onclick=()=>{delete design[it.id];save();renderGrid();editorFor(it);};
+}
+
+/* ---------- pools ---------- */
+function poolRow(arr,i,cols){
+  const r=arr[i];
+  return '<tr>'+cols.map(c=>{
+    if(c.type==='select')
+      return `<td><select data-i="${i}" data-k="${c.k}">${c.opts.map(o=>`<option ${r[c.k]===o?'selected':''}>${o}</option>`).join('')}</select></td>`;
+    return `<td><input data-i="${i}" data-k="${c.k}" value="${esc(r[c.k])}" placeholder="${c.ph||''}"></td>`;
+  }).join('')+`<td><button class="del" data-i="${i}">✕</button></td></tr>`;
+}
+function bindPool(tbody,arr,cols,rerender){
+  tbody.querySelectorAll('input,select').forEach(el=>{
+    el.onchange=()=>{arr[el.dataset.i][el.dataset.k]=el.value;save();};
+  });
+  tbody.querySelectorAll('.del').forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.i,1);save();rerender();});
+}
+const AFFIX_COLS=[{k:'name',ph:'Vitality'},{k:'stat',ph:'Max Health'},
+  {k:'unit',type:'select',opts:['%','flat']},{k:'min',ph:'8'},{k:'max',ph:'14'},
+  {k:'slots',ph:'any / Helmet, Boots'},{k:'themes',ph:'any / Aegis'},{k:'weight',ph:'10'}];
+const ENG_COLS=[{k:'name',ph:'Thorns'},{k:'text',ph:'Reflect 15% of damage taken'},
+  {k:'verb',type:'select',opts:VERBNAMES},{k:'pools',ph:'defensive'},{k:'slots',ph:'any'},{k:'weight',ph:'10'}];
+
+function renderAffix(){tAffix.innerHTML=affixPool.map((_,i)=>poolRow(affixPool,i,AFFIX_COLS)).join('')
+  ||'<tr><td colspan="9" class="empty">No affixes yet — add one, or seed the starter set.</td></tr>';
+  bindPool(tAffix,affixPool,AFFIX_COLS,renderAffix);}
+function renderEng(){tEng.innerHTML=engPool.map((_,i)=>poolRow(engPool,i,ENG_COLS)).join('')
+  ||'<tr><td colspan="7" class="empty">No engravings yet — add one, or seed the starter set.</td></tr>';
+  bindPool(tEng,engPool,ENG_COLS,renderEng);}
+
+addAffix.onclick=()=>{affixPool.push({name:'',stat:'',unit:'%',min:'',max:'',slots:'any',themes:'any',weight:'10'});save();renderAffix();};
+addEng.onclick=()=>{engPool.push({name:'',text:'',verb:'HOOK',pools:'',slots:'any',weight:'10'});save();renderEng();};
+
+seedAffix.onclick=()=>{
+  [['Vitality','Max Health','%',8,14,'any','any'],['Bulwark','Armor','flat',10,25,'Vest,Helmet','any'],
+   ['Might','Attack Damage','%',6,12,'any','any'],['Focus','Spell Damage','%',6,12,'any','any'],
+   ['Haste','Attack Speed','%',5,10,'Gloves,Boots','any'],['Precision','Crit Chance','%',4,9,'Gloves,Helmet','any'],
+   ['Savagery','Crit Damage','%',10,20,'any','any'],['Alacrity','Cooldown Reduction','%',5,10,'Helmet,Boots','any'],
+   ['Vampirism','Life Steal','%',3,7,'Gloves','any'],['Swiftness','Move Speed','%',5,10,'Boots','any'],
+   ['Warding','Fire Resist','flat',10,25,'any','Ember,Rime'],['Guarding','Block','flat',4,10,'Vest','Aegis,Vitality']]
+   .forEach(([name,stat,unit,min,max,slots,themes])=>affixPool.push({name,stat,unit,min:''+min,max:''+max,slots,themes,weight:'10'}));
+  save();renderAffix();
+};
+seedEng.onclick=()=>{
+  [['Thorns','Reflect 15% of damage taken to the attacker','HOOK','defensive'],
+   ['Second Wind','The first time you fall below 40% health, heal 10% Max Health','HOOK','defensive'],
+   ['Momentum','Gain 8% Move Speed for 3s after a kill','HOOK','mobility'],
+   ['Opportunist','+20% damage to enemies below 35% health','HOOK','offensive'],
+   ['Sturdy','Take 10% less damage while above 80% health','HOOK','defensive'],
+   ['Kindling','Your attacks apply a small Burn','HOOK','Ember'],
+   ['Chilling','Your attacks apply Chill','HOOK','Rime'],
+   ['Spiteful','Gain 2 Rage whenever you take damage','HOOK','Fury'],
+   ['Splitting','Every 4th attack strikes twice','AMPLIFY','offensive'],
+   ['Wide Arc','Your attacks cleave for 30% to nearby enemies','AMPLIFY','offensive'],
+   ['Contagious','Debuffs you apply spread on the target’s death','AMPLIFY','Corruption'],
+   ['Shared Ward','Shields you gain also apply to the nearest ally at 40%','AMPLIFY','Aegis'],
+   ['Forking','Your attacks chain to 1 additional enemy','AMPLIFY','Arcane,Storm'],
+   ['Enduring','Your buffs last 50% longer','AMPLIFY','defensive']]
+   .forEach(([name,text,verb,pools])=>engPool.push({name,text,verb,pools,slots:'any',weight:'10'}));
+  save();renderEng();
+};
+
+/* ---------- shared ---------- */
+function stats(){doneN.textContent=Object.keys(design).filter(isDone).length;totN.textContent=ITEMS.length;}
+next.onclick=()=>{const v=visible().filter(i=>!isDone(i.id));if(v.length){sel=v[0].id;renderGrid();editorFor(v[0]);}};
+search.oninput=e=>{F.q=e.target.value.toLowerCase();renderGrid();};
+bySet.onchange=()=>renderGrid();
+document.querySelectorAll('[name=st]').forEach(r=>r.onchange=e=>{F.status=e.target.value;renderGrid();});
+
+exp.onclick=()=>{
+  const b=new Blob([JSON.stringify(bundle(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='equipment-design.json';a.click();
+};
+imp.onclick=()=>{
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{const r=new FileReader();
+    r.onload=()=>{applyBundle(JSON.parse(r.result));save();renderGrid();renderAffix();renderEng();};
+    r.readAsText(e.target.files[0]);};
+  inp.click();
+};
+
+mkFilter(fPack,PACKS,'pack');mkFilter(fSlot,SLOTS,'slot');mkFilter(fTheme,THEMES,'theme');mkFilter(fRarity,RARITIES,'rarity');
+
+// Detect server mode; if present, the JSON file is the source of truth.
+fetch('/api/design').then(r=>r.ok?r.json():Promise.reject())
+  .then(j=>{
+    serverMode=true;
+    if(j&&((j.items&&j.items.length)||(j.affixPool&&j.affixPool.length))) applyBundle(j);
+    setSaveState('✓ auto-save on','var(--good)');
+    exp.textContent='Export copy';
+    stats();renderGrid();renderAffix();renderEng();
+  })
+  .catch(()=>{
+    setSaveState('local only — Export to save','var(--warn)');
+    exp.title='Not served by Tools/serve.js — work lives in browser storage until you export.';
+  });
+
+stats();renderGrid();renderAffix();renderEng();
+</script>
+</body>
+</html>

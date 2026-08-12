@@ -1,0 +1,27 @@
+{
+  "items": [
+    {
+      "id": "Extensions.AbandonedWorkshop.Helmet.ArcaneHat",
+      "theme": "Arcane",
+      "rarity": "Common",
+      "title": "ArcaneHat",
+      "affix": "",
+      "min": "",
+      "max": "",
+      "unit": "%",
+      "engName": "",
+      "engraving": "10% chance to cast primary ability again",
+      "pool": "",
+      "req": "",
+      "t1": "",
+      "t2": "",
+      "t3": "",
+      "notes": "",
+      "slot": "Helmet",
+      "sprite": "ArcaneHat",
+      "icon": "Assets/HeroEditor/Extensions/AbandonedWorkshop/Icons/Equipment/Helmet/AbandonedWorkshop/ArcaneHat.png"
+    }
+  ],
+  "affixPool": [],
+  "engravingPool": []
+}
