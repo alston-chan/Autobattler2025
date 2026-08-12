@@ -40,16 +40,14 @@ public class Health : MonoBehaviour
         currentHealth -= amount;
         if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
 
-        bool lethal = currentHealth <= 0;
-
-        // Visual hit feedback
-        // _entity.HitScale(); // bounce disabled for testing — re-enable for the squash juice
+        // Visual hit feedback — scale punch + red flash. Hitstop and flinch are spell-driven now
+        // (a spell calls ApplyHitstop / HitReact on hit), not applied to every hit — see ShockwaveSpell.
+        _entity.HitScale();
         _entity.HitAsRed(0.1f);
-        if (!lethal) _entity.HitReact(); // skip the flinch on a killing blow — the death anim takes over
 
         OnDamaged?.Invoke(amount, currentHealth);
 
-        if (!IsDead && lethal)
+        if (!IsDead && currentHealth <= 0)
         {
             Die();
         }

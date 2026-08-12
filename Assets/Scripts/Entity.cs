@@ -22,6 +22,7 @@ public class Entity : MonoBehaviour
     public Knockback Knockback { get; private set; }
     public CombatAI CombatAI { get; private set; }
     public EntityStats Stats { get; private set; }
+    public Hitstop Hitstop { get; private set; }
     #endregion
 
     #region Bow Aiming
@@ -94,6 +95,9 @@ public class Entity : MonoBehaviour
         Stats = GetComponent<EntityStats>();
         if (Stats == null) Stats = gameObject.AddComponent<EntityStats>();
 
+        Hitstop = GetComponent<Hitstop>();
+        if (Hitstop == null) Hitstop = gameObject.AddComponent<Hitstop>();
+
         // Apply UnitData if assigned, otherwise use serialized fields
         if (unitData != null)
         {
@@ -114,6 +118,7 @@ public class Entity : MonoBehaviour
 
         CombatAI.Initialize(this);
         Stats.Initialize(this);
+        Hitstop.Initialize(this);
 
         // Subscribe to death event for cleanup and round-end checks
         Health.OnDied += HandleDeath;
@@ -145,6 +150,10 @@ public class Entity : MonoBehaviour
     {
         if (!GameManager.Instance.isGameStarted) return;
         if (isDead) return;
+
+        // Hitstop freezes the entity: skip movement/knockback/AI while active.
+        // (Hitstop counts down in its own Update and freezes the animator itself.)
+        if (Hitstop != null && Hitstop.IsActive) return;
 
         Knockback.Tick();
         CombatAI.Tick();
@@ -214,6 +223,12 @@ public class Entity : MonoBehaviour
     public void ApplyKnockback(Vector3 direction, float force)
     {
         Knockback.Apply(direction, force);
+    }
+
+    /// <summary>Trigger a brief hitstop freeze-frame on this entity.</summary>
+    public void ApplyHitstop(float duration)
+    {
+        if (Hitstop != null) Hitstop.Freeze(duration);
     }
 
     public void EquipRandom()
