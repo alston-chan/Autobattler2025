@@ -41,7 +41,25 @@ public class CombatAI : MonoBehaviour
 
         _spellCooldowns = new float[_entity.spells.Count];
         for (int i = 0; i < _spellCooldowns.Length; i++)
-            _spellCooldowns[i] = _entity.spells[i].cooldown;
+            _spellCooldowns[i] = EffectiveCooldown(i);
+    }
+
+    /// <summary>
+    /// Cooldown for a spell, shortened by the entity's attack speed for weapon attacks
+    /// (melee/bow). Non-weapon spells use their raw cooldown.
+    /// </summary>
+    private float EffectiveCooldown(int spellIndex)
+    {
+        var spell = _entity.spells[spellIndex];
+        if (spell == null) return 0f;
+
+        float cd = spell.cooldown;
+        if (spell.ScalesWithAttackSpeed && _entity.Stats != null && _entity.Stats.AttackSpeed != null)
+        {
+            float atk = _entity.Stats.AttackSpeed.Value;
+            if (atk > 0.01f) cd /= atk;
+        }
+        return cd;
     }
 
     public void Tick()
@@ -177,7 +195,7 @@ public class CombatAI : MonoBehaviour
     private IEnumerator CastSpellWithCooldown(int spellIndex, Entity target)
     {
         _isAttacking = true;
-        _spellCooldowns[spellIndex] = _entity.spells[spellIndex].cooldown;
+        _spellCooldowns[spellIndex] = EffectiveCooldown(spellIndex);
         yield return StartCoroutine(_entity.spells[spellIndex].Cast(_entity, target));
         _isAttacking = false;
     }

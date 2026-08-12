@@ -731,6 +731,7 @@ MonoBehaviour:
   unitData: {fileID: 0}
   maxHealth: 100
   healthBarOffset: {x: 0, y: 1.5, z: 1}
+  attackSpeed: 1
   isRanged: 1
   fireTransform: {fileID: 4059777504579930}
   spells: []
@@ -831,6 +832,7 @@ MonoBehaviour:
   _maxHealth: 0
   _speed: 0
   _blocking: 0
+  _attackSpeed: 0
 --- !u!1 &1148429461579488
 GameObject:
   m_ObjectHideFlags: 0

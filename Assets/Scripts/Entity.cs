@@ -54,6 +54,10 @@ public class Entity : MonoBehaviour
     /// <summary>Convenience accessor. Always reads from Health component — no stale copies.</summary>
     public float currentHealth => Health != null ? Health.currentHealth : 0f;
 
+    [Header("Attack")]
+    [Tooltip("Attacks-per-second multiplier for weapon spells (melee/bow). 1 = normal speed.")]
+    public float attackSpeed = 1f;
+
     [Header("Ranged/Bow")]
     [SerializeField] private bool isRanged = false;
     public bool IsRanged => unitData != null ? unitData.isRanged : isRanged;
@@ -95,6 +99,7 @@ public class Entity : MonoBehaviour
         {
             isCharacter = unitData.isCharacter;
             maxHealth = unitData.maxHealth;
+            attackSpeed = unitData.attackSpeed;
             healthBarOffset = unitData.healthBarOffset;
             if (unitData.spells != null && unitData.spells.Count > 0)
                 spells = new List<Spell>(unitData.spells);
@@ -194,6 +199,16 @@ public class Entity : MonoBehaviour
             character.HitAsScale();
         else if (monster != null)
             monster.Spring();
+    }
+
+    /// <summary>
+    /// Play a hit-reaction (flinch/stagger) animation. Characters have a dedicated Hit
+    /// animation; monsters have no hurt state, so they rely on the squash from HitScale().
+    /// </summary>
+    public void HitReact()
+    {
+        if (character != null)
+            character.Hit();
     }
 
     public void ApplyKnockback(Vector3 direction, float force)

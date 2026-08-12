@@ -20,10 +20,18 @@ public class MeleeAttackSpell : Spell
     private const string CharacterHitEvent = "Hit";
     private const string MonsterHitEvent = "Attack";
 
+    // Basic weapon attack — its rate scales with the caster's AttackSpeed.
+    public override bool ScalesWithAttackSpeed => true;
+
     public override bool CanCast(Entity caster, Entity target) => target != null;
 
     public override IEnumerator Cast(Entity caster, Entity target)
     {
+        // Play the swing at attack-speed so the visual (and its 'Hit' event) stays in sync.
+        float attackSpeed = GetAttackSpeed(caster);
+        Animator animator = GetAnimator(caster);
+        if (animator != null) animator.speed = attackSpeed;
+
         // Trigger the swing animation.
         if (caster.isCharacter && caster.character != null)
         {
@@ -38,7 +46,11 @@ public class MeleeAttackSpell : Spell
         }
 
         // Land damage on the animation's real contact frame instead of a fixed guess.
-        yield return WaitForAnimationEvent(caster, CharacterHitEvent, MonsterHitEvent, hitDelayFallback, maxHitWait);
+        // Timing tolerances scale with attack speed since the whole swing is sped up/slowed down.
+        yield return WaitForAnimationEvent(caster, CharacterHitEvent, MonsterHitEvent,
+            hitDelayFallback / attackSpeed, maxHitWait / attackSpeed);
+
+        if (animator != null) animator.speed = 1f;
 
         // The target may have died or despawned during the wind-up.
         if (target == null || target.isDead) yield break;

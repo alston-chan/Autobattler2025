@@ -15,6 +15,7 @@ public class EntityStats : MonoBehaviour
     public CharacterStat MaxHealth { get; private set; }
     public CharacterStat Speed { get; private set; }
     public CharacterStat Blocking { get; private set; }
+    public CharacterStat AttackSpeed { get; private set; }
 
     // ── Inspector readout (read-only at runtime) ──
     [Header("Live Stats (read-only)")]
@@ -22,6 +23,7 @@ public class EntityStats : MonoBehaviour
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _speed;
     [SerializeField] private float _blocking;
+    [SerializeField] private float _attackSpeed;
 
     /// <summary>Fired after any modifier is added or removed so UI can refresh.</summary>
     public event Action OnStatsChanged;
@@ -46,6 +48,7 @@ public class EntityStats : MonoBehaviour
         MaxHealth = new CharacterStat(_entity.maxHealth);
         Speed = new CharacterStat(_entity.unitData != null ? _entity.unitData.moveSpeed : 3f);
         Blocking = new CharacterStat(0f);
+        AttackSpeed = new CharacterStat(_entity.attackSpeed);
 
         RefreshInspector();
     }
@@ -103,6 +106,7 @@ public class EntityStats : MonoBehaviour
         _maxHealth = MaxHealth?.Value ?? 0f;
         _speed = Speed?.Value ?? 0f;
         _blocking = Blocking?.Value ?? 0f;
+        _attackSpeed = AttackSpeed?.Value ?? 0f;
     }
 
     /// <summary>
@@ -112,10 +116,11 @@ public class EntityStats : MonoBehaviour
     {
         return new Dictionary<string, float>
         {
-            { "Damage",     Damage.Value },
-            { "Max Health", MaxHealth.Value },
-            { "Speed",      Speed.Value },
-            { "Blocking",   Blocking.Value },
+            { "Damage",       Damage.Value },
+            { "Max Health",   MaxHealth.Value },
+            { "Speed",        Speed.Value },
+            { "Blocking",     Blocking.Value },
+            { "Attack Speed", AttackSpeed.Value },
         };
     }
 }

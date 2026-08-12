@@ -11,6 +11,9 @@ public class BowAttackSpell : Spell
     public float chargeTime = 0.5f;
     public AnimationClip clipCharge;
 
+    // Basic weapon attack — its rate scales with the caster's AttackSpeed.
+    public override bool ScalesWithAttackSpeed => true;
+
     private void Reset()
     {
         range = 15f; // Sensible default for a NEW bow asset; override per-asset in the Inspector.
@@ -20,9 +23,15 @@ public class BowAttackSpell : Spell
 
     public override IEnumerator Cast(Entity caster, Entity target)
     {
+        if (caster.character == null) yield break; // bow attacks are character-only
+
+        // Draw at attack-speed: faster attack speed = quicker draw and shorter charge.
+        float attackSpeed = GetAttackSpeed(caster);
+        Animator animator = caster.character.Animator;
+
         caster.character.GetReady();
-        float actualChargeTime = chargeTime;
-        if (clipCharge != null) actualChargeTime = clipCharge.length;
+        float actualChargeTime = (clipCharge != null ? clipCharge.length : chargeTime) / attackSpeed;
+        if (animator != null) animator.speed = attackSpeed;
         caster.character.Animator.SetInteger("Charge", 1);
         yield return new WaitForSeconds(actualChargeTime);
         caster.character.Animator.SetInteger("Charge", 2);
@@ -46,6 +55,8 @@ public class BowAttackSpell : Spell
                 projectile.target = target;
             }
         }
-        yield return new WaitForSeconds(0.1f);
+
+        if (animator != null) animator.speed = 1f;
+        yield return new WaitForSeconds(0.1f / attackSpeed);
     }
 }

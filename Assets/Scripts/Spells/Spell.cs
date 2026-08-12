@@ -13,6 +13,27 @@ public abstract class Spell : ScriptableObject
     public abstract IEnumerator Cast(Entity caster, Entity target);
 
     /// <summary>
+    /// True for basic weapon attacks (melee/bow) whose rate scales with the caster's AttackSpeed.
+    /// Other spells scale with cooldown reduction instead and should leave this false.
+    /// </summary>
+    public virtual bool ScalesWithAttackSpeed => false;
+
+    /// <summary>Caster's current attack-speed multiplier (clamped above zero), or 1 if unavailable.</summary>
+    protected float GetAttackSpeed(Entity caster)
+        => (caster != null && caster.Stats != null && caster.Stats.AttackSpeed != null)
+            ? Mathf.Max(0.01f, caster.Stats.AttackSpeed.Value)
+            : 1f;
+
+    /// <summary>The Animator that plays the caster's attack animation (character or monster).</summary>
+    protected Animator GetAnimator(Entity caster)
+    {
+        if (caster == null) return null;
+        if (caster.isCharacter && caster.character != null) return caster.character.Animator;
+        if (caster.monster != null) return caster.monster.Animator;
+        return null;
+    }
+
+    /// <summary>
     /// Waits until the caster's animation reaches a named event, then returns — so effects
     /// (damage, projectile spawn, VFX) land on the real animation keyframe instead of a guess.
     /// Characters fire events on HeroEditor <see cref="AnimationEvents"/>; monsters fire them on

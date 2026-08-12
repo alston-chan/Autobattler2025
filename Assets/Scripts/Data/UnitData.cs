@@ -16,6 +16,8 @@ public class UnitData : ScriptableObject
     [Header("Stats")]
     public float maxHealth = 100f;
     public float moveSpeed = 3f;
+    [Tooltip("Attacks-per-second multiplier for weapon spells (melee/bow). 1 = normal speed.")]
+    public float attackSpeed = 1f;
 
     [Header("Combat")]
     public float separationDistance = 1.0f;

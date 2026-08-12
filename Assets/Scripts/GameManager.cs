@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
 
@@ -36,6 +37,13 @@ public class GameManager : Singleton<GameManager>
 
     void Update()
     {
+        // Reload the whole scene for a fresh fight.
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            return;
+        }
+
         if (!isGameStarted && Input.GetKeyDown(KeyCode.Space))
         {
             StateMachine.TransitionTo(GameState.Combat);
