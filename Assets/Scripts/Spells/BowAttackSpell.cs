@@ -11,9 +11,9 @@ public class BowAttackSpell : Spell
     public float chargeTime = 0.5f;
     public AnimationClip clipCharge;
 
-    private void OnEnable()
+    private void Reset()
     {
-        range = 15f; // Default bow range, can be overridden per asset
+        range = 15f; // Sensible default for a NEW bow asset; override per-asset in the Inspector.
     }
 
     public override bool CanCast(Entity caster, Entity target) => target != null;
