@@ -18,5 +18,7 @@ MonoBehaviour:
   alwaysOn: 1
   damage: 10
   radius: 3
-  knockbackForce: 10
+  knockbackForce: 12
   shockwaveEffectPrefab: {fileID: 5112403345868107898, guid: 6f34ef0d986e9db4199cf75805f79753, type: 3}
+  hitstopDuration: 0.25
+  freezeEntireBattlefield: 0

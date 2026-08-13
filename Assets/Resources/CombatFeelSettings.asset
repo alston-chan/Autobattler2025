@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcca2034da0291f4191ef56b8a40065b, type: 3}
+  m_Name: CombatFeelSettings
+  m_EditorClassIdentifier: 
+  hitFeedback:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
+  healthBar:
+    chipTrail: 1
+    chipDelay: 0.25
+    chipDrainSpeed: 1.2
+    chipColor: {r: 1, g: 0.82, b: 0.25, a: 1}
+    hitFlash: 0
+    flashDuration: 0.1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    shake: 1
+    shakeAmount: 0.06
+    shakeDuration: 0.14
+    shakeDamageScale: 3
+    segmentPercent: 0
+    segmentColor: {r: 0, g: 0, b: 0, a: 0.55}
+  manaBar:
+    chipTrail: 1
+    chipDelay: 0.25
+    chipDrainSpeed: 1.2
+    chipColor: {r: 0.65, g: 0.85, b: 1, a: 1}
+    hitFlash: 0
+    flashDuration: 0.1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    shake: 0
+    shakeAmount: 0.06
+    shakeDuration: 0.14
+    shakeDamageScale: 3
+    segmentPercent: 0
+    segmentColor: {r: 0, g: 0, b: 0, a: 0.55}

@@ -40,10 +40,13 @@ public class Health : MonoBehaviour
         currentHealth -= amount;
         if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
 
-        // Visual hit feedback — scale punch + red flash. Hitstop and flinch are spell-driven now
-        // (a spell calls ApplyHitstop / HitReact on hit), not applied to every hit — see ShockwaveSpell.
-        _entity.HitScale();
-        _entity.HitAsRed(0.1f);
+        // Visual hit feedback — flash / shake / squash, all configurable on the HitFeedback component.
+        // Hitstop and flinch are spell-driven (a spell calls ApplyHitstop / HitReact), not per-hit.
+        if (_entity.HitFeedback != null)
+            _entity.HitFeedback.Play(maxHealth > 0f ? amount / maxHealth : 0f);
+
+        // Mana charges from participation — taking hits is the secondary source.
+        if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
 
         OnDamaged?.Invoke(amount, currentHealth);
 

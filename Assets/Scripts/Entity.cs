@@ -23,6 +23,8 @@ public class Entity : MonoBehaviour
     public CombatAI CombatAI { get; private set; }
     public EntityStats Stats { get; private set; }
     public Hitstop Hitstop { get; private set; }
+    public Mana Mana { get; private set; }
+    public HitFeedback HitFeedback { get; private set; }
     #endregion
 
     #region Bow Aiming
@@ -98,6 +100,12 @@ public class Entity : MonoBehaviour
         Hitstop = GetComponent<Hitstop>();
         if (Hitstop == null) Hitstop = gameObject.AddComponent<Hitstop>();
 
+        Mana = GetComponent<Mana>();
+        if (Mana == null) Mana = gameObject.AddComponent<Mana>();
+
+        HitFeedback = GetComponent<HitFeedback>();
+        if (HitFeedback == null) HitFeedback = gameObject.AddComponent<HitFeedback>();
+
         // Apply UnitData if assigned, otherwise use serialized fields
         if (unitData != null)
         {
@@ -119,6 +127,8 @@ public class Entity : MonoBehaviour
         CombatAI.Initialize(this);
         Stats.Initialize(this);
         Hitstop.Initialize(this);
+        Mana.Initialize(this);
+        HitFeedback.Initialize(this);
 
         // Subscribe to death event for cleanup and round-end checks
         Health.OnDied += HandleDeath;
@@ -137,9 +147,8 @@ public class Entity : MonoBehaviour
 
     private void HandleDeath()
     {
-        // Clean up health bar (ownership is here, not in Health)
-        if (Health.healthBar != null)
-            Destroy(Health.healthBar.gameObject);
+        // Bars are owned by UnitBarsManager, which tears them down on EntityRegistry.OnUnregistered
+        // (fired from OnDisable). Whoever creates a thing destroys it.
 
         // Notify GameManager for win/lose evaluation
         if (GameManager.Instance != null)

@@ -388,6 +388,8 @@ GameObject:
   - component: {fileID: -2952166528620030506}
   - component: {fileID: 2573757335595155163}
   - component: {fileID: 7172987804393899412}
+  - component: {fileID: 8721460246520577659}
+  - component: {fileID: 7498662338395567709}
   m_Layer: 0
   m_Name: HumanPrefab
   m_TagString: Untagged
@@ -833,6 +835,47 @@ MonoBehaviour:
   _speed: 0
   _blocking: 0
   _attackSpeed: 0
+--- !u!114 &8721460246520577659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109986072035710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
+--- !u!114 &7498662338395567709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109986072035710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac6a7c8f35eb6d409577d2826d93fb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMana: 100
+  currentMana: 0
+  gainPerAttack: 12
+  gainPerDamageTaken: 0.15
+  manaBarOffset: {x: 0, y: 2.75, z: 1}
+  manaBar: {fileID: 0}
 --- !u!1 &1148429461579488
 GameObject:
   m_ObjectHideFlags: 0

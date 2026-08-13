@@ -194,9 +194,14 @@ public class CombatAI : MonoBehaviour
 
     private IEnumerator CastSpellWithCooldown(int spellIndex, Entity target)
     {
+        var spell = _entity.spells[spellIndex];
         _isAttacking = true;
         _spellCooldowns[spellIndex] = EffectiveCooldown(spellIndex);
-        yield return StartCoroutine(_entity.spells[spellIndex].Cast(_entity, target));
+        yield return StartCoroutine(spell.Cast(_entity, target));
+
+        // Weapon attacks are the primary mana source — so Attack Speed accelerates ults too.
+        if (spell.ScalesWithAttackSpeed && _entity.Mana != null) _entity.Mana.OnBasicAttack();
+
         _isAttacking = false;
     }
 

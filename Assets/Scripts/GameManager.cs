@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
     public GameObject avatarUI;
 
+    [Tooltip("Handed to UnitBarsManager at startup — bar appearance is tuned there.")]
     public GameObject healthBarsOrganizer;
     public GameObject resourceBarPrefab;
 
@@ -30,7 +31,8 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         CreateAvatarUI();
-        InstantiateHealthBars();
+        SetupUnitBars();
+        BuildRoster();
 
         SetupCharacterInventories();
     }
@@ -40,6 +42,8 @@ public class GameManager : Singleton<GameManager>
         // Reload the whole scene for a fresh fight.
         if (Input.GetKeyDown(KeyCode.R))
         {
+            // EntityRegistry is static and survives the reload — drop stale entries first.
+            EntityRegistry.Clear();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             return;
         }
@@ -86,28 +90,24 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void InstantiateHealthBars()
+    /// <summary>
+    /// Hands the bar prefab + parent to <see cref="UnitBarsManager"/>, which then provisions bars
+    /// for every entity via EntityRegistry lifecycle events — including anything summoned later.
+    /// </summary>
+    private void SetupUnitBars()
     {
-        var entities = EntityRegistry.All;
-        foreach (Entity entity in entities)
-        {
-            GameObject healthBarObj = Instantiate(resourceBarPrefab, healthBarsOrganizer.transform);
-            ResourceBar healthBar = healthBarObj.GetComponent<ResourceBar>();
-            healthBarObj.transform.localScale = entity.transform.localScale;
-            entity.healthBar = healthBar;
-            entity.Health.healthBar.SetSize(entity.Health.currentHealth / entity.Health.maxHealth);
+        var bars = GetComponent<UnitBarsManager>();
+        if (bars == null) bars = gameObject.AddComponent<UnitBarsManager>();
+        bars.Configure(resourceBarPrefab, healthBarsOrganizer != null ? healthBarsOrganizer.transform : null);
+    }
 
-            if (!entity.isTeam)
-            {
-                healthBar.SetColor(Color.red);
-            }
-            healthBar.entity = entity;
-
+    /// <summary>Collect the player-controlled characters for inventory setup.</summary>
+    private void BuildRoster()
+    {
+        allyCharacters.Clear();
+        foreach (Entity entity in EntityRegistry.All)
             if (entity.isTeam && entity.isCharacter)
-            {
-                GameManager.Instance.allyCharacters.Add(entity);
-            }
-        }
+                allyCharacters.Add(entity);
     }
 
     public void SetupCharacterInventories()
