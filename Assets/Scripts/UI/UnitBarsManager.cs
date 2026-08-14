@@ -29,6 +29,12 @@ public class UnitBarsManager : MonoBehaviour
 
     public enum BarPlacement { AboveHead, BelowFeet }
 
+    // Bar layering (in-front vs behind characters) is toggled on CombatFeelSettings so it's
+    // Inspector-testable — this manager is added at runtime, so its own fields aren't reachable.
+    private const string FrontSortingLayer = "UI";       // above the Default character layer
+    private const string BehindSortingLayer = "Default";  // same layer as characters…
+    private const int BehindOrderShift = -500;            // …but shifted below them (above the bg at -1000)
+
     [Header("Health bar")]
     [SerializeField] private Color allyColor = Color.green;
     [SerializeField] private Color enemyColor = Color.red;
@@ -155,7 +161,23 @@ public class UnitBarsManager : MonoBehaviour
         bar.offset = offset;
         bar.Apply(effects);     // settings must land before the first SetSize
         bar.SetColor(color);
+        ApplyLayering(bar);     // after Apply, so the chip + segment renderers exist
         return bar;
+    }
+
+    /// <summary>
+    /// Push the whole bar (fill, chip, frame, ticks) in front of or behind the characters. In-front
+    /// keeps the prefab's UI layer; behind moves it to the character layer with a negative order shift
+    /// so it sits under the units but over the background.
+    /// </summary>
+    private void ApplyLayering(ResourceBar bar)
+    {
+        bool behind = CombatFeelSettings.Active.barLayering == CombatFeelSettings.BarLayering.BehindCharacters;
+        foreach (var sr in bar.GetComponentsInChildren<SpriteRenderer>(true))
+        {
+            sr.sortingLayerName = behind ? BehindSortingLayer : FrontSortingLayer;
+            if (behind) sr.sortingOrder += BehindOrderShift;   // preserves the bar's internal order
+        }
     }
 
     private void Despawn(Entity entity)

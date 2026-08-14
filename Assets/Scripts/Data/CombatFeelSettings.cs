@@ -13,6 +13,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/Combat Feel Settings", fileName = "CombatFeelSettings")]
 public class CombatFeelSettings : ScriptableObject
 {
+    /// <summary>Whether the health/mana bars draw over the characters or behind them.</summary>
+    public enum BarLayering { InFrontOfCharacters, BehindCharacters }
+
     private const string ResourcePath = "CombatFeelSettings";
 
     [Header("Character hit feedback")]
@@ -26,6 +29,11 @@ public class CombatFeelSettings : ScriptableObject
 
     [Header("Ability feedback")]
     public AbilityFeedback.Settings abilityFeedback = new AbilityFeedback.Settings();
+
+    [Header("Bars")]
+    [Tooltip("InFront: bars draw over the characters (on the UI layer).\n" +
+             "Behind: characters draw over the bars. Flip this and press R to compare.")]
+    public BarLayering barLayering = BarLayering.InFrontOfCharacters;
 
     [Header("Health bar")]
     public ResourceBar.BarEffects healthBar = new ResourceBar.BarEffects();
