@@ -18,6 +18,11 @@ public class CombatAI : MonoBehaviour
     private bool _isAttacking;
     private float[] _spellCooldowns;
 
+    // The spells this unit actually casts this combat: its innate spells (weapon basic + always-on)
+    // plus the ONE active learnable spell from its slots. Built at Initialize — the active slot is a
+    // pre-combat choice, fixed for the fight, so no mid-combat resizing is needed.
+    private List<Spell> _spells;
+
     private Entity _entity;
 
     /// <summary>The current enemy target this entity is pursuing.</summary>
@@ -35,11 +40,16 @@ public class CombatAI : MonoBehaviour
             separationStrength = _entity.unitData.separationStrength;
         }
 
-        // Set attack range from first spell if available
-        if (_entity.spells != null && _entity.spells.Count > 0 && _entity.spells[0] != null)
-            _attackRange = _entity.spells[0].range;
+        // Combat spell set = innate spells + the single active learnable spell.
+        _spells = new List<Spell>();
+        if (_entity.spells != null) _spells.AddRange(_entity.spells);
+        if (_entity.ActiveSpell != null) _spells.Add(_entity.ActiveSpell);
 
-        _spellCooldowns = new float[_entity.spells.Count];
+        // Set attack range from the first innate spell (the weapon basic attack).
+        if (_spells.Count > 0 && _spells[0] != null)
+            _attackRange = _spells[0].range;
+
+        _spellCooldowns = new float[_spells.Count];
         for (int i = 0; i < _spellCooldowns.Length; i++)
             _spellCooldowns[i] = EffectiveCooldown(i);
     }
@@ -50,7 +60,7 @@ public class CombatAI : MonoBehaviour
     /// </summary>
     private float EffectiveCooldown(int spellIndex)
     {
-        var spell = _entity.spells[spellIndex];
+        var spell = _spells[spellIndex];
         if (spell == null) return 0f;
 
         float cd = spell.cooldown;
@@ -171,12 +181,12 @@ public class CombatAI : MonoBehaviour
 
     private void Attack(Entity target)
     {
-        if (_isAttacking || target == null || _entity.spells == null || _entity.spells.Count == 0) return;
+        if (_isAttacking || target == null || _spells == null || _spells.Count == 0) return;
 
         // Pass 1: an affordable cost ability (ult) preempts the basic attack — cast-on-full.
-        for (int i = 0; i < _entity.spells.Count; i++)
+        for (int i = 0; i < _spells.Count; i++)
         {
-            var spell = _entity.spells[i];
+            var spell = _spells[i];
             if (spell == null || spell.alwaysOn || !spell.IsUltimate) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
             if (!spell.MeetsWeaponRequirement(_entity)) continue;   // wrong weapon → ability inert
@@ -187,9 +197,9 @@ public class CombatAI : MonoBehaviour
         }
 
         // Pass 2: otherwise the first ready basic attack (the mana charger).
-        for (int i = 0; i < _entity.spells.Count; i++)
+        for (int i = 0; i < _spells.Count; i++)
         {
-            var spell = _entity.spells[i];
+            var spell = _spells[i];
             if (spell == null || spell.alwaysOn || spell.IsUltimate) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
             if (!spell.MeetsWeaponRequirement(_entity)) continue;
@@ -201,10 +211,10 @@ public class CombatAI : MonoBehaviour
 
     private void TryAlwaysOnSpells()
     {
-        for (int i = 0; i < _entity.spells.Count; i++)
+        for (int i = 0; i < _spells.Count; i++)
         {
-            if (_entity.spells[i] != null && _entity.spells[i].alwaysOn &&
-                _entity.spells[i].CanCast(_entity, null) && _spellCooldowns[i] <= 0)
+            if (_spells[i] != null && _spells[i].alwaysOn &&
+                _spells[i].CanCast(_entity, null) && _spellCooldowns[i] <= 0)
             {
                 StartCoroutine(CastSpellWithCooldown(i, null));
                 break;
@@ -214,7 +224,7 @@ public class CombatAI : MonoBehaviour
 
     private IEnumerator CastSpellWithCooldown(int spellIndex, Entity target)
     {
-        var spell = _entity.spells[spellIndex];
+        var spell = _spells[spellIndex];
         _isAttacking = true;
         _spellCooldowns[spellIndex] = EffectiveCooldown(spellIndex);
 

@@ -67,8 +67,25 @@ public class Entity : MonoBehaviour
     public bool IsRanged => unitData != null ? unitData.isRanged : isRanged;
     public Transform fireTransform;
 
-    [Header("Spells")]
+    [Header("Innate spells")]
+    [Tooltip("Always-available spells: the weapon basic attack and any always-on spells. NOT the " +
+             "learnable ability loadout — those live in spellSlots.")]
     public List<Spell> spells;
+
+    [Header("Spell slots (learnable, hero-bound)")]
+    [Tooltip("Up to 3 spells this character has learned. Bound to this character — they never move " +
+             "to another. Only the ACTIVE slot is cast in combat; the other two are reserves the " +
+             "player swaps between fights.")]
+    public List<Spell> spellSlots = new List<Spell>();
+    [Tooltip("Which slot (0-based) is the one cast in combat.")]
+    public int activeSpellSlot = 0;
+
+    public const int MaxSpellSlots = 3;
+
+    /// <summary>The single learnable spell cast in combat — the active slot's spell, or null.</summary>
+    public Spell ActiveSpell =>
+        spellSlots != null && activeSpellSlot >= 0 && activeSpellSlot < spellSlots.Count
+            ? spellSlots[activeSpellSlot] : null;
     #endregion
 
     // Convenience — kept so existing code (spells, projectiles) still compiles
