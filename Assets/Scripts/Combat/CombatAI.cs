@@ -179,6 +179,7 @@ public class CombatAI : MonoBehaviour
             var spell = _entity.spells[i];
             if (spell == null || spell.alwaysOn || !spell.IsUltimate) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
+            if (!spell.MeetsWeaponRequirement(_entity)) continue;   // wrong weapon → ability inert
             if (_entity.Mana == null || _entity.Mana.currentMana < spell.manaCost) continue;
 
             StartCoroutine(CastSpellWithCooldown(i, target));
@@ -191,6 +192,7 @@ public class CombatAI : MonoBehaviour
             var spell = _entity.spells[i];
             if (spell == null || spell.alwaysOn || spell.IsUltimate) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
+            if (!spell.MeetsWeaponRequirement(_entity)) continue;
 
             StartCoroutine(CastSpellWithCooldown(i, target));
             return;

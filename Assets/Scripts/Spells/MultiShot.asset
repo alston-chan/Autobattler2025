@@ -17,6 +17,7 @@ MonoBehaviour:
   range: 15
   alwaysOn: 0
   manaCost: 100
+  weaponRequirement: 2
   arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
   targetCount: 3
   damagePerArrow: 1

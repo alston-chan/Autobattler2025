@@ -1,6 +1,14 @@
 using System.Collections;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
+using HeroEditor.Common.Enums;
 using UnityEngine;
+
+/// <summary>
+/// The kind of weapon a character must have equipped for an ability to work. Abilities are learned
+/// from spellbooks (Docs), but stay thematically coherent — arrows need a bow, slashes need a melee
+/// weapon. Groups HeroEditor's granular WeaponType (Melee1H/2H/Paired, Bow, …) into game classes.
+/// </summary>
+public enum WeaponClass { Any, Melee, Bow }
 
 public abstract class Spell : ScriptableObject
 {
@@ -17,6 +25,32 @@ public abstract class Spell : ScriptableObject
 
     /// <summary>A cost ability (ultimate) rather than a free basic attack.</summary>
     public bool IsUltimate => manaCost > 0f;
+
+    [Tooltip("Which weapon the caster must have equipped. A spellbook can teach Multi Shot, but it " +
+             "only works while a bow is held. 'Any' skips the check (e.g. a self-buff).")]
+    public WeaponClass weaponRequirement = WeaponClass.Any;
+
+    /// <summary>
+    /// True when the caster's equipped weapon satisfies <see cref="weaponRequirement"/>. Monsters have
+    /// no weapon rig, so they count as melee brawlers.
+    /// </summary>
+    public bool MeetsWeaponRequirement(Entity caster)
+    {
+        if (weaponRequirement == WeaponClass.Any) return true;
+        if (caster == null || caster.character == null)
+            return weaponRequirement == WeaponClass.Melee;
+
+        WeaponType wt = caster.character.WeaponType;
+        switch (weaponRequirement)
+        {
+            case WeaponClass.Bow:
+                return wt == WeaponType.Bow;
+            case WeaponClass.Melee:
+                return wt == WeaponType.Melee1H || wt == WeaponType.Melee2H || wt == WeaponType.MeleePaired;
+            default:
+                return true;
+        }
+    }
 
     public abstract bool CanCast(Entity caster, Entity target);
     public abstract IEnumerator Cast(Entity caster, Entity target);

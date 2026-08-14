@@ -17,6 +17,7 @@ MonoBehaviour:
   range: 1.6
   alwaysOn: 0
   manaCost: 100
+  weaponRequirement: 1
   strikes: 2
   damagePerStrike: 1
   knockbackForce: 4

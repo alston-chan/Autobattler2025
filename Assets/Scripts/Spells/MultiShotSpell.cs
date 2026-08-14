@@ -30,6 +30,7 @@ public class MultiShotSpell : Spell
         range = 15f;
         cooldown = 0f;      // gated by mana, not a clock
         manaCost = 100f;    // = default Mana.maxMana → fires when the bar is full
+        weaponRequirement = WeaponClass.Bow;
     }
 
     public override bool CanCast(Entity caster, Entity target)

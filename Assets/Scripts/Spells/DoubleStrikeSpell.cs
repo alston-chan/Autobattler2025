@@ -28,6 +28,7 @@ public class DoubleStrikeSpell : Spell
         range = 1.6f;
         cooldown = 0f;      // gated by mana, not a clock
         manaCost = 100f;    // = default Mana.maxMana → fires when the bar is full
+        weaponRequirement = WeaponClass.Melee;
     }
 
     public override bool CanCast(Entity caster, Entity target) => target != null && !target.isDead;
