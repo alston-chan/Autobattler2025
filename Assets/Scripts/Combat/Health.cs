@@ -17,8 +17,8 @@ public class Health : MonoBehaviour
 
     public ResourceBar healthBar;
 
-    /// <summary>Fired when this entity takes damage. Args: damage amount, current health.</summary>
-    public event Action<float, float> OnDamaged;
+    /// <summary>Fired when this entity takes damage. See <see cref="DamageInfo"/> for the payload.</summary>
+    public event Action<DamageInfo> OnDamaged;
 
     /// <summary>Fired when this entity dies.</summary>
     public event Action OnDied;
@@ -34,11 +34,12 @@ public class Health : MonoBehaviour
     }
 
     /// <summary>
-    /// Apply damage. <paramref name="source"/> is optional and only drives feedback — which way the
-    /// body falls, who gets the kill freeze-frame. Damage itself never depends on it, so callers
-    /// that genuinely have no attacker (burn, decay) can leave it null.
+    /// Apply damage. <paramref name="source"/> and <paramref name="isCrit"/> are optional and only
+    /// drive feedback — which way the body falls, who gets the kill freeze-frame, and whether the
+    /// damage number reads as a crit. Damage itself never depends on them, so callers with no real
+    /// attacker (burn, decay) can leave them defaulted.
     /// </summary>
-    public void TakeDamage(float amount, Entity source = null)
+    public void TakeDamage(float amount, Entity source = null, bool isCrit = false)
     {
         if (IsDead) return;
 
@@ -53,7 +54,7 @@ public class Health : MonoBehaviour
         // Mana charges from participation — taking hits is the secondary source.
         if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
 
-        OnDamaged?.Invoke(amount, currentHealth);
+        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit));
 
         if (!IsDead && currentHealth <= 0)
         {

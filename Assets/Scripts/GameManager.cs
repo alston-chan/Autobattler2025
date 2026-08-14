@@ -32,6 +32,7 @@ public class GameManager : Singleton<GameManager>
     {
         CreateAvatarUI();
         SetupUnitBars();
+        SetupDamageNumbers();
         BuildRoster();
 
         SetupCharacterInventories();
@@ -99,6 +100,16 @@ public class GameManager : Singleton<GameManager>
         var bars = GetComponent<UnitBarsManager>();
         if (bars == null) bars = gameObject.AddComponent<UnitBarsManager>();
         bars.Configure(resourceBarPrefab, healthBarsOrganizer != null ? healthBarsOrganizer.transform : null);
+    }
+
+    /// <summary>
+    /// Adds the <see cref="DamageNumbersManager"/>, which then hooks every entity's OnDamaged via
+    /// EntityRegistry. It builds its own pooled TMP numbers, so there is nothing to wire.
+    /// </summary>
+    private void SetupDamageNumbers()
+    {
+        if (GetComponent<DamageNumbersManager>() == null)
+            gameObject.AddComponent<DamageNumbersManager>();
     }
 
     /// <summary>Collect the player-controlled characters for inventory setup.</summary>

@@ -57,7 +57,7 @@ public class MeleeAttackSpell : Spell
 
         bool isCrit = Random.value < critChance;
         float finalDamage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
-        target.TakeDamage(finalDamage, caster);
+        target.TakeDamage(finalDamage, caster, isCrit);
 
         // May have died from this hit — nothing left to knock back.
         if (target == null || target.isDead) yield break;
