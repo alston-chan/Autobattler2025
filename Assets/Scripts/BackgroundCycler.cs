@@ -22,9 +22,19 @@ public class BackgroundCycler : MonoBehaviour
     public KeyCode previousKey = KeyCode.LeftArrow;
     public KeyCode nextKey = KeyCode.RightArrow;
 
+    [Tooltip("Sorting order forced onto the background so it stays behind ALL gameplay. The default " +
+             "arrow/projectile sprites live at order 0, so a background at 0 would hide them — keep " +
+             "this well negative.")]
+    [SerializeField] private int sortingOrder = -1000;
+
     private SpriteRenderer _sr;
 
-    private void Awake() => _sr = GetComponent<SpriteRenderer>();
+    private void Awake()
+    {
+        _sr = GetComponent<SpriteRenderer>();
+        // The backdrop must never occlude projectiles/effects that render at order 0.
+        _sr.sortingOrder = sortingOrder;
+    }
 
     private void Start()
     {
