@@ -53,6 +53,20 @@ MonoBehaviour:
     driftX: 0.4
     fadeStart: 0.5
     poolSize: 32
+  abilityFeedback:
+    enableCallout: 1
+    calloutColor: {r: 1, g: 0.88, b: 0.3, a: 1}
+    fontSize: 3.75
+    offset: {x: 0, y: 1.8, z: 0}
+    riseSpeed: 1.1
+    lifetime: 1.1
+    outlineWidth: 0.5
+    outlineColor: {r: 0, g: 0, b: 0, a: 1}
+    flashCaster: 1
+    flashColor: {r: 1, g: 0.95, b: 0.6, a: 1}
+    flashDuration: 0.16
+    enableHitstop: 1
+    hitstop: 0.12
   healthBar:
     chipTrail: 1
     chipDelay: 0.25

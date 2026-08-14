@@ -20,8 +20,10 @@ public static class AbilityFeedback
                  "their build just did something.")]
         public bool enableCallout = true;
         public Color calloutColor = new Color(1f, 0.88f, 0.3f, 1f);
-        public float fontSize = 5f;
-        public Vector3 offset = new Vector3(0f, 2.4f, 0f);
+        [Tooltip("Kept close to the damage-number size so callouts read as part of the same layer, " +
+                 "not a billboard over the unit.")]
+        public float fontSize = 3.75f;
+        public Vector3 offset = new Vector3(0f, 1.8f, 0f);
         public float riseSpeed = 1.1f;
         public float lifetime = 1.1f;
         [Tooltip("Dark edge so the name reads on any terrain (same reasoning as damage numbers).")]
