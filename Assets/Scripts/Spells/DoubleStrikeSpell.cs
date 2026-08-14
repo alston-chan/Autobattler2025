@@ -15,8 +15,11 @@ public class DoubleStrikeSpell : Spell
     [Tooltip("Damage per strike, as a multiple of the caster's Damage stat.")]
     public float damagePerStrike = 1f;
     public float knockbackForce = 4f;
-    [Tooltip("Pause between strikes (seconds, divided by attack speed).")]
-    public float betweenStrikes = 0.1f;
+    [Tooltip("How much faster than a normal swing each strike animates. This is what makes Double " +
+             "Strike a burst — at 1x it's just two normal attacks in a row; ~2.5x reads as a flurry.")]
+    public float strikeSpeed = 2.5f;
+    [Tooltip("Pause between strikes (seconds, divided by the sped-up strike rate). Small = a tight flurry.")]
+    public float betweenStrikes = 0.05f;
 
     // Contact-frame event names: characters fire "Hit", FantasyMonsters fire "Attack".
     private const string CharacterHitEvent = "Hit";
@@ -35,7 +38,9 @@ public class DoubleStrikeSpell : Spell
 
     public override IEnumerator Cast(Entity caster, Entity target)
     {
-        float attackSpeed = GetAttackSpeed(caster);
+        // The strikes play FASTER than a normal swing (attack speed × strikeSpeed) so the ability is a
+        // burst, not just two ordinary attacks back to back.
+        float flurrySpeed = GetAttackSpeed(caster) * Mathf.Max(0.1f, strikeSpeed);
         Animator animator = GetAnimator(caster);
         float damage = (caster.Stats != null ? caster.Stats.Damage.Value : 10f) * damagePerStrike;
 
@@ -44,13 +49,13 @@ public class DoubleStrikeSpell : Spell
         {
             if (target == null || target.isDead) yield break;
 
-            if (animator != null) animator.speed = attackSpeed;
+            if (animator != null) animator.speed = flurrySpeed;
             if (caster.isCharacter && caster.character != null) caster.character.Slash();
             else if (caster.monster != null) caster.monster.Attack();
 
-            // Land on the animation's real contact frame, same as the basic melee attack.
+            // Land on the animation's real contact frame; tolerances scale with the sped-up rate.
             yield return WaitForAnimationEvent(caster, CharacterHitEvent, MonsterHitEvent,
-                0.2f / attackSpeed, 1f / attackSpeed);
+                0.2f / flurrySpeed, 1f / flurrySpeed);
             if (animator != null) animator.speed = 1f;
 
             if (target != null && !target.isDead)
@@ -66,7 +71,7 @@ public class DoubleStrikeSpell : Spell
             }
 
             if (s < count - 1 && betweenStrikes > 0f)
-                yield return new WaitForSeconds(betweenStrikes / attackSpeed);
+                yield return new WaitForSeconds(betweenStrikes / flurrySpeed);
         }
     }
 }

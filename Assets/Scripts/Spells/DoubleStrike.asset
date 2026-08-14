@@ -21,4 +21,5 @@ MonoBehaviour:
   strikes: 2
   damagePerStrike: 1
   knockbackForce: 4
-  betweenStrikes: 0.1
+  strikeSpeed: 2.5
+  betweenStrikes: 0.05
