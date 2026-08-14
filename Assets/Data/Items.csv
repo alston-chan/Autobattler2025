@@ -1867,3 +1867,5 @@ TRUE,FantasyHeroes.Basic.Back.ExplorerBackpack,Armor,Light,Common,1,0,0,FantasyH
 TRUE,FantasyHeroes.Basic.Back.SmallBackpack,Armor,Light,Common,1,0,0,FantasyHeroes.Basic.Back.SmallBackpack,FantasyHeroes.Basic.Back.SmallBackpack,,,SmallBackpack
 TRUE,FantasyHeroes.Basic.Back.TraderBackpack,Armor,Light,Common,1,0,0,FantasyHeroes.Basic.Back.TraderBackpack,FantasyHeroes.Basic.Back.TraderBackpack,,,TraderBackpack
 TRUE,FantasyHeroes.Basic.Back.TravallerBackpack,Armor,Light,Common,1,0,0,FantasyHeroes.Basic.Back.TravallerBackpack,FantasyHeroes.Basic.Back.TravallerBackpack,,,TravallerBackpack
+TRUE,Spellbook.DoubleStrike,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Double Strike
+TRUE,Spellbook.MultiShot,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Multi Shot

@@ -20,6 +20,7 @@
 		Coupon,
 		VestBeltPauldron,
 		Gloves,
-		Boots
+		Boots,
+		Spellbook
 	}
 }
