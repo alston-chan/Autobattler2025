@@ -22,6 +22,18 @@ MonoBehaviour:
     shakeDamageScale: 4
     horizontalOnly: 1
     enableSquash: 1
+  death:
+    killHitstop: 0.11
+    enableDeathFlash: 1
+    deathFlashColor: {r: 1, g: 1, b: 1, a: 1}
+    deathFlashDuration: 0.18
+    playDeathAnimation: 1
+    directionalFall: 1
+    lurchDistance: 0.4
+    lurchDuration: 0.3
+    corpseHold: 0.7
+    fadeDuration: 0.45
+    sinkDistance: 0.18
   healthBar:
     chipTrail: 1
     chipDelay: 0.25
@@ -34,7 +46,9 @@ MonoBehaviour:
     shakeAmount: 0.06
     shakeDuration: 0.14
     shakeDamageScale: 3
-    segmentPercent: 0
+    fadeOnDeath: 1
+    deathFadeDuration: 0.3
+    segmentPercent: 25
     segmentColor: {r: 0, g: 0, b: 0, a: 0.55}
   manaBar:
     chipTrail: 1
@@ -48,5 +62,7 @@ MonoBehaviour:
     shakeAmount: 0.06
     shakeDuration: 0.14
     shakeDamageScale: 3
+    fadeOnDeath: 1
+    deathFadeDuration: 0.3
     segmentPercent: 0
     segmentColor: {r: 0, g: 0, b: 0, a: 0.55}

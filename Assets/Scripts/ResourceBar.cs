@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -74,6 +75,9 @@ public class ResourceBar : MonoBehaviour
     private float _fill = 1f, _chip = 1f, _chipHold;
     private float _flashTimer, _shakeTimer, _shakeMagnitude;
     private Color _baseColor = Color.green;
+    private readonly List<GameObject> _ticks = new List<GameObject>();
+    private float _builtSegmentPercent = -1f;   // -1 forces the first build; 0 is a valid "no ticks"
+    private float _fullBarWidth = 1f;           // full-fill width in the bar parent's local units
     private SpriteRenderer[] _allSR;   // every piece of the bar, for the death fade
     private float[] _baseAlpha;
     private float _deathFade = 1f;
@@ -89,6 +93,9 @@ public class ResourceBar : MonoBehaviour
         Build();
         if (_chipSR != null) _chipSR.color = effects.chipColor;
         if (_chipBar != null) _chipBar.gameObject.SetActive(effects.chipTrail);
+        // Build() is a no-op after the first call, so anything driven by `effects` must be
+        // re-applied here — Awake ran Build() before these settings existed.
+        BuildSegments();
     }
 
     /// <summary>World height of the visible bar, for stacking bars flush against each other.</summary>
@@ -114,14 +121,41 @@ public class ResourceBar : MonoBehaviour
         barSR.sortingOrder += 1;                          // …and the fill moves in front
         _chipBar.gameObject.SetActive(effects.chipTrail);
 
+        // Width of a FULL bar, in the parent's local units. Measured here, in Awake, because the
+        // fill is still unscaled — once SetSize runs, bar.localScale.x is the fill fraction.
+        // World bounds divided by the parent's scale gives a value that stays valid afterwards,
+        // since UnitBarsManager rescales the bar root per entity.
+        float parentScale = bar.parent != null ? Mathf.Abs(bar.parent.lossyScale.x) : 1f;
+        _fullBarWidth = barSR.bounds.size.x / Mathf.Max(0.0001f, parentScale);
+
         BuildSegments();
     }
 
+    /// <summary>
+    /// (Re)build the segment ticks. Idempotent, and cheap to call every frame: it early-outs unless
+    /// segmentPercent actually changed, so the value can be tuned live on the CombatFeelSettings
+    /// asset during Play mode like every other bar setting.
+    /// </summary>
     private void BuildSegments()
     {
-        if (effects.segmentPercent <= 0f || barSR == null) return;
+        if (bar == null || barSR == null) return;
+        if (Mathf.Approximately(_builtSegmentPercent, effects.segmentPercent)) return;
+        _builtSegmentPercent = effects.segmentPercent;
+
+        for (int i = 0; i < _ticks.Count; i++)
+            if (_ticks[i] != null) Destroy(_ticks[i]);
+        _ticks.Clear();
+        _allSR = null;   // the death-fade cache just went stale
+
+        if (effects.segmentPercent <= 0f) return;
 
         int count = Mathf.FloorToInt(100f / effects.segmentPercent) - 1;   // interior ticks only
+
+        // Ticks are siblings of the fill, so they must be placed in FULL-BAR units — the prefab's
+        // bar is 2 world units wide, not 1, and a different bar sprite would change that again.
+        // Treating the 0..1 fraction as world units bunched every tick into the left quarter.
+        Vector3 spriteScale = barSR.transform.localScale;
+
         for (int i = 1; i <= count; i++)
         {
             var tick = new GameObject($"Tick{i}");
@@ -133,8 +167,11 @@ public class ResourceBar : MonoBehaviour
             sr.sortingOrder = barSR.sortingOrder + 1;
 
             float t = i * (effects.segmentPercent / 100f);
-            tick.transform.localPosition = bar.localPosition + new Vector3(t, 0f, -0.01f);
-            tick.transform.localScale = new Vector3(0.012f, 1f, 1f);
+            tick.transform.localPosition = bar.localPosition + new Vector3(t * _fullBarWidth, 0f, -0.01f);
+            // Height is taken from the fill sprite so a tick sits INSIDE the bar. Hard-coding y = 1
+            // made ticks five times the bar's height, since the fill sprite is scaled to 0.2.
+            tick.transform.localScale = new Vector3(spriteScale.x * 0.012f, spriteScale.y, 1f);
+            _ticks.Add(tick);
         }
     }
 
@@ -189,6 +226,10 @@ public class ResourceBar : MonoBehaviour
 
     private void Update()
     {
+        // Cheap guarded no-op unless segmentPercent changed — lets ticks be dialled in during Play
+        // mode, which is the whole reason the settings live on a ScriptableObject.
+        BuildSegments();
+
         if (_chip > _fill)
         {
             if (_chipHold > 0f) _chipHold -= Time.deltaTime;
