@@ -48,8 +48,9 @@ public class DamageNumbersManager : MonoBehaviour
                  "the face colour is later free to encode damage type.")]
         public bool outline = true;
         public Color outlineColor = new Color(0f, 0f, 0f, 1f);
-        [Tooltip("SDF outline thickness, 0..1. ~0.2 is a clean readable edge; too high eats the glyph.")]
-        [Range(0f, 1f)] public float outlineWidth = 0.2f;
+        [Tooltip("SDF outline thickness, 0..1. This font's atlas caps how bold it can get, so it needs " +
+                 "a fairly high value to read — ~0.2 is nearly invisible, ~0.5 is a clear edge.")]
+        [Range(0f, 1f)] public float outlineWidth = 0.5f;
 
         [Header("Motion")]
         public float lifetime = 0.7f;
