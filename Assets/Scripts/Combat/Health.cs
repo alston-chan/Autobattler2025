@@ -57,26 +57,33 @@ public class Health : MonoBehaviour
 
         if (!IsDead && currentHealth <= 0)
         {
-            Die();
+            Die(source);
         }
     }
 
-    private void Die()
+    private void Die(Entity killer)
     {
         IsDead = true;
+        currentHealth = 0f;
+        if (healthBar != null) healthBar.SetSize(0f);
 
-        if (_entity.character != null)
-        {
-            _entity.character.SetState(CharacterState.DeathB);
-        }
-        else if (_entity.monster != null)
-        {
-            _entity.monster.Die();
-        }
-
+        // Fire BEFORE the death sequence: GameManager decides win/lose from IsDead, and it should
+        // not have to wait out a second of corpse animation to call the round.
         OnDied?.Invoke();
 
-        // Health bar cleanup is handled by Entity's OnDied subscriber
-        Destroy(gameObject);
+        // The sequence owns the destroy — it plays the death animation, holds the corpse, fades it
+        // out, and only then despawns. Destroying here (as this used to) meant the death animation
+        // was set and thrown away on the same frame, so it was never drawn.
+        var death = GetComponent<DeathFeedback>();
+        if (death != null)
+        {
+            death.PlayAndDespawn(killer);
+        }
+        else
+        {
+            if (_entity.character != null) _entity.character.SetState(CharacterState.DeathB);
+            else if (_entity.monster != null) _entity.monster.Die();
+            Destroy(gameObject);
+        }
     }
 }

@@ -72,7 +72,7 @@ public class CombatAI : MonoBehaviour
 
     private void FaceTarget()
     {
-        if (CurrentTarget == null) return;
+        if (CurrentTarget == null || CurrentTarget.isDead) return;
 
         Vector3 toTarget = CurrentTarget.transform.position - transform.position;
         if (toTarget.x != 0)
@@ -95,6 +95,11 @@ public class CombatAI : MonoBehaviour
         {
             var other = allEntities[idx];
             if (other == _entity) continue;
+
+            // Corpses stay registered while their death sequence plays. They must not be targeted,
+            // and they must not push living units around either — a body should be walked over,
+            // not swerved around.
+            if (other.isDead) continue;
 
             float dist = Vector3.Distance(transform.position, other.transform.position);
 

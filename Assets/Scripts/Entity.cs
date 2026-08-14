@@ -25,6 +25,7 @@ public class Entity : MonoBehaviour
     public Hitstop Hitstop { get; private set; }
     public Mana Mana { get; private set; }
     public HitFeedback HitFeedback { get; private set; }
+    public DeathFeedback DeathFeedback { get; private set; }
     #endregion
 
     #region Bow Aiming
@@ -106,6 +107,9 @@ public class Entity : MonoBehaviour
         HitFeedback = GetComponent<HitFeedback>();
         if (HitFeedback == null) HitFeedback = gameObject.AddComponent<HitFeedback>();
 
+        DeathFeedback = GetComponent<DeathFeedback>();
+        if (DeathFeedback == null) DeathFeedback = gameObject.AddComponent<DeathFeedback>();
+
         // Apply UnitData if assigned, otherwise use serialized fields
         if (unitData != null)
         {
@@ -129,6 +133,7 @@ public class Entity : MonoBehaviour
         Hitstop.Initialize(this);
         Mana.Initialize(this);
         HitFeedback.Initialize(this);
+        DeathFeedback.Initialize(this);
 
         // Subscribe to death event for cleanup and round-end checks
         Health.OnDied += HandleDeath;
@@ -170,6 +175,9 @@ public class Entity : MonoBehaviour
 
     private void LateUpdate()
     {
+        // A corpse must not keep tracking with its bow arm while the death animation plays.
+        if (isDead) return;
+
         // Bow aiming logic (for ranged characters)
         if (IsRanged && CombatAI.CurrentTarget != null && character != null && ArmL != null)
         {

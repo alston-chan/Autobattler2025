@@ -18,6 +18,9 @@ public class CombatFeelSettings : ScriptableObject
     [Header("Character hit feedback")]
     public HitFeedback.Settings hitFeedback = new HitFeedback.Settings();
 
+    [Header("Death")]
+    public DeathFeedback.Settings death = new DeathFeedback.Settings();
+
     [Header("Health bar")]
     public ResourceBar.BarEffects healthBar = new ResourceBar.BarEffects();
 

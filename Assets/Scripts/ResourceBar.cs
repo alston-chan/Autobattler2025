@@ -42,6 +42,14 @@ public class ResourceBar : MonoBehaviour
         [Tooltip("Scales shake by the fraction of the pool lost in one hit.")]
         public float shakeDamageScale = 3f;
 
+        [Header("Death")]
+        [Tooltip("Fade the bar out when the owner dies. Without this the bar hangs at full opacity " +
+                 "over the corpse for the whole death sequence, then pops out of existence.")]
+        public bool fadeOnDeath = true;
+        [Tooltip("Shorter than the corpse fade — the bar should clear out first, so the death " +
+                 "animation is what the eye is left with.")]
+        public float deathFadeDuration = 0.3f;
+
         [Header("Segments")]
         [Tooltip("A tick every N% of the pool (25 = quarters). 0 disables.")]
         [Range(0f, 50f)] public float segmentPercent = 0f;
@@ -66,6 +74,9 @@ public class ResourceBar : MonoBehaviour
     private float _fill = 1f, _chip = 1f, _chipHold;
     private float _flashTimer, _shakeTimer, _shakeMagnitude;
     private Color _baseColor = Color.green;
+    private SpriteRenderer[] _allSR;   // every piece of the bar, for the death fade
+    private float[] _baseAlpha;
+    private float _deathFade = 1f;
     private bool _built, _hadEntity;
     private bool _initialised;   // the first SetSize is a starting value, not a hit
 
@@ -201,6 +212,29 @@ public class ResourceBar : MonoBehaviour
         }
     }
 
+    /// <summary>Fade the whole bar — fill, chip, frame, and segment ticks — as one object.</summary>
+    private void ApplyDeathFade()
+    {
+        // Gathered lazily: the chip bar and the segment ticks are built at runtime, so a cache
+        // taken in Awake would miss them. Base alphas are snapshotted at the same moment, because
+        // each piece has its own (the segment ticks are semi-transparent by design).
+        if (_allSR == null)
+        {
+            _allSR = GetComponentsInChildren<SpriteRenderer>(true);
+            _baseAlpha = new float[_allSR.Length];
+            for (int i = 0; i < _allSR.Length; i++)
+                if (_allSR[i] != null) _baseAlpha[i] = _allSR[i].color.a;
+        }
+
+        for (int i = 0; i < _allSR.Length; i++)
+        {
+            if (_allSR[i] == null) continue;
+            Color c = _allSR[i].color;
+            c.a = _baseAlpha[i] * _deathFade;   // absolute, not multiplied — this runs every frame
+            _allSR[i].color = c;
+        }
+    }
+
     private void ApplyFill()
     {
         if (bar != null) bar.localScale = new Vector3(_fill, 1f, 1f);
@@ -216,6 +250,14 @@ public class ResourceBar : MonoBehaviour
             return;
         }
         _hadEntity = true;
+
+        // Runs in LateUpdate, after Update's flash has written barSR.color at full alpha — so the
+        // fade always gets the last word.
+        if (entity.isDead && effects.fadeOnDeath && _deathFade > 0f)
+        {
+            _deathFade = Mathf.Max(0f, _deathFade - Time.deltaTime / Mathf.Max(0.0001f, effects.deathFadeDuration));
+            ApplyDeathFade();
+        }
 
         Vector3 off = offset == Vector3.zero ? entity.healthBarOffset : offset;
         Vector3 pos = entity.transform.position + off;
