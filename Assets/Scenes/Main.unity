@@ -261,15 +261,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &47192100
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,15 +400,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1001 &157213017
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -735,15 +739,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1001 &280821988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1184,15 +1190,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &506479708 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
@@ -1228,15 +1236,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1001 &557806219
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1383,15 +1393,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &663664494 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
@@ -1427,15 +1439,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &705565422 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 117150395161187363, guid: 10b703a09b8106a44b1bdf7c1df0596d, type: 3}
@@ -1471,15 +1485,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &751596382 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 117150393779553011, guid: 10b703a09b8106a44b1bdf7c1df0596d, type: 3}
@@ -1631,15 +1647,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &902240355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,7 +1735,8 @@ MonoBehaviour:
   manaBarHeightScale: 0.6
   manaBarColor: {r: 0.29, g: 0.56, b: 1, a: 1}
   barGap: 0
-  healthBarEffects:
+  overrideGlobalEffects: 0
+  localHealthEffects:
     chipTrail: 1
     chipDelay: 0.25
     chipDrainSpeed: 1.2
@@ -1729,9 +1748,11 @@ MonoBehaviour:
     shakeAmount: 0.06
     shakeDuration: 0.14
     shakeDamageScale: 3
+    fadeOnDeath: 1
+    deathFadeDuration: 0.3
     segmentPercent: 0
     segmentColor: {r: 0, g: 0, b: 0, a: 0.55}
-  manaBarEffects:
+  localManaEffects:
     chipTrail: 1
     chipDelay: 0.25
     chipDrainSpeed: 1.2
@@ -1743,6 +1764,8 @@ MonoBehaviour:
     shakeAmount: 0.06
     shakeDuration: 0.14
     shakeDamageScale: 3
+    fadeOnDeath: 1
+    deathFadeDuration: 0.3
     segmentPercent: 0
     segmentColor: {r: 0, g: 0, b: 0, a: 0.55}
 --- !u!1 &1129406678
@@ -1873,6 +1896,131 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1186552785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1186552787}
+  - component: {fileID: 1186552786}
+  - component: {fileID: 1186552788}
+  m_Layer: 0
+  m_Name: Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &1186552786
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186552785}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: b9628e124492e6c45b74de1dfbb3b36d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 38.399998, y: 21.599998}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &1186552787
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186552785}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1186552788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186552785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ac3d30fc598c0409cfcdb1d74e5ee3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgrounds:
+  - {fileID: 21300000, guid: c5a0bee083d29d1478438505ac325937, type: 3}
+  - {fileID: 21300000, guid: 7b25d1d9ee2294942b40621a9222d73f, type: 3}
+  - {fileID: 21300000, guid: 4b3de097ee4f8b94daf4af5ba522a668, type: 3}
+  - {fileID: 21300000, guid: ffe5c686ad501ef4f9f85807e87e5c3a, type: 3}
+  - {fileID: 21300000, guid: 2ce91e35fec690045985fe22ba98eba5, type: 3}
+  - {fileID: 21300000, guid: 621e8ed2cb7148141a511c051a8e633d, type: 3}
+  - {fileID: 21300000, guid: c3847e34f04fd514fb34c02656ce6cb5, type: 3}
+  - {fileID: 21300000, guid: d80a547b12a4e2a4883f856405d9fe60, type: 3}
+  - {fileID: 21300000, guid: 1fc56a16a51f5a043915247f137687e2, type: 3}
+  - {fileID: 21300000, guid: 85d28056361a07444a6e281fe91333ab, type: 3}
+  - {fileID: 21300000, guid: 1b7967de868d36f47a0f6fdd5be89355, type: 3}
+  - {fileID: 21300000, guid: 944bc2576a246564c8b6c92d1ccf28bc, type: 3}
+  - {fileID: 21300000, guid: f52372d44c6aad7468d27236cf8e3bc3, type: 3}
+  - {fileID: 21300000, guid: 178191c2c2079e44189cabba127673e6, type: 3}
+  - {fileID: 21300000, guid: e77739cc054043248870985ee054fb6a, type: 3}
+  - {fileID: 21300000, guid: 481d45bf8c7b31546ae8b2a16e043e2d, type: 3}
+  - {fileID: 21300000, guid: aeb0dc81e2ec0834a8818860122ac45f, type: 3}
+  - {fileID: 21300000, guid: ec5b368ec79a4df46b51101a63b39805, type: 3}
+  - {fileID: 21300000, guid: 46dc823e204ecd2468e58d4b3cbf46e4, type: 3}
+  - {fileID: 21300000, guid: f7f3ed8d2485b25499f3a8cf1c2b8231, type: 3}
+  - {fileID: 21300000, guid: 48e66fec84868f54693bcef2fab585ad, type: 3}
+  - {fileID: 21300000, guid: b9628e124492e6c45b74de1dfbb3b36d, type: 3}
+  - {fileID: 21300000, guid: 70b3525280540f949aa89dc37d45de94, type: 3}
+  - {fileID: 21300000, guid: 0a7c06736ddca374eb0a11715127ce44, type: 3}
+  index: 0
+  previousKey: 276
+  nextKey: 275
 --- !u!1 &1261091489 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
@@ -1908,15 +2056,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1001 &1265091828
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2098,15 +2248,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1 &1538367640
 GameObject:
   m_ObjectHideFlags: 0
@@ -2173,15 +2325,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1001 &1584699297
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2443,15 +2597,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24030eff3d39c0543ba48fd65f48028f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableFlash: 1
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashDuration: 0.08
-  enableShake: 1
-  shakeAmount: 0.09
-  shakeDuration: 0.16
-  shakeDamageScale: 4
-  horizontalOnly: 1
-  enableSquash: 1
+  overrideGlobal: 0
+  localSettings:
+    enableFlash: 1
+    flashColor: {r: 1, g: 1, b: 1, a: 1}
+    flashDuration: 0.08
+    enableShake: 1
+    shakeAmount: 0.09
+    shakeDuration: 0.16
+    shakeDamageScale: 4
+    horizontalOnly: 1
+    enableSquash: 1
 --- !u!1001 &2108631580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3573,6 +3729,7 @@ SceneRoots:
   - {fileID: 1538367641}
   - {fileID: 902240357}
   - {fileID: 1316291670}
+  - {fileID: 1186552787}
   - {fileID: 96813039}
   - {fileID: 280821988}
   - {fileID: 457710057}
