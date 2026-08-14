@@ -24,14 +24,14 @@ public class DamageNumbersManager : MonoBehaviour
         public bool enabled = true;
 
         [Header("Placement")]
-        [Tooltip("Offset from the entity origin. Y clears the head — the space the below-feet bars " +
-                 "were deliberately freed up for.")]
-        public Vector3 spawnOffset = new Vector3(0f, 2.6f, 0f);
+        [Tooltip("Offset from the entity origin. Y sits just above the head — close enough to read " +
+                 "as coming off the unit, not floating in the air above it.")]
+        public Vector3 spawnOffset = new Vector3(0f, 1.6f, 0f);
         [Tooltip("Random horizontal spread so rapid hits fan out instead of stacking illegibly.")]
-        public float spawnJitterX = 0.35f;
+        public float spawnJitterX = 0.3f;
 
         [Header("Normal hit")]
-        public float fontSize = 6f;
+        public float fontSize = 3.5f;
         public Color normalColor = new Color(1f, 1f, 1f, 1f);
 
         [Header("Crit")]

@@ -34,6 +34,22 @@ MonoBehaviour:
     corpseHold: 0.7
     fadeDuration: 0.45
     sinkDistance: 0.18
+  damageNumbers:
+    enabled: 1
+    spawnOffset: {x: 0, y: 1.6, z: 0}
+    spawnJitterX: 0.3
+    fontSize: 3.5
+    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    critColor: {r: 1, g: 0.75, b: 0.2, a: 1}
+    critSizeMultiplier: 1.6
+    critPopScale: 1.45
+    critSuffix: '!'
+    lifetime: 0.7
+    riseSpeed: 2.4
+    riseDamping: 3.5
+    driftX: 0.4
+    fadeStart: 0.5
+    poolSize: 32
   healthBar:
     chipTrail: 1
     chipDelay: 0.25
