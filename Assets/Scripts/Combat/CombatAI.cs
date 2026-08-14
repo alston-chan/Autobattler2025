@@ -173,14 +173,27 @@ public class CombatAI : MonoBehaviour
     {
         if (_isAttacking || target == null || _entity.spells == null || _entity.spells.Count == 0) return;
 
+        // Pass 1: an affordable cost ability (ult) preempts the basic attack — cast-on-full.
         for (int i = 0; i < _entity.spells.Count; i++)
         {
-            if (_entity.spells[i] != null && !_entity.spells[i].alwaysOn &&
-                _entity.spells[i].CanCast(_entity, target) && _spellCooldowns[i] <= 0)
-            {
-                StartCoroutine(CastSpellWithCooldown(i, target));
-                break;
-            }
+            var spell = _entity.spells[i];
+            if (spell == null || spell.alwaysOn || !spell.IsUltimate) continue;
+            if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
+            if (_entity.Mana == null || _entity.Mana.currentMana < spell.manaCost) continue;
+
+            StartCoroutine(CastSpellWithCooldown(i, target));
+            return;
+        }
+
+        // Pass 2: otherwise the first ready basic attack (the mana charger).
+        for (int i = 0; i < _entity.spells.Count; i++)
+        {
+            var spell = _entity.spells[i];
+            if (spell == null || spell.alwaysOn || spell.IsUltimate) continue;
+            if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
+
+            StartCoroutine(CastSpellWithCooldown(i, target));
+            return;
         }
     }
 
@@ -202,9 +215,18 @@ public class CombatAI : MonoBehaviour
         var spell = _entity.spells[spellIndex];
         _isAttacking = true;
         _spellCooldowns[spellIndex] = EffectiveCooldown(spellIndex);
+
+        // Pay for and announce a cost ability up front, so the bar empties and the name callout
+        // fires exactly as the ult begins.
+        if (spell.IsUltimate && _entity.Mana != null)
+        {
+            _entity.Mana.TrySpend(spell.manaCost);
+            AbilityFeedback.Announce(_entity, string.IsNullOrEmpty(spell.spellName) ? spell.name : spell.spellName);
+        }
+
         yield return StartCoroutine(spell.Cast(_entity, target));
 
-        // Weapon attacks are the primary mana source — so Attack Speed accelerates ults too.
+        // Basic weapon attacks are the primary mana source — so Attack Speed accelerates ults too.
         if (spell.ScalesWithAttackSpeed && _entity.Mana != null) _entity.Mana.OnBasicAttack();
 
         _isAttacking = false;

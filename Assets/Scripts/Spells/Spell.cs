@@ -9,6 +9,15 @@ public abstract class Spell : ScriptableObject
     [Tooltip("The effective range of this spell (used for AI and targeting)")]
     public float range = 1.5f;
     public bool alwaysOn = false;
+
+    [Tooltip("Mana required to cast. 0 = a free basic attack (the CHARGER). >0 = a cost ability " +
+             "(an ult): the AI casts it the moment the caster can afford it, and spends the mana. " +
+             "Set equal to Mana.maxMana for the classic 'fires when the bar is full' feel.")]
+    public float manaCost = 0f;
+
+    /// <summary>A cost ability (ultimate) rather than a free basic attack.</summary>
+    public bool IsUltimate => manaCost > 0f;
+
     public abstract bool CanCast(Entity caster, Entity target);
     public abstract IEnumerator Cast(Entity caster, Entity target);
 

@@ -24,6 +24,9 @@ public class CombatFeelSettings : ScriptableObject
     [Header("Damage numbers")]
     public DamageNumbersManager.Settings damageNumbers = new DamageNumbersManager.Settings();
 
+    [Header("Ability feedback")]
+    public AbilityFeedback.Settings abilityFeedback = new AbilityFeedback.Settings();
+
     [Header("Health bar")]
     public ResourceBar.BarEffects healthBar = new ResourceBar.BarEffects();
 
