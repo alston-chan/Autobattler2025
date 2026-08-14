@@ -33,7 +33,12 @@ public class Health : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(float amount)
+    /// <summary>
+    /// Apply damage. <paramref name="source"/> is optional and only drives feedback — which way the
+    /// body falls, who gets the kill freeze-frame. Damage itself never depends on it, so callers
+    /// that genuinely have no attacker (burn, decay) can leave it null.
+    /// </summary>
+    public void TakeDamage(float amount, Entity source = null)
     {
         if (IsDead) return;
 

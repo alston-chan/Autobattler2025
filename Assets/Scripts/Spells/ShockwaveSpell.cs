@@ -42,7 +42,7 @@ public class ShockwaveSpell : Spell
                 float dist = Vector3.Distance(caster.transform.position, entity.transform.position);
                 if (dist <= radius)
                 {
-                    entity.TakeDamage(damage);
+                    entity.TakeDamage(damage, caster);
                     Vector3 dir = (entity.transform.position - caster.transform.position).normalized;
                     entity.ApplyKnockback(dir, knockbackForce);
                     if (!freezeEntireBattlefield) entity.ApplyHitstop(hitstopDuration);

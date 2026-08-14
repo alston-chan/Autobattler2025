@@ -55,6 +55,7 @@ public class HitFeedback : MonoBehaviour
     private static readonly int FlashAmountId = Shader.PropertyToID("_FlashAmount");
 
     private float _flashTimer, _flashDuration;
+    private Color _flashColor = Color.white;   // held, so a death flash isn't recoloured mid-decay
     private float _shakeTimer, _shakeMagnitude, _shakeDuration;
     private Vector3 _restLocalPos;
 
@@ -85,15 +86,7 @@ public class HitFeedback : MonoBehaviour
     {
         if (S.enableSquash && _entity != null) _entity.HitScale();
 
-        if (S.enableFlash)
-        {
-            CacheRenderers();
-            // Re-spike to full. Because the flash DECAYS (see Update), overlapping hits read as
-            // distinct pulses instead of fusing into one permanently-white blob.
-            _flashDuration = Mathf.Max(0.0001f, S.flashDuration);
-            _flashTimer = _flashDuration;
-            SetFlash(1f, S.flashColor);
-        }
+        if (S.enableFlash) Flash(S.flashColor, S.flashDuration);
 
         if (S.enableShake && S.shakeAmount > 0f && _shakeRoot != null)
         {
@@ -103,6 +96,22 @@ public class HitFeedback : MonoBehaviour
             _shakeTimer = Mathf.Max(_shakeTimer, S.shakeDuration);
             _shakeDuration = Mathf.Max(_shakeDuration, S.shakeDuration);
         }
+    }
+
+    /// <summary>
+    /// Spike the colour flash to full and let it decay. Exposed so other systems can borrow the
+    /// renderer cache and the shader plumbing — <see cref="DeathFeedback"/> uses it for the longer,
+    /// louder flash on a killing blow.
+    /// </summary>
+    public void Flash(Color color, float duration)
+    {
+        CacheRenderers();
+        // Re-spike to full. Because the flash DECAYS (see Update), overlapping hits read as
+        // distinct pulses instead of fusing into one permanently-white blob.
+        _flashColor = color;
+        _flashDuration = Mathf.Max(0.0001f, duration);
+        _flashTimer = _flashDuration;
+        SetFlash(1f, _flashColor);
     }
 
     /// <summary>
@@ -174,7 +183,7 @@ public class HitFeedback : MonoBehaviour
         {
             _flashTimer -= Time.deltaTime;
             // Fade the flash out rather than holding it solid, so a second hit visibly re-spikes.
-            SetFlash(_flashTimer > 0f ? _flashTimer / _flashDuration : 0f, S.flashColor);
+            SetFlash(_flashTimer > 0f ? _flashTimer / _flashDuration : 0f, _flashColor);
         }
 
         if (_shakeRoot == null) return;

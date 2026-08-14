@@ -192,9 +192,10 @@ public class Entity : MonoBehaviour
 
     #region Public API — delegates to components
 
-    public void TakeDamage(float amount)
+    /// <summary><paramref name="source"/> is optional — it only drives death feedback.</summary>
+    public void TakeDamage(float amount, Entity source = null)
     {
-        Health.TakeDamage(amount);
+        Health.TakeDamage(amount, source);
     }
 
     /// <summary>

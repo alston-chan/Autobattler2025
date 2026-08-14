@@ -62,7 +62,7 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
             Entity entity = other.GetComponent<Entity>();
             if (entity != null && target != null && entity == target)
             {
-                entity.TakeDamage(damage);
+                entity.TakeDamage(damage, shooter);
                 Vector3 direction = (other.transform.position - transform.position).normalized;
                 entity.ApplyKnockback(direction, knockbackForce);
 
