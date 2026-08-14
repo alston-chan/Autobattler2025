@@ -44,6 +44,9 @@ MonoBehaviour:
     critSizeMultiplier: 1.6
     critPopScale: 1.45
     critSuffix: '!'
+    outline: 1
+    outlineColor: {r: 0, g: 0, b: 0, a: 1}
+    outlineWidth: 0.2
     lifetime: 0.7
     riseSpeed: 2.4
     riseDamping: 3.5

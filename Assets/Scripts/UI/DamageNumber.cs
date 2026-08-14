@@ -56,6 +56,14 @@ public class DamageNumber : MonoBehaviour
         _tmp.fontSize = crit ? s.fontSize * s.critSizeMultiplier : s.fontSize;
         _tmp.color = _color;
 
+        // Dark outline for readability on any terrain. Set through TMP's own properties rather than
+        // poking the material directly: the setter recomputes the SDF scale ratios, without which the
+        // outline width is read in raw distance-field units and floods the glyph into a solid block.
+        // These properties instantiate a per-object material, which also isolates the outline from
+        // other TMP text sharing the font — the pool is small, so the lost batching is irrelevant.
+        _tmp.outlineWidth = s.outline ? s.outlineWidth : 0f;
+        _tmp.outlineColor = s.outlineColor;
+
         transform.localScale = Vector3.one * _popScale;
         gameObject.SetActive(true);
 

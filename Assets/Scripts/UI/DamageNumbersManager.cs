@@ -43,6 +43,14 @@ public class DamageNumbersManager : MonoBehaviour
         [Tooltip("Appended to crit numbers.")]
         public string critSuffix = "!";
 
+        [Header("Outline")]
+        [Tooltip("Dark edge so a number reads on any terrain — the battlefield is sage green — and so " +
+                 "the face colour is later free to encode damage type.")]
+        public bool outline = true;
+        public Color outlineColor = new Color(0f, 0f, 0f, 1f);
+        [Tooltip("SDF outline thickness, 0..1. ~0.2 is a clean readable edge; too high eats the glyph.")]
+        [Range(0f, 1f)] public float outlineWidth = 0.2f;
+
         [Header("Motion")]
         public float lifetime = 0.7f;
         [Tooltip("Initial upward speed, world units/sec.")]
