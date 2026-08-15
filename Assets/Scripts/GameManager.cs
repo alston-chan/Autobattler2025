@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assets.HeroEditor.InventorySystem.Scripts;
+using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
+using System.Linq;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -144,6 +146,13 @@ public class GameManager : Singleton<GameManager>
 
             // Equip ally with random items from ItemCollection and add to Equipment UI
             var equippedItems = characterEntity.EquipmentManagement.EquipRandomFromCollection(characterEntity.IsRanged);
+
+            // Materialize the character's editor-authored spell loadout (Entity.spellSlots) as equipped
+            // spellbooks, so the starting spells show in the spell row and drive combat through the
+            // SAME equipped-books path as runtime equipping. Equipment.Initialize slots them; the
+            // SyncSpellSlots below rebuilds spellSlots from those books (matching what was authored).
+            int addedBooks = EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
+
             characterInventory.Equipment.Initialize(ref equippedItems);
 
             // Apply stat modifiers for initially equipped items
@@ -153,7 +162,47 @@ public class GameManager : Singleton<GameManager>
                 characterEntity.Stats.ApplyItemModifiers(itemParams, item.Id);
             }
             characterInventory.RefreshStatsUI();
+
+            // Only rebuild spell slots from equipment when we actually materialized authored spells as
+            // books. SyncSpellSlots drives spellSlots purely from equipped books, so calling it when a
+            // character has none would WIPE ults still sitting in innate 'spells' — leave those alone
+            // (CombatAI already picked them up in Awake).
+            if (addedBooks > 0)
+                characterInventory.SyncSpellSlots();
         }
+    }
+
+    /// <summary>
+    /// Convert the character's editor-authored <see cref="Entity.spellSlots"/> into equipped spellbook
+    /// items (reverse-mapped via <see cref="SpellbookDatabase"/>) appended to <paramref name="equippedItems"/>,
+    /// preserving order so the active slot still lines up. Spells with no spellbook entry are skipped
+    /// with a warning. Returns how many books were added.
+    /// </summary>
+    private int EquipAuthoredSpellsAsBooks(Entity characterEntity, List<Item> equippedItems)
+    {
+        if (characterEntity == null || characterEntity.spellSlots == null) return 0;
+        var db = SpellbookDatabase.Active;
+        if (db == null) return 0;
+
+        int added = 0;
+        foreach (var spell in characterEntity.spellSlots)
+        {
+            if (spell == null) continue;
+
+            string bookId = db.GetItemId(spell);
+            if (string.IsNullOrEmpty(bookId))
+            {
+                Debug.LogWarning($"[GameManager] {characterEntity.name} has '{spell.name}' in spellSlots " +
+                                 "but no spellbook maps to it — add a SpellbookDatabase entry so it can " +
+                                 "be equipped. Skipped.");
+                continue;
+            }
+            if (!ItemCollection.Active.Items.Any(i => i.Id == bookId)) continue;
+
+            equippedItems.Add(new Item(bookId));
+            added++;
+        }
+        return added;
     }
 
     public void ToggleCharacterInventories(CharacterInventory characterInventory)

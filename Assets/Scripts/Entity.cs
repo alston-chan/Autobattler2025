@@ -75,7 +75,10 @@ public class Entity : MonoBehaviour
     [Header("Spell slots (learnable, hero-bound)")]
     [Tooltip("Up to 3 spells this character has learned. Bound to this character — they never move " +
              "to another. Only the ACTIVE slot is cast in combat; the other two are reserves the " +
-             "player swaps between fights.")]
+             "player swaps between fights.\n\nAssign Spell assets here in the editor to set a " +
+             "character's STARTING loadout — at startup each is auto-equipped as its spellbook into " +
+             "the spell row (needs a matching SpellbookDatabase entry). Put ults here, NOT in the " +
+             "innate 'spells' list above.")]
     public List<Spell> spellSlots = new List<Spell>();
     [Tooltip("Which slot (0-based) is the one cast in combat.")]
     public int activeSpellSlot = 0;

@@ -122,8 +122,11 @@ public class CharacterInventory : ItemWorkspace
             }
         }
 
-        // Spellbooks, so they can be equipped into the spell row (weapon-gating decides if they fire).
-        foreach (var bookId in new[] { "Spellbook.DoubleStrike", "Spellbook.MultiShot" })
+        // Spellbooks left UNEQUIPPED in the shared pool, so they can be dragged onto the spell row to
+        // test the equip→cast path (weapon-gating decides if they fire). Shockwave is the weapon-agnostic
+        // one that works on any character. Characters' own starting books are auto-equipped from their
+        // authored spellSlots (see GameManager.EquipAuthoredSpellsAsBooks), so these are spare test copies.
+        foreach (var bookId in new[] { "Spellbook.DoubleStrike", "Spellbook.MultiShot", "Spellbook.Shockwave" })
         {
             if (ItemCollection.Active.Items.Any(i => i.Id == bookId))
                 inventory.Add(new Item(bookId));

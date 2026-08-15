@@ -48,6 +48,18 @@ public class SpellbookDatabase : ScriptableObject
         return e != null ? e.spell : null;
     }
 
+    /// <summary>
+    /// The spellbook item Id that teaches <paramref name="spell"/>, or null if none does — the reverse
+    /// of <see cref="GetSpell"/>. Lets an editor-authored spell loadout be materialized as equipped
+    /// spellbooks at startup.
+    /// </summary>
+    public string GetItemId(Spell spell)
+    {
+        if (spell == null || entries == null) return null;
+        var e = entries.Find(x => x != null && x.spell == spell);
+        return e != null ? e.itemId : null;
+    }
+
     /// <summary>True if the item id is a registered spellbook.</summary>
     public bool IsSpellbook(string itemId) => GetSpell(itemId) != null;
 }

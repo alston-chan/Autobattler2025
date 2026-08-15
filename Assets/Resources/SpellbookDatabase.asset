@@ -17,3 +17,5 @@ MonoBehaviour:
     spell: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
   - itemId: Spellbook.MultiShot
     spell: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
+  - itemId: Spellbook.Shockwave
+    spell: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
