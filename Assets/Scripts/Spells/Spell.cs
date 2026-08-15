@@ -61,6 +61,14 @@ public abstract class Spell : ScriptableObject
     /// </summary>
     public virtual bool ScalesWithAttackSpeed => false;
 
+    /// <summary>
+    /// The raw damage this spell contributes as a unit's base Damage stat, when it's the weapon
+    /// basic attack. Spells that deal no flat damage of their own (or scale off the caster's stat
+    /// rather than defining it) leave this at 0. Overriding here keeps <see cref="EntityStats"/>
+    /// from having to type-check every spell subclass to find a damage field.
+    /// </summary>
+    public virtual float BaseDamage => 0f;
+
     /// <summary>Caster's current attack-speed multiplier (clamped above zero), or 1 if unavailable.</summary>
     protected float GetAttackSpeed(Entity caster)
         => (caster != null && caster.Stats != null && caster.Stats.AttackSpeed != null)

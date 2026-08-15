@@ -22,6 +22,7 @@ public class MeleeAttackSpell : Spell
 
     // Basic weapon attack — its rate scales with the caster's AttackSpeed.
     public override bool ScalesWithAttackSpeed => true;
+    public override float BaseDamage => damage;
 
     public override bool CanCast(Entity caster, Entity target) => target != null;
 

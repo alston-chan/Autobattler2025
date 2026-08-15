@@ -18,16 +18,11 @@ using UnityEngine.UI;
 /// </summary>
 public class AvatarPortrait : MonoBehaviour
 {
-    // Far from gameplay AND from CharacterPreview's stage, so no camera catches another's subject.
-    private static readonly Vector3 StageOrigin = new Vector3(2000f, 2000f, 0f);
-
     // The rig art is authored huge (the head spans ~512 units at unit scale, because the canvas was
-    // scaling it down by ~200x). Normalise it, then space the stages far wider than the result —
-    // at 20 units apart every camera filmed all three heads stacked, so each card showed the same
-    // face.
+    // scaling it down by ~200x), so normalise it. Stage positions come from PortraitStage, which
+    // spaces them far apart — when they were only 20 units apart every camera filmed all three heads
+    // stacked and each card showed the same face.
     private const float RigScale = 0.01f;
-    private const float StageSpacing = 50f;
-    private static int _stageSlots;
 
     private Camera _camera;
     private RenderTexture _texture;
@@ -42,7 +37,7 @@ public class AvatarPortrait : MonoBehaviour
     {
         if (setup == null || card == null) return;
 
-        Vector3 stage = StageOrigin + new Vector3(_stageSlots++ * StageSpacing, 0f, 0f);
+        Vector3 stage = PortraitStage.ReserveSlot();
 
         // Detach from the canvas so the rig has a clean, known transform (parenting under a scaled
         // RectTransform is what made the sprites microscopic when they were moved naively).
@@ -51,26 +46,19 @@ public class AvatarPortrait : MonoBehaviour
         rig.position = stage;
         rig.localScale = Vector3.one * RigScale;
         rig.localRotation = Quaternion.identity;
-        SetLayerRecursive(rig, layer);
+        PortraitStage.SetLayerRecursive(rig, layer);
         _rig = rig;
 
-        _texture = new RenderTexture(textureSize, textureSize, 16) { name = "AvatarPortraitRT" };
-
-        var camObject = new GameObject("AvatarPortraitCamera");
-        camObject.transform.position = stage + new Vector3(cameraOffset.x, cameraOffset.y, -10f);
-        _camera = camObject.AddComponent<Camera>();
-        _camera.orthographic = true;
-        _camera.orthographicSize = cameraSize;
-        _camera.cullingMask = 1 << layer;
-        _camera.clearFlags = CameraClearFlags.SolidColor;
-        _camera.backgroundColor = new Color(0f, 0f, 0f, 0f);   // transparent, so the card shows through
-        _camera.targetTexture = _texture;
-
-        // Keep the stage out of the player's view.
-        if (Camera.main != null) Camera.main.cullingMask &= ~(1 << layer);
+        _camera = PortraitStage.CreateCamera("AvatarPortraitCamera", stage, layer,
+                                             textureSize, textureSize, cameraSize, out _texture);
 
         AutoFrame(cameraSize, cameraOffset);
-        CreateImage(card, fillFraction);
+
+        float side = Mathf.Max(1f, card.rect.width * fillFraction);
+        // Square, sized off the card's width — the texture is 1:1, so stretching to the card's
+        // taller rect would squash the face.
+        PortraitStage.CreateImage("AvatarPortraitImage", card, _texture,
+                                  new Vector2(side, side), Vector2.zero);
     }
 
     /// <summary>
@@ -151,35 +139,9 @@ public class AvatarPortrait : MonoBehaviour
         ? _rig.GetComponentsInChildren<SpriteRenderer>(false)
         : new SpriteRenderer[0];
 
-    /// <summary>Add the RawImage that shows the portrait, square and centred on the card.</summary>
-    private void CreateImage(RectTransform card, float fillFraction)
-    {
-        var go = new GameObject("AvatarPortraitImage", typeof(RectTransform));
-        go.transform.SetParent(card, false);
-
-        var image = go.AddComponent<RawImage>();
-        image.texture = _texture;
-        image.raycastTarget = false;
-
-        // Square, sized off the card's width — the texture is 1:1, so stretching to the card's
-        // taller rect would squash the face.
-        float side = Mathf.Max(1f, card.rect.width * fillFraction);
-        var rt = image.rectTransform;
-        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = new Vector2(side, side);
-        rt.anchoredPosition = Vector2.zero;
-    }
-
     private void OnDestroy()
     {
         if (_camera != null) Destroy(_camera.gameObject);
         if (_texture != null) _texture.Release();
-    }
-
-    private static void SetLayerRecursive(Transform t, int layer)
-    {
-        t.gameObject.layer = layer;
-        foreach (Transform child in t) SetLayerRecursive(child, layer);
     }
 }

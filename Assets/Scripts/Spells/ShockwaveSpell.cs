@@ -17,6 +17,8 @@ public class ShockwaveSpell : Spell
     [Tooltip("If true, EVERY entity freezes during the shockwave ('world holds its breath'). If false, only the caster and enemies hit freeze.")]
     public bool freezeEntireBattlefield = true;
 
+    public override float BaseDamage => damage;
+
     public override bool CanCast(Entity caster, Entity target)
     {
         return true;

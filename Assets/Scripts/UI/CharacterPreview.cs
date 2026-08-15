@@ -48,7 +48,7 @@ public class CharacterPreview : MonoBehaviour
     // One shared stage for every preview: only one window is open at a time.
     private static Camera _stageCamera;
     private static RenderTexture _stageTexture;
-    private static readonly Vector3 StagePosition = new Vector3(1000f, 1000f, 0f);
+    private static Vector3 StagePosition;   // assigned from PortraitStage on first use
     private static readonly List<GameObject> AllDolls = new List<GameObject>();
 
     private Equipment _equipment;
@@ -93,22 +93,15 @@ public class CharacterPreview : MonoBehaviour
     {
         if (_stageCamera != null) return;
 
-        _stageTexture = new RenderTexture(256, 384, 16) { name = "CharacterPreviewRT" };
+        StagePosition = PortraitStage.ReserveSlot();
+        _stageCamera = PortraitStage.CreateCamera("CharacterPreviewCamera", StagePosition,
+                                                  previewLayer, 256, 384, cameraSize,
+                                                  out _stageTexture);
 
-        var camObject = new GameObject("CharacterPreviewCamera");
-        DontDestroyOnLoad(camObject);
-        _stageCamera = camObject.AddComponent<Camera>();
-        _stageCamera.orthographic = true;
-        _stageCamera.cullingMask = 1 << previewLayer;   // the stage, and nothing else
-        _stageCamera.clearFlags = CameraClearFlags.SolidColor;
-        _stageCamera.backgroundColor = new Color(0.08f, 0.08f, 0.10f, 0f);   // transparent backdrop
-        _stageCamera.orthographicSize = cameraSize;
-        _stageCamera.targetTexture = _stageTexture;
-        camObject.transform.position = StagePosition
-                                       + new Vector3(cameraOffset.x, cameraOffset.y, -10f);
-
-        // The world camera must never see the stage.
-        if (Camera.main != null) Camera.main.cullingMask &= ~(1 << previewLayer);
+        // Framing here is fixed rather than auto-fitted (see cameraSize), so offset onto the body.
+        _stageCamera.transform.position = StagePosition
+                                          + new Vector3(cameraOffset.x, cameraOffset.y, -10f);
+        DontDestroyOnLoad(_stageCamera.gameObject);
     }
 
     /// <summary>Clone the cosmetic body onto the stage, on the preview-only layer.</summary>
@@ -116,7 +109,7 @@ public class CharacterPreview : MonoBehaviour
     {
         _dollObject = Instantiate(bodyPrefab, StagePosition, Quaternion.identity);
         _dollObject.name = "PreviewDoll (" + name + ")";
-        SetLayerRecursive(_dollObject.transform, previewLayer);
+        PortraitStage.SetLayerRecursive(_dollObject.transform, previewLayer);
 
         _doll = _dollObject.GetComponent<Character>();
         AllDolls.Add(_dollObject);
@@ -138,19 +131,8 @@ public class CharacterPreview : MonoBehaviour
             if (panel != null) host = panel;
         }
 
-        var go = new GameObject("CharacterPreviewImage", typeof(RectTransform));
-        go.transform.SetParent(host, false);
-
-        _image = go.AddComponent<RawImage>();
-        _image.texture = _stageTexture;
-        _image.raycastTarget = false;
-
-        var rt = _image.rectTransform;
-        rt.anchorMin = new Vector2(0.5f, 0.5f);
-        rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = imageSize;
-        rt.anchoredPosition = imageOffset;
+        _image = PortraitStage.CreateImage("CharacterPreviewImage", host as RectTransform,
+                                           _stageTexture, imageSize, imageOffset);
     }
 
     private void OnEnable()
@@ -176,11 +158,5 @@ public class CharacterPreview : MonoBehaviour
 
         CharacterInventorySetup.Setup(_doll, new List<Item>(_equipment.Items));
         _doll.Initialize();
-    }
-
-    private static void SetLayerRecursive(Transform t, int layer)
-    {
-        t.gameObject.layer = layer;
-        foreach (Transform child in t) SetLayerRecursive(child, layer);
     }
 }

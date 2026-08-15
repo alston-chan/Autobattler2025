@@ -35,14 +35,11 @@ public class EntityStats : MonoBehaviour
         _entity = entity;
 
         // Base values come from Entity (which may have been populated from UnitData)
+        // Use the first (weapon basic attack) spell's damage as the base. Each Spell reports its own
+        // via Spell.BaseDamage, so adding a spell type never means editing this file.
         float baseDamage = 0f;
-        if (_entity.spells != null && _entity.spells.Count > 0)
-        {
-            // Use the first attack spell's damage as the base
-            if (_entity.spells[0] is MeleeAttackSpell melee) baseDamage = melee.damage;
-            else if (_entity.spells[0] is BowAttackSpell bow) baseDamage = bow.damage;
-            else if (_entity.spells[0] is ShockwaveSpell shock) baseDamage = shock.damage;
-        }
+        if (_entity.spells != null && _entity.spells.Count > 0 && _entity.spells[0] != null)
+            baseDamage = _entity.spells[0].BaseDamage;
 
         Damage = new CharacterStat(baseDamage);
         MaxHealth = new CharacterStat(_entity.maxHealth);

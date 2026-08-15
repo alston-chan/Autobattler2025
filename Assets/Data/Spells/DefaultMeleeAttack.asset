@@ -15,7 +15,12 @@ MonoBehaviour:
   spellName: 
   cooldown: 1
   range: 1.5
+  alwaysOn: 0
+  manaCost: 0
+  weaponRequirement: 0
   damage: 10
   critChance: 0.2
   critKnockbackForce: 3.5
   normalKnockbackForce: 0
+  hitDelayFallback: 0.2
+  maxHitWait: 1
