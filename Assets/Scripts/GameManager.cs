@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
@@ -21,6 +22,29 @@ public class GameManager : Singleton<GameManager>
     public GameObject PlayerInventory;
     public bool initializedPlayerInventory = false;
     public GameObject characterInventoryPrefab;
+    [Tooltip("Plain HeroEditor character prefab (no gameplay scripts) used as the cosmetic body for " +
+             "the equipment window's preview doll. Leave null to disable the preview.")]
+    public GameObject previewBodyPrefab;
+
+    [Header("UI sorting")]
+    [Tooltip("Sorting layer for the main canvas. Characters sort on 'Default' up to ~405, so the " +
+             "canvas must sit on a HIGHER sorting layer ('UI') to draw over them — raising the order " +
+             "within 'Default' would just start another arms race.")]
+    public string uiSortingLayer = "UI";
+    [Tooltip("Sorting order within the layer above. Health/mana bars also live on 'UI' at low orders, " +
+             "so keep this well above them for windows to cover the bars.")]
+    public int uiSortingOrder = 100;
+
+    [Header("Avatar portraits")]
+    [Tooltip("Layer for the off-screen portrait stage. Excluded from the main camera automatically.")]
+    public int avatarPortraitLayer = 8;
+    public int avatarPortraitTextureSize = 256;
+    [Tooltip("Orthographic size of each portrait camera — smaller crops tighter on the face.")]
+    public float avatarPortraitCameraSize = 1.4f;
+    [Tooltip("Camera centre relative to the head rig's origin.")]
+    public Vector2 avatarPortraitCameraOffset = new Vector2(0f, 0f);
+    [Tooltip("Portrait size as a fraction of the card's width.")]
+    public float avatarPortraitFill = 0.9f;
     public List<Entity> allyCharacters = new List<Entity>();
     public List<CharacterInventory> characterInventories = new List<CharacterInventory>();
 
@@ -33,6 +57,7 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         EnsureArenaBounds();
+        EnsureUiSortsAboveWorld();
         CreateAvatarUI();
         SetupUnitBars();
         SetupDamageNumbers();
@@ -50,6 +75,24 @@ public class GameManager : Singleton<GameManager>
     {
         if (ArenaBounds.Instance == null)
             new GameObject("ArenaBounds (auto)").AddComponent<ArenaBounds>();
+    }
+
+    /// <summary>
+    /// Put the UI canvas on a sorting layer above the world so windows (equipment, inventory) draw
+    /// over characters instead of being covered by them. A Screen Space - Camera canvas is sorted
+    /// against SpriteRenderers by sorting layer then order; the canvas shipped on 'Default' order 1
+    /// while characters reach order ~405 on the same layer, so they won.
+    /// </summary>
+    private void EnsureUiSortsAboveWorld()
+    {
+        if (canvas == null) return;
+
+        var c = canvas.GetComponent<Canvas>() ?? canvas.GetComponentInParent<Canvas>();
+        if (c == null) return;
+
+        c = c.rootCanvas;   // sorting is a property of the root canvas
+        c.sortingLayerName = uiSortingLayer;
+        c.sortingOrder = uiSortingOrder;
     }
 
     void Update()
@@ -82,6 +125,34 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    /// <summary>
+    /// The avatar cards draw their heads with SpriteRenderers (HeroEditor's AvatarSetup) while the
+    /// card's own backing and frame are UI Images. Once the canvas sorts above the world
+    /// (EnsureUiSortsAboveWorld), that card art paints over the faces and the cards read as empty.
+    ///
+    /// Sorting cannot fix it — verified at sortingOrder 326, on a sorting layer above the canvas's,
+    /// and with the rig reparented out of the canvas at order 9000+; all stayed hidden, while
+    /// disabling the canvas's UI Graphics showed the heads rendering perfectly. So each head is
+    /// filmed on a private stage and shown as a RawImage, which composites like any other UI
+    /// graphic (the same fix <see cref="CharacterPreview"/> uses for the equipment doll).
+    /// </summary>
+    private void CreateAvatarPortraits()
+    {
+        if (avatarUI == null) return;
+
+        foreach (Transform card in avatarUI.transform)
+        {
+            var setup = card.GetComponentInChildren<AvatarSetup>(true);
+            var rect = card as RectTransform;
+            if (setup == null || rect == null) continue;
+
+            var portrait = card.gameObject.AddComponent<AvatarPortrait>();
+            portrait.Initialize(setup, rect, avatarPortraitLayer, avatarPortraitTextureSize,
+                                avatarPortraitCameraSize, avatarPortraitCameraOffset,
+                                avatarPortraitFill);
+        }
+    }
+
     private void CreateAvatarUI()
     {
         var entities = EntityRegistry.All;
@@ -103,6 +174,9 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
+
+        // Done after every avatar exists, so it catches them all in one pass.
+        CreateAvatarPortraits();
     }
 
     /// <summary>
@@ -146,6 +220,16 @@ public class GameManager : Singleton<GameManager>
             characterInventory.InitializeCharacterInventory(characterEntity);
 
             characterEntity.characterInventory = characterInventory;
+
+            // A doll of this character inside its own window. Added before the window is deactivated
+            // so its OnEnable runs the first time the player opens it with the number keys.
+            if (previewBodyPrefab != null)
+            {
+                var preview = characterInventory.gameObject.AddComponent<CharacterPreview>();
+                preview.Initialize(characterInventory.Equipment, previewBodyPrefab,
+                                   characterEntity.Appearance);
+            }
+
             characterInventory.gameObject.SetActive(false);
             characterInventories.Add(characterInventory);
 

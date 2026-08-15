@@ -68,11 +68,27 @@ public class CharacterInventory : ItemWorkspace
         // so re-dim the reserves here to guarantee the highlight survives every rebuild.
         Equipment.OnRefresh += HighlightActiveSpellSlot;
 
+        // Keep the avatar-card portrait in step with what's equipped. Appearance.Refresh is otherwise
+        // only called from EquipmentManagement's random-equip helpers, so equipping through this
+        // window changed the character but left its avatar head showing the old helmet.
+        Equipment.OnRefresh += RefreshAvatar;
+
         CreateActiveSpellLabel();
         HighlightActiveSpellSlot();   // set the initial label + dim state
 
         // Show initial stats
         RefreshStatsUI();
+    }
+
+    /// <summary>
+    /// Rebuild this character's avatar head so the portrait matches the equipped gear. Runs after
+    /// Equipment.Refresh has already pushed the new items onto the character, so the helmet it reads
+    /// is the current one.
+    /// </summary>
+    private void RefreshAvatar()
+    {
+        if (CharacterEntity != null && CharacterEntity.Appearance != null)
+            CharacterEntity.Appearance.Refresh();
     }
 
     /// <summary>(B) Spawn the "Active Spell: …" label under the equipment grid.</summary>

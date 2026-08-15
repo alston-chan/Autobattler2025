@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
-      value: 300
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critChance
@@ -149,7 +149,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critKnockbackForce
@@ -161,6 +161,14 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
@@ -177,7 +185,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4305108561794920, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2.86
       objectReference: {fileID: 0}
     - target: {fileID: 4305108561794920, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_LocalPosition.z
@@ -764,7 +772,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
-      value: 300
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critChance
@@ -776,7 +784,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critKnockbackForce
@@ -788,6 +796,14 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
@@ -812,7 +828,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4305108561794920, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.6
+      value: -2.7
       objectReference: {fileID: 0}
     - target: {fileID: 4305108561794920, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1058,7 +1074,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
-      value: 300
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critChance
@@ -1070,7 +1086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critKnockbackForce
@@ -1083,11 +1099,23 @@ PrefabInstance:
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
+      objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Human (2)
@@ -1273,7 +1301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
-      value: 300
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critChance
@@ -1285,7 +1313,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critKnockbackForce
@@ -1299,6 +1327,18 @@ PrefabInstance:
       propertyPath: spells.Array.data[1]
       value: 
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Human (3)
@@ -1712,6 +1752,7 @@ MonoBehaviour:
   PlayerInventory: {fileID: 3099690775151729611}
   initializedPlayerInventory: 0
   characterInventoryPrefab: {fileID: 1809316615320697486, guid: c8a92e3b5d2d2214bac37d20fc2a4787, type: 3}
+  previewBodyPrefab: {fileID: 1109986072035710, guid: ff726cbf10a6436a8c11071a7641036f, type: 3}
   allyCharacters: []
   characterInventories: []
 --- !u!4 &902240357
@@ -1971,7 +2012,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1000
-  m_Sprite: {fileID: 21300000, guid: b9628e124492e6c45b74de1dfbb3b36d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1fc56a16a51f5a043915247f137687e2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2035,6 +2076,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 70b3525280540f949aa89dc37d45de94, type: 3}
   - {fileID: 21300000, guid: 0a7c06736ddca374eb0a11715127ce44, type: 3}
   index: 0
+  mapPresets:
+  - background: {fileID: 21300000, guid: 1fc56a16a51f5a043915247f137687e2, type: 3}
+    preset: {fileID: 11400000, guid: 18f0c7c642a531345a8c01ab5a60bccc, type: 2}
+  defaultPreset: {fileID: 11400000, guid: 18f0c7c642a531345a8c01ab5a60bccc, type: 2}
   previousKey: 276
   nextKey: 275
   sortingOrder: -1000
@@ -2371,7 +2416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
-      value: 300
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critChance
@@ -2387,7 +2432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critKnockbackForce
@@ -2399,6 +2444,14 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
@@ -2490,7 +2543,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
-      value: 300
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critChance
@@ -2502,7 +2555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: critKnockbackForce
@@ -2511,13 +2564,21 @@ PrefabInstance:
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
+      objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
+      objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spellSlots.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
