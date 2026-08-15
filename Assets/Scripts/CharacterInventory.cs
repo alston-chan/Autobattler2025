@@ -136,11 +136,53 @@ public class CharacterInventory : ItemWorkspace
 
         if (Equipment.Items.Contains(item))
         {
-            Remove();
+            // An equipped spellbook: double-click makes it the ACTIVE slot (the one cast in combat)
+            // instead of unequipping — the 1-active / 2-reserve model. Remove via the Remove button.
+            if (item.Params.Type == ItemType.Spellbook)
+                SetActiveSpellbook(item);
+            else
+                Remove();
         }
         else if (CanEquipSelectedItem())
         {
             Equip();
+        }
+    }
+
+    /// <summary>Make an equipped spellbook the character's active spell, and refresh combat + highlight.</summary>
+    private void SetActiveSpellbook(Item item)
+    {
+        if (CharacterEntity == null) return;
+
+        var books = Equipment.Items.Where(i => i.Params.Type == ItemType.Spellbook).ToList();
+        int index = books.IndexOf(item);
+        if (index < 0) return;
+
+        CharacterEntity.activeSpellSlot = index;
+        if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.RefreshSpells();
+        HighlightActiveSpellSlot();
+    }
+
+    private static readonly Color ActiveSlotTint = new Color(1f, 0.82f, 0.28f, 1f);
+
+    /// <summary>
+    /// Tint the spell slot holding the active spellbook so the player can see which of their three
+    /// is cast. Spellbooks fill the spell slots in order, so the active book sits in the slot at
+    /// index <see cref="Entity.activeSpellSlot"/>.
+    /// </summary>
+    private void HighlightActiveSpellSlot()
+    {
+        if (CharacterEntity == null) return;
+
+        var spellSlots = Equipment.Slots.Where(s => s.Types.Contains(ItemType.Spellbook)).ToList();
+        int equippedBooks = Equipment.Items.Count(i => i.Params.Type == ItemType.Spellbook);
+        int active = CharacterEntity.activeSpellSlot;
+
+        for (int i = 0; i < spellSlots.Count; i++)
+        {
+            if (spellSlots[i].Background == null || spellSlots[i].Locked) continue;
+            bool isActive = i == active && i < equippedBooks;
+            spellSlots[i].Background.color = isActive ? ActiveSlotTint : Color.white;
         }
     }
 
@@ -207,6 +249,7 @@ public class CharacterInventory : ItemWorkspace
             CharacterEntity.activeSpellSlot = Mathf.Max(0, spells.Count - 1);
 
         if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.RefreshSpells();
+        HighlightActiveSpellSlot();
     }
 
     public void EquipStats()
@@ -359,6 +402,9 @@ public class CharacterInventory : ItemWorkspace
                 LearnButton.SetActive(true);
             }
         }
+
+        // Keep the active-spell-slot highlight current after any UI refresh.
+        HighlightActiveSpellSlot();
     }
 
     private List<Item> MaterialList => SelectedItem.Params.FindProperty(PropertyId.Materials).Value.Split(',').Select(i => i.Split(':')).Select(i => new Item(i[0], int.Parse(i[1]))).ToList();
