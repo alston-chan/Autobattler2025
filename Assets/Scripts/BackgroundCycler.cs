@@ -18,6 +18,24 @@ public class BackgroundCycler : MonoBehaviour
     [Tooltip("Which background is shown on start.")]
     public int index = 0;
 
+    /// <summary>Assigns a reusable bounds preset to a background.</summary>
+    [System.Serializable]
+    public class MapPreset
+    {
+        [Tooltip("The background this preset applies to. Must match an entry in the list above.")]
+        public Sprite background;
+        [Tooltip("The reusable bounds preset to use while this background is shown.")]
+        public ArenaBoundsPreset preset;
+    }
+
+    [Header("Arena bounds per map")]
+    [Tooltip("Assign a reusable bounds preset per map. Maps not listed here fall back to Default " +
+             "Preset. Several maps can share one preset — edit the preset asset to update them all.")]
+    public List<MapPreset> mapPresets = new List<MapPreset>();
+
+    [Tooltip("Preset used for any map without an entry above.")]
+    public ArenaBoundsPreset defaultPreset;
+
     [Header("Keys")]
     public KeyCode previousKey = KeyCode.LeftArrow;
     public KeyCode nextKey = KeyCode.RightArrow;
@@ -62,8 +80,37 @@ public class BackgroundCycler : MonoBehaviour
         if (backgrounds[index] != null)
         {
             _sr.sprite = backgrounds[index];
+            ApplyBounds(backgrounds[index]);
             Debug.Log($"[BackgroundCycler] {index + 1}/{backgrounds.Count}: {backgrounds[index].name}");
         }
+    }
+
+    /// <summary>The preset assigned to <paramref name="sprite"/>, or the default preset if it has none.</summary>
+    private ArenaBoundsPreset PresetFor(Sprite sprite)
+    {
+        var m = mapPresets.Find(p => p != null && p.background == sprite);
+        return m != null && m.preset != null ? m.preset : defaultPreset;
+    }
+
+    /// <summary>Push this map's preset into the global <see cref="ArenaBounds"/>.</summary>
+    private void ApplyBounds(Sprite sprite)
+    {
+        var preset = PresetFor(sprite);
+        if (preset != null) preset.Apply();
+    }
+
+    /// <summary>
+    /// Always-on Scene-view gizmo of the current map's play area, so bounds are visible without
+    /// selecting the object. Set <see cref="index"/> to preview a different map's shape.
+    /// </summary>
+    private void OnDrawGizmos()
+    {
+        if (backgrounds.Count == 0) return;
+        int i = ((index % backgrounds.Count) + backgrounds.Count) % backgrounds.Count;
+        var preset = PresetFor(backgrounds[i]);
+        if (preset == null) return;
+        ArenaBounds.DrawGizmo(preset.minX, preset.maxX, preset.minY, preset.maxY, preset.shape,
+            new Color(1f, 0.7f, 0.1f, 0.9f));
     }
 
 #if UNITY_EDITOR

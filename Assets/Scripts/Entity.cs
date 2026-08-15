@@ -182,7 +182,9 @@ public class Entity : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.isGameStarted) return;
+        // GameManager.Instance is briefly null during editor domain reloads (e.g. recompiling while
+        // in play mode); guard so entities don't flood the console with NREs until it re-initializes.
+        if (GameManager.Instance == null || !GameManager.Instance.isGameStarted) return;
         if (isDead) return;
 
         // Hitstop freezes the entity: skip movement/knockback/AI while active.
@@ -191,6 +193,12 @@ public class Entity : MonoBehaviour
 
         Knockback.Tick();
         CombatAI.Tick();
+
+        // Keep the entity on-screen. Movement and knockback both write transform.position directly
+        // (no Rigidbody), so nothing physics-based constrains them — clamp into the play area after
+        // both have moved this frame. This is also what stops a knockback like Shockwave from
+        // launching a character off the edge.
+        transform.position = ArenaBounds.ClampToArena(transform.position);
     }
 
     private void LateUpdate()

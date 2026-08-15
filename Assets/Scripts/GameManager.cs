@@ -32,12 +32,24 @@ public class GameManager : Singleton<GameManager>
 
     void Start()
     {
+        EnsureArenaBounds();
         CreateAvatarUI();
         SetupUnitBars();
         SetupDamageNumbers();
         BuildRoster();
 
         SetupCharacterInventories();
+    }
+
+    /// <summary>
+    /// Guarantee a global <see cref="ArenaBounds"/> so entities stay on-screen. If the scene already
+    /// has one (placed to tune the rectangle via its gizmo) it's left alone; otherwise a default one
+    /// is spawned so the clamp works with no scene setup.
+    /// </summary>
+    private void EnsureArenaBounds()
+    {
+        if (ArenaBounds.Instance == null)
+            new GameObject("ArenaBounds (auto)").AddComponent<ArenaBounds>();
     }
 
     void Update()
