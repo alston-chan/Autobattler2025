@@ -44,6 +44,9 @@ public class CharacterInventory : ItemWorkspace
     public TextMeshProUGUI statsKeys;
     public TextMeshProUGUI statsValues;
 
+    // Created at runtime under the equipment panel — shows the active spell's name (B).
+    private TextMeshProUGUI activeSpellLabel;
+
     public void Awake()
     {
         ItemCollection.Active = ItemCollection;
@@ -61,8 +64,40 @@ public class CharacterInventory : ItemWorkspace
         var equipped = new List<Item>();
         Equipment.Initialize(ref equipped);
 
+        // Equipment.Refresh rebuilds its InventoryItems (resetting their colour), then fires OnRefresh —
+        // so re-dim the reserves here to guarantee the highlight survives every rebuild.
+        Equipment.OnRefresh += HighlightActiveSpellSlot;
+
+        CreateActiveSpellLabel();
+        HighlightActiveSpellSlot();   // set the initial label + dim state
+
         // Show initial stats
         RefreshStatsUI();
+    }
+
+    /// <summary>(B) Spawn the "Active Spell: …" label under the equipment grid.</summary>
+    private void CreateActiveSpellLabel()
+    {
+        if (activeSpellLabel != null || Equipment == null) return;
+
+        var go = new GameObject("ActiveSpellLabel", typeof(RectTransform));
+        go.transform.SetParent(Equipment.transform, false);
+
+        var tmp = go.AddComponent<TextMeshProUGUI>();
+        tmp.text = "Active Spell: —";
+        tmp.fontSize = 22;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = new Color(1f, 0.82f, 0.28f, 1f);
+        tmp.raycastTarget = false;
+
+        var rt = tmp.rectTransform;
+        rt.anchorMin = new Vector2(0.5f, 0f);   // bottom-centre of the equipment panel
+        rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.pivot = new Vector2(0.5f, 1f);
+        rt.sizeDelta = new Vector2(340f, 32f);
+        rt.anchoredPosition = new Vector2(0f, -8f);
+
+        activeSpellLabel = tmp;
     }
 
     public void InitializePlayerInventory()
@@ -163,27 +198,44 @@ public class CharacterInventory : ItemWorkspace
         HighlightActiveSpellSlot();
     }
 
-    private static readonly Color ActiveSlotTint = new Color(1f, 0.82f, 0.28f, 1f);
+    private static readonly Color ReserveBookDim = new Color(0.4f, 0.4f, 0.4f, 1f);
 
     /// <summary>
-    /// Tint the spell slot holding the active spellbook so the player can see which of their three
-    /// is cast. Spellbooks fill the spell slots in order, so the active book sits in the slot at
-    /// index <see cref="Entity.activeSpellSlot"/>.
+    /// Make the active spellbook obvious: the active book stays full-bright, the reserves are dimmed
+    /// (A). Targets the equipped book (an <see cref="InventoryItem"/> drawn on top of the slot) and
+    /// DIMS the reserves rather than trying to brighten the active one — Image.color multiplies, so it
+    /// can darken but not brighten. Also updates the active-spell name label (B). Spellbooks fill the
+    /// spell slots in order, so the active book is the one at index <see cref="Entity.activeSpellSlot"/>
+    /// among the equipped spellbooks.
     /// </summary>
     private void HighlightActiveSpellSlot()
     {
         if (CharacterEntity == null) return;
 
-        var spellSlots = Equipment.Slots.Where(s => s.Types.Contains(ItemType.Spellbook)).ToList();
-        int equippedBooks = Equipment.Items.Count(i => i.Params.Type == ItemType.Spellbook);
+        var books = Equipment.Items.Where(i => i.Params.Type == ItemType.Spellbook).ToList();
         int active = CharacterEntity.activeSpellSlot;
+        Item activeBook = active >= 0 && active < books.Count ? books[active] : null;
 
-        for (int i = 0; i < spellSlots.Count; i++)
+        foreach (var ii in Equipment.InventoryItems)
         {
-            if (spellSlots[i].Background == null || spellSlots[i].Locked) continue;
-            bool isActive = i == active && i < equippedBooks;
-            spellSlots[i].Background.color = isActive ? ActiveSlotTint : Color.white;
+            if (ii == null || ii.Item == null || ii.Icon == null) continue;
+            if (ii.Item.Params.Type != ItemType.Spellbook) continue;
+            ii.Icon.color = ii.Item == activeBook ? Color.white : ReserveBookDim;
         }
+
+        UpdateActiveSpellLabel(activeBook);
+    }
+
+    /// <summary>(B) Show the active spell's name so it's unambiguous which of the three is cast.</summary>
+    private void UpdateActiveSpellLabel(Item activeBook)
+    {
+        if (activeSpellLabel == null) return;
+
+        var spell = activeBook != null && SpellbookDatabase.Active != null
+            ? SpellbookDatabase.Active.GetSpell(activeBook.Id) : null;
+        activeSpellLabel.text = spell != null
+            ? "Active Spell: " + (string.IsNullOrEmpty(spell.spellName) ? spell.name : spell.spellName)
+            : "Active Spell: —";
     }
 
     public void Equip()
