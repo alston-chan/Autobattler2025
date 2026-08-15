@@ -40,12 +40,22 @@ public class CombatAI : MonoBehaviour
             separationStrength = _entity.unitData.separationStrength;
         }
 
-        // Combat spell set = innate spells + the single active learnable spell.
+        RefreshSpells();
+    }
+
+    /// <summary>
+    /// (Re)build the combat spell set = innate spells (weapon basic + always-on) + the single active
+    /// learnable spell. Call after the character's spell slots change (equipping/unequipping a
+    /// spellbook, or swapping the active slot). Equipment is set up after Awake, so the initial
+    /// Initialize alone would miss slotted spells — this is what picks them up.
+    /// </summary>
+    public void RefreshSpells()
+    {
         _spells = new List<Spell>();
         if (_entity.spells != null) _spells.AddRange(_entity.spells);
         if (_entity.ActiveSpell != null) _spells.Add(_entity.ActiveSpell);
 
-        // Set attack range from the first innate spell (the weapon basic attack).
+        // Attack range comes from the first innate spell (the weapon basic attack).
         if (_spells.Count > 0 && _spells[0] != null)
             _attackRange = _spells[0].range;
 

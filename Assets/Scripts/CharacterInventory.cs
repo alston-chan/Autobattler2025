@@ -87,6 +87,13 @@ public class CharacterInventory : ItemWorkspace
             }
         }
 
+        // Spellbooks, so they can be equipped into the spell row (weapon-gating decides if they fire).
+        foreach (var bookId in new[] { "Spellbook.DoubleStrike", "Spellbook.MultiShot" })
+        {
+            if (ItemCollection.Active.Items.Any(i => i.Id == bookId))
+                inventory.Add(new Item(bookId));
+        }
+
         RegisterCallbacks();
         PlayerInventory.Initialize(ref inventory);
     }
@@ -162,6 +169,7 @@ public class CharacterInventory : ItemWorkspace
         OnEquip?.Invoke(SelectedItem);
 
         EquipStats();
+        SyncSpellSlots();
     }
 
     public void Remove()
@@ -171,6 +179,34 @@ public class CharacterInventory : ItemWorkspace
         AudioSource.PlayOneShot(EquipSound, SfxVolume);
 
         UnequipStats();
+        SyncSpellSlots();
+    }
+
+    /// <summary>
+    /// Mirror the equipped spellbook items onto the character's spell slots. Spellbooks fill the
+    /// slots in order; each resolves to its Spell via <see cref="SpellbookDatabase"/>. The active
+    /// slot is clamped, and CombatAI is refreshed so the change takes effect. Called after any
+    /// equip / unequip — equipment is set up after Awake, so this is what actually gets slotted
+    /// spells into the combat kit.
+    /// </summary>
+    public void SyncSpellSlots()
+    {
+        if (CharacterEntity == null) return;
+
+        var spells = new List<Spell>();
+        foreach (var item in Equipment.Items)
+        {
+            if (item.Params.Type != ItemType.Spellbook) continue;
+            var spell = SpellbookDatabase.Active != null ? SpellbookDatabase.Active.GetSpell(item.Id) : null;
+            if (spell != null) spells.Add(spell);
+            if (spells.Count >= Entity.MaxSpellSlots) break;
+        }
+
+        CharacterEntity.spellSlots = spells;
+        if (CharacterEntity.activeSpellSlot >= spells.Count)
+            CharacterEntity.activeSpellSlot = Mathf.Max(0, spells.Count - 1);
+
+        if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.RefreshSpells();
     }
 
     public void EquipStats()
