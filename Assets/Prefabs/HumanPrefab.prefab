@@ -737,6 +737,8 @@ MonoBehaviour:
   isRanged: 1
   fireTransform: {fileID: 4059777504579930}
   spells: []
+  spellSlots: []
+  activeSpellSlot: 0
 --- !u!114 &364035558888234246
 MonoBehaviour:
   m_ObjectHideFlags: 0
