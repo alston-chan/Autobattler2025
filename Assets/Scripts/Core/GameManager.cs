@@ -61,6 +61,8 @@ public class GameManager : Singleton<GameManager>
 
     void Start()
     {
+        StateMachine.OnStateChanged += HandleStateChanged;
+
         EnsureArenaBounds();
         EnsureUiSortsAboveWorld();
         CreateAvatarUI();
@@ -80,6 +82,24 @@ public class GameManager : Singleton<GameManager>
     /// has one (placed to tune the rectangle via its gizmo) it's left alone; otherwise a default one
     /// is spawned so the clamp works with no scene setup.
     /// </summary>
+    /// <summary>
+    /// Whoever is still standing when a fight ends is stood down. Handled on the transition rather
+    /// than inside the win/lose check so every way out of combat is covered.
+    /// </summary>
+    private void HandleStateChanged(GameState previous, GameState next)
+    {
+        if (previous != GameState.Combat) return;
+
+        var all = EntityRegistry.All;
+        for (int i = all.Count - 1; i >= 0; i--)
+        {
+            var entity = all[i];
+            // The dead are mid death-sequence — putting them back to idle would cancel it.
+            if (entity == null || entity.isDead || entity.CombatAI == null) continue;
+            entity.CombatAI.StopCombat();
+        }
+    }
+
     private void EnsureArenaBounds()
     {
         if (ArenaBounds.Instance == null)

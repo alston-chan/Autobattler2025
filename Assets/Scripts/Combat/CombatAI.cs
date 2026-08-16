@@ -176,6 +176,30 @@ public class CombatAI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Stand down when the fight ends. Nothing ticks the AI once combat is over, so a unit caught
+    /// mid-chase would keep running on the spot forever — its animation state is only ever changed
+    /// from <see cref="Tick"/>.
+    ///
+    /// Any in-flight cast is cancelled too, since a spell finishing during the setup phase would
+    /// loose arrows at a fight that has already been decided. Those coroutines adjust
+    /// <c>animator.speed</c> for the duration of a swing and restore it at the end, so cancelling
+    /// mid-swing means restoring it here instead — otherwise the unit idles at double speed.
+    /// </summary>
+    public void StopCombat()
+    {
+        StopAllCoroutines();
+        _isAttacking = false;
+        CurrentTarget = null;
+
+        var animator = _entity.character != null ? _entity.character.Animator
+                     : _entity.monster != null ? _entity.monster.Animator
+                     : null;
+        if (animator != null) animator.speed = 1f;
+
+        SetAnimState(false);
+    }
+
     private void SetAnimState(bool running)
     {
         if (_entity.character != null)
