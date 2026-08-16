@@ -39,7 +39,7 @@ MonoBehaviour:
     spawnOffset: {x: 0, y: 1.6, z: 0}
     spawnJitterX: 0.3
     fontSize: 3.5
-    normalColor: {r: 1, g: 1, b: 1, a: 1}
+    normalColor: {r: 1, g: 0, b: 0, a: 1}
     critColor: {r: 1, g: 0.75, b: 0.2, a: 1}
     critSizeMultiplier: 1.6
     critPopScale: 1.45
@@ -67,6 +67,7 @@ MonoBehaviour:
     flashDuration: 0.16
     enableHitstop: 1
     hitstop: 0.12
+  barLayering: 1
   healthBar:
     chipTrail: 1
     chipDelay: 0.25
