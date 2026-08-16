@@ -26,6 +26,9 @@ public class GameStateMachine
             (GameState.Setup, GameState.Combat) => true,
             (GameState.Combat, GameState.RoundEnd) => true,
             (GameState.RoundEnd, GameState.Setup) => true,
+            // A cleared fight either leads to the next one (RoundEnd → Setup, above) or finishes the
+            // run; a wipe finishes it straight from combat.
+            (GameState.RoundEnd, GameState.RunEnd) => true,
             _ => false
         };
 

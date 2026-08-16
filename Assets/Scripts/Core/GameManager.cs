@@ -16,6 +16,11 @@ public class GameManager : Singleton<GameManager>
     public GameObject healthBarsOrganizer;
     public GameObject resourceBarPrefab;
 
+    [Header("Run")]
+    [Tooltip("Drives the sequence of fights. Leave null to keep the scene's hand-placed units and " +
+             "play a single round, as before.")]
+    public RunManager runManager;
+
     [Header("Inventory")]
     public GameObject canvas;
     public GameObject audioSource;
@@ -64,6 +69,10 @@ public class GameManager : Singleton<GameManager>
         BuildRoster();
 
         SetupCharacterInventories();
+
+        // Last, so the company is fully built (gear, spells, inventories) before the first fight is
+        // put on the board.
+        if (runManager != null) runManager.BeginRun(allyCharacters);
     }
 
     /// <summary>
@@ -340,16 +349,28 @@ public class GameManager : Singleton<GameManager>
             else enemiesAlive = true;
         }
 
-        if (!alliesAlive)
-        {
-            Debug.Log("[GameManager] Defeat — all allies eliminated.");
-            StateMachine.TransitionTo(GameState.RoundEnd);
-        }
-        else if (!enemiesAlive)
-        {
-            Debug.Log("[GameManager] Victory — all enemies eliminated.");
-            StateMachine.TransitionTo(GameState.RoundEnd);
-        }
+        if (!alliesAlive) EndRound(false);
+        else if (!enemiesAlive) EndRound(true);
+    }
+
+    /// <summary>
+    /// A fight has been decided. With a run configured this hands off to <see cref="RunManager"/>,
+    /// which either sets up the next encounter (back to Setup, press Space to fight) or ends the
+    /// run. Without one the behaviour is unchanged: the round simply stops.
+    /// </summary>
+    private void EndRound(bool won)
+    {
+        Debug.Log(won ? "[GameManager] Victory — all enemies eliminated."
+                      : "[GameManager] Defeat — all allies eliminated.");
+
+        StateMachine.TransitionTo(GameState.RoundEnd);
+
+        if (runManager == null || !runManager.IsRunning) return;
+
+        // The next encounter is spawned now, but combat waits for the player: Setup is where gear and
+        // spells get changed between fights, which is the point of the loop.
+        if (runManager.ResolveEncounter(won)) StateMachine.TransitionTo(GameState.Setup);
+        else StateMachine.TransitionTo(GameState.RunEnd);
     }
 
     #endregion

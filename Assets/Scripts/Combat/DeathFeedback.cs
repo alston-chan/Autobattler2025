@@ -1,4 +1,5 @@
 using System.Collections;
+using Assets.FantasyMonsters.Common.Scripts;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using UnityEngine;
 
@@ -52,6 +53,10 @@ public class DeathFeedback : MonoBehaviour
 
     [Tooltip("Tick to ignore the global CombatFeelSettings asset and use the values below.")]
     public bool overrideGlobal = false;
+
+    [Tooltip("Keep this GameObject when it dies (deactivate instead of destroy) so it can be revived " +
+             "for the next encounter. Set for the player's company — RunManager turns it on.")]
+    public bool persistOnDeath = false;
     public Settings localSettings = new Settings();
 
     /// <summary>Live reference, so edits to the shared asset apply immediately — even mid-play.</summary>
@@ -60,7 +65,52 @@ public class DeathFeedback : MonoBehaviour
     private Entity _entity;
     private bool _running;
 
-    public void Initialize(Entity entity) => _entity = entity;
+    public void Initialize(Entity entity)
+    {
+        _entity = entity;
+
+        // Snapshot the intact body so a revived unit can be put back exactly as it started — the
+        // death sequence fades the sprites out, squashes the silhouette and disables the colliders.
+        _restoreScale = transform.localScale;
+        _restoreRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        _restoreColors = new Color[_restoreRenderers.Length];
+        for (int i = 0; i < _restoreRenderers.Length; i++)
+            if (_restoreRenderers[i] != null) _restoreColors[i] = _restoreRenderers[i].color;
+    }
+
+    private Vector3 _restoreScale;
+    private SpriteRenderer[] _restoreRenderers;
+    private Color[] _restoreColors;
+
+    /// <summary>
+    /// Undo the death sequence's visual damage so a revived unit looks alive again: sprites back to
+    /// full opacity, silhouette un-squashed, colliders re-enabled, animator out of its death state.
+    /// Pairs with <see cref="Health.Revive"/>.
+    /// </summary>
+    public void RestoreAfterRevive()
+    {
+        _running = false;
+        StopAllCoroutines();
+
+        transform.localScale = _restoreScale;
+
+        if (_restoreRenderers != null)
+        {
+            for (int i = 0; i < _restoreRenderers.Length; i++)
+            {
+                if (_restoreRenderers[i] == null) continue;
+                _restoreRenderers[i].color = _restoreColors[i];
+            }
+        }
+
+        foreach (var col in GetComponentsInChildren<Collider2D>(true)) col.enabled = true;
+
+        if (_entity != null)
+        {
+            if (_entity.character != null) _entity.character.SetState(CharacterState.Idle);
+            else if (_entity.monster != null) _entity.monster.SetState(MonsterState.Idle);
+        }
+    }
 
     /// <summary>
     /// Run the whole death sequence and destroy the entity at the end. Called by
@@ -119,7 +169,12 @@ public class DeathFeedback : MonoBehaviour
 
         yield return FadeOut(s.fadeDuration, s.sinkDistance);
 
-        Destroy(gameObject);
+        // A unit that belongs to the player's company is kept, not destroyed: a run only ends when
+        // the whole company falls, so the fallen are revived before the next encounter
+        // (Docs/RunLoop.md). Deactivating leaves the GameObject — and everything hung off it, like
+        // its inventory, equipment and spell slots — intact for RunManager to bring back.
+        if (persistOnDeath) gameObject.SetActive(false);
+        else Destroy(gameObject);
     }
 
     /// <summary>

@@ -1725,6 +1725,8 @@ GameObject:
   - component: {fileID: 902240357}
   - component: {fileID: 902240356}
   - component: {fileID: 902240358}
+  - component: {fileID: 902240360}
+  - component: {fileID: 902240359}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1747,12 +1749,20 @@ MonoBehaviour:
   avatarUI: {fileID: 47192100}
   healthBarsOrganizer: {fileID: 1316291668}
   resourceBarPrefab: {fileID: 4515901686449201946, guid: dc4c51e665ba5bd4c99c1159d556dc52, type: 3}
+  runManager: {fileID: 902240360}
   canvas: {fileID: 237078881}
   audioSource: {fileID: 1129406678}
   PlayerInventory: {fileID: 3099690775151729611}
   initializedPlayerInventory: 0
   characterInventoryPrefab: {fileID: 1809316615320697486, guid: c8a92e3b5d2d2214bac37d20fc2a4787, type: 3}
   previewBodyPrefab: {fileID: 1109986072035710, guid: ff726cbf10a6436a8c11071a7641036f, type: 3}
+  uiSortingLayer: UI
+  uiSortingOrder: 100
+  avatarPortraitLayer: 8
+  avatarPortraitTextureSize: 256
+  avatarPortraitCameraSize: 1.4
+  avatarPortraitCameraOffset: {x: 0, y: 0}
+  avatarPortraitFill: 0.9
   allyCharacters: []
   characterInventories: []
 --- !u!4 &902240357
@@ -1825,6 +1835,31 @@ MonoBehaviour:
     deathFadeDuration: 0.3
     segmentPercent: 0
     segmentColor: {r: 0, g: 0, b: 0, a: 0.55}
+--- !u!114 &902240359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902240355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6acd62838f1844c47b0f4b8af4342373, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &902240360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902240355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11c97d07c19bb2647b950e9f4f058eb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runData: {fileID: 11400000, guid: 467efbe921e6dff43a3963a3d9fad357, type: 2}
 --- !u!1 &1129406678
 GameObject:
   m_ObjectHideFlags: 0

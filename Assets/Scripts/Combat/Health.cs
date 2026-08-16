@@ -34,6 +34,29 @@ public class Health : MonoBehaviour
     }
 
     /// <summary>
+    /// Clear the death state and restore full health — between encounters the company is patched up
+    /// and the fallen are back on their feet, because a run ends only on a full wipe
+    /// (Docs/RunLoop.md). Fires <see cref="OnRevived"/> so feedback can undo whatever the death
+    /// sequence did to the body.
+    /// </summary>
+    public void Revive()
+    {
+        IsDead = false;
+        currentHealth = maxHealth;
+        OnRevived?.Invoke();
+    }
+
+    /// <summary>Full-heal without touching the death state — the between-encounter patch-up.</summary>
+    public void HealToFull()
+    {
+        if (IsDead) return;
+        currentHealth = maxHealth;
+    }
+
+    /// <summary>Fired when a dead entity is brought back, so visuals can be reset.</summary>
+    public event Action OnRevived;
+
+    /// <summary>
     /// Apply damage. <paramref name="source"/> and <paramref name="isCrit"/> are optional and only
     /// drive feedback — which way the body falls, who gets the kill freeze-frame, and whether the
     /// damage number reads as a crit. Damage itself never depends on them, so callers with no real

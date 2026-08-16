@@ -11,4 +11,7 @@ public enum GameState
 
     /// <summary>All enemies or allies are dead — round is over.</summary>
     RoundEnd,
+
+    /// <summary>The run finished — the company was wiped, or every encounter was cleared.</summary>
+    RunEnd,
 }
