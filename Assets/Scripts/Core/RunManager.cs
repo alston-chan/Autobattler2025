@@ -23,6 +23,9 @@ public class RunManager : MonoBehaviour
     private EncounterSpawner _spawner;
     private readonly List<Entity> _company = new List<Entity>();
 
+    /// <summary>Where the company stands before a fight. Survives combat so it can be restored.</summary>
+    public GridFormation Formation { get; } = new GridFormation(true);
+
     /// <summary>True when a run is configured and still going.</summary>
     public bool IsRunning => State != null && State.Outcome == RunOutcome.InProgress;
 
@@ -53,6 +56,10 @@ public class RunManager : MonoBehaviour
             // Keep the company's GameObjects when they fall, so they can be revived next fight.
             if (unit.DeathFeedback != null) unit.DeathFeedback.persistOnDeath = true;
         }
+
+        // Deploy the company onto its half of the grid. Anyone the player hasn't positioned gets a
+        // cell automatically, so a run always starts from a real formation.
+        Formation.AutoPlace(_company);
 
         State = new RunState(runData);
         StartCurrentEncounter();
@@ -129,5 +136,9 @@ public class RunManager : MonoBehaviour
             // carried over from the last one.
             if (unit.Mana != null) unit.Mana.currentMana = 0f;
         }
+
+        // Back to the formation the player arranged — units end a fight wherever the chase left them.
+        Formation.Prune();
+        Formation.SnapAll();
     }
 }

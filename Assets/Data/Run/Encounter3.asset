@@ -16,14 +16,17 @@ MonoBehaviour:
   encounterName: Mercenary Band
   spawns:
   - prefab: {fileID: 117150395161187363, guid: 10b703a09b8106a44b1bdf7c1df0596d, type: 3}
-    position: {x: 3, y: -1.4}
+    column: 0
+    row: 0
     unitData: {fileID: 0}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    position: {x: 5, y: -2.6}
+    column: 1
+    row: 0
     unitData: {fileID: 0}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    position: {x: 6.3, y: -1.1999999}
+    column: 2
+    row: 0
     unitData: {fileID: 0}
     loadout: {fileID: 0}

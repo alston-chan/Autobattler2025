@@ -48,7 +48,7 @@ public class EncounterSpawner : MonoBehaviour
             if (spawn == null || spawn.prefab == null) continue;
 
             var go = Instantiate(spawn.prefab, holder.transform);
-            go.transform.position = new Vector3(spawn.position.x, spawn.position.y, 0f);
+            go.transform.position = CellPosition(spawn);
             _spawned.Add(go);
             count++;
 
@@ -82,6 +82,19 @@ public class EncounterSpawner : MonoBehaviour
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// Where a spawn stands. Enemies deploy onto their half of the <see cref="BattleGrid"/> so both
+    /// sides occupy the same lanes — which is what makes "the unit opposite" a meaningful target.
+    /// Falls back to a spread along the right if no grid exists, so a scene without one still works.
+    /// </summary>
+    private Vector3 CellPosition(EncounterData.Spawn spawn)
+    {
+        var grid = BattleGrid.Instance;
+        if (grid != null) return grid.CellToWorld(false, spawn.column, spawn.row);
+
+        return new Vector3(3f + spawn.column * 1.6f, -3f + spawn.row * 1.2f, 0f);
     }
 
     /// <summary>

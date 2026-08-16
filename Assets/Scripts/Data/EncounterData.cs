@@ -17,8 +17,10 @@ public class EncounterData : ScriptableObject
     {
         [Tooltip("Enemy prefab to instantiate. Its Entity is forced onto the enemy team.")]
         public GameObject prefab;
-        [Tooltip("Where to place it, in world space.")]
-        public Vector2 position = new Vector2(4f, -1.5f);
+        [Tooltip("Cell on the enemy half of the grid. Column 0 is the front rank (nearest the " +
+                 "company); row 0 is the bottom.")]
+        public int column;
+        public int row;
         [Tooltip("Optional stat override. Leave empty to use the prefab's own values.")]
         public UnitData unitData;
         [Tooltip("Optional. Rolls this unit's gear, appearance and ability at spawn. Falls back to " +
