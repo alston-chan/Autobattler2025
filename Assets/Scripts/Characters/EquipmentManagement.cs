@@ -77,9 +77,12 @@ public class EquipmentManagement : MonoBehaviour
         }
         else
         {
-            // For melee, exclude bows
+            // For melee, exclude bows — and firearms, which HeroEditor's CharacterInventorySetup
+            // can't equip on these rigs ("Firearm equipping is not implemented"). Rolling one left
+            // the unit weaponless and unable to attack.
             var melee = ItemCollection.Active?.Items?
-                .Where(i => i.Type == ItemType.Weapon && i.Class != ItemClass.Bow).ToList();
+                .Where(i => i.Type == ItemType.Weapon &&
+                            i.Class != ItemClass.Bow && i.Class != ItemClass.Firearm).ToList();
             if (melee != null && melee.Count > 0)
             {
                 var picked = melee[Random.Range(0, melee.Count)];

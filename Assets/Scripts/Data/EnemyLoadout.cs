@@ -1,0 +1,68 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// Rules for kitting out an enemy at spawn: whether it fights at range, what gear it rolls, and
+/// which ability it might bring. One pool is shared by many spawns, so a whole encounter — or a
+/// whole act — can be re-tuned from a single asset.
+///
+/// Randomising the *loadout* rather than the *unit* keeps enemies varied without needing a prefab
+/// per combination, and it means enemies draw from the same item pool the player does, so an
+/// armoured silhouette telegraphs a tougher fight (Docs/Enemies.md).
+/// </summary>
+[CreateAssetMenu(menuName = "Data/Enemy Loadout", fileName = "EnemyLoadout")]
+public class EnemyLoadout : ScriptableObject
+{
+    [Header("Basic attacks")]
+    [Tooltip("Weapon basic attack given to melee units. This is also what sets their base damage " +
+             "and reach, so it must be present or the unit can't fight.")]
+    public Spell meleeBasicAttack;
+    [Tooltip("Weapon basic attack given to units that roll ranged.")]
+    public Spell bowBasicAttack;
+
+    [Header("Ranged mix")]
+    [Range(0f, 1f)]
+    [Tooltip("Chance a humanoid rolls ranged (bow) instead of melee. Monsters are always melee.")]
+    public float rangedChance = 0.35f;
+
+    [Header("Abilities")]
+    [Range(0f, 1f)]
+    [Tooltip("Chance the unit also brings an ultimate from the pool below.")]
+    public float abilityChance = 0.4f;
+    [Tooltip("Ultimates to draw from. Ones whose weapon requirement doesn't match what the unit " +
+             "ended up holding are skipped, so a bow user never rolls a melee-only ability.")]
+    public List<Spell> abilities = new List<Spell>();
+
+    [Header("Appearance")]
+    public bool randomizeAppearance = true;
+    [Tooltip("Roll armour, helmet, gloves, boots and a weapon from the shared item collection.")]
+    public bool randomizeEquipment = true;
+
+    /// <summary>The basic attack matching how this unit fights.</summary>
+    public Spell BasicAttackFor(bool ranged) => ranged ? bowBasicAttack : meleeBasicAttack;
+
+    /// <summary>
+    /// Roll one ability the unit will be able to cast, or null. Filtered against the weapon the unit
+    /// is *about* to carry rather than <see cref="Spell.MeetsWeaponRequirement"/>, because abilities
+    /// are chosen before the unit wakes and equips — at that point it is still empty-handed, so
+    /// asking the rig what it holds would answer "nothing" and reject every weapon-gated ability.
+    /// </summary>
+    public Spell RollAbility(bool ranged)
+    {
+        if (abilities == null || abilities.Count == 0) return null;
+        if (Random.value > abilityChance) return null;
+
+        var usable = new List<Spell>();
+        foreach (var spell in abilities)
+        {
+            if (spell == null) continue;
+
+            bool fits = spell.weaponRequirement == WeaponClass.Any
+                        || (ranged && spell.weaponRequirement == WeaponClass.Bow)
+                        || (!ranged && spell.weaponRequirement == WeaponClass.Melee);
+            if (fits) usable.Add(spell);
+        }
+
+        return usable.Count == 0 ? null : usable[Random.Range(0, usable.Count)];
+    }
+}

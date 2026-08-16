@@ -12,14 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1474bb256568824dbd7a6626631a608, type: 3}
   m_Name: Encounter3
   m_EditorClassIdentifier: 
+  defaultLoadout: {fileID: 11400000, guid: 4c0c2ceef3b3b0a4fac5848df2f6282f, type: 2}
   encounterName: Mercenary Band
   spawns:
   - prefab: {fileID: 117150395161187363, guid: 10b703a09b8106a44b1bdf7c1df0596d, type: 3}
     position: {x: 3, y: -1.4}
     unitData: {fileID: 0}
+    loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
     position: {x: 5, y: -2.6}
     unitData: {fileID: 0}
+    loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
     position: {x: 6.3, y: -1.1999999}
     unitData: {fileID: 0}
+    loadout: {fileID: 0}

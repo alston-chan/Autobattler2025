@@ -21,7 +21,14 @@ public class EncounterData : ScriptableObject
         public Vector2 position = new Vector2(4f, -1.5f);
         [Tooltip("Optional stat override. Leave empty to use the prefab's own values.")]
         public UnitData unitData;
+        [Tooltip("Optional. Rolls this unit's gear, appearance and ability at spawn. Falls back to " +
+                 "the encounter's default loadout when empty.")]
+        public EnemyLoadout loadout;
     }
+
+    [Tooltip("Loadout used by any spawn that doesn't name its own. Without one, spawned units keep " +
+             "whatever their prefab has — which for the stock prefabs is no spells, so they can't fight.")]
+    public EnemyLoadout defaultLoadout;
 
     [Tooltip("Shown to the player when the fight starts.")]
     public string encounterName = "Encounter";

@@ -65,6 +65,14 @@ public class Entity : MonoBehaviour
     [Header("Ranged/Bow")]
     [SerializeField] private bool isRanged = false;
     public bool IsRanged => unitData != null ? unitData.isRanged : isRanged;
+
+    /// <summary>
+    /// Choose melee or ranged before the entity wakes, for units built at runtime. It decides which
+    /// weapon gets equipped and which basic attack fits, so it has to be settled first — a bow-armed
+    /// unit holding a melee attack can't reach anything. Ignored once <see cref="unitData"/> is set,
+    /// which owns the flag instead.
+    /// </summary>
+    public void SetRanged(bool ranged) => isRanged = ranged;
     public Transform fireTransform;
 
     [Header("Innate spells")]

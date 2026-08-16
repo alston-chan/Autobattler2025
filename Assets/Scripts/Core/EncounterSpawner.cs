@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Assets.HeroEditor.InventorySystem.Scripts;
 using UnityEngine;
 
 /// <summary>
@@ -40,33 +41,91 @@ public class EncounterSpawner : MonoBehaviour
         holder.SetActive(false);
 
         int count = 0;
-        var pending = new List<GameObject>();
+        var pending = new List<Entity>();
+        var loadouts = new List<EnemyLoadout>();
         foreach (var spawn in encounter.spawns)
         {
             if (spawn == null || spawn.prefab == null) continue;
 
             var go = Instantiate(spawn.prefab, holder.transform);
             go.transform.position = new Vector3(spawn.position.x, spawn.position.y, 0f);
+            _spawned.Add(go);
+            count++;
 
             var entity = go.GetComponent<Entity>();
-            if (entity != null)
-            {
-                entity.isTeam = false;
-                if (spawn.unitData != null) entity.unitData = spawn.unitData;
-            }
+            if (entity == null) continue;
 
-            pending.Add(go);
-            count++;
+            entity.isTeam = false;
+            if (spawn.unitData != null) entity.unitData = spawn.unitData;
+
+            var loadout = spawn.loadout != null ? spawn.loadout : encounter.defaultLoadout;
+            if (loadout != null) ArmBeforeWake(entity, loadout);
+
+            pending.Add(entity);
+            loadouts.Add(loadout);
         }
 
         // Release them into the scene — this is where Awake finally runs, with the data already set.
-        foreach (var go in pending)
-        {
-            go.transform.SetParent(null, true);
-            _spawned.Add(go);
-        }
+        foreach (var go in _spawned)
+            if (go != null && go.transform.parent == holder.transform) go.transform.SetParent(null, true);
         Destroy(holder);
 
+        // Gear and looks come after: both need the character rig awake to apply.
+        for (int i = 0; i < pending.Count; i++)
+            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i]);
+
         return count;
+    }
+
+    /// <summary>
+    /// Decide how the unit fights and give it its spells — before it wakes. Order matters:
+    /// EntityStats reads the first spell's <see cref="Spell.BaseDamage"/> during Awake to seed the
+    /// unit's Damage stat, and CombatAI takes its attack range from the same spell, so a unit armed
+    /// afterwards would wake up doing zero damage from the wrong distance.
+    /// </summary>
+    private void ArmBeforeWake(Entity entity, EnemyLoadout loadout)
+    {
+        // Monsters have no equipment rig and no bow, so they always brawl.
+        bool ranged = entity.isCharacter && Random.value < loadout.rangedChance;
+        entity.SetRanged(ranged);
+
+        var spells = new List<Spell>();
+
+        var basic = loadout.BasicAttackFor(ranged);
+        if (basic != null) spells.Add(basic);
+        else Debug.LogWarning($"[EncounterSpawner] {loadout.name} has no " +
+                              (ranged ? "bow" : "melee") + " basic attack — that unit can't fight.");
+
+        var ability = loadout.RollAbility(ranged);
+        if (ability != null) spells.Add(ability);
+
+        entity.spells = spells;
+    }
+
+    /// <summary>
+    /// Roll the unit's looks and gear once it's awake. Equipment is applied through the same path and
+    /// item pool the player's units use, so enemies read as part of the same world — and their stat
+    /// modifiers land on the same <see cref="EntityStats"/> pipeline.
+    /// </summary>
+    private void DressAfterWake(Entity entity, EnemyLoadout loadout)
+    {
+        if (!entity.isCharacter || entity.Appearance == null) return;
+
+        if (loadout.randomizeAppearance) entity.Appearance.SetRandomAppearance();
+
+        if (loadout.randomizeEquipment && entity.EquipmentManagement != null)
+        {
+            var equipped = entity.EquipmentManagement.EquipRandomFromCollection(entity.IsRanged);
+
+            // Gear has to reach the stat block too, or enemies look armoured but hit like civilians.
+            if (entity.Stats != null && ItemCollection.Active != null)
+            {
+                foreach (var item in equipped)
+                {
+                    var itemParams = ItemCollection.Active.GetItemParams(item);
+                    if (itemParams != null) entity.Stats.ApplyItemModifiers(itemParams, item.Id);
+                }
+            }
+        }
     }
 }
