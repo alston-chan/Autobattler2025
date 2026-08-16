@@ -94,13 +94,8 @@ public class CombatAI : MonoBehaviour
     {
         if (CurrentTarget == null || CurrentTarget.isDead) return;
 
-        Vector3 toTarget = CurrentTarget.transform.position - transform.position;
-        if (toTarget.x != 0)
-        {
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Abs(scale.x) * Mathf.Sign(toTarget.x) * (_entity.isCharacter ? 1 : -1);
-            transform.localScale = scale;
-        }
+        float toTargetX = CurrentTarget.transform.position.x - transform.position.x;
+        if (toTargetX != 0f) _entity.SetFacing(toTargetX > 0f);
     }
 
     private void HandleAI()

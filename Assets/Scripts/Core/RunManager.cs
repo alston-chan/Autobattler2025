@@ -47,6 +47,9 @@ public class RunManager : MonoBehaviour
             if (unit == null) continue;
             _company.Add(unit);
 
+            // The company lines up on the left facing right, toward the enemy.
+            unit.SetFacing(true);
+
             // Keep the company's GameObjects when they fall, so they can be revived next fight.
             if (unit.DeathFeedback != null) unit.DeathFeedback.persistOnDeath = true;
         }
@@ -104,6 +107,9 @@ public class RunManager : MonoBehaviour
             if (unit == null) continue;
 
             if (!unit.gameObject.activeSelf) unit.gameObject.SetActive(true);
+
+            // A unit that died mid-fight was left facing whatever killed it.
+            unit.SetFacing(true);
 
             if (unit.Health != null)
             {

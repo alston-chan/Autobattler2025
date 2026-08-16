@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meleeBasicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
   bowBasicAttack: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
+  healthMultiplier: 3
   rangedChance: 0.35
   abilityChance: 0.4
   abilities:

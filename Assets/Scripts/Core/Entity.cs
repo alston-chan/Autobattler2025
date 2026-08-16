@@ -73,6 +73,19 @@ public class Entity : MonoBehaviour
     /// which owns the flag instead.
     /// </summary>
     public void SetRanged(bool ranged) => isRanged = ranged;
+
+    /// <summary>
+    /// Turn the unit to face left or right. Facing is encoded in <c>localScale.x</c>, and monster
+    /// art is authored facing the opposite way to character art — so the sign is inverted for them.
+    /// That inversion is easy to get wrong, which is why every caller goes through here rather than
+    /// flipping the scale itself.
+    /// </summary>
+    public void SetFacing(bool faceRight)
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * (faceRight ? 1f : -1f) * (isCharacter ? 1f : -1f);
+        transform.localScale = scale;
+    }
     public Transform fireTransform;
 
     [Header("Innate spells")]

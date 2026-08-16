@@ -72,7 +72,14 @@ public class EncounterSpawner : MonoBehaviour
 
         // Gear and looks come after: both need the character rig awake to apply.
         for (int i = 0; i < pending.Count; i++)
+        {
+            // Enemies muster on the right, so they face left — toward the company. CombatAI takes
+            // over once the fight starts; this is what they look like while the player is still
+            // deciding, when a unit staring off-screen reads as broken.
+            pending[i].SetFacing(false);
+
             if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i]);
+        }
 
         return count;
     }
@@ -88,6 +95,12 @@ public class EncounterSpawner : MonoBehaviour
         // Monsters have no equipment rig and no bow, so they always brawl.
         bool ranged = entity.isCharacter && Random.value < loadout.rangedChance;
         entity.SetRanged(ranged);
+
+        // Scale toughness before Awake, where Entity copies maxHealth into its Health component.
+        // Skipped when a UnitData override is present, since Awake takes health from that instead
+        // and would overwrite anything set here.
+        if (entity.unitData == null && loadout.healthMultiplier > 0f)
+            entity.maxHealth *= loadout.healthMultiplier;
 
         var spells = new List<Spell>();
 

@@ -20,6 +20,12 @@ public class EnemyLoadout : ScriptableObject
     [Tooltip("Weapon basic attack given to units that roll ranged.")]
     public Spell bowBasicAttack;
 
+    [Header("Toughness")]
+    [Tooltip("Multiplies the prefab's max health. The main dial for making later acts survive long " +
+             "enough to be a fight — enemy prefabs are shared with the player's units, so their own " +
+             "health can't be raised without buffing the company too.")]
+    public float healthMultiplier = 1f;
+
     [Header("Ranged mix")]
     [Range(0f, 1f)]
     [Tooltip("Chance a humanoid rolls ranged (bow) instead of melee. Monsters are always melee.")]
