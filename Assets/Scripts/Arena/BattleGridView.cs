@@ -14,6 +14,10 @@ public class BattleGridView : MonoBehaviour
 {
     [Header("Toggle")]
     public KeyCode toggleKey = KeyCode.Tab;
+    [Tooltip("Show the grid whenever the player can actually rearrange the company, and hide it once " +
+             "the fight starts. The toggle key still overrides, until the next state change.")]
+    public bool autoShowOutsideCombat = true;
+    [Tooltip("Used only when the grid isn't following the game state.")]
     public bool visibleOnStart = false;
 
     [Header("Look")]
@@ -40,6 +44,33 @@ public class BattleGridView : MonoBehaviour
         _grid = GetComponent<BattleGrid>();
         Build();
         SetVisible(visibleOnStart);
+    }
+
+    private void Start()
+    {
+        // Subscribed in Start so GameManager's singleton is up. The state machine itself exists from
+        // field initialisation, so there's no race on the subscription either way.
+        var gm = GameManager.Instance;
+        if (gm == null) return;
+
+        gm.StateMachine.OnStateChanged += HandleStateChanged;
+        if (autoShowOutsideCombat) SetVisible(gm.StateMachine.Current != GameState.Combat);
+    }
+
+    private void OnDestroy()
+    {
+        var gm = GameManager.Instance;
+        if (gm != null) gm.StateMachine.OnStateChanged -= HandleStateChanged;
+    }
+
+    /// <summary>
+    /// Follow the phase: the grid is for arranging the company, so it belongs on screen exactly while
+    /// that's possible and out of the way during the fight. Re-applying on every transition is also
+    /// what bounds a manual toggle — it holds until the phase changes, then the phase wins again.
+    /// </summary>
+    private void HandleStateChanged(GameState previous, GameState next)
+    {
+        if (autoShowOutsideCombat) SetVisible(next != GameState.Combat);
     }
 
     private void Update()
