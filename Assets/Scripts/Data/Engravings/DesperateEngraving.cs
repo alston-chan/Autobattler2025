@@ -17,11 +17,11 @@ public class DesperateEngraving : Engraving
     [Tooltip("Extra damage as a fraction of base, per tier — 0.25 is +25% at Tier I.")]
     public float damageBonusPerTier = 0.25f;
 
-    // An engraving is one shared asset however many heroes carry it, so per-bearer state cannot live
-    // in plain fields — a second bearer would overwrite the first's. Each bearer's watcher is held
-    // against them here, and everything else it needs is captured in the closure below.
-    private readonly Dictionary<Entity, System.Action<DamageInfo>> _watchers =
-        new Dictionary<Entity, System.Action<DamageInfo>>();
+    // Safe as ordinary fields: Resonance hands every hero their own copy of this engraving, so these
+    // describe one bearer rather than being shared across all of them.
+    private System.Action<DamageInfo> _watcher;
+    private int _tier = 1;
+    private bool _triggered;
 
     private void Reset()
     {
@@ -33,40 +33,37 @@ public class DesperateEngraving : Engraving
     {
         if (owner == null || owner.Health == null) return;
 
-        OnCombatEnd(owner, tier);   // never stack a second watcher on the same bearer
+        OnCombatEnd(owner, tier);   // never stack a second watcher
 
-        int strength = Mathf.Max(1, tier);
-        bool triggered = false;
-
-        System.Action<DamageInfo> watcher = info =>
-        {
-            if (triggered || owner == null || owner.Stats == null) return;
-
-            float max = owner.maxHealth;
-            if (max <= 0f || info.remainingHealth > max * healthThreshold) return;
-
-            owner.Stats.Damage.AddModifier(new Kryz.CharacterStats.StatModifier(
-                damageBonusPerTier * strength, Kryz.CharacterStats.StatModType.PercentAdd, this));
-            triggered = true;
-        };
-
-        owner.Health.OnDamaged += watcher;
-        _watchers[owner] = watcher;
+        _tier = Mathf.Max(1, tier);
+        _triggered = false;
+        _watcher = info => HandleDamaged(owner, info);
+        owner.Health.OnDamaged += _watcher;
     }
 
     public override void OnCombatEnd(Entity owner, int tier)
     {
         if (owner == null) return;
 
-        if (_watchers.TryGetValue(owner, out var watcher))
-        {
-            if (owner.Health != null) owner.Health.OnDamaged -= watcher;
-            _watchers.Remove(owner);
-        }
+        if (_watcher != null && owner.Health != null) owner.Health.OnDamaged -= _watcher;
+        _watcher = null;
+        _triggered = false;
 
         // Always strip the bonus: the company is healed between fights, so a hero who ended one fight
         // wounded would otherwise start the next still enraged at full health.
         if (owner.Stats != null && owner.Stats.Damage != null)
             owner.Stats.Damage.RemoveAllModifiersFromSource(this);
+    }
+
+    private void HandleDamaged(Entity owner, DamageInfo info)
+    {
+        if (_triggered || owner == null || owner.Stats == null) return;
+
+        float max = owner.maxHealth;
+        if (max <= 0f || info.remainingHealth > max * healthThreshold) return;
+
+        owner.Stats.Damage.AddModifier(new Kryz.CharacterStats.StatModifier(
+            damageBonusPerTier * _tier, Kryz.CharacterStats.StatModType.PercentAdd, this));
+        _triggered = true;
     }
 }

@@ -18,6 +18,10 @@ public class BulwarkEngraving : Engraving
     [Tooltip("Damage subtracted from each hit an adjacent ally takes, per tier.")]
     public float blockingPerTier = 6f;
 
+    // Safe as an ordinary field: Resonance hands every hero their own copy of this engraving, so
+    // this list belongs to one bearer rather than being shared across all of them.
+    private readonly List<Entity> _buffed = new List<Entity>();
+
     private void Reset()
     {
         engravingName = "Bulwark";
@@ -26,6 +30,8 @@ public class BulwarkEngraving : Engraving
 
     public override void OnCombatStart(Entity owner, int tier)
     {
+        _buffed.Clear();
+
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager == null || owner == null) return;
 
@@ -35,33 +41,21 @@ public class BulwarkEngraving : Engraving
         {
             if (ally == null || ally.Stats == null || ally.Stats.Blocking == null) continue;
 
-            // Sourced by this engraving so the grant can be removed without disturbing the Blocking
-            // an ally gets from its own armour.
+            // Sourced by this copy so the grant can be removed without disturbing the Blocking an
+            // ally gets from its own armour — or from another bearer of this same engraving.
             ally.Stats.Blocking.AddModifier(new Kryz.CharacterStats.StatModifier(
                 amount, Kryz.CharacterStats.StatModType.Flat, this));
+            _buffed.Add(ally);
         }
     }
 
-    /// <summary>
-    /// Strip every grant this engraving made, from the whole company rather than a remembered list.
-    ///
-    /// An engraving is a ScriptableObject — one shared asset, however many heroes carry it — so it
-    /// cannot hold "who I buffed this fight": a second bearer's OnCombatStart would overwrite the
-    /// first's record and those grants would never be taken back, compounding every fight. Removing
-    /// by source across the company needs no memory and is idempotent, so a second bearer's call
-    /// simply finds nothing left to do.
-    /// </summary>
     public override void OnCombatEnd(Entity owner, int tier)
     {
-        var gameManager = GameManager.Instance;
-        if (gameManager == null) return;
-
-        // The roster, not the registry — a hero who fell mid-fight is deactivated and unregistered,
-        // and would otherwise keep the grant through their revival into the next fight.
-        foreach (var hero in gameManager.allyCharacters)
+        foreach (var ally in _buffed)
         {
-            if (hero == null || hero.Stats == null || hero.Stats.Blocking == null) continue;
-            hero.Stats.Blocking.RemoveAllModifiersFromSource(this);
+            if (ally == null || ally.Stats == null || ally.Stats.Blocking == null) continue;
+            ally.Stats.Blocking.RemoveAllModifiersFromSource(this);
         }
+        _buffed.Clear();
     }
 }

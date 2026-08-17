@@ -14,6 +14,9 @@ using UnityEngine;
 /// Worn and banked engravings apply through the same path, so a worn Tier II engraving and a banked
 /// Tier II engraving behave identically. That equivalence is what makes cashing out feel like keeping
 /// the soul of the item rather than losing it.
+///
+/// This component also owns each hero's private copies of the engravings affecting them — see
+/// <see cref="InstanceFor"/> — which is what lets an engraving be written with ordinary fields.
 /// </summary>
 public class Resonance : MonoBehaviour
 {
@@ -21,12 +24,22 @@ public class Resonance : MonoBehaviour
     [System.Serializable]
     public class Banked
     {
+        [Tooltip("The engraving ASSET. Applying goes through this hero's private copy of it.")]
         public Engraving engraving;
         public int tier;
     }
 
-    [Tooltip("Attunement earned per item, keyed by item id. Survives unequipping.")]
-    private readonly Dictionary<string, float> _attunement = new Dictionary<string, float>();
+    /// <summary>
+    /// Attunement per item, keyed by the item <b>instance</b> rather than its id. Two copies of the
+    /// same gear are two different objects that attune separately — swapping a worn helm for an
+    /// identical one from the bag should start that helm at nothing, not hand it the first one's
+    /// progress.
+    /// </summary>
+    private readonly Dictionary<Item, float> _attunement = new Dictionary<Item, float>();
+
+    /// <summary>This hero's private copies of engraving assets. See <see cref="InstanceFor"/>.</summary>
+    private readonly Dictionary<Engraving, Engraving> _instances =
+        new Dictionary<Engraving, Engraving>();
 
     [Tooltip("Permanently absorbed engravings. These outlive the items that carried them.")]
     public List<Banked> banked = new List<Banked>();
@@ -35,14 +48,44 @@ public class Resonance : MonoBehaviour
 
     public void Initialize(Entity entity) => _entity = entity;
 
-    public float AttunementFor(string itemId) =>
-        _attunement.TryGetValue(itemId, out float value) ? value : 0f;
-
-    /// <summary>Tier an equipped item has currently reached (0–3), or 0 if it doesn't resonate.</summary>
-    public int TierFor(string itemId)
+    private void OnDestroy()
     {
-        var entry = ResonanceDatabase.Active != null ? ResonanceDatabase.Active.Find(itemId) : null;
-        return entry == null ? 0 : entry.TierAt(AttunementFor(itemId));
+        foreach (var instance in _instances.Values)
+            if (instance != null) Destroy(instance);
+        _instances.Clear();
+    }
+
+    /// <summary>
+    /// This hero's own copy of an engraving asset, created on first use.
+    ///
+    /// An engraving asset is shared by every hero carrying it, so any per-bearer state written as an
+    /// ordinary field — "who did I buff", "have I triggered yet" — would be clobbered by the next
+    /// bearer, and grants would never be taken back. Giving each hero a private copy makes the
+    /// natural way of writing an engraving correct, instead of requiring every author to remember
+    /// the trap.
+    ///
+    /// It also sharpens stat bookkeeping: modifiers are sourced by the copy, so removing one hero's
+    /// grants can't disturb another's.
+    /// </summary>
+    private Engraving InstanceFor(Engraving asset)
+    {
+        if (asset == null) return null;
+        if (_instances.TryGetValue(asset, out var existing) && existing != null) return existing;
+
+        var copy = Instantiate(asset);
+        copy.name = asset.name + " (" + name + ")";
+        _instances[asset] = copy;
+        return copy;
+    }
+
+    public float AttunementFor(Item item) =>
+        item != null && _attunement.TryGetValue(item, out float value) ? value : 0f;
+
+    /// <summary>Tier an item has currently reached (0–3), or 0 if it doesn't resonate.</summary>
+    public int TierFor(Item item)
+    {
+        var entry = EntryFor(item);
+        return entry == null ? 0 : entry.TierAt(AttunementFor(item));
     }
 
     /// <summary>Raised when any worn item's attunement changes, so UI can follow it live.</summary>
@@ -58,17 +101,14 @@ public class Resonance : MonoBehaviour
     {
         if (amount <= 0f) return;
 
-        var database = ResonanceDatabase.Active;
-        if (database == null) return;
-
         bool changed = false;
         foreach (var item in EquippedResonantItems())
         {
-            var entry = database.Find(item.Id);
+            var entry = EntryFor(item);
             if (entry == null || entry.requirement != requirement) continue;
 
-            _attunement.TryGetValue(item.Id, out float current);
-            _attunement[item.Id] = current + amount;
+            _attunement.TryGetValue(item, out float current);
+            _attunement[item] = current + amount;
             changed = true;
         }
 
@@ -83,24 +123,23 @@ public class Resonance : MonoBehaviour
     /// frees. Returns false if the item isn't worn, doesn't resonate, or hasn't reached Tier I —
     /// there is nothing to bank before the first threshold.
     /// </summary>
-    public bool Resonate(string itemId)
+    public bool Resonate(Item item)
     {
-        var database = ResonanceDatabase.Active;
-        var entry = database != null ? database.Find(itemId) : null;
+        var entry = EntryFor(item);
         if (entry == null || entry.engraving == null) return false;
 
-        int tier = entry.TierAt(AttunementFor(itemId));
+        int tier = entry.TierAt(AttunementFor(item));
         if (tier < 1) return false;
 
         var inventory = _entity != null ? _entity.characterInventory : null;
-        var worn = inventory != null ? inventory.Equipment.Items.Find(i => i.Id == itemId) : null;
-        if (worn == null) return false;
+        if (inventory == null || !inventory.Equipment.Items.Contains(item)) return false;
 
         banked.Add(new Banked { engraving = entry.engraving, tier = tier });
 
         // The item is spent — its essence is engraved, the steel is gone.
-        inventory.ConsumeItem(worn);
-        _attunement.Remove(itemId);
+        inventory.ConsumeItem(item);
+        _attunement.Remove(item);
+        OnAttunementChanged?.Invoke();
 
         Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at tier {tier}.");
         return true;
@@ -113,39 +152,48 @@ public class Resonance : MonoBehaviour
     /// </summary>
     public void ApplyForCombat(bool starting)
     {
-        var database = ResonanceDatabase.Active;
-        if (database != null)
+        foreach (var item in EquippedResonantItems())
         {
-            foreach (var item in EquippedResonantItems())
-            {
-                var entry = database.Find(item.Id);
-                int tier = entry.TierAt(AttunementFor(item.Id));
-                if (tier < 1) continue;   // no effect until the first threshold
+            var entry = EntryFor(item);
+            int tier = entry.TierAt(AttunementFor(item));
+            if (tier < 1) continue;   // no effect until the first threshold
 
-                if (starting) entry.engraving.OnCombatStart(_entity, tier);
-                else entry.engraving.OnCombatEnd(_entity, tier);
-            }
+            Invoke(entry.engraving, tier, starting);
         }
 
         foreach (var mark in banked)
         {
-            if (mark == null || mark.engraving == null) continue;
-            if (starting) mark.engraving.OnCombatStart(_entity, mark.tier);
-            else mark.engraving.OnCombatEnd(_entity, mark.tier);
+            if (mark == null) continue;
+            Invoke(mark.engraving, mark.tier, starting);
         }
+    }
+
+    private void Invoke(Engraving asset, int tier, bool starting)
+    {
+        var engraving = InstanceFor(asset);
+        if (engraving == null) return;
+
+        if (starting) engraving.OnCombatStart(_entity, tier);
+        else engraving.OnCombatEnd(_entity, tier);
+    }
+
+    /// <summary>The resonance entry for an item, or null if it doesn't resonate.</summary>
+    public ResonanceDatabase.Entry EntryFor(Item item)
+    {
+        if (item == null || ResonanceDatabase.Active == null) return null;
+        return ResonanceDatabase.Active.Find(item.Id);
     }
 
     /// <summary>Worn items that appear in the resonance database.</summary>
     private IEnumerable<Item> EquippedResonantItems()
     {
-        var database = ResonanceDatabase.Active;
         var inventory = _entity != null ? _entity.characterInventory : null;
-        if (database == null || inventory == null) yield break;
+        if (inventory == null) yield break;
 
         foreach (var item in inventory.Equipment.Items)
         {
             if (item == null) continue;
-            if (database.Find(item.Id) != null) yield return item;
+            if (EntryFor(item) != null) yield return item;
         }
     }
 }

@@ -98,7 +98,7 @@ public class ResonancePanel : MonoBehaviour
 
         _block.SetActive(true);
 
-        float attunement = _hero.Resonance.AttunementFor(_selected.Id);
+        float attunement = _hero.Resonance.AttunementFor(_selected);
         int tier = entry.TierAt(attunement);
         int next = entry.NextTierCost(attunement);
 
@@ -146,8 +146,7 @@ public class ResonancePanel : MonoBehaviour
     {
         if (_selected == null || _hero == null || _hero.Resonance == null) return;
 
-        string id = _selected.Id;
-        if (!_hero.Resonance.Resonate(id)) return;
+        if (!_hero.Resonance.Resonate(_selected)) return;
 
         // The item is gone, so the selection it was showing no longer exists.
         _selected = null;
