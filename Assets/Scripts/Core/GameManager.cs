@@ -282,6 +282,11 @@ public class GameManager : Singleton<GameManager>
 
             characterEntity.characterInventory = characterInventory;
 
+            // Resonance is otherwise invisible: attunement, tiers and banking all happen silently,
+            // and the bank-or-press decision can't be made against numbers the player can't see.
+            var resonancePanel = characterInventory.gameObject.AddComponent<ResonancePanel>();
+            resonancePanel.Initialize(characterInventory, characterEntity);
+
             // A doll of this character inside its own window. Added before the window is deactivated
             // so its OnEnable runs the first time the player opens it with the number keys.
             if (previewBodyPrefab != null)

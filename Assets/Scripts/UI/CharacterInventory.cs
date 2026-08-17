@@ -172,6 +172,9 @@ public class CharacterInventory : ItemWorkspace
         InventoryItem.OnRightClick = InventoryItem.OnDoubleClick = QuickAction;
     }
 
+    /// <summary>Fired after the player selects an item, so panels can follow the selection.</summary>
+    public event Action<Item> OnSelectionChanged;
+
     public void SelectItem(Item item)
     {
         SelectedItem = item;
@@ -182,6 +185,7 @@ public class CharacterInventory : ItemWorkspace
         Equipment.HighlightOnly(item);
 
         Refresh();
+        OnSelectionChanged?.Invoke(item);
     }
 
     private void QuickAction(Item item)
