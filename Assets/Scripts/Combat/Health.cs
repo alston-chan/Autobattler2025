@@ -66,6 +66,8 @@ public class Health : MonoBehaviour
     {
         if (IsDead) return;
 
+        amount = ApplyBlocking(amount);
+
         currentHealth -= amount;
         if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
 
@@ -84,6 +86,27 @@ public class Health : MonoBehaviour
             Die(source);
         }
     }
+
+    /// <summary>
+    /// Subtract the target's Blocking from an incoming hit. Blocking has existed as a stat — items
+    /// grant it, seeds add to it — but nothing ever read it, so armour was decorative and damage was
+    /// applied raw.
+    ///
+    /// A hit always lands for at least <see cref="MinimumDamage"/>, so stacking enough Blocking can
+    /// blunt an attacker but never make a unit immune to one.
+    /// </summary>
+    private float ApplyBlocking(float amount)
+    {
+        if (_entity == null || _entity.Stats == null || _entity.Stats.Blocking == null) return amount;
+
+        float blocking = _entity.Stats.Blocking.Value;
+        if (blocking <= 0f) return amount;
+
+        return Mathf.Max(MinimumDamage, amount - blocking);
+    }
+
+    /// <summary>Floor on a blocked hit, so damage reduction can never fully negate an attack.</summary>
+    private const float MinimumDamage = 1f;
 
     private void Die(Entity killer)
     {

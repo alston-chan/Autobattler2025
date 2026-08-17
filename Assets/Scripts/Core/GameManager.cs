@@ -88,7 +88,11 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     private void HandleStateChanged(GameState previous, GameState next)
     {
+        if (next == GameState.Combat) NotifySeeds(true);
+
         if (previous != GameState.Combat) return;
+
+        NotifySeeds(false);
 
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
@@ -97,6 +101,24 @@ public class GameManager : Singleton<GameManager>
             // The dead are mid death-sequence — putting them back to idle would cancel it.
             if (entity == null || entity.isDead || entity.CombatAI == null) continue;
             entity.CombatAI.StopCombat();
+        }
+    }
+
+    /// <summary>
+    /// Open or close every hero's seed for the fight. Combat start fires after the formation is
+    /// settled, so a seed can read who is standing beside whom; combat end lets it take back
+    /// anything it granted, which is what stops a per-fight bonus stacking every encounter.
+    /// </summary>
+    private void NotifySeeds(bool starting)
+    {
+        var all = EntityRegistry.All;
+        for (int i = all.Count - 1; i >= 0; i--)
+        {
+            var entity = all[i];
+            if (entity == null || entity.seed == null) continue;
+
+            if (starting) entity.seed.OnCombatStart(entity);
+            else entity.seed.OnCombatEnd(entity);
         }
     }
 

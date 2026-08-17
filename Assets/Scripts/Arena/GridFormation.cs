@@ -101,6 +101,33 @@ public class GridFormation
         }
     }
 
+    /// <summary>
+    /// Units standing orthogonally beside <paramref name="entity"/> — the four cells sharing an edge
+    /// with its own. Diagonals are excluded so "adjacent" stays a tight, readable relationship the
+    /// player can plan around rather than a blob covering most of the grid.
+    ///
+    /// Read from the formation rather than measured by distance, so it means the same thing all
+    /// fight even after units have chased each other across the arena.
+    /// </summary>
+    public List<Entity> AdjacentTo(Entity entity)
+    {
+        var result = new List<Entity>();
+        if (entity == null || !_cells.TryGetValue(entity, out var cell)) return result;
+
+        var offsets = new[]
+        {
+            new Vector2Int(1, 0), new Vector2Int(-1, 0),
+            new Vector2Int(0, 1), new Vector2Int(0, -1)
+        };
+
+        foreach (var offset in offsets)
+        {
+            var neighbour = At(cell.x + offset.x, cell.y + offset.y);
+            if (neighbour != null && neighbour != entity) result.Add(neighbour);
+        }
+        return result;
+    }
+
     public void Clear() => _cells.Clear();
 
     /// <summary>Drop units that have been destroyed, so stale entries don't hold cells.</summary>

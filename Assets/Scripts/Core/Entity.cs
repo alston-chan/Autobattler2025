@@ -88,6 +88,11 @@ public class Entity : MonoBehaviour
     }
     public Transform fireTransform;
 
+    [Header("Seed")]
+    [Tooltip("This hero's innate permanent effect — what makes them distinct without giving them a " +
+             "fixed role. See Docs/Characters.md.")]
+    public HeroSeed seed;
+
     [Header("Innate spells")]
     [Tooltip("Always-available spells: the weapon basic attack and any always-on spells. NOT the " +
              "learnable ability loadout — those live in spellSlots.")]
