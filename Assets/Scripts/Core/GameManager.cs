@@ -175,7 +175,12 @@ public class GameManager : Singleton<GameManager>
 
         if (!isGameStarted && Input.GetKeyDown(KeyCode.Space))
         {
-            StateMachine.TransitionTo(GameState.Combat);
+            // An unclaimed reward blocks the next fight. Starting anyway would silently discard the
+            // spoils of the fight just won, and the choice is the reason they were offered.
+            if (runManager != null && runManager.PendingRewards.Count > 0)
+                Debug.Log("[GameManager] Choose your spoils before the next fight.");
+            else
+                StateMachine.TransitionTo(GameState.Combat);
         }
 
         // Toggle character inventories with number keys 1,2,3,...
