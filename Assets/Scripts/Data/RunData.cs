@@ -13,4 +13,10 @@ public class RunData : ScriptableObject
 {
     [Tooltip("Fights in order. Clearing the last one wins the run.")]
     public List<EncounterData> encounters = new List<EncounterData>();
+
+    [Tooltip("Items dropped by any fight that doesn't name its own pool.")]
+    public RewardPool defaultRewardPool;
+
+    [Tooltip("How many items a victory offers to choose between.")]
+    public int rewardChoices = 3;
 }

@@ -74,7 +74,13 @@ public class GameManager : Singleton<GameManager>
 
         // Last, so the company is fully built (gear, spells, inventories) before the first fight is
         // put on the board.
-        if (runManager != null) runManager.BeginRun(allyCharacters);
+        if (runManager != null)
+        {
+            runManager.BeginRun(allyCharacters);
+
+            var rewards = gameObject.AddComponent<RewardPanel>();
+            rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
+        }
     }
 
     /// <summary>

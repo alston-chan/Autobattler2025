@@ -25,3 +25,15 @@ MonoBehaviour:
     tierICost: 2
     tierIICost: 5
     tierIIICost: 10
+  - itemId: FantasyHeroes.Knights.MeleeWeapon1H.BalancedSword [Paint]
+    engraving: {fileID: 11400000, guid: 8a2c3f8940e76bb4589e8c24beea3807, type: 2}
+    requirement: 2
+    tierICost: 800
+    tierIICost: 2400
+    tierIIICost: 6000
+  - itemId: FantasyHeroes.Basic.Helmet.AmateurDodgeHat
+    engraving: {fileID: 11400000, guid: e5796675bd685f94bb465b5b8b97e3c8, type: 2}
+    requirement: 4
+    tierICost: 6
+    tierIICost: 16
+    tierIIICost: 36

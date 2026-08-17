@@ -32,6 +32,9 @@ public class EncounterData : ScriptableObject
              "whatever their prefab has — which for the stock prefabs is no spells, so they can't fight.")]
     public EnemyLoadout defaultLoadout;
 
+    [Tooltip("Items this fight can drop. Falls back to the run's default pool when empty.")]
+    public RewardPool rewardPool;
+
     [Tooltip("Shown to the player when the fight starts.")]
     public string encounterName = "Encounter";
 

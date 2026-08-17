@@ -92,6 +92,10 @@ public class RunManager : MonoBehaviour
             return false;
         }
 
+        // Offer the spoils of the fight just won, before the next one is staged — the reward is for
+        // the encounter that was cleared, not the one coming up.
+        OfferRewards(State.Current);
+
         if (!State.AdvanceAfterVictory())
         {
             Debug.Log("[RunManager] Run won — every encounter cleared.");
@@ -100,6 +104,49 @@ public class RunManager : MonoBehaviour
 
         RestoreCompany();
         StartCurrentEncounter();
+        return true;
+    }
+
+    /// <summary>Items currently on offer from the fight just won. Empty once one is taken.</summary>
+    public List<string> PendingRewards { get; } = new List<string>();
+
+    /// <summary>Raised when a victory puts items on offer, and again when the offer is resolved.</summary>
+    public event System.Action OnRewardsChanged;
+
+    /// <summary>Roll the choice of drops for a cleared encounter.</summary>
+    private void OfferRewards(EncounterData cleared)
+    {
+        PendingRewards.Clear();
+
+        var pool = cleared != null && cleared.rewardPool != null
+            ? cleared.rewardPool
+            : runData.defaultRewardPool;
+
+        if (pool != null)
+            PendingRewards.AddRange(pool.Draw(Mathf.Max(1, runData.rewardChoices)));
+
+        OnRewardsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Take one of the offered items into the shared bag, discarding the rest — the choice is the
+    /// point, so the ones passed over are gone.
+    /// </summary>
+    public bool TakeReward(string itemId)
+    {
+        if (!PendingRewards.Contains(itemId)) return false;
+
+        var inventory = _company.Count > 0 && _company[0] != null
+            ? _company[0].characterInventory : null;
+        if (inventory == null || inventory.PlayerInventory == null) return false;
+
+        inventory.PlayerInventory.Items.Add(new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(itemId));
+        inventory.PlayerInventory.Refresh(null);
+
+        PendingRewards.Clear();
+        OnRewardsChanged?.Invoke();
+
+        Debug.Log($"[RunManager] Took {itemId}.");
         return true;
     }
 

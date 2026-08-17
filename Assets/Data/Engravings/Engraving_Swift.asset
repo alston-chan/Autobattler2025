@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa980c1f36caa24a9c78c1d7d5d008f, type: 3}
+  m_Name: Engraving_Swift
+  m_EditorClassIdentifier: 
+  engravingName: Swift
+  description: Attacks faster, which also builds toward ultimates sooner.
+  attackSpeedPerTier: 0.15
