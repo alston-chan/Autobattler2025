@@ -285,6 +285,23 @@ public class CharacterInventory : ItemWorkspace
         SyncSpellSlots();
     }
 
+    /// <summary>
+    /// Destroy an equipped item rather than returning it to the bag. Resonance cash-out spends the
+    /// item — its essence is engraved permanently and the steel is gone — so this is deliberately not
+    /// <see cref="Remove"/>, which hands the item back.
+    /// </summary>
+    public void ConsumeItem(Item item)
+    {
+        if (item == null || !Equipment.Items.Contains(item)) return;
+
+        UnequipStats(item);
+        Equipment.Items.Remove(item);
+        Equipment.Refresh(null);
+
+        RefreshStatsUI();
+        SyncSpellSlots();
+    }
+
     public void Remove()
     {
         MoveItem(SelectedItem, Equipment, PlayerInventory);

@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c07706caec4ebd44a5cc72bed8764c3, type: 3}
-  m_Name: Seed_Bulwark
+  m_Script: {fileID: 11500000, guid: 1305df9d7a6fc8846bad0b241030788d, type: 3}
+  m_Name: Engraving_Desperate
   m_EditorClassIdentifier: 
-  seedName: Bulwark
-  description: Allies adjacent to this hero take less damage from every hit.
-  blockingGranted: 6
+  engravingName: Desperate
+  description: Deals significantly more damage while below half health.
+  healthThreshold: 0.5
+  damageBonusPerTier: 0.25

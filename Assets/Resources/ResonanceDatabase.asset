@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08c1d5f19fde7e6439db75785de9168a, type: 3}
+  m_Name: ResonanceDatabase
+  m_EditorClassIdentifier: 
+  entries:
+  - itemId: FantasyHeroes.Basic.Shield.AdvancedKnightShield
+    engraving: {fileID: 11400000, guid: 2456309d292822a44b82c2f49b37cc95, type: 2}
+    tierICost: 1
+    tierIICost: 2
+    tierIIICost: 4
+  - itemId: Extensions.Epic.Shield.BlazeShield
+    engraving: {fileID: 11400000, guid: 8e4be88e2e7c4de4a846dd25b590991e, type: 2}
+    tierICost: 1
+    tierIICost: 2
+    tierIIICost: 4

@@ -88,11 +88,12 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     private void HandleStateChanged(GameState previous, GameState next)
     {
-        if (next == GameState.Combat) NotifySeeds(true);
+        if (next == GameState.Combat) NotifyResonance(true);
 
         if (previous != GameState.Combat) return;
 
-        NotifySeeds(false);
+        NotifyResonance(false);
+        AccrueResonance();
 
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
@@ -105,21 +106,30 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// Open or close every hero's seed for the fight. Combat start fires after the formation is
-    /// settled, so a seed can read who is standing beside whom; combat end lets it take back
-    /// anything it granted, which is what stops a per-fight bonus stacking every encounter.
+    /// Open or close every engraving affecting every unit — those on worn items and those already
+    /// banked. Combat start fires after the formation is settled, so an engraving can read who is
+    /// standing beside whom; combat end lets it take back anything it granted, which is what stops a
+    /// per-fight bonus stacking every encounter.
     /// </summary>
-    private void NotifySeeds(bool starting)
+    private void NotifyResonance(bool starting)
     {
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
         {
             var entity = all[i];
-            if (entity == null || entity.seed == null) continue;
-
-            if (starting) entity.seed.OnCombatStart(entity);
-            else entity.seed.OnCombatEnd(entity);
+            if (entity == null || entity.Resonance == null) continue;
+            entity.Resonance.ApplyForCombat(starting);
         }
+    }
+
+    /// <summary>
+    /// Credit the fight to every resonating item the company is wearing. Only the company accrues:
+    /// enemies are spawned per encounter and discarded, so attunement would have nothing to carry.
+    /// </summary>
+    private void AccrueResonance()
+    {
+        foreach (var hero in allyCharacters)
+            if (hero != null && hero.Resonance != null) hero.Resonance.AccrueAfterCombat();
     }
 
     private void EnsureArenaBounds()
@@ -300,6 +310,10 @@ public class GameManager : Singleton<GameManager>
             // SyncSpellSlots below rebuilds spellSlots from those books (matching what was authored).
             int addedBooks = EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
 
+            // The hero's signature item — where their identity comes from. Added before the random
+            // roll is committed so it can't be crowded out of its slot.
+            EquipSignatureItem(characterEntity, equippedItems);
+
             characterInventory.Equipment.Initialize(ref equippedItems);
 
             // Apply stat modifiers for initially equipped items
@@ -325,6 +339,28 @@ public class GameManager : Singleton<GameManager>
     /// preserving order so the active slot still lines up. Spells with no spellbook entry are skipped
     /// with a warning. Returns how many books were added.
     /// </summary>
+    /// <summary>
+    /// Equip the hero's signature item, replacing whatever the random roll put in the same slot. A
+    /// signature is the hero's identity — the piece they are meant to wear and eventually resonate —
+    /// so it wins the slot rather than competing with a random drop for it.
+    /// </summary>
+    private void EquipSignatureItem(Entity characterEntity, List<Item> equippedItems)
+    {
+        if (characterEntity == null || string.IsNullOrEmpty(characterEntity.signatureItemId)) return;
+
+        string id = characterEntity.signatureItemId;
+        var itemParams = ItemCollection.Active.Items.FirstOrDefault(i => i.Id == id);
+        if (itemParams == null)
+        {
+            Debug.LogWarning($"[GameManager] Signature item '{id}' on {characterEntity.name} isn't a " +
+                             "known item — skipped.");
+            return;
+        }
+
+        equippedItems.RemoveAll(i => ItemCollection.Active.GetItemParams(i)?.Type == itemParams.Type);
+        equippedItems.Add(new Item(id));
+    }
+
     private int EquipAuthoredSpellsAsBooks(Entity characterEntity, List<Item> equippedItems)
     {
         if (characterEntity == null || characterEntity.spellSlots == null) return 0;

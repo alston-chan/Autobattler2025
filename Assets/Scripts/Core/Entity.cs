@@ -26,6 +26,7 @@ public class Entity : MonoBehaviour
     public Mana Mana { get; private set; }
     public HitFeedback HitFeedback { get; private set; }
     public DeathFeedback DeathFeedback { get; private set; }
+    public Resonance Resonance { get; private set; }
     #endregion
 
     #region Bow Aiming
@@ -88,10 +89,11 @@ public class Entity : MonoBehaviour
     }
     public Transform fireTransform;
 
-    [Header("Seed")]
-    [Tooltip("This hero's innate permanent effect — what makes them distinct without giving them a " +
-             "fixed role. See Docs/Characters.md.")]
-    public HeroSeed seed;
+    [Header("Signature item")]
+    [Tooltip("Item id equipped at the start of a run. This is where a hero's identity comes from: " +
+             "wearing it grants its Engraving, and resonating it banks that Engraving permanently " +
+             "(Docs/Resonance.md). Leave empty for no signature.")]
+    public string signatureItemId;
 
     [Header("Innate spells")]
     [Tooltip("Always-available spells: the weapon basic attack and any always-on spells. NOT the " +
@@ -156,6 +158,9 @@ public class Entity : MonoBehaviour
         DeathFeedback = GetComponent<DeathFeedback>();
         if (DeathFeedback == null) DeathFeedback = gameObject.AddComponent<DeathFeedback>();
 
+        Resonance = GetComponent<Resonance>();
+        if (Resonance == null) Resonance = gameObject.AddComponent<Resonance>();
+
         // Apply UnitData if assigned, otherwise use serialized fields
         if (unitData != null)
         {
@@ -180,6 +185,7 @@ public class Entity : MonoBehaviour
         Mana.Initialize(this);
         HitFeedback.Initialize(this);
         DeathFeedback.Initialize(this);
+        Resonance.Initialize(this);
 
         // Subscribe to death event for cleanup and round-end checks
         Health.OnDied += HandleDeath;
