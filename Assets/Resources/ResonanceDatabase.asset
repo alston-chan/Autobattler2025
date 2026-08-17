@@ -15,11 +15,13 @@ MonoBehaviour:
   entries:
   - itemId: FantasyHeroes.Basic.Shield.AdvancedKnightShield
     engraving: {fileID: 11400000, guid: 2456309d292822a44b82c2f49b37cc95, type: 2}
-    tierICost: 1
-    tierIICost: 2
-    tierIIICost: 4
+    requirement: 3
+    tierICost: 600
+    tierIICost: 1800
+    tierIIICost: 4200
   - itemId: Extensions.Epic.Shield.BlazeShield
     engraving: {fileID: 11400000, guid: 8e4be88e2e7c4de4a846dd25b590991e, type: 2}
-    tierICost: 1
-    tierIICost: 2
-    tierIIICost: 4
+    requirement: 1
+    tierICost: 2
+    tierIICost: 5
+    tierIIICost: 10

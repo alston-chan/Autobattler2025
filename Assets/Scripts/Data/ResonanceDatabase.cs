@@ -10,6 +10,25 @@ using UnityEngine;
 ///
 /// Loaded once from <c>Resources/ResonanceDatabase</c>.
 /// </summary>
+/// <summary>
+/// What an item counts to attune. Each is an event-driven counter, so progress arrives as the hero
+/// plays rather than in a lump when the fight ends — a shield that counts damage blocked should tick
+/// on the blow that gets blocked.
+///
+/// The requirement is also characterisation: a shield attuning through <see cref="DamageBlocked"/>
+/// asks to be put where blows land, which is a different instruction to the player than one counting
+/// kills.
+/// </summary>
+public enum ResonanceRequirement
+{
+    /// <summary>Fights survived while worn. The simple default; credited when a fight ends.</summary>
+    CombatsWorn,
+    EnemiesKilled,
+    DamageDealt,
+    DamageBlocked,
+    AbilitiesCast
+}
+
 [CreateAssetMenu(menuName = "Data/Resonance Database", fileName = "ResonanceDatabase")]
 public class ResonanceDatabase : ScriptableObject
 {
@@ -19,6 +38,10 @@ public class ResonanceDatabase : ScriptableObject
         [Tooltip("HeroEditor ItemParams.Id of the item that carries this engraving.")]
         public string itemId;
         public Engraving engraving;
+
+        [Tooltip("What this item counts to attune. Pick something the item's own fantasy implies — " +
+                 "a shield that counts blocked damage tells the player where to stand it.")]
+        public ResonanceRequirement requirement = ResonanceRequirement.CombatsWorn;
 
         [Tooltip("Attunement needed for Tier I / II / III. Costs escalate, so each tier is a longer " +
                  "commitment than the last — that's what gives a reason to wait, and a reason to stop.")]

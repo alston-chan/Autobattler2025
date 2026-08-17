@@ -265,6 +265,9 @@ public class CombatAI : MonoBehaviour
             AbilityFeedback.Announce(_entity, string.IsNullOrEmpty(spell.spellName) ? spell.name : spell.spellName);
         }
 
+        if (_entity.Resonance != null)
+            _entity.Resonance.Accrue(ResonanceRequirement.AbilitiesCast, 1f);
+
         yield return StartCoroutine(spell.Cast(_entity, target));
 
         // Basic weapon attacks are the primary mana source — so Attack Speed accelerates ults too.

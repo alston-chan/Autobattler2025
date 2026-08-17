@@ -66,7 +66,15 @@ public class Health : MonoBehaviour
     {
         if (IsDead) return;
 
+        float incoming = amount;
         amount = ApplyBlocking(amount);
+
+        // Resonance counters tick on the blow itself, not at the end of the fight, so a shield that
+        // attunes by blocking advances exactly when it blocks.
+        if (_entity.Resonance != null)
+            _entity.Resonance.Accrue(ResonanceRequirement.DamageBlocked, incoming - amount);
+        if (source != null && source.Resonance != null)
+            source.Resonance.Accrue(ResonanceRequirement.DamageDealt, amount);
 
         currentHealth -= amount;
         if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
@@ -110,6 +118,9 @@ public class Health : MonoBehaviour
 
     private void Die(Entity killer)
     {
+        if (killer != null && killer.Resonance != null)
+            killer.Resonance.Accrue(ResonanceRequirement.EnemiesKilled, 1f);
+
         IsDead = true;
         currentHealth = 0f;
         if (healthBar != null) healthBar.SetSize(0f);

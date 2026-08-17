@@ -47,15 +47,29 @@ public class ResonancePanel : MonoBehaviour
 
         _inventory.OnSelectionChanged += HandleSelection;
         _inventory.Equipment.OnRefresh += Redraw;
+        _hero.Resonance.OnAttunementChanged += MarkDirty;
 
         Redraw();
     }
 
     private void OnDestroy()
     {
+        if (_hero != null && _hero.Resonance != null) _hero.Resonance.OnAttunementChanged -= MarkDirty;
         if (_inventory == null) return;
         _inventory.OnSelectionChanged -= HandleSelection;
         _inventory.Equipment.OnRefresh -= Redraw;
+    }
+
+    // Counters can tick many times per second in a busy fight — several hits, a kill, a cast — so the
+    // panel coalesces them into one repaint per frame rather than rebuilding text on every event.
+    private bool _dirty;
+    private void MarkDirty() => _dirty = true;
+
+    private void LateUpdate()
+    {
+        if (!_dirty) return;
+        _dirty = false;
+        Redraw();
     }
 
     private void HandleSelection(Item item)

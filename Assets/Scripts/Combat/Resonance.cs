@@ -45,18 +45,38 @@ public class Resonance : MonoBehaviour
         return entry == null ? 0 : entry.TierAt(AttunementFor(itemId));
     }
 
+    /// <summary>Raised when any worn item's attunement changes, so UI can follow it live.</summary>
+    public event System.Action OnAttunementChanged;
+
     /// <summary>
-    /// Credit a combat to every resonating item the hero is wearing. Called once a fight is over, so
-    /// attunement measures combats *survived* while worn — the simple default requirement.
+    /// Credit <paramref name="amount"/> toward every worn item whose requirement is
+    /// <paramref name="requirement"/>. Items counting something else are untouched, so a hero wearing
+    /// a kill-counting blade and a block-counting shield advances each on its own terms during the
+    /// same fight.
     /// </summary>
-    public void AccrueAfterCombat()
+    public void Accrue(ResonanceRequirement requirement, float amount)
     {
+        if (amount <= 0f) return;
+
+        var database = ResonanceDatabase.Active;
+        if (database == null) return;
+
+        bool changed = false;
         foreach (var item in EquippedResonantItems())
         {
+            var entry = database.Find(item.Id);
+            if (entry == null || entry.requirement != requirement) continue;
+
             _attunement.TryGetValue(item.Id, out float current);
-            _attunement[item.Id] = current + 1f;
+            _attunement[item.Id] = current + amount;
+            changed = true;
         }
+
+        if (changed) OnAttunementChanged?.Invoke();
     }
+
+    /// <summary>Credit the fight to items counting combats. Called once a fight is over.</summary>
+    public void AccrueAfterCombat() => Accrue(ResonanceRequirement.CombatsWorn, 1f);
 
     /// <summary>
     /// Cash out: bank the item's engraving at the tier reached, then consume the item so the slot
