@@ -88,15 +88,27 @@ public class ResonancePanel : MonoBehaviour
         var database = ResonanceDatabase.Active;
         var entry = _selected != null && database != null ? database.Find(_selected.Id) : null;
 
-        // Only equipped items attune, so an item sitting in the bag has nothing to show.
-        bool worn = _selected != null && _inventory.Equipment.Items.Contains(_selected);
-        if (entry == null || entry.engraving == null || !worn)
+        if (entry == null || entry.engraving == null)
         {
             _block.SetActive(false);
             return;
         }
 
         _block.SetActive(true);
+
+        // An item in the bag shows what it carries but no progress — deciding whether to equip it is
+        // exactly when the player needs to know what its engraving does, and only worn items attune.
+        bool worn = _inventory.Equipment.Items.Contains(_selected);
+        if (!worn)
+        {
+            _title.text = entry.engraving.DisplayName;
+            _detail.text = entry.engraving.DescribeTier(1) + "\nEquip to begin attuning.";
+            _barFill.anchorMax = new Vector2(0f, 1f);
+            _resonateButton.interactable = false;
+            _resonateBackground.color = ButtonBlocked;
+            _resonateButton.GetComponentInChildren<TextMeshProUGUI>().text = "Not equipped";
+            return;
+        }
 
         float attunement = _hero.Resonance.AttunementFor(_selected);
         int tier = entry.TierAt(attunement);

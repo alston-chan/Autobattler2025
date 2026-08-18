@@ -17,11 +17,11 @@ public class SwiftEngraving : Engraving
     private void Reset()
     {
         engravingName = "Swift";
-        description = "Attacks faster, which also builds toward ultimates sooner.";
+        description = "Attacks faster.";
     }
 
     public override string DescribeTier(int tier) =>
-        $"+{attackSpeedPerTier * Mathf.Max(1, tier) * 100f:0.#}% attack speed, which also builds mana sooner.";
+        $"+{attackSpeedPerTier * Mathf.Max(1, tier) * 100f:0.#}% attack speed.";
 
     public override void OnCombatStart(Entity owner, int tier)
     {

@@ -44,6 +44,12 @@ public class CharacterInventory : ItemWorkspace
     public TextMeshProUGUI statsKeys;
     public TextMeshProUGUI statsValues;
 
+    // The window prefab carries its own stat labels as legacy UI.Text ("Health/Mana/Strength/
+    // Dexterity" against a hardcoded "99/99/99/99"), and the TMP fields above were never assigned —
+    // so the panel had always shown placeholder numbers. Found at runtime and written to instead.
+    private Text _prefabStatKeys;
+    private Text _prefabStatValues;
+
     // Created at runtime under the equipment panel — shows the active spell's name (B).
     private TextMeshProUGUI activeSpellLabel;
 
@@ -72,6 +78,15 @@ public class CharacterInventory : ItemWorkspace
         // only called from EquipmentManagement's random-equip helpers, so equipping through this
         // window changed the character but left its avatar head showing the old helmet.
         Equipment.OnRefresh += RefreshAvatar;
+
+        var statsPanel = transform.Find("HeroStats");
+        if (statsPanel != null)
+        {
+            var keys = statsPanel.Find("Stats");
+            var values = statsPanel.Find("Values");
+            if (keys != null) _prefabStatKeys = keys.GetComponent<Text>();
+            if (values != null) _prefabStatValues = values.GetComponent<Text>();
+        }
 
         CreateActiveSpellLabel();
         HighlightActiveSpellSlot();   // set the initial label + dim state
@@ -390,6 +405,10 @@ public class CharacterInventory : ItemWorkspace
 
         if (statsKeys != null) statsKeys.text = keys.ToString();
         if (statsValues != null) statsValues.text = vals.ToString();
+
+        // The window's own labels, which are legacy UI.Text and were showing hardcoded placeholders.
+        if (_prefabStatKeys != null) _prefabStatKeys.text = keys.ToString();
+        if (_prefabStatValues != null) _prefabStatValues.text = vals.ToString();
     }
 
     public void Craft()
