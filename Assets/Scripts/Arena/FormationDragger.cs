@@ -91,13 +91,19 @@ public class FormationDragger : MonoBehaviour
 
         Vector3 mouse = MouseWorld();
         Entity best = null;
+        PickHit bestHit = PickHit.None;
 
         foreach (var pair in runManager.Formation.Placements)
         {
             var unit = pair.Key;
             if (unit == null || unit.isDead || !unit.gameObject.activeInHierarchy) continue;
-            if (!UnitPicking.Covers(unit, mouse, headroom, grabRadius)) continue;
-            if (UnitPicking.IsInFrontOf(unit, best)) best = unit;
+
+            var hit = UnitPicking.Hit(unit, mouse, headroom, grabRadius);
+            if (hit == PickHit.None) continue;
+            if (!UnitPicking.Beats(hit, unit, bestHit, best)) continue;
+
+            best = unit;
+            bestHit = hit;
         }
 
         if (best == null) return;

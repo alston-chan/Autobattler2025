@@ -27,8 +27,13 @@ public class UnitInspector : MonoBehaviour
 
     [Tooltip("How far above the body collider a click still counts, in world units. The collider is " +
              "an arrow hitbox that stops at the shoulders; this covers the head, which is a large " +
-             "part of what the player is aiming at.")]
-    public float headroom = 0.7f;
+             "part of what the player is aiming at. A click here only wins if no unit's actual body " +
+             "claims the point, so raising it can't steal clicks from the unit behind.")]
+    public float headroom = UnitPicking.DefaultHeadroom;
+
+    [Tooltip("Draw every unit's click area in play, to tune it by eye. Requires Gizmos to be " +
+             "enabled in the Game view.")]
+    public bool drawPickBoxes = false;
 
     [Tooltip("How far the cursor may travel between press and release and still count as a click " +
              "rather than a drag, in screen pixels. Dragging a unit into formation must not also " +
@@ -162,17 +167,53 @@ public class UnitInspector : MonoBehaviour
     public Entity UnitAt(Vector3 world)
     {
         Entity best = null;
+        PickHit bestHit = PickHit.None;
 
         var all = EntityRegistry.All;
         for (int i = 0; i < all.Count; i++)
         {
             var unit = all[i];
             if (unit == null || unit.isDead || !unit.gameObject.activeInHierarchy) continue;
-            if (!UnitPicking.Covers(unit, world, headroom, pickRadius)) continue;
-            if (UnitPicking.IsInFrontOf(unit, best)) best = unit;
+
+            var hit = UnitPicking.Hit(unit, world, headroom, pickRadius);
+            if (hit == PickHit.None) continue;
+            if (!UnitPicking.Beats(hit, unit, bestHit, best)) continue;
+
+            best = unit;
+            bestHit = hit;
         }
 
         return best;
+    }
+
+    /// <summary>
+    /// Draw every unit's click area, so the thing being tuned can be seen rather than inferred from
+    /// mis-clicks. Solid where a click lands on the body, faint over the headroom that only counts
+    /// when no body claims the point. Gizmos must be enabled in the Game view to see this in play.
+    /// </summary>
+    private void OnDrawGizmos()
+    {
+        if (!drawPickBoxes || !Application.isPlaying) return;
+
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            var unit = all[i];
+            if (unit == null || unit.isDead || !unit.gameObject.activeInHierarchy) continue;
+
+            if (!UnitPicking.TryGetBoxes(unit, headroom, out var core, out var full))
+            {
+                Gizmos.color = new Color(1f, 0.6f, 0.2f, 0.8f);
+                Gizmos.DrawWireSphere(unit.transform.position + Vector3.up, pickRadius);
+                continue;
+            }
+
+            Gizmos.color = new Color(0.4f, 1f, 0.5f, 0.9f);
+            Gizmos.DrawWireCube(core.center, new Vector3(core.size.x, core.size.y, 0f));
+
+            Gizmos.color = new Color(0.4f, 1f, 0.5f, 0.28f);
+            Gizmos.DrawWireCube(full.center, new Vector3(full.size.x, full.size.y, 0f));
+        }
     }
 
     private void Select(Entity unit)

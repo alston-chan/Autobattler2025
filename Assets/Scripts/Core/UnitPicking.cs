@@ -1,5 +1,21 @@
 using UnityEngine;
 
+/// <summary>How firmly a world point landed on a unit. Higher beats lower.</summary>
+public enum PickHit
+{
+    /// <summary>Not on the unit at all.</summary>
+    None = 0,
+
+    /// <summary>
+    /// On the padding around the body — the headroom over the shoulders, or the fallback radius.
+    /// Both are guesses at where the sprite is, so they must never outrank someone's actual body.
+    /// </summary>
+    Extended = 1,
+
+    /// <summary>Inside the unit's body proper. The strongest claim on a click.</summary>
+    Core = 2
+}
+
 /// <summary>
 /// Deciding which unit the player just clicked. Shared so that inspecting a unit
 /// (<see cref="UnitInspector"/>) and grabbing one to rearrange the formation
@@ -11,15 +27,18 @@ using UnityEngine;
 /// the point — a click on a body can't spill onto the neighbour a cell over.
 ///
 /// It is an arrow hitbox rather than a click target, though, so it needs help at both ends: it stops
-/// at the shoulders (y 1.35 above the feet, where the sprite runs to about 2) and these characters
-/// are drawn with big heads, so the box is extended upward; and a unit with no collider at all falls
-/// back to a radius so an unusual prefab is never unclickable.
+/// at the shoulders while the sprite runs higher, so the box is extended upward; and a unit with no
+/// collider falls back to a radius so an unusual prefab is never unclickable. Add a
+/// <see cref="UnitPickBox"/> to a prefab to state its click area outright and skip all of that.
 /// </summary>
 public static class UnitPicking
 {
     /// <summary>
     /// How far above the body collider a click still lands on the unit, in world units. Covers the
     /// head, which the collider excludes and which is a large part of what the player aims at.
+    ///
+    /// Kept modest on purpose. Units stand 1.5 apart in a column, and their bodies are about 1.5
+    /// tall, so headroom much beyond this reaches into the body of the unit standing behind.
     /// </summary>
     public const float DefaultHeadroom = 0.7f;
 
@@ -27,8 +46,7 @@ public static class UnitPicking
     public const float DefaultRadius = 1.1f;
 
     /// <summary>
-    /// Whether a world point lands on this unit — inside its body collider, or in the headroom above
-    /// it.
+    /// How firmly a world point lands on this unit.
     ///
     /// Says nothing about whether the unit is a legal choice: liveness, team and whether it is even
     /// on the board are the caller's business. That matters more than it looks, because a dead unit
@@ -36,33 +54,79 @@ public static class UnitPicking
     /// fallback radius instead — a caller that doesn't exclude the dead would find corpses easier to
     /// click than the living.
     /// </summary>
-    public static bool Covers(Entity unit, Vector3 world, float headroom = DefaultHeadroom,
+    public static PickHit Hit(Entity unit, Vector3 world, float headroom = DefaultHeadroom,
                               float fallbackRadius = DefaultRadius)
     {
-        if (unit == null) return false;
+        if (unit == null) return PickHit.None;
+
+        // An authored box is a deliberate statement about this unit, so it is taken whole — no
+        // headroom guessing on top of a shape somebody chose.
+        var authored = unit.GetComponentInChildren<UnitPickBox>();
+        if (authored != null)
+            return authored.Contains(world) ? PickHit.Core : PickHit.None;
 
         var body = unit.GetComponentInChildren<Collider2D>();
         if (body == null || !body.enabled)
-            return Vector2.Distance(world, unit.transform.position + Vector3.up) <= fallbackRadius;
+        {
+            return Vector2.Distance(world, unit.transform.position + Vector3.up) <= fallbackRadius
+                ? PickHit.Extended
+                : PickHit.None;
+        }
 
         var bounds = body.bounds;
-        return world.x >= bounds.min.x && world.x <= bounds.max.x &&
-               world.y >= bounds.min.y && world.y <= bounds.max.y + headroom;
+        if (world.x < bounds.min.x || world.x > bounds.max.x) return PickHit.None;
+        if (world.y < bounds.min.y) return PickHit.None;
+        if (world.y <= bounds.max.y) return PickHit.Core;
+
+        return world.y <= bounds.max.y + headroom ? PickHit.Extended : PickHit.None;
     }
 
     /// <summary>
-    /// Whether <paramref name="candidate"/> is drawn in front of <paramref name="current"/>, treating
-    /// a null <paramref name="current"/> as "nothing chosen yet".
+    /// Whether a candidate should displace the best unit found so far.
     ///
-    /// Units in a column overlap, so a point can land on several at once — and the one the player
-    /// believes they clicked is simply the one they can see. Extending the box over the head makes
-    /// this decisive rather than a nicety: units stand a little over a unit apart, so the torso of
-    /// the unit BEHIND sits at the same height as the head of the unit in front, and picking by
-    /// collider alone would answer with the unit hidden behind the head being clicked.
+    /// A body outranks padding first, and only then does draw order break the tie. Both halves are
+    /// load-bearing. Units stand 1.5 apart in a column while a body is about 1.5 tall, so the
+    /// headroom of the unit in front reaches into the lower body of the unit behind — and since the
+    /// unit in front is also the nearer one, draw order alone would hand it every click on its
+    /// neighbour's legs. Ranking the body first gives that band back to the unit whose body it is.
     ///
-    /// The project sorts sprites along +Y (GraphicsSettings custom axis), which draws lower units in
-    /// front, so front-most is the unit with the smallest Y.
+    /// Where the claims are equal — two bodies genuinely overlapping — the unit the player can see is
+    /// the one they meant, and the project sorts sprites along +Y (GraphicsSettings custom axis),
+    /// which draws lower units in front.
     /// </summary>
+    public static bool Beats(PickHit hit, Entity candidate, PickHit bestHit, Entity best)
+    {
+        if (best == null) return hit != PickHit.None;
+        if (hit != bestHit) return hit > bestHit;
+        return IsInFrontOf(candidate, best);
+    }
+
+    /// <summary>Whether <paramref name="candidate"/> is drawn in front of <paramref name="current"/>.</summary>
     public static bool IsInFrontOf(Entity candidate, Entity current) =>
         current == null || candidate.transform.position.y < current.transform.position.y;
+
+    /// <summary>
+    /// The core and full (core + headroom) click areas of a unit, for drawing. False when the unit
+    /// has neither an authored box nor a usable collider, and so is picked by radius instead.
+    /// </summary>
+    public static bool TryGetBoxes(Entity unit, float headroom, out Bounds core, out Bounds full)
+    {
+        core = full = default;
+        if (unit == null) return false;
+
+        var authored = unit.GetComponentInChildren<UnitPickBox>();
+        if (authored != null)
+        {
+            core = full = authored.WorldBounds;
+            return true;
+        }
+
+        var body = unit.GetComponentInChildren<Collider2D>();
+        if (body == null || !body.enabled) return false;
+
+        core = body.bounds;
+        full = core;
+        full.Encapsulate(new Vector3(core.center.x, core.max.y + headroom, core.center.z));
+        return true;
+    }
 }
