@@ -72,6 +72,10 @@ public class GameManager : Singleton<GameManager>
 
         SetupCharacterInventories();
 
+        // Inspects any unit on the board, company or enemy, so it doesn't depend on the run existing.
+        var inspector = gameObject.AddComponent<UnitInspector>();
+        inspector.Initialize(canvas != null ? canvas.transform : null);
+
         // Last, so the company is fully built (gear, spells, inventories) before the first fight is
         // put on the board.
         if (runManager != null)
