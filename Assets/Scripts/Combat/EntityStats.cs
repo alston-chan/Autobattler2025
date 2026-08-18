@@ -118,6 +118,44 @@ public class EntityStats : MonoBehaviour
         OnStatsChanged?.Invoke();
     }
 
+    /// <summary>
+    /// How many basic attacks this unit lands per second.
+    ///
+    /// <see cref="AttackSpeed"/> is a multiplier — 1 means "normal", which tells a player nothing
+    /// about how fast normal is, and nothing about what winning a second copy of an item buys them.
+    /// A rate is a quantity they can reason about and compare, which is why autobattlers state this
+    /// stat as attacks per second rather than as a factor.
+    ///
+    /// Derived rather than assumed. <see cref="CombatAI"/> divides a weapon spell's cooldown by
+    /// attack speed, so the rate is the multiplier over that cooldown. Both basic attacks currently
+    /// use a 1s cooldown, which makes the two numbers coincide today — computing it keeps the display
+    /// honest the moment a weapon ships with a different cooldown.
+    /// </summary>
+    public float AttacksPerSecond
+    {
+        get
+        {
+            float cooldown = BasicAttackCooldown();
+            if (cooldown <= 0.01f || AttackSpeed == null) return 0f;
+            return AttackSpeed.Value / cooldown;
+        }
+    }
+
+    /// <summary>
+    /// The cooldown of this unit's weapon basic attack — the spell whose pace attack speed governs.
+    /// Falls back to the first spell, which is the weapon attack by convention.
+    /// </summary>
+    private float BasicAttackCooldown()
+    {
+        var spells = _entity != null ? _entity.spells : null;
+        if (spells == null || spells.Count == 0) return 0f;
+
+        for (int i = 0; i < spells.Count; i++)
+            if (spells[i] != null && spells[i].ScalesWithAttackSpeed) return spells[i].cooldown;
+
+        return spells[0] != null ? spells[0].cooldown : 0f;
+    }
+
     private void RefreshInspector()
     {
         _damage = Damage?.Value ?? 0f;
@@ -138,7 +176,8 @@ public class EntityStats : MonoBehaviour
             { "Max Health",   MaxHealth.Value },
             { "Speed",        Speed.Value },
             { "Blocking",     Blocking.Value },
-            { "Attack Speed", AttackSpeed.Value },
+            // Stated as a rate, not as the underlying multiplier — see AttacksPerSecond.
+            { "Attacks / sec", AttacksPerSecond },
         };
     }
 }

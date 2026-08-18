@@ -294,7 +294,7 @@ public class UnitInspector : MonoBehaviour
         var values = new StringBuilder();
 
         Line(keys, values, "Damage", stats.Damage.Value.ToString("0.##"));
-        Line(keys, values, "Attack Speed", stats.AttackSpeed.Value.ToString("0.##"));
+        Line(keys, values, "Attacks / sec", stats.AttacksPerSecond.ToString("0.##"));
         Line(keys, values, "Move Speed", stats.Speed.Value.ToString("0.##"));
         Line(keys, values, "Blocking", stats.Blocking.Value.ToString("0.##"));
 
