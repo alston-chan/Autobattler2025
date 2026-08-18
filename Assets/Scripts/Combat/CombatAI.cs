@@ -273,8 +273,15 @@ public class CombatAI : MonoBehaviour
             AbilityFeedback.Announce(_entity, string.IsNullOrEmpty(spell.spellName) ? spell.name : spell.spellName);
         }
 
+        // Every spell comes through here, the weapon's own attack included, so the two are counted
+        // apart. Lumping them together made "abilities cast" tick on each auto-attack, which turned
+        // an item asking the player to use their kit into one that filled itself by standing still.
         if (_entity.Resonance != null)
-            _entity.Resonance.Accrue(ResonanceRequirement.AbilitiesCast, 1f);
+        {
+            _entity.Resonance.Accrue(spell.ScalesWithAttackSpeed
+                ? ResonanceRequirement.BasicAttacks
+                : ResonanceRequirement.AbilitiesCast, 1f);
+        }
 
         yield return StartCoroutine(spell.Cast(_entity, target));
 

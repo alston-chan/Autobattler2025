@@ -272,6 +272,169 @@ public class Resonance : MonoBehaviour
         return ResonanceDatabase.Active.Find(item.Id);
     }
 
+    #region Save / load
+
+    /// <summary>
+    /// One item's progress, in a form a save file can hold.
+    ///
+    /// Attunement is keyed at runtime by the item OBJECT, which is what lets two copies of the same
+    /// gear advance separately — but object identity cannot be written to disk, and HeroEditor gives
+    /// items nothing else to be identified by: <c>Id</c> is explicitly not unique and <c>Hash</c> is
+    /// a hash of the id and modifier, so two copies of a bow are indistinguishable by value.
+    ///
+    /// So a record is descriptor plus <see cref="ordinal"/> — "the second BattleBow this hero holds"
+    /// — and the hero's items are walked in a fixed order on both save and load. Identical items keep
+    /// their separate progress as long as the collection is restored in the order it was written,
+    /// which is the same assumption the inventory itself already makes.
+    /// </summary>
+    [System.Serializable]
+    public class AttunementRecord
+    {
+        public string itemId;
+        public int modifierId;
+        public int modifierLevel;
+
+        [Tooltip("Which copy of an otherwise identical item this is, in hold order.")]
+        public int ordinal;
+
+        public float attunement;
+    }
+
+    /// <summary>
+    /// A banked mark, by engraving asset name. Names rather than references, because a save file
+    /// cannot point at a ScriptableObject; <see cref="ResonanceDatabase.FindEngraving"/> resolves it.
+    /// </summary>
+    [System.Serializable]
+    public class BankedRecord
+    {
+        public string engravingName;
+        public int tier;
+    }
+
+    /// <summary>Everything a save needs to restore this hero's resonance.</summary>
+    [System.Serializable]
+    public class State
+    {
+        public List<AttunementRecord> attunement = new List<AttunementRecord>();
+        public List<BankedRecord> banked = new List<BankedRecord>();
+    }
+
+    /// <summary>Write out this hero's resonance. Safe to call at any time.</summary>
+    public State CaptureState()
+    {
+        var state = new State();
+
+        var counts = new Dictionary<string, int>();
+        foreach (var item in HeldItems())
+        {
+            string descriptor = Descriptor(item);
+            counts.TryGetValue(descriptor, out int ordinal);
+            counts[descriptor] = ordinal + 1;
+
+            float value = AttunementFor(item);
+            if (value <= 0f) continue;   // nothing to say about an item that hasn't started
+
+            state.attunement.Add(new AttunementRecord
+            {
+                itemId = item.Id,
+                modifierId = item.Modifier != null ? (int)item.Modifier.Id : 0,
+                modifierLevel = item.Modifier != null ? item.Modifier.Level : 0,
+                ordinal = ordinal,
+                attunement = value
+            });
+        }
+
+        foreach (var mark in banked)
+        {
+            if (mark == null || mark.engraving == null) continue;
+            state.banked.Add(new BankedRecord { engravingName = mark.engraving.name, tier = mark.tier });
+        }
+
+        return state;
+    }
+
+    /// <summary>
+    /// Restore this hero's resonance. Call AFTER their inventory has been rebuilt — records are
+    /// matched against the items the hero is actually holding, so there is nothing to bind to before
+    /// then. Reapplies engravings at the end, so the restored state is live rather than merely stored.
+    /// </summary>
+    public void RestoreState(State state)
+    {
+        _attunement.Clear();
+        banked.Clear();
+
+        if (state != null)
+        {
+            var byKey = new Dictionary<string, float>();
+            foreach (var record in state.attunement)
+            {
+                if (record == null) continue;
+                byKey[RecordKey(record)] = record.attunement;
+            }
+
+            var counts = new Dictionary<string, int>();
+            foreach (var item in HeldItems())
+            {
+                string descriptor = Descriptor(item);
+                counts.TryGetValue(descriptor, out int ordinal);
+                counts[descriptor] = ordinal + 1;
+
+                if (byKey.TryGetValue(descriptor + "#" + ordinal, out float value))
+                    _attunement[item] = value;
+            }
+
+            var database = ResonanceDatabase.Active;
+            foreach (var record in state.banked)
+            {
+                if (record == null) continue;
+
+                var engraving = database != null ? database.FindEngraving(record.engravingName) : null;
+                if (engraving == null)
+                {
+                    // A mark whose engraving no longer exists is dropped rather than silently
+                    // becoming a null entry that every reader then has to guard against.
+                    Debug.LogWarning($"[Resonance] {name}: no engraving named '{record.engravingName}' " +
+                                     "— banked mark dropped.");
+                    continue;
+                }
+
+                banked.Add(new Banked { engraving = engraving, tier = record.tier });
+            }
+        }
+
+        Refresh(force: true);
+        OnAttunementChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Every item this hero holds, worn first then carried, in list order. The order is the contract
+    /// between <see cref="CaptureState"/> and <see cref="RestoreState"/> — it is what makes "the
+    /// second copy of this item" mean the same thing on both sides.
+    /// </summary>
+    private IEnumerable<Item> HeldItems()
+    {
+        var inventory = _entity != null ? _entity.characterInventory : null;
+        if (inventory == null) yield break;
+
+        if (inventory.Equipment != null)
+            foreach (var item in inventory.Equipment.Items)
+                if (item != null) yield return item;
+
+        if (inventory.PlayerInventory != null)
+            foreach (var item in inventory.PlayerInventory.Items)
+                if (item != null) yield return item;
+    }
+
+    private static string Descriptor(Item item) =>
+        item.Id + "|" + (item.Modifier != null ? (int)item.Modifier.Id : 0) + "|" +
+        (item.Modifier != null ? item.Modifier.Level : 0);
+
+    private static string RecordKey(AttunementRecord record) =>
+        record.itemId + "|" + record.modifierId + "|" + record.modifierLevel +
+        "#" + record.ordinal;
+
+    #endregion
+
     /// <summary>Worn items that appear in the resonance database.</summary>
     private IEnumerable<Item> EquippedResonantItems()
     {

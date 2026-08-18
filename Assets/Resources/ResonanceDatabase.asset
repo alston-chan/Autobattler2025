@@ -39,7 +39,7 @@ MonoBehaviour:
     engraveCost: 8
   - itemId: FantasyHeroes.Basic.Bow.BattleBow
     engraving: {fileID: 11400000, guid: e5796675bd685f94bb465b5b8b97e3c8, type: 2}
-    requirement: 4
+    requirement: 5
     tierIICost: 15
     tierIIICost: 40
     engraveCost: 8

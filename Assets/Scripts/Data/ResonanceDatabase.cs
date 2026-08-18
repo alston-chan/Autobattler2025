@@ -19,14 +19,30 @@ using UnityEngine;
 /// asks to be put where blows land, which is a different instruction to the player than one counting
 /// kills.
 /// </summary>
+/// <remarks>
+/// Values are explicit and permanent: the database stores them as integers, so renumbering would
+/// quietly re-point every authored entry at a different requirement.
+/// </remarks>
 public enum ResonanceRequirement
 {
     /// <summary>Fights survived while worn. The simple default; credited when a fight ends.</summary>
-    CombatsWorn,
-    EnemiesKilled,
-    DamageDealt,
-    DamageBlocked,
-    AbilitiesCast
+    CombatsWorn = 0,
+    EnemiesKilled = 1,
+    DamageDealt = 2,
+    DamageBlocked = 3,
+
+    /// <summary>
+    /// Casts of a real ability — an ultimate or any spell that isn't the weapon's own attack.
+    /// Deliberately excludes auto-attacks: an item asking for abilities is asking the player to use
+    /// their kit, and counting the swings that happen anyway would make that goal meaningless.
+    /// </summary>
+    AbilitiesCast = 4,
+
+    /// <summary>
+    /// Weapon auto-attacks. The busiest counter by far, so thresholds want to be much larger than
+    /// they would be for <see cref="AbilitiesCast"/>.
+    /// </summary>
+    BasicAttacks = 5
 }
 
 public static class ResonanceRequirements
@@ -43,6 +59,7 @@ public static class ResonanceRequirements
         ResonanceRequirement.DamageDealt => "damage dealt",
         ResonanceRequirement.DamageBlocked => "damage blocked",
         ResonanceRequirement.AbilitiesCast => "abilities cast",
+        ResonanceRequirement.BasicAttacks => "auto-attacks",
         _ => "progress"
     };
 }
@@ -115,6 +132,23 @@ public class ResonanceDatabase : ScriptableObject
             }
             return _active;
         }
+    }
+
+    /// <summary>
+    /// An engraving by asset name. A save file can't hold a reference to a ScriptableObject, so
+    /// banked marks are written out by name and resolved back through here on load. Every engraving
+    /// a hero can bank came from an entry in this database, so this can always find it again.
+    /// </summary>
+    public Engraving FindEngraving(string engravingName)
+    {
+        if (string.IsNullOrEmpty(engravingName) || entries == null) return null;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            var engraving = entries[i] != null ? entries[i].engraving : null;
+            if (engraving != null && engraving.name == engravingName) return engraving;
+        }
+        return null;
     }
 
     /// <summary>The resonance entry for an item id, or null if that item doesn't resonate.</summary>
