@@ -16,24 +16,20 @@ MonoBehaviour:
   - itemId: FantasyHeroes.Basic.Shield.AdvancedKnightShield
     engraving: {fileID: 11400000, guid: 2456309d292822a44b82c2f49b37cc95, type: 2}
     requirement: 3
-    tierICost: 600
-    tierIICost: 1800
-    tierIIICost: 4200
+    tierIICost: 900
+    tierIIICost: 2400
   - itemId: Extensions.Epic.Shield.BlazeShield
     engraving: {fileID: 11400000, guid: 8e4be88e2e7c4de4a846dd25b590991e, type: 2}
     requirement: 1
-    tierICost: 2
-    tierIICost: 5
+    tierIICost: 4
     tierIIICost: 10
   - itemId: FantasyHeroes.Knights.MeleeWeapon1H.BalancedSword [Paint]
     engraving: {fileID: 11400000, guid: 8a2c3f8940e76bb4589e8c24beea3807, type: 2}
     requirement: 2
-    tierICost: 800
-    tierIICost: 2400
-    tierIIICost: 6000
+    tierIICost: 1500
+    tierIIICost: 4000
   - itemId: FantasyHeroes.Basic.Helmet.AmateurDodgeHat
     engraving: {fileID: 11400000, guid: e5796675bd685f94bb465b5b8b97e3c8, type: 2}
     requirement: 4
-    tierICost: 6
-    tierIICost: 16
-    tierIIICost: 36
+    tierIICost: 12
+    tierIIICost: 30

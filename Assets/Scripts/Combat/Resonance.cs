@@ -129,7 +129,6 @@ public class Resonance : MonoBehaviour
         if (entry == null || entry.engraving == null) return false;
 
         int tier = entry.TierAt(AttunementFor(item));
-        if (tier < 1) return false;
 
         var inventory = _entity != null ? _entity.characterInventory : null;
         if (inventory == null || !inventory.Equipment.Items.Contains(item)) return false;
@@ -155,10 +154,9 @@ public class Resonance : MonoBehaviour
         foreach (var item in EquippedResonantItems())
         {
             var entry = EntryFor(item);
-            int tier = entry.TierAt(AttunementFor(item));
-            if (tier < 1) continue;   // no effect until the first threshold
-
-            Invoke(entry.engraving, tier, starting);
+            // Tier I is free — a worn engraving always applies. The item's identity is the reason to
+            // wear it, so it works from the moment it goes on; attunement only deepens it.
+            Invoke(entry.engraving, entry.TierAt(AttunementFor(item)), starting);
         }
 
         foreach (var mark in banked)

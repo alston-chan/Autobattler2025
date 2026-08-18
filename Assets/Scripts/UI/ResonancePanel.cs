@@ -106,19 +106,22 @@ public class ResonancePanel : MonoBehaviour
 
         // What it does right now, in real numbers — and what another tier would buy. Comparing "+15%"
         // against "+30%" is the whole basis for deciding whether more combats are worth it.
-        string effect = tier >= 1
-            ? entry.engraving.DescribeTier(tier)
-            : $"<color=#999999>Inactive until Tier I.  Then: {entry.engraving.DescribeTier(1)}</color>";
+        // Tier I comes with the item, so there is always an effect to state.
+        string effect = entry.engraving.DescribeTier(tier);
 
+        // Name what the counter counts. "525 / 900" alone doesn't say whether that's fights, kills or
+        // damage, so the player can't tell how close they are or what to do to get there.
+        string unit = ResonanceRequirements.Describe(entry.requirement);
         string progress = tier >= 3
             ? "<b>Fully attuned</b> — resonate to bank it and free the slot."
-            : $"Attuned {attunement:0} / {next}  →  <b>{Roman(tier + 1)}</b>: " +
+            : $"{attunement:0} / {next} {unit}  →  <b>{Roman(tier + 1)}</b>: " +
               entry.engraving.DescribeTier(tier + 1);
 
         _detail.text = effect + "\n" + progress;
 
-        // Progress within the current tier band, so the bar restarts at each threshold.
-        int bandStart = tier == 0 ? 0 : (tier == 1 ? entry.tierICost : entry.tierIICost);
+        // Progress within the current tier band, so the bar restarts at each threshold. Tier I starts
+        // at zero because it costs nothing — it comes with the item.
+        int bandStart = tier == 1 ? 0 : entry.tierIICost;
         float span = Mathf.Max(1f, next - bandStart);
         float fill = tier >= 3 ? 1f : Mathf.Clamp01((attunement - bandStart) / span);
         _barFill.anchorMax = new Vector2(fill, 1f);
@@ -141,12 +144,16 @@ public class ResonancePanel : MonoBehaviour
             return;
         }
 
-        var text = new StringBuilder("Engraved: ");
-        for (int i = 0; i < banked.Count; i++)
+        // Each mark with what it actually does — a list of names alone doesn't tell the player what
+        // their hero has become, which is the whole point of banking them.
+        var text = new StringBuilder("<b>Engraved</b>");
+        foreach (var mark in banked)
         {
-            if (banked[i] == null || banked[i].engraving == null) continue;
-            if (i > 0) text.Append(", ");
-            text.Append(banked[i].engraving.DisplayName).Append(' ').Append(Roman(banked[i].tier));
+            if (mark == null || mark.engraving == null) continue;
+            text.Append("\n<color=#FFD147>")
+                .Append(mark.engraving.DisplayName).Append(" ")
+                .Append(Roman(mark.tier)).Append("</color>  ")
+                .Append(mark.engraving.DescribeTier(mark.tier));
         }
         _bankedLabel.text = text.ToString();
     }
@@ -236,9 +243,10 @@ public class ResonancePanel : MonoBehaviour
         var host = FindPanel("HeroStats") ?? FindPanel("Equipment");
         if (host == null) return;
 
-        _bankedLabel = NewText("BankedEngravings", host, 20f, Gold, TextAlignmentOptions.Center);
-        Anchor(_bankedLabel.rectTransform, new Vector2(0.5f, 0f), new Vector2(380f, 28f),
-               new Vector2(0f, 40f));
+        _bankedLabel = NewText("BankedEngravings", host, 15f, Color.white, TextAlignmentOptions.Top);
+        _bankedLabel.enableWordWrapping = true;
+        Anchor(_bankedLabel.rectTransform, new Vector2(0.5f, 0f), new Vector2(380f, 150f),
+               new Vector2(0f, 95f));
     }
 
     private Transform FindPanel(string named)

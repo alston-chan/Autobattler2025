@@ -29,6 +29,24 @@ public enum ResonanceRequirement
     AbilitiesCast
 }
 
+public static class ResonanceRequirements
+{
+    /// <summary>
+    /// What the counter is counting, for display. "1 / 2" alone is meaningless — the player can't
+    /// tell whether that's fights, kills or damage, and so can't tell whether it's nearly done or
+    /// barely started.
+    /// </summary>
+    public static string Describe(ResonanceRequirement requirement) => requirement switch
+    {
+        ResonanceRequirement.CombatsWorn => "fights worn",
+        ResonanceRequirement.EnemiesKilled => "enemies slain",
+        ResonanceRequirement.DamageDealt => "damage dealt",
+        ResonanceRequirement.DamageBlocked => "damage blocked",
+        ResonanceRequirement.AbilitiesCast => "abilities cast",
+        _ => "progress"
+    };
+}
+
 [CreateAssetMenu(menuName = "Data/Resonance Database", fileName = "ResonanceDatabase")]
 public class ResonanceDatabase : ScriptableObject
 {
@@ -43,26 +61,28 @@ public class ResonanceDatabase : ScriptableObject
                  "a shield that counts blocked damage tells the player where to stand it.")]
         public ResonanceRequirement requirement = ResonanceRequirement.CombatsWorn;
 
-        [Tooltip("Attunement needed for Tier I / II / III. Costs escalate, so each tier is a longer " +
-                 "commitment than the last — that's what gives a reason to wait, and a reason to stop.")]
-        public int tierICost = 1;
+        [Tooltip("Attunement needed to reach Tier II and Tier III. Tier I costs nothing — an item's " +
+                 "engraving is its identity and works the moment it is worn. Attunement only makes it " +
+                 "stronger, and the second tier costs more than the first so each is a longer " +
+                 "commitment than the last.")]
         public int tierIICost = 3;
         public int tierIIICost = 6;
 
-        /// <summary>Tier reached at a given attunement: 0 (none) through 3.</summary>
+        /// <summary>
+        /// Tier reached at a given attunement: 1 through 3. Never 0 — a worn engraving is always at
+        /// least Tier I, so equipping an item is never a dead period waiting for it to switch on.
+        /// </summary>
         public int TierAt(float attunement)
         {
             if (attunement >= tierIIICost) return 3;
             if (attunement >= tierIICost) return 2;
-            if (attunement >= tierICost) return 1;
-            return 0;
+            return 1;
         }
 
         /// <summary>Attunement required for the next tier, or 0 once maxed.</summary>
         public int NextTierCost(float attunement)
         {
             int tier = TierAt(attunement);
-            if (tier == 0) return tierICost;
             if (tier == 1) return tierIICost;
             if (tier == 2) return tierIIICost;
             return 0;
