@@ -3,10 +3,13 @@ using UnityEngine;
 /// <summary>
 /// Lets the player rearrange the company by dragging units onto grid cells before a fight.
 ///
-/// Only active outside combat — positioning is a decision made while the board is still, and letting
-/// a unit be yanked around mid-fight would fight the AI for control of its position. Dropping onto an
-/// occupied cell swaps the two units rather than refusing, so the formation can be reordered without
-/// first shuffling someone into an empty tile.
+/// Requires two things: the fight has not started — positioning is a decision made while the board is
+/// still, and letting a unit be yanked around mid-fight would fight the AI for control of its
+/// position — and the grid is on screen, so the cells a unit can be dropped into are actually visible
+/// while it is being dragged.
+///
+/// Dropping onto an occupied cell swaps the two units rather than refusing, so the formation can be
+/// reordered without first shuffling someone into an empty tile.
 /// </summary>
 public class FormationDragger : MonoBehaviour
 {
@@ -18,6 +21,7 @@ public class FormationDragger : MonoBehaviour
     private Entity _held;
     private Vector3 _heldOrigin;
     private Camera _camera;
+    private BattleGridView _view;
 
     private void Awake() => _camera = Camera.main;
 
@@ -27,8 +31,9 @@ public class FormationDragger : MonoBehaviour
         var grid = BattleGrid.Instance;
         if (gm == null || grid == null) return;
 
-        // Combat owns unit positions; only rearrange between fights.
-        if (gm.isGameStarted)
+        // Combat owns unit positions; only rearrange between fights. Checked separately from the grid
+        // below because the grid can be toggled back on mid-fight, and that must not re-open dragging.
+        if (gm.isGameStarted || !CanArrange(grid))
         {
             if (_held != null) Drop(cancelled: true);
             return;
@@ -37,6 +42,20 @@ public class FormationDragger : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) TryGrab();
         else if (Input.GetMouseButton(0) && _held != null) Carry();
         else if (Input.GetMouseButtonUp(0) && _held != null) Drop(cancelled: false);
+    }
+
+    /// <summary>
+    /// Units may only be moved while the grid is on screen (Tab). The cells are the only thing that
+    /// shows where a unit can legally go, so dragging without them is aiming at invisible targets —
+    /// and it makes a click on a unit unambiguous the rest of the time, leaving it to
+    /// <see cref="UnitInspector"/>.
+    ///
+    /// A scene with no <see cref="BattleGridView"/> has no grid to show, so nothing is gated.
+    /// </summary>
+    private bool CanArrange(BattleGrid grid)
+    {
+        if (_view == null) _view = grid.GetComponent<BattleGridView>();
+        return _view == null || _view.IsVisible;
     }
 
     private Vector3 MouseWorld()

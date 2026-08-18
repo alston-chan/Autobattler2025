@@ -39,6 +39,13 @@ public class BattleGridView : MonoBehaviour
 
     private static Sprite _tileSprite;
 
+    /// <summary>
+    /// Whether the cells are currently on screen. <see cref="FormationDragger"/> gates on this: the
+    /// grid being visible is what tells the player the board is arrangeable, so dragging while it is
+    /// hidden would be an interaction with no visible affordance.
+    /// </summary>
+    public bool IsVisible => _visible;
+
     private void Awake()
     {
         _grid = GetComponent<BattleGrid>();
