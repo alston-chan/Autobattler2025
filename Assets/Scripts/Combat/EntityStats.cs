@@ -56,6 +56,8 @@ public class EntityStats : MonoBehaviour
     /// </summary>
     public void ApplyItemModifiers(Assets.HeroEditor.InventorySystem.Scripts.Data.ItemParams itemParams, object source)
     {
+        bool authoredSpeed = false;
+
         foreach (var prop in itemParams.Properties)
         {
             if (!float.TryParse(prop.Value, System.Globalization.NumberStyles.Float,
@@ -76,7 +78,25 @@ public class EntityStats : MonoBehaviour
                 case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.Blocking:
                     Blocking.AddModifier(new StatModifier(val, StatModType.Flat, source));
                     break;
+
+                // A weapon's own handling speed, authored as a fraction (+0.2 = 20% faster). Percent
+                // rather than flat so it compounds with engravings like Swift instead of racing them.
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.ChargeSpeed:
+                    authoredSpeed = true;
+                    AttackSpeed.AddModifier(new StatModifier(val, StatModType.PercentAdd, source));
+                    break;
             }
+        }
+
+        // The vendor catalogue authors nothing but Damage on weapons, so without a fallback every
+        // weapon would swing at exactly the same rate and equipping one would move no visible number.
+        // An item that does author ChargeSpeed keeps its own value — the table is only the default.
+        if (!authoredSpeed &&
+            itemParams.Type == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Weapon)
+        {
+            float handling = WeaponSpeeds.HandlingFor(itemParams.Class);
+            if (handling != 0f)
+                AttackSpeed.AddModifier(new StatModifier(handling, StatModType.PercentAdd, source));
         }
 
         RefreshInspector();
@@ -92,6 +112,7 @@ public class EntityStats : MonoBehaviour
         MaxHealth.RemoveAllModifiersFromSource(source);
         Speed.RemoveAllModifiersFromSource(source);
         Blocking.RemoveAllModifiersFromSource(source);
+        AttackSpeed.RemoveAllModifiersFromSource(source);
 
         RefreshInspector();
         OnStatsChanged?.Invoke();
