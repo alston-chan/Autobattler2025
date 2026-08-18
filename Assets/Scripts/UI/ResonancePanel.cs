@@ -104,9 +104,18 @@ public class ResonancePanel : MonoBehaviour
 
         _title.text = entry.engraving.DisplayName + (tier > 0 ? "  " + Roman(tier) : "");
 
-        _detail.text = tier >= 3
-            ? "Fully attuned — resonate to bank it and free the slot."
-            : $"Attuned {attunement:0} / {next}   →   {Roman(tier + 1)}";
+        // What it does right now, in real numbers — and what another tier would buy. Comparing "+15%"
+        // against "+30%" is the whole basis for deciding whether more combats are worth it.
+        string effect = tier >= 1
+            ? entry.engraving.DescribeTier(tier)
+            : $"<color=#999999>Inactive until Tier I.  Then: {entry.engraving.DescribeTier(1)}</color>";
+
+        string progress = tier >= 3
+            ? "<b>Fully attuned</b> — resonate to bank it and free the slot."
+            : $"Attuned {attunement:0} / {next}  →  <b>{Roman(tier + 1)}</b>: " +
+              entry.engraving.DescribeTier(tier + 1);
+
+        _detail.text = effect + "\n" + progress;
 
         // Progress within the current tier band, so the bar restarts at each threshold.
         int bandStart = tier == 0 ? 0 : (tier == 1 ? entry.tierICost : entry.tierIICost);
@@ -171,18 +180,19 @@ public class ResonancePanel : MonoBehaviour
 
         // Threads a narrow gap: the item's stat lines end about 290 units up, and the window's own
         // Equip/Remove buttons start about 95 up, so the block sits between them.
-        _block = NewRect("ResonanceBlock", host, new Vector2(0.5f, 0f), new Vector2(360f, 150f),
-                         new Vector2(0f, 185f));
+        _block = NewRect("ResonanceBlock", host, new Vector2(0.5f, 0f), new Vector2(360f, 180f),
+                         new Vector2(0f, 200f));
 
         _title = NewText("Title", _block.transform, 24f, Gold, TextAlignmentOptions.Center);
         Anchor(_title.rectTransform, new Vector2(0.5f, 1f), new Vector2(340f, 30f), new Vector2(0f, -6f));
 
-        _detail = NewText("Detail", _block.transform, 18f, Color.white, TextAlignmentOptions.Center);
-        Anchor(_detail.rectTransform, new Vector2(0.5f, 1f), new Vector2(340f, 24f), new Vector2(0f, -40f));
+        _detail = NewText("Detail", _block.transform, 15f, Color.white, TextAlignmentOptions.Top);
+        _detail.enableWordWrapping = true;
+        Anchor(_detail.rectTransform, new Vector2(0.5f, 1f), new Vector2(340f, 78f), new Vector2(0f, -58f));
 
         // Bar: a dark trough with a gold fill stretched by anchorMax.
         var trough = NewRect("BarBack", _block.transform, new Vector2(0.5f, 1f), new Vector2(320f, 14f),
-                             new Vector2(0f, -72f));
+                             new Vector2(0f, -104f));
         var troughImage = trough.AddComponent<Image>();
         troughImage.color = BarBack;
         troughImage.raycastTarget = false;
@@ -203,7 +213,7 @@ public class ResonancePanel : MonoBehaviour
     private void BuildButton()
     {
         var buttonObject = NewRect("ResonateButton", _block.transform, new Vector2(0.5f, 1f),
-                                   new Vector2(220f, 40f), new Vector2(0f, -110f));
+                                   new Vector2(220f, 38f), new Vector2(0f, -134f));
 
         _resonateBackground = buttonObject.AddComponent<Image>();
         _resonateBackground.color = ButtonReady;

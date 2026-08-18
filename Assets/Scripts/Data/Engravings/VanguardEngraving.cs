@@ -25,6 +25,9 @@ public class VanguardEngraving : Engraving
         description = "Deals more damage while deployed in the front rank.";
     }
 
+    public override string DescribeTier(int tier) =>
+        $"+{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}% damage while deployed in the front rank.";
+
     public override void OnCombatStart(Entity owner, int tier)
     {
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;

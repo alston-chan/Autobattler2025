@@ -30,4 +30,14 @@ public abstract class Engraving : ScriptableObject
     public virtual void OnCombatEnd(Entity owner, int tier) { }
 
     public string DisplayName => string.IsNullOrEmpty(engravingName) ? name : engravingName;
+
+    /// <summary>
+    /// What this engraving actually does at a given tier, with real numbers — "+15% Attack Speed",
+    /// not "attacks faster".
+    ///
+    /// Prose alone can't support the decision the mechanic asks for: choosing between two items, or
+    /// deciding whether another tier is worth the combats, means comparing magnitudes. Each engraving
+    /// overrides this; the fallback is the prose description so a new one is never blank.
+    /// </summary>
+    public virtual string DescribeTier(int tier) => description;
 }

@@ -195,7 +195,15 @@ public class CombatAI : MonoBehaviour
         var animator = _entity.character != null ? _entity.character.Animator
                      : _entity.monster != null ? _entity.monster.Animator
                      : null;
-        if (animator != null) animator.speed = 1f;
+        if (animator != null)
+        {
+            animator.speed = 1f;
+
+            // A cancelled bow cast never runs its own cleanup, so the draw state has to be cleared
+            // here. Left mid-draw, the next shot's SetInteger("Charge", 1) is a no-op and the archer
+            // fires without ever playing the animation.
+            if (_entity.character != null) animator.SetInteger("Charge", 0);
+        }
 
         SetAnimState(false);
     }

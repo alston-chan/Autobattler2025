@@ -59,5 +59,12 @@ public class BowAttackSpell : Spell
 
         if (animator != null) animator.speed = 1f;
         yield return new WaitForSeconds(0.1f / attackSpeed);
+
+        // Back to ready (HeroEditor: 0 = ready, 1 = charging, 2 = release). Leaving it on release
+        // strands the archer in that pose between fights, and — worse — a draw interrupted at 1 makes
+        // the next shot's SetInteger("Charge", 1) a no-op, so the animator never re-enters the draw
+        // and the bow silently stops animating.
+        if (caster.character != null && caster.character.Animator != null)
+            caster.character.Animator.SetInteger("Charge", 0);
     }
 }

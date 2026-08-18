@@ -63,6 +63,10 @@ public class MultiShotSpell : Spell
         }
 
         if (animator != null) animator.speed = 1f;
+
+        // Return the bow to ready, or the next draw can't re-trigger — see BowAttackSpell.
+        if (caster.character != null && caster.character.Animator != null)
+            caster.character.Animator.SetInteger("Charge", 0);
     }
 
     private void FireArrowAt(Entity caster, Entity target, float damage)

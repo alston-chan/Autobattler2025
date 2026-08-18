@@ -20,6 +20,9 @@ public class SwiftEngraving : Engraving
         description = "Attacks faster, which also builds toward ultimates sooner.";
     }
 
+    public override string DescribeTier(int tier) =>
+        $"+{attackSpeedPerTier * Mathf.Max(1, tier) * 100f:0.#}% attack speed, which also builds mana sooner.";
+
     public override void OnCombatStart(Entity owner, int tier)
     {
         if (owner == null || owner.Stats == null || owner.Stats.AttackSpeed == null) return;

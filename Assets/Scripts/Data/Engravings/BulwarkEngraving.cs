@@ -28,6 +28,10 @@ public class BulwarkEngraving : Engraving
         description = "Allies adjacent to the bearer take less damage from every hit.";
     }
 
+    public override string DescribeTier(int tier) =>
+        $"Allies adjacent to the bearer take {blockingPerTier * Mathf.Max(1, tier):0.#} less damage " +
+        "from every hit.";
+
     public override void OnCombatStart(Entity owner, int tier)
     {
         _buffed.Clear();

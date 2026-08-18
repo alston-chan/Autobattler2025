@@ -111,8 +111,11 @@ public class RewardPanel : MonoBehaviour
         var detail = NewText("Detail", card.transform, 16f,
                              entry != null ? Gold : new Color(0.75f, 0.75f, 0.75f, 1f));
         Place(detail.rectTransform, new Vector2(0.5f, 0f), new Vector2(220f, 90f), new Vector2(0f, 60f));
+        // Real numbers, not prose. Choosing between three items is a comparison of magnitudes, and
+        // "attacks faster" gives the player nothing to compare. Tier I is quoted because that is what
+        // the item is worth on the fight after it's taken.
         detail.text = entry != null && entry.engraving != null
-            ? $"<b>{entry.engraving.DisplayName}</b>\n{entry.engraving.description}"
+            ? $"<b>{entry.engraving.DisplayName}</b>\n{entry.engraving.DescribeTier(1)}"
             : "No engraving.";
 
         return card;

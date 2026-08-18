@@ -29,6 +29,10 @@ public class DesperateEngraving : Engraving
         description = "Deals significantly more damage while below half health.";
     }
 
+    public override string DescribeTier(int tier) =>
+        $"+{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}% damage while below " +
+        $"{healthThreshold * 100f:0.#}% health.";
+
     public override void OnCombatStart(Entity owner, int tier)
     {
         if (owner == null || owner.Health == null) return;
