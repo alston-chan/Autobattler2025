@@ -30,12 +30,22 @@ public class Resonance : MonoBehaviour
     }
 
     /// <summary>
-    /// Attunement per item, keyed by the item <b>instance</b> rather than its id. Two copies of the
-    /// same gear are two different objects that attune separately — swapping a worn helm for an
-    /// identical one from the bag should start that helm at nothing, not hand it the first one's
-    /// progress.
+    /// Attunement per item, keyed by what the item IS — its id and modifier — rather than by the
+    /// object holding it.
+    ///
+    /// Keying by object was tried and is wrong, because no object survives being moved:
+    /// <c>ItemWorkspace.MoveItemSilent</c> adds <c>new Item(...)</c> to the destination and drops the
+    /// original, so equipping and unequipping each mint a fresh instance. Instance keys therefore
+    /// wiped every item's progress the moment it came off — measured at 25 attunement before an
+    /// unequip and 0 after — which is the exact opposite of the promise that taking something off
+    /// only pauses it.
+    ///
+    /// The cost is that two identical copies share one pool of progress. That is the lesser evil by
+    /// a wide margin: only worn items accrue, so the shared case is a spare in the bag inheriting
+    /// progress on a swap, against the alternative of every player losing everything on every swap.
+    /// It is also what makes the state writable to a save file at all — see <see cref="CaptureState"/>.
     /// </summary>
-    private readonly Dictionary<Item, float> _attunement = new Dictionary<Item, float>();
+    private readonly Dictionary<string, float> _attunement = new Dictionary<string, float>();
 
     /// <summary>This hero's private copies of engraving assets. See <see cref="InstanceFor"/>.</summary>
     private readonly Dictionary<Engraving, Engraving> _instances =
@@ -79,7 +89,7 @@ public class Resonance : MonoBehaviour
     }
 
     public float AttunementFor(Item item) =>
-        item != null && _attunement.TryGetValue(item, out float value) ? value : 0f;
+        item != null && _attunement.TryGetValue(Descriptor(item), out float value) ? value : 0f;
 
     /// <summary>Tier an item has currently reached (0–3), or 0 if it doesn't resonate.</summary>
     public int TierFor(Item item)
@@ -109,13 +119,18 @@ public class Resonance : MonoBehaviour
             var entry = EntryFor(item);
             if (entry == null || entry.requirement != requirement) continue;
 
-            _attunement.TryGetValue(item, out float current);
+            // Two worn copies of one item share a key, so credit it once rather than twice.
+            string key = Descriptor(item);
+            if (!_credited.Add(key)) continue;
+
+            _attunement.TryGetValue(key, out float current);
             float updated = current + amount;
-            _attunement[item] = updated;
+            _attunement[key] = updated;
             changed = true;
 
             if (entry.TierAt(updated) != entry.TierAt(current)) crossedTier = true;
         }
+        _credited.Clear();
 
         // The kill that completes the quota is the moment the reward is earned, so it lands then
         // rather than at the end of the fight. Reconciling is only worth doing when a threshold was
@@ -152,7 +167,7 @@ public class Resonance : MonoBehaviour
 
         // The item is spent — its essence is engraved, the steel is gone.
         inventory.ConsumeItem(item);
-        _attunement.Remove(item);
+        _attunement.Remove(Descriptor(item));
         OnAttunementChanged?.Invoke();
 
         Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at tier {tier}.");
@@ -163,6 +178,9 @@ public class Resonance : MonoBehaviour
     private readonly Dictionary<Engraving, int> _active = new Dictionary<Engraving, int>();
 
     private readonly List<Engraving> _stale = new List<Engraving>();
+
+    /// <summary>Scratch set so one Accrue call credits each distinct item once.</summary>
+    private readonly HashSet<string> _credited = new HashSet<string>();
 
     /// <summary>
     /// Bring the engravings acting on this hero in line with what they are wearing and have banked.
@@ -277,26 +295,15 @@ public class Resonance : MonoBehaviour
     /// <summary>
     /// One item's progress, in a form a save file can hold.
     ///
-    /// Attunement is keyed at runtime by the item OBJECT, which is what lets two copies of the same
-    /// gear advance separately — but object identity cannot be written to disk, and HeroEditor gives
-    /// items nothing else to be identified by: <c>Id</c> is explicitly not unique and <c>Hash</c> is
-    /// a hash of the id and modifier, so two copies of a bow are indistinguishable by value.
-    ///
-    /// So a record is descriptor plus <see cref="ordinal"/> — "the second BattleBow this hero holds"
-    /// — and the hero's items are walked in a fixed order on both save and load. Identical items keep
-    /// their separate progress as long as the collection is restored in the order it was written,
-    /// which is the same assumption the inventory itself already makes.
+    /// The key is the same descriptor attunement is tracked by in memory — item id plus modifier —
+    /// so writing and reading back need no ordering, no index and no object identity. It is opaque
+    /// on purpose: whatever identifies an item to the runtime is exactly what identifies it here,
+    /// and the two cannot drift apart.
     /// </summary>
     [System.Serializable]
     public class AttunementRecord
     {
-        public string itemId;
-        public int modifierId;
-        public int modifierLevel;
-
-        [Tooltip("Which copy of an otherwise identical item this is, in hold order.")]
-        public int ordinal;
-
+        public string itemKey;
         public float attunement;
     }
 
@@ -324,24 +331,10 @@ public class Resonance : MonoBehaviour
     {
         var state = new State();
 
-        var counts = new Dictionary<string, int>();
-        foreach (var item in HeldItems())
+        foreach (var pair in _attunement)
         {
-            string descriptor = Descriptor(item);
-            counts.TryGetValue(descriptor, out int ordinal);
-            counts[descriptor] = ordinal + 1;
-
-            float value = AttunementFor(item);
-            if (value <= 0f) continue;   // nothing to say about an item that hasn't started
-
-            state.attunement.Add(new AttunementRecord
-            {
-                itemId = item.Id,
-                modifierId = item.Modifier != null ? (int)item.Modifier.Id : 0,
-                modifierLevel = item.Modifier != null ? item.Modifier.Level : 0,
-                ordinal = ordinal,
-                attunement = value
-            });
+            if (pair.Value <= 0f) continue;
+            state.attunement.Add(new AttunementRecord { itemKey = pair.Key, attunement = pair.Value });
         }
 
         foreach (var mark in banked)
@@ -354,9 +347,11 @@ public class Resonance : MonoBehaviour
     }
 
     /// <summary>
-    /// Restore this hero's resonance. Call AFTER their inventory has been rebuilt — records are
-    /// matched against the items the hero is actually holding, so there is nothing to bind to before
-    /// then. Reapplies engravings at the end, so the restored state is live rather than merely stored.
+    /// Restore this hero's resonance. Reapplies engravings at the end, so the restored state is live
+    /// rather than merely stored.
+    ///
+    /// Keys are self-contained, so this does not care whether the inventory has been rebuilt yet —
+    /// progress is remembered for an item whether or not the hero is currently holding one.
     /// </summary>
     public void RestoreState(State state)
     {
@@ -365,22 +360,10 @@ public class Resonance : MonoBehaviour
 
         if (state != null)
         {
-            var byKey = new Dictionary<string, float>();
             foreach (var record in state.attunement)
             {
-                if (record == null) continue;
-                byKey[RecordKey(record)] = record.attunement;
-            }
-
-            var counts = new Dictionary<string, int>();
-            foreach (var item in HeldItems())
-            {
-                string descriptor = Descriptor(item);
-                counts.TryGetValue(descriptor, out int ordinal);
-                counts[descriptor] = ordinal + 1;
-
-                if (byKey.TryGetValue(descriptor + "#" + ordinal, out float value))
-                    _attunement[item] = value;
+                if (record == null || string.IsNullOrEmpty(record.itemKey)) continue;
+                _attunement[record.itemKey] = record.attunement;
             }
 
             var database = ResonanceDatabase.Active;
@@ -406,32 +389,9 @@ public class Resonance : MonoBehaviour
         OnAttunementChanged?.Invoke();
     }
 
-    /// <summary>
-    /// Every item this hero holds, worn first then carried, in list order. The order is the contract
-    /// between <see cref="CaptureState"/> and <see cref="RestoreState"/> — it is what makes "the
-    /// second copy of this item" mean the same thing on both sides.
-    /// </summary>
-    private IEnumerable<Item> HeldItems()
-    {
-        var inventory = _entity != null ? _entity.characterInventory : null;
-        if (inventory == null) yield break;
-
-        if (inventory.Equipment != null)
-            foreach (var item in inventory.Equipment.Items)
-                if (item != null) yield return item;
-
-        if (inventory.PlayerInventory != null)
-            foreach (var item in inventory.PlayerInventory.Items)
-                if (item != null) yield return item;
-    }
-
     private static string Descriptor(Item item) =>
         item.Id + "|" + (item.Modifier != null ? (int)item.Modifier.Id : 0) + "|" +
         (item.Modifier != null ? item.Modifier.Level : 0);
-
-    private static string RecordKey(AttunementRecord record) =>
-        record.itemId + "|" + record.modifierId + "|" + record.modifierLevel +
-        "#" + record.ordinal;
 
     #endregion
 
