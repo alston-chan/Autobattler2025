@@ -148,27 +148,102 @@ public class Resonance : MonoBehaviour
         return true;
     }
 
+    /// <summary>Engravings currently applied to this hero, and the tier each was applied at.</summary>
+    private readonly Dictionary<Engraving, int> _active = new Dictionary<Engraving, int>();
+
+    private readonly List<Engraving> _stale = new List<Engraving>();
+
     /// <summary>
-    /// Open or close every engraving affecting this hero for a fight — the ones on worn items, at
-    /// whatever tier they have reached, plus everything banked. Both go through the same call so a
-    /// worn engraving and a banked one are indistinguishable in play.
+    /// Bring the engravings acting on this hero in line with what they are wearing and have banked.
+    ///
+    /// Engravings used to be opened and closed on the combat transitions alone, which meant an item
+    /// equipped between fights did nothing until the next one started — the player put a bow on,
+    /// watched the stat not move, and had no way to tell whether it had worked. Reconciling against
+    /// what is actually worn means the grant lands when the item does.
+    ///
+    /// Applying is idempotent because this tracks what it has already applied, so equipping cannot
+    /// stack a second copy of a grant that is already live.
+    ///
+    /// <paramref name="force"/> reapplies everything from scratch. Combat boundaries use it because
+    /// some engravings read the world around them when they open — Bulwark buffs whoever is standing
+    /// beside the bearer — and that reading goes stale when the formation is rearranged.
     /// </summary>
-    public void ApplyForCombat(bool starting)
+    public void Refresh(bool force = false)
     {
+        var desired = DesiredTiers();
+
+        if (force)
+        {
+            foreach (var pair in _active) Invoke(pair.Key, pair.Value, false);
+            _active.Clear();
+        }
+        else
+        {
+            // Anything no longer worn, or now owed a different tier, is taken back before the
+            // replacement goes on — otherwise a tier change would leave both grants applied.
+            _stale.Clear();
+            foreach (var pair in _active)
+                if (!desired.TryGetValue(pair.Key, out int tier) || tier != pair.Value)
+                    _stale.Add(pair.Key);
+
+            for (int i = 0; i < _stale.Count; i++)
+            {
+                Invoke(_stale[i], _active[_stale[i]], false);
+                _active.Remove(_stale[i]);
+            }
+        }
+
+        foreach (var pair in desired)
+        {
+            if (_active.ContainsKey(pair.Key)) continue;
+            Invoke(pair.Key, pair.Value, true);
+            _active[pair.Key] = pair.Value;
+        }
+    }
+
+    /// <summary>
+    /// Which engravings should be acting on this hero, and at what tier: those on worn items at
+    /// whatever tier they have attuned to, plus everything banked. Both arrive by the same route so a
+    /// worn engraving and a banked one are indistinguishable in play.
+    ///
+    /// Keyed by engraving, so a hero wearing the item they already banked the mark of gets the better
+    /// of the two rather than both stacked on top of each other.
+    /// </summary>
+    private Dictionary<Engraving, int> DesiredTiers()
+    {
+        var desired = new Dictionary<Engraving, int>();
+
         foreach (var item in EquippedResonantItems())
         {
             var entry = EntryFor(item);
+            if (entry == null || entry.engraving == null) continue;
+
             // Tier I is free — a worn engraving always applies. The item's identity is the reason to
             // wear it, so it works from the moment it goes on; attunement only deepens it.
-            Invoke(entry.engraving, entry.TierAt(AttunementFor(item)), starting);
+            Take(desired, entry.engraving, entry.TierAt(AttunementFor(item)));
         }
 
         foreach (var mark in banked)
         {
-            if (mark == null) continue;
-            Invoke(mark.engraving, mark.tier, starting);
+            if (mark == null || mark.engraving == null) continue;
+            Take(desired, mark.engraving, mark.tier);
         }
+
+        return desired;
     }
+
+    private static void Take(Dictionary<Engraving, int> desired, Engraving engraving, int tier)
+    {
+        if (!desired.TryGetValue(engraving, out int current) || tier > current)
+            desired[engraving] = tier;
+    }
+
+    /// <summary>
+    /// Open or close everything for a fight. Kept as the combat-boundary entry point; both directions
+    /// reconcile from scratch, which clears out per-fight state while leaving the grants a hero has
+    /// earned by wearing something in place.
+    /// </summary>
+    public void ApplyForCombat(bool starting) => Refresh(force: true);
 
     private void Invoke(Engraving asset, int tier, bool starting)
     {

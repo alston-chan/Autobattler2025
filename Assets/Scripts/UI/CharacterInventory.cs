@@ -374,6 +374,11 @@ public class CharacterInventory : ItemWorkspace
 
         ItemParams itemParams = ItemCollection.Active.GetItemParams(SelectedItem);
         CharacterEntity.Stats.ApplyItemModifiers(itemParams, SelectedItem.Id);
+
+        // An item's engraving is part of what equipping it does, so it lands now rather than at the
+        // next fight — otherwise the stat sits unchanged and the item looks like it did nothing.
+        if (CharacterEntity.Resonance != null) CharacterEntity.Resonance.Refresh();
+
         RefreshStatsUI();
     }
 
@@ -383,6 +388,10 @@ public class CharacterInventory : ItemWorkspace
 
         Item source = item ?? SelectedItem;
         CharacterEntity.Stats.RemoveItemModifiers(source.Id);
+
+        // Taking the item off takes its engraving with it, for the same reason.
+        if (CharacterEntity.Resonance != null) CharacterEntity.Resonance.Refresh();
+
         RefreshStatsUI();
     }
 
