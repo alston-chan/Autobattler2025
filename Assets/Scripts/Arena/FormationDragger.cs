@@ -20,11 +20,17 @@ public class FormationDragger : MonoBehaviour
     [Tooltip("How far above the body collider a grab still counts, in world units. The collider is " +
              "an arrow hitbox that stops at the shoulders; this covers the head.")]
     public float headroom = UnitPicking.DefaultHeadroom;
-    [Tooltip("Height above the cursor the held unit floats, so it isn't hidden under the pointer.")]
-    public float carryLift = 0.35f;
-
     private Entity _held;
     private Vector3 _heldOrigin;
+
+    /// <summary>
+    /// Where the unit sat relative to the cursor when it was picked up, preserved for the whole drag.
+    ///
+    /// Without it the unit's base is snapped onto the cursor, so grabbing one by the head yanks it up
+    /// by its own height the instant it is picked up — it pops out from under the pointer instead of
+    /// being carried. Holding the offset means a unit grabbed by the head stays held by the head.
+    /// </summary>
+    private Vector3 _grabOffset;
     private Camera _camera;
     private BattleGridView _view;
 
@@ -98,26 +104,32 @@ public class FormationDragger : MonoBehaviour
 
         _held = best;
         _heldOrigin = best.transform.position;
+        _grabOffset = best.transform.position - mouse;
     }
 
     private void Carry()
     {
-        _held.transform.position = MouseWorld() + Vector3.up * carryLift;
+        _held.transform.position = MouseWorld() + _grabOffset;
     }
 
     /// <summary>
     /// Put the unit down. A drop on the company's half snaps to the nearest cell; anything else —
     /// including the enemy half, which the company may never occupy — returns it where it came from.
+    ///
+    /// The cell is chosen from where the UNIT stands, not from the cursor. Now that the grab offset
+    /// is preserved, a unit held by the head has the cursor a body-length above its feet, which is
+    /// easily a different row — so reading the cursor would drop it into a cell it was never over.
+    /// The unit's own position is what the player is aiming, so that is what is asked.
     /// </summary>
     private void Drop(bool cancelled)
     {
         var grid = BattleGrid.Instance;
         var runManager = GameManager.Instance.runManager;
-        Vector3 mouse = MouseWorld();
+        Vector3 standing = _held.transform.position;
 
-        if (!cancelled && grid != null && runManager != null && grid.IsOnAllySide(mouse))
+        if (!cancelled && grid != null && runManager != null && grid.IsOnAllySide(standing))
         {
-            grid.ClosestCell(true, mouse, out int column, out int row);
+            grid.ClosestCell(true, standing, out int column, out int row);
             runManager.Formation.Place(_held, column, row);
         }
         else

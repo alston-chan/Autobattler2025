@@ -2145,7 +2145,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabRadius: 1.1
-  carryLift: 0.35
 --- !u!114 &1171582541
 MonoBehaviour:
   m_ObjectHideFlags: 0
