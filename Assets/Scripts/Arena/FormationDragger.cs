@@ -13,8 +13,13 @@ using UnityEngine;
 /// </summary>
 public class FormationDragger : MonoBehaviour
 {
-    [Tooltip("How close the cursor must be to a unit to pick it up, in world units.")]
-    public float grabRadius = 1.1f;
+    [Tooltip("Fallback grab distance for units with no body collider, in world units. Units that " +
+             "have one are grabbed by that collider instead, which is shaped to the unit.")]
+    public float grabRadius = UnitPicking.DefaultRadius;
+
+    [Tooltip("How far above the body collider a grab still counts, in world units. The collider is " +
+             "an arrow hitbox that stops at the shoulders; this covers the head.")]
+    public float headroom = UnitPicking.DefaultHeadroom;
     [Tooltip("Height above the cursor the held unit floats, so it isn't hidden under the pointer.")]
     public float carryLift = 0.35f;
 
@@ -68,7 +73,11 @@ public class FormationDragger : MonoBehaviour
         return world;
     }
 
-    /// <summary>Pick up the nearest company unit under the cursor.</summary>
+    /// <summary>
+    /// Pick up the company unit under the cursor — the same hit-test that decides which unit an
+    /// inspect click lands on, so a unit can never be draggable at a spot where it isn't clickable.
+    /// Only placed units are considered, so a grab can never catch an enemy.
+    /// </summary>
     private void TryGrab()
     {
         var runManager = GameManager.Instance.runManager;
@@ -76,20 +85,13 @@ public class FormationDragger : MonoBehaviour
 
         Vector3 mouse = MouseWorld();
         Entity best = null;
-        float bestDistance = grabRadius;
 
         foreach (var pair in runManager.Formation.Placements)
         {
             var unit = pair.Key;
-            if (unit == null || !unit.gameObject.activeInHierarchy) continue;
-
-            // Measure from mid-body rather than the feet, which is where the sprite actually is.
-            Vector3 centre = unit.transform.position + Vector3.up;
-            float distance = Vector2.Distance(mouse, centre);
-            if (distance > bestDistance) continue;
-
-            bestDistance = distance;
-            best = unit;
+            if (unit == null || unit.isDead || !unit.gameObject.activeInHierarchy) continue;
+            if (!UnitPicking.Covers(unit, mouse, headroom, grabRadius)) continue;
+            if (UnitPicking.IsInFrontOf(unit, best)) best = unit;
         }
 
         if (best == null) return;

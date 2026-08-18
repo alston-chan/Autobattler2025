@@ -152,22 +152,12 @@ public class UnitInspector : MonoBehaviour
     }
 
     /// <summary>
-    /// The living unit at a world point. Split out from the cursor lookup so the hit-test can be
-    /// exercised without synthesising mouse input.
+    /// The living unit at a world point, front-most first — see <see cref="UnitPicking"/> for how a
+    /// click is matched to a unit. Split out from the cursor lookup so the hit-test can be exercised
+    /// without synthesising mouse input.
     ///
-    /// Each unit is tested against a pick box, and where boxes overlap the front-most unit wins.
-    ///
-    /// The box starts from the body collider arrows already hit through, because it is authored to
-    /// the unit and narrow — 0.63 wide on a human — so a click on a body can't grab the neighbour a
-    /// cell over the way a radius around the transform does. But that collider is an arrow hitbox,
-    /// not a click target: it stops at y 1.35 above the feet while the sprite runs to about 2, and
-    /// these characters are drawn with big heads. So the box is extended up by
-    /// <see cref="headroom"/> to reach the top of the sprite.
-    ///
-    /// Extending upward is also why draw order has to decide overlaps rather than the collider
-    /// alone. Units stack a little over a unit apart, so the torso of the unit BEHIND sits at the
-    /// same height as the head of the unit in front. Asking the physics query alone returns the one
-    /// whose torso is there — the one hidden behind the head actually being clicked.
+    /// Any unit on the board may be inspected, enemies included, so this searches the whole registry
+    /// rather than the company.
     /// </summary>
     public Entity UnitAt(Vector3 world)
     {
@@ -178,39 +168,12 @@ public class UnitInspector : MonoBehaviour
         {
             var unit = all[i];
             if (unit == null || unit.isDead || !unit.gameObject.activeInHierarchy) continue;
-            if (!PickBoxContains(unit, world)) continue;
-            if (IsInFrontOf(unit, best)) best = unit;
+            if (!UnitPicking.Covers(unit, world, headroom, pickRadius)) continue;
+            if (UnitPicking.IsInFrontOf(unit, best)) best = unit;
         }
 
         return best;
     }
-
-    /// <summary>
-    /// Whether a world point is on this unit: inside its body collider, or in the headroom above it.
-    /// Units with no collider — an unusual prefab — fall back to a radius so they are never simply
-    /// unclickable.
-    /// </summary>
-    private bool PickBoxContains(Entity unit, Vector3 world)
-    {
-        var body = unit.GetComponentInChildren<Collider2D>();
-        if (body == null || !body.enabled)
-            return Vector2.Distance(world, unit.transform.position + Vector3.up) <= pickRadius;
-
-        var bounds = body.bounds;
-        return world.x >= bounds.min.x && world.x <= bounds.max.x &&
-               world.y >= bounds.min.y && world.y <= bounds.max.y + headroom;
-    }
-
-    /// <summary>
-    /// Whether <paramref name="candidate"/> is drawn in front of <paramref name="current"/>.
-    ///
-    /// Units in a column overlap, so a click can land on more than one of them — and the one the
-    /// player believes they clicked is simply the one they can see. The project sorts sprites along
-    /// +Y (GraphicsSettings custom axis), which draws lower units in front, so front-most is the
-    /// unit with the smallest Y.
-    /// </summary>
-    private static bool IsInFrontOf(Entity candidate, Entity current) =>
-        current == null || candidate.transform.position.y < current.transform.position.y;
 
     private void Select(Entity unit)
     {
