@@ -102,15 +102,26 @@ public class Resonance : MonoBehaviour
         if (amount <= 0f) return;
 
         bool changed = false;
+        bool crossedTier = false;
+
         foreach (var item in EquippedResonantItems())
         {
             var entry = EntryFor(item);
             if (entry == null || entry.requirement != requirement) continue;
 
             _attunement.TryGetValue(item, out float current);
-            _attunement[item] = current + amount;
+            float updated = current + amount;
+            _attunement[item] = updated;
             changed = true;
+
+            if (entry.TierAt(updated) != entry.TierAt(current)) crossedTier = true;
         }
+
+        // The kill that completes the quota is the moment the reward is earned, so it lands then
+        // rather than at the end of the fight. Reconciling is only worth doing when a threshold was
+        // actually crossed — this runs on every hit landed and every blow blocked, and nothing
+        // changes on the vast majority of them.
+        if (crossedTier) Refresh();
 
         if (changed) OnAttunementChanged?.Invoke();
     }
