@@ -68,6 +68,15 @@ public class ResonanceDatabase : ScriptableObject
         public int tierIICost = 3;
         public int tierIIICost = 6;
 
+        [Tooltip("Attunement needed before the engraving can be banked permanently. Separate from the " +
+                 "worn tiers on purpose: wearing an item grants its engraving at once, but KEEPING it " +
+                 "forever has to be earned — otherwise cashing out costs nothing and the bank-or-press " +
+                 "decision disappears.")]
+        public int engraveCost = 3;
+
+        /// <summary>True once the engraving has been attuned enough to bank permanently.</summary>
+        public bool CanEngrave(float attunement) => attunement >= engraveCost;
+
         /// <summary>
         /// Tier reached at a given attunement: 1 through 3. Never 0 — a worn engraving is always at
         /// least Tier I, so equipping an item is never a dead period waiting for it to switch on.

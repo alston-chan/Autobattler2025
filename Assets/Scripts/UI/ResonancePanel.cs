@@ -126,11 +126,14 @@ public class ResonancePanel : MonoBehaviour
         float fill = tier >= 3 ? 1f : Mathf.Clamp01((attunement - bandStart) / span);
         _barFill.anchorMax = new Vector2(fill, 1f);
 
-        bool canResonate = tier >= 1;
+        // Wearing grants the engraving at once; banking it permanently has to be earned, so the
+        // button states the price rather than just refusing.
+        bool canResonate = entry.CanEngrave(attunement);
         _resonateButton.interactable = canResonate;
         _resonateBackground.color = canResonate ? ButtonReady : ButtonBlocked;
-        _resonateButton.GetComponentInChildren<TextMeshProUGUI>().text =
-            canResonate ? $"Resonate  {Roman(tier)}" : "Not yet attuned";
+        _resonateButton.GetComponentInChildren<TextMeshProUGUI>().text = canResonate
+            ? $"Engrave  {Roman(tier)}  (consumes item)"
+            : $"Engrave at {entry.engraveCost} {unit}";
     }
 
     private void UpdateBanked()
@@ -187,8 +190,8 @@ public class ResonancePanel : MonoBehaviour
 
         // Threads a narrow gap: the item's stat lines end about 290 units up, and the window's own
         // Equip/Remove buttons start about 95 up, so the block sits between them.
-        _block = NewRect("ResonanceBlock", host, new Vector2(0.5f, 0f), new Vector2(360f, 180f),
-                         new Vector2(0f, 200f));
+        _block = NewRect("ResonanceBlock", host, new Vector2(0.5f, 0f), new Vector2(360f, 168f),
+                         new Vector2(0f, 190f));
 
         _title = NewText("Title", _block.transform, 24f, Gold, TextAlignmentOptions.Center);
         Anchor(_title.rectTransform, new Vector2(0.5f, 1f), new Vector2(340f, 30f), new Vector2(0f, -6f));

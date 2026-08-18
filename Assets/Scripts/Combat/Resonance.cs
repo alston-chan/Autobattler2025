@@ -120,15 +120,19 @@ public class Resonance : MonoBehaviour
 
     /// <summary>
     /// Cash out: bank the item's engraving at the tier reached, then consume the item so the slot
-    /// frees. Returns false if the item isn't worn, doesn't resonate, or hasn't reached Tier I —
-    /// there is nothing to bank before the first threshold.
+    /// frees. Refused unless the item is worn and has met its engrave requirement — wearing grants
+    /// the engraving immediately, but keeping it forever has to be earned, or cashing out would be
+    /// free and the bank-or-press decision would vanish.
     /// </summary>
     public bool Resonate(Item item)
     {
         var entry = EntryFor(item);
         if (entry == null || entry.engraving == null) return false;
 
-        int tier = entry.TierAt(AttunementFor(item));
+        float attunement = AttunementFor(item);
+        if (!entry.CanEngrave(attunement)) return false;
+
+        int tier = entry.TierAt(attunement);
 
         var inventory = _entity != null ? _entity.characterInventory : null;
         if (inventory == null || !inventory.Equipment.Items.Contains(item)) return false;

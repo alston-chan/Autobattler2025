@@ -138,6 +138,15 @@ public class CharacterInventory : ItemWorkspace
             }
         }
 
+        // Engraved gear in the starting bag, so the resonance loop can be exercised without waiting for
+        // a drop. The bow carries Swift, which needs an archer to be worth anything — putting it here
+        // rather than on a hero keeps the choice of who gets it in the player's hands.
+        foreach (var gearId in new[] { "FantasyHeroes.Basic.Bow.BattleBow" })
+        {
+            if (ItemCollection.Active.Items.Any(i => i.Id == gearId))
+                inventory.Add(new Item(gearId));
+        }
+
         // Spellbooks left UNEQUIPPED in the shared pool, so they can be dragged onto the spell row to
         // test the equip→cast path (weapon-gating decides if they fire). Shockwave is the weapon-agnostic
         // one that works on any character. Characters' own starting books are auto-equipped from their

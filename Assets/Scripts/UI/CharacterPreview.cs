@@ -41,9 +41,10 @@ public class CharacterPreview : MonoBehaviour
              "the Equipment panel is used as a fallback if this isn't found.")]
     public string hostPanelName = "HeroStats";
     [Tooltip("Keep the 2:3 ratio of the render texture (256x384) or the doll will look stretched.")]
-    public Vector2 imageSize = new Vector2(220f, 330f);
-    [Tooltip("Anchored position within the host panel — negative Y drops it below the stat lines.")]
-    public Vector2 imageOffset = new Vector2(0f, -80f);
+    public Vector2 imageSize = new Vector2(190f, 285f);
+    [Tooltip("Anchored position within the host panel. Sits between the stat lines above and the " +
+             "banked-engraving list below, both of which share this panel.")]
+    public Vector2 imageOffset = new Vector2(0f, 35f);
 
     // One shared stage for every preview: only one window is open at a time.
     private static Camera _stageCamera;
