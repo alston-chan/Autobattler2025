@@ -47,9 +47,12 @@ public class Resonance : MonoBehaviour
     /// </summary>
     private readonly Dictionary<string, float> _attunement = new Dictionary<string, float>();
 
-    /// <summary>This hero's private copies of engraving assets. See <see cref="InstanceFor"/>.</summary>
-    private readonly Dictionary<Engraving, Engraving> _instances =
-        new Dictionary<Engraving, Engraving>();
+    /// <summary>
+    /// This hero's private copies of engraving assets, one per GRANT rather than one per asset — see
+    /// <see cref="InstanceFor"/>. Two items carrying the same engraving need separate copies or they
+    /// would share both their per-bearer fields and their modifier source, and so could not stack.
+    /// </summary>
+    private readonly Dictionary<string, Engraving> _instances = new Dictionary<string, Engraving>();
 
     [Tooltip("Permanently absorbed engravings. These outlive the items that carried them.")]
     public List<Banked> banked = new List<Banked>();
@@ -77,14 +80,14 @@ public class Resonance : MonoBehaviour
     /// It also sharpens stat bookkeeping: modifiers are sourced by the copy, so removing one hero's
     /// grants can't disturb another's.
     /// </summary>
-    private Engraving InstanceFor(Engraving asset)
+    private Engraving InstanceFor(string sourceKey, Engraving asset)
     {
         if (asset == null) return null;
-        if (_instances.TryGetValue(asset, out var existing) && existing != null) return existing;
+        if (_instances.TryGetValue(sourceKey, out var existing) && existing != null) return existing;
 
         var copy = Instantiate(asset);
-        copy.name = asset.name + " (" + name + ")";
-        _instances[asset] = copy;
+        copy.name = asset.name + " (" + name + " / " + sourceKey + ")";
+        _instances[sourceKey] = copy;
         return copy;
     }
 
@@ -174,10 +177,26 @@ public class Resonance : MonoBehaviour
         return true;
     }
 
-    /// <summary>Engravings currently applied to this hero, and the tier each was applied at.</summary>
-    private readonly Dictionary<Engraving, int> _active = new Dictionary<Engraving, int>();
+    /// <summary>One engraving grant: which asset, at what tier.</summary>
+    private struct Grant
+    {
+        public Engraving asset;
+        public int tier;
+    }
 
-    private readonly List<Engraving> _stale = new List<Engraving>();
+    /// <summary>
+    /// Grants currently applied, keyed by SOURCE — a particular worn item, or a particular banked
+    /// mark — rather than by engraving.
+    ///
+    /// Two items carrying the same engraving are two grants and both apply. Keying by engraving
+    /// collapsed them into one, so putting on a second Swift item moved nothing: measured at 1.25
+    /// attacks/sec wearing a Swift bow, and still 1.25 after adding a Swift hat that was genuinely
+    /// equipped. Banking cannot double-count either way, because Resonate consumes the item — a
+    /// banked mark and a worn item of one engraving are always two things the hero went and got.
+    /// </summary>
+    private readonly Dictionary<string, Grant> _active = new Dictionary<string, Grant>();
+
+    private readonly List<string> _stale = new List<string>();
 
     /// <summary>Scratch set so one Accrue call credits each distinct item once.</summary>
     private readonly HashSet<string> _credited = new HashSet<string>();
@@ -199,7 +218,7 @@ public class Resonance : MonoBehaviour
     /// </summary>
     public void Refresh(bool force = false)
     {
-        var desired = DesiredTiers();
+        var desired = DesiredGrants();
 
         if (force)
         {
@@ -208,12 +227,17 @@ public class Resonance : MonoBehaviour
         }
         else
         {
-            // Anything no longer worn, or now owed a different tier, is taken back before the
-            // replacement goes on — otherwise a tier change would leave both grants applied.
+            // A source that is gone, or now owed a different tier or a different engraving, is taken
+            // back before its replacement goes on — otherwise a change would leave both applied.
             _stale.Clear();
             foreach (var pair in _active)
-                if (!desired.TryGetValue(pair.Key, out int tier) || tier != pair.Value)
+            {
+                if (!desired.TryGetValue(pair.Key, out var want) ||
+                    want.tier != pair.Value.tier || want.asset != pair.Value.asset)
+                {
                     _stale.Add(pair.Key);
+                }
+            }
 
             for (int i = 0; i < _stale.Count; i++)
             {
@@ -231,16 +255,16 @@ public class Resonance : MonoBehaviour
     }
 
     /// <summary>
-    /// Which engravings should be acting on this hero, and at what tier: those on worn items at
-    /// whatever tier they have attuned to, plus everything banked. Both arrive by the same route so a
-    /// worn engraving and a banked one are indistinguishable in play.
+    /// Every grant this hero should be under, keyed by where it comes from: one entry per worn
+    /// resonant item at whatever tier it has attuned to, and one per banked mark. Both arrive by the
+    /// same route, so a worn engraving and a banked one behave identically in play.
     ///
-    /// Keyed by engraving, so a hero wearing the item they already banked the mark of gets the better
-    /// of the two rather than both stacked on top of each other.
+    /// Two worn copies of the SAME item share a key and so grant once, which matches attunement —
+    /// they share one pool of progress too, being indistinguishable by anything the game records.
     /// </summary>
-    private Dictionary<Engraving, int> DesiredTiers()
+    private Dictionary<string, Grant> DesiredGrants()
     {
-        var desired = new Dictionary<Engraving, int>();
+        var desired = new Dictionary<string, Grant>();
 
         foreach (var item in EquippedResonantItems())
         {
@@ -249,22 +273,21 @@ public class Resonance : MonoBehaviour
 
             // Tier I is free — a worn engraving always applies. The item's identity is the reason to
             // wear it, so it works from the moment it goes on; attunement only deepens it.
-            Take(desired, entry.engraving, entry.TierAt(AttunementFor(item)));
+            desired["worn:" + Descriptor(item)] = new Grant
+            {
+                asset = entry.engraving,
+                tier = entry.TierAt(AttunementFor(item))
+            };
         }
 
-        foreach (var mark in banked)
+        for (int i = 0; i < banked.Count; i++)
         {
+            var mark = banked[i];
             if (mark == null || mark.engraving == null) continue;
-            Take(desired, mark.engraving, mark.tier);
+            desired["banked:" + i] = new Grant { asset = mark.engraving, tier = mark.tier };
         }
 
         return desired;
-    }
-
-    private static void Take(Dictionary<Engraving, int> desired, Engraving engraving, int tier)
-    {
-        if (!desired.TryGetValue(engraving, out int current) || tier > current)
-            desired[engraving] = tier;
     }
 
     /// <summary>
@@ -274,13 +297,13 @@ public class Resonance : MonoBehaviour
     /// </summary>
     public void ApplyForCombat(bool starting) => Refresh(force: true);
 
-    private void Invoke(Engraving asset, int tier, bool starting)
+    private void Invoke(string sourceKey, Grant grant, bool starting)
     {
-        var engraving = InstanceFor(asset);
+        var engraving = InstanceFor(sourceKey, grant.asset);
         if (engraving == null) return;
 
-        if (starting) engraving.OnCombatStart(_entity, tier);
-        else engraving.OnCombatEnd(_entity, tier);
+        if (starting) engraving.OnCombatStart(_entity, grant.tier);
+        else engraving.OnCombatEnd(_entity, grant.tier);
     }
 
     /// <summary>The resonance entry for an item, or null if it doesn't resonate.</summary>
