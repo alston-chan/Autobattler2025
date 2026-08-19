@@ -54,8 +54,14 @@ public class EntityStats : MonoBehaviour
     /// Read an item's <see cref="PropertyId"/> properties and add matching
     /// <see cref="StatModifier"/>s, using the item's Id as the source.
     /// </summary>
-    public void ApplyItemModifiers(Assets.HeroEditor.InventorySystem.Scripts.Data.ItemParams itemParams, object source)
+    public void ApplyItemModifiers(Assets.HeroEditor.InventorySystem.Scripts.Data.ItemParams itemParams,
+                                   object source, bool hollow = false)
     {
+        // A hollow item has been spent on its engraving and contributes nothing at all — not
+        // even its class's handling speed. Keeping some residue would make "what does this
+        // still give me?" a question the player has to work out; giving nothing is legible.
+        if (hollow) { RefreshInspector(); OnStatsChanged?.Invoke(); return; }
+
         bool authoredSpeed = false;
 
         foreach (var prop in itemParams.Properties)

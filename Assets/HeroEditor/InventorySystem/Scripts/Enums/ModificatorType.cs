@@ -17,6 +17,12 @@
         Lightning = 12, // Add lightning damage/resistance.
         Light = 13, // Add healing ability and halved holy damage/resistance.
         Darkness = 14, // Add darkness damage/resistance.
-        Vampiric = 15 // Restore HP after each hit.
+        Vampiric = 15, // Restore HP after each hit.
+
+        // Added for Resonance (Docs/Resonance.md). An item whose engraving has been banked
+        // keeps its shape but loses its substance: no stats, no engraving, still a weapon of
+        // its class so the hero can go on using it. Numbered far above the vendor's range so
+        // later additions upstream cannot collide with it.
+        Hollow = 100
     }
 }

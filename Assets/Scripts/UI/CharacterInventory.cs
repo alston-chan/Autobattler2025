@@ -314,17 +314,36 @@ public class CharacterInventory : ItemWorkspace
     }
 
     /// <summary>
-    /// Destroy an equipped item rather than returning it to the bag. Resonance cash-out spends the
-    /// item — its essence is engraved permanently and the steel is gone — so this is deliberately not
-    /// <see cref="Remove"/>, which hands the item back.
+    /// Spend an equipped item on its engraving: it stays worn but is hollowed out, keeping its class
+    /// and losing everything else (<see cref="HollowItems"/>).
+    ///
+    /// It stays equipped because a weapon is not only its numbers — it is what lets an archer shoot.
+    /// Destroying the bow that made a hero an archer could strand them with a kit they can no longer
+    /// use until another bow happens to drop, which punishes the player for engaging with the
+    /// mechanic. Leaving the husk keeps them functional while making the loss plain: the slot is
+    /// occupied by something that now does nothing for them.
+    ///
+    /// Deliberately not <see cref="Remove"/>, which hands the item back intact.
     /// </summary>
-    public void ConsumeItem(Item item)
+    public void HollowItem(Item item)
     {
         if (item == null || !Equipment.Items.Contains(item)) return;
 
+        // Take the old stats off under the item's PREVIOUS identity — modifiers are sourced by item
+        // id, and hollowing does not change the id, but the removal must happen before the re-apply
+        // below or the two would race over the same source.
         UnequipStats(item);
-        Equipment.Items.Remove(item);
+
+        HollowItems.Hollow(item);
+
+        // Re-apply so the hollow item is accounted for like any other worn thing. It now contributes
+        // nothing, but going through the same path keeps one code path for "what is this item worth".
+        ItemParams itemParams = ItemCollection.Active.GetItemParams(item);
+        CharacterEntity.Stats.ApplyItemModifiers(itemParams, item.Id, hollow: true);
+
         Equipment.Refresh(null);
+
+        if (CharacterEntity.Resonance != null) CharacterEntity.Resonance.Refresh();
 
         RefreshStatsUI();
         SyncSpellSlots();
@@ -373,7 +392,8 @@ public class CharacterInventory : ItemWorkspace
         if (CharacterEntity == null || CharacterEntity.Stats == null) return;
 
         ItemParams itemParams = ItemCollection.Active.GetItemParams(SelectedItem);
-        CharacterEntity.Stats.ApplyItemModifiers(itemParams, SelectedItem.Id);
+        CharacterEntity.Stats.ApplyItemModifiers(itemParams, SelectedItem.Id,
+                                                 HollowItems.IsHollow(SelectedItem));
 
         // An item's engraving is part of what equipping it does, so it lands now rather than at the
         // next fight — otherwise the stat sits unchanged and the item looks like it did nothing.

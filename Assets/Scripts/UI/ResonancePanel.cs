@@ -144,7 +144,7 @@ public class ResonancePanel : MonoBehaviour
         _resonateButton.interactable = canResonate;
         _resonateBackground.color = canResonate ? ButtonReady : ButtonBlocked;
         _resonateButton.GetComponentInChildren<TextMeshProUGUI>().text = canResonate
-            ? $"Engrave  {Roman(tier)}  (consumes item)"
+            ? $"Engrave  {Roman(tier)}  (item is spent)"
             : $"Engrave at {entry.engraveCost} {unit}";
     }
 

@@ -7,7 +7,8 @@ using UnityEngine;
 /// permanently (Docs/Resonance.md).
 ///
 /// The loop is <c>equip → attune while worn → cross tier thresholds → resonate (cash out) → the
-/// engraving is banked permanently, the item is consumed, the slot frees</c>. Attunement is per
+/// engraving is banked permanently and the item is hollowed — still worn, still a weapon of its
+/// class, but stripped of everything it gave</c>. Attunement is per
 /// (hero, item) and <b>pauses</b> when an item is unequipped rather than resetting, so swapping gear
 /// is never punishing — the item just idles while something else holds the slot.
 ///
@@ -148,10 +149,11 @@ public class Resonance : MonoBehaviour
     public void AccrueAfterCombat() => Accrue(ResonanceRequirement.CombatsWorn, 1f);
 
     /// <summary>
-    /// Cash out: bank the item's engraving at the tier reached, then consume the item so the slot
-    /// frees. Refused unless the item is worn and has met its engrave requirement — wearing grants
-    /// the engraving immediately, but keeping it forever has to be earned, or cashing out would be
-    /// free and the bank-or-press decision would vanish.
+    /// Cash out: bank the item's engraving at the tier reached, then hollow the item — it stays
+    /// equipped and still counts as a weapon of its class, so an archer who spends their bow is
+    /// still an archer, but it gives nothing further. Refused unless the item is worn and has met
+    /// its engrave requirement — wearing grants the engraving immediately, but keeping it forever
+    /// has to be earned, or cashing out would be free and the bank-or-press decision would vanish.
     /// </summary>
     public bool Resonate(Item item)
     {
@@ -168,9 +170,13 @@ public class Resonance : MonoBehaviour
 
         banked.Add(new Banked { engraving = entry.engraving, tier = tier });
 
-        // The item is spent — its essence is engraved, the steel is gone.
-        inventory.ConsumeItem(item);
-        _attunement.Remove(Descriptor(item));
+        // Read the key BEFORE hollowing: hollowing changes the item's modifier, and so its
+        // descriptor, and the progress being cleared is filed under the old one.
+        string spentKey = Descriptor(item);
+
+        // The item is spent — its essence is engraved, and what stays equipped is the husk.
+        inventory.HollowItem(item);
+        _attunement.Remove(spentKey);
         OnAttunementChanged?.Invoke();
 
         Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at tier {tier}.");
@@ -310,6 +316,11 @@ public class Resonance : MonoBehaviour
     public ResonanceDatabase.Entry EntryFor(Item item)
     {
         if (item == null || ResonanceDatabase.Active == null) return null;
+
+        // A hollow item has already given up its engraving. Answering null here is what stops it
+        // attuning, granting, or offering to be engraved a second time — one check, every path.
+        if (HollowItems.IsHollow(item)) return null;
+
         return ResonanceDatabase.Active.Find(item.Id);
     }
 
