@@ -53,16 +53,22 @@ public class EntityStats : MonoBehaviour
     /// <summary>
     /// Read an item's <see cref="PropertyId"/> properties and add matching
     /// <see cref="StatModifier"/>s, using the item's Id as the source.
+    ///
+    /// An item gives exactly what it declares and nothing else. Weapon classes used to carry an
+    /// implied handling speed — a bow quietly worth +10% attack speed with nothing on the item
+    /// saying so — which made the stat panel impossible to reconcile against the item you were
+    /// reading. A stat a player cannot trace back to a line of text is worse than no stat.
+    ///
+    /// The consequence is that weapons differ in speed only where someone authored ChargeSpeed on
+    /// them, which is the intended cost: differentiation has to be written down to exist.
     /// </summary>
     public void ApplyItemModifiers(Assets.HeroEditor.InventorySystem.Scripts.Data.ItemParams itemParams,
                                    object source, bool hollow = false)
     {
-        // A hollow item has been spent on its engraving and contributes nothing at all — not
-        // even its class's handling speed. Keeping some residue would make "what does this
-        // still give me?" a question the player has to work out; giving nothing is legible.
+        // A hollow item has been spent on its engraving and contributes nothing at all, including
+        // anything it declares. Keeping some residue would make "what does this still give me?" a
+        // question the player has to work out; giving nothing is legible.
         if (hollow) { RefreshInspector(); OnStatsChanged?.Invoke(); return; }
-
-        bool authoredSpeed = false;
 
         foreach (var prop in itemParams.Properties)
         {
@@ -88,21 +94,9 @@ public class EntityStats : MonoBehaviour
                 // A weapon's own handling speed, authored as a fraction (+0.2 = 20% faster). Percent
                 // rather than flat so it compounds with engravings like Swift instead of racing them.
                 case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.ChargeSpeed:
-                    authoredSpeed = true;
                     AttackSpeed.AddModifier(new StatModifier(val, StatModType.PercentAdd, source));
                     break;
             }
-        }
-
-        // The vendor catalogue authors nothing but Damage on weapons, so without a fallback every
-        // weapon would swing at exactly the same rate and equipping one would move no visible number.
-        // An item that does author ChargeSpeed keeps its own value — the table is only the default.
-        if (!authoredSpeed &&
-            itemParams.Type == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Weapon)
-        {
-            float handling = WeaponSpeeds.HandlingFor(itemParams.Class);
-            if (handling != 0f)
-                AttackSpeed.AddModifier(new StatModifier(handling, StatModType.PercentAdd, source));
         }
 
         RefreshInspector();
