@@ -177,6 +177,36 @@ public class CombatAI : MonoBehaviour
     }
 
     /// <summary>
+    /// Abandon an attack that is part-way through, without leaving combat.
+    ///
+    /// Changing weapons mid-swing used to leave the old spell running: the archer's draw coroutine
+    /// carried on and released an arrow after the bow had already been replaced by a sword. Worse,
+    /// HeroEditor resets the upper body to idle whenever the weapon TYPE changes, so the draw was
+    /// wiped from the screen while the shot still happened — an attack with no animation behind it.
+    ///
+    /// Swapping between two weapons of the same type never had this problem, because that reset is
+    /// skipped when the type is unchanged; it is only the bow-to-melee kind of change that bites.
+    /// </summary>
+    public void InterruptCast()
+    {
+        if (!_isAttacking) return;
+
+        StopAllCoroutines();
+        _isAttacking = false;
+
+        var animator = _entity.character != null ? _entity.character.Animator
+                     : _entity.monster != null ? _entity.monster.Animator
+                     : null;
+        if (animator == null) return;
+
+        animator.speed = 1f;
+
+        // Same reason as StopCombat: a cancelled draw never runs its own cleanup, and a Charge left
+        // at 1 makes the next shot's SetInteger a no-op, so the bow silently stops animating.
+        if (_entity.character != null) animator.SetInteger("Charge", 0);
+    }
+
+    /// <summary>
     /// Stand down when the fight ends. Nothing ticks the AI once combat is over, so a unit caught
     /// mid-chase would keep running on the spot forever — its animation state is only ever changed
     /// from <see cref="Tick"/>.

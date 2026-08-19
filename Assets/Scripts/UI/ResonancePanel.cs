@@ -85,8 +85,10 @@ public class ResonancePanel : MonoBehaviour
 
         UpdateBanked();
 
-        var database = ResonanceDatabase.Active;
-        var entry = _selected != null && database != null ? database.Find(_selected.Id) : null;
+        // Through the hero's Resonance rather than the database directly, so this inherits its view
+        // of what still resonates — in particular, a hollow item has already given up its engraving
+        // and answers null, which is what stops the panel offering to engrave a spent item again.
+        var entry = _hero.Resonance.EntryFor(_selected);
 
         if (entry == null || entry.engraving == null)
         {

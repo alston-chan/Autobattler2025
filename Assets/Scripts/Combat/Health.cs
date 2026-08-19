@@ -31,6 +31,39 @@ public class Health : MonoBehaviour
     {
         _entity = entity;
         currentHealth = maxHealth;
+
+        // Equipment grants max health through Stats, and this used to never hear about it: a hero
+        // whose gear was worth +23 max health still had maxHealth at the base 1000 while the stat
+        // panel read 1023, so they walked into every fight apparently already wounded — and the 23
+        // was inert, since nothing ever turned it into health that could absorb a hit.
+        if (_entity.Stats != null) _entity.Stats.OnStatsChanged += SyncMaxFromStats;
+    }
+
+    private void OnDestroy()
+    {
+        if (_entity != null && _entity.Stats != null) _entity.Stats.OnStatsChanged -= SyncMaxFromStats;
+    }
+
+    /// <summary>
+    /// Bring max health in line with <see cref="EntityStats.MaxHealth"/>, which is where equipment
+    /// and engravings land.
+    ///
+    /// Gaining max health grants that much health with it, so putting on a stout helm is an
+    /// immediate gain rather than an instant wound — the alternative reads as being hurt by your own
+    /// armour. Losing it only clamps, so taking the helm off cannot kill anyone outright.
+    /// </summary>
+    public void SyncMaxFromStats()
+    {
+        if (_entity == null || _entity.Stats == null || _entity.Stats.MaxHealth == null) return;
+
+        float updated = _entity.Stats.MaxHealth.Value;
+        if (Mathf.Approximately(updated, maxHealth)) return;
+
+        float gained = Mathf.Max(0f, updated - maxHealth);
+        maxHealth = updated;
+        currentHealth = Mathf.Clamp(currentHealth + gained, 0f, maxHealth);
+
+        if (healthBar != null && maxHealth > 0f) healthBar.SetSize(currentHealth / maxHealth);
     }
 
     /// <summary>

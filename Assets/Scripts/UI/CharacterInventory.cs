@@ -370,6 +370,10 @@ public class CharacterInventory : ItemWorkspace
     {
         if (CharacterEntity == null) return;
 
+        // Equipment just changed, so anything mid-swing is now being performed with a weapon the
+        // hero is no longer holding. Drop it rather than let it finish.
+        if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.InterruptCast();
+
         var spells = new List<Spell>();
         foreach (var item in Equipment.Items)
         {

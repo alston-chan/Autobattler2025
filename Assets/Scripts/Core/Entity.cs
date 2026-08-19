@@ -181,6 +181,10 @@ public class Entity : MonoBehaviour
 
         CombatAI.Initialize(this);
         Stats.Initialize(this);
+
+        // Health starts before Stats does, so it cannot read the equipped maximum at its own init.
+        // Square it up now that Stats is live.
+        Health.SyncMaxFromStats();
         Hitstop.Initialize(this);
         Mana.Initialize(this);
         HitFeedback.Initialize(this);
