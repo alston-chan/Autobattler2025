@@ -66,19 +66,37 @@ public class Resonance : MonoBehaviour
     public event System.Action OnNoticesChanged;
 
     /// <summary>Whether this hero has anything unlooked-at — the hero-level badge.</summary>
-    public bool HasUnseen => _notices.Count > 0;
+    public bool HasUnseen => MostUrgentNotice != ResonanceNotice.None;
 
     /// <summary>
-    /// The most urgent thing any of this hero's items is waiting to say, so the hero-level badge
-    /// reports a pending decision rather than burying it under a routine tier-up.
+    /// The most urgent thing any WORN item is waiting to say, so the hero-level badge reports a
+    /// pending decision rather than burying it under a routine tier-up.
+    ///
+    /// Worn only, because a badge the player cannot act on is worse than none. Marks are cleared by
+    /// clicking the item, and only worn items get a slot to click — so counting an unworn one left
+    /// the hero permanently flagged with nothing to open. That is easy to reach: equipping a
+    /// replacement displaces the old item without ever selecting it, since the item being clicked is
+    /// the new one.
+    ///
+    /// The mark itself is kept rather than discarded, so putting the item back on brings its news
+    /// back with it instead of quietly losing what it had to say.
     /// </summary>
     public ResonanceNotice MostUrgentNotice
     {
         get
         {
             var worst = ResonanceNotice.None;
-            foreach (var notice in _notices.Values)
-                if (notice > worst) worst = notice;
+
+            var inventory = _entity != null ? _entity.characterInventory : null;
+            if (inventory == null || inventory.Equipment == null) return worst;
+
+            foreach (var item in inventory.Equipment.Items)
+            {
+                if (item == null) continue;
+                if (_notices.TryGetValue(Descriptor(item), out var notice) && notice > worst)
+                    worst = notice;
+            }
+
             return worst;
         }
     }
@@ -328,6 +346,10 @@ public class Resonance : MonoBehaviour
             Invoke(pair.Key, pair.Value, true);
             _active[pair.Key] = pair.Value;
         }
+
+        // Reconciling happens on every equipment change, and what the badges show depends on what is
+        // worn — so this is also the moment they may need to appear or disappear.
+        OnNoticesChanged?.Invoke();
     }
 
     /// <summary>
