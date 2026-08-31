@@ -72,6 +72,10 @@ public class GameManager : Singleton<GameManager>
 
         SetupCharacterInventories();
 
+        // After the roster, because this hangs a badge on each hero's avatar card and there are no
+        // heroes to hang them on until BuildRoster has run.
+        CreateHeroNoticeBadges();
+
         // Inspects any unit on the board, company or enemy, so it doesn't depend on the run existing.
         var inspector = gameObject.AddComponent<UnitInspector>();
         inspector.Initialize(canvas != null ? canvas.transform : null);
@@ -212,6 +216,31 @@ public class GameManager : Singleton<GameManager>
     /// filmed on a private stage and shown as a RawImage, which composites like any other UI
     /// graphic (the same fix <see cref="CharacterPreview"/> uses for the equipment doll).
     /// </summary>
+    /// <summary>
+    /// Put an unread dot on each hero's avatar card, so progress is visible from the board without
+    /// opening anybody's window.
+    ///
+    /// The card is the right home for it: it is the one piece of per-hero UI that is always on
+    /// screen, and it is already what the player looks at to tell their heroes apart.
+    /// </summary>
+    private void CreateHeroNoticeBadges()
+    {
+        foreach (var hero in allyCharacters)
+        {
+            if (hero == null || hero.Resonance == null) continue;
+
+            var card = hero.Appearance != null ? hero.Appearance.avatar : null;
+            var rect = card != null ? card.transform as RectTransform : null;
+            if (rect == null) continue;
+
+            var watcher = card.AddComponent<HeroNoticeBadge>();
+            watcher.Initialize(hero.Resonance, rect);
+
+            // And over the unit itself, since the card strip is hidden while the board is showing.
+            hero.gameObject.AddComponent<HeroNoticeMarker>().Initialize(hero, NoticeBadge.Dot());
+        }
+    }
+
     private void CreateAvatarPortraits()
     {
         if (avatarUI == null) return;

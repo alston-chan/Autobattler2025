@@ -158,3 +158,18 @@ public class ResonanceDatabase : ScriptableObject
         return entries.Find(e => e != null && e.itemId == itemId);
     }
 }
+
+/// <summary>
+/// What an item is waiting to tell the player. Ordered by urgency — a higher value outranks a lower
+/// one when both apply to the same item, so a decision is never hidden behind a piece of news.
+/// </summary>
+public enum ResonanceNotice
+{
+    None = 0,
+
+    /// <summary>Crossed a tier. Already applied itself; the player is only being informed.</summary>
+    TierUp = 1,
+
+    /// <summary>Attuned enough to be banked permanently. Asks the player to make a choice.</summary>
+    EngraveReady = 2
+}

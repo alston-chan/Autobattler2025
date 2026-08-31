@@ -49,6 +49,67 @@ public class Resonance : MonoBehaviour
     private readonly Dictionary<string, float> _attunement = new Dictionary<string, float>();
 
     /// <summary>
+    /// Items whose progress the player has not looked at yet, and what kind of news each carries.
+    ///
+    /// Keyed by the same descriptor as attunement, and for the same reason: equipping or unequipping
+    /// mints a fresh Item object, so an object key would drop the mark the moment a player pulled the
+    /// item off to look at it.
+    ///
+    /// There is deliberately NO hero-level flag. <see cref="HasUnseen"/> is derived from this set, so
+    /// "the hero's badge clears when the last item's does" is true by construction rather than by two
+    /// pieces of bookkeeping agreeing with each other.
+    /// </summary>
+    private readonly Dictionary<string, ResonanceNotice> _notices =
+        new Dictionary<string, ResonanceNotice>();
+
+    /// <summary>Raised when any item's unread mark appears or clears, so badges can follow.</summary>
+    public event System.Action OnNoticesChanged;
+
+    /// <summary>Whether this hero has anything unlooked-at — the hero-level badge.</summary>
+    public bool HasUnseen => _notices.Count > 0;
+
+    /// <summary>
+    /// The most urgent thing any of this hero's items is waiting to say, so the hero-level badge
+    /// reports a pending decision rather than burying it under a routine tier-up.
+    /// </summary>
+    public ResonanceNotice MostUrgentNotice
+    {
+        get
+        {
+            var worst = ResonanceNotice.None;
+            foreach (var notice in _notices.Values)
+                if (notice > worst) worst = notice;
+            return worst;
+        }
+    }
+
+    /// <summary>What this item is waiting to tell the player, if anything.</summary>
+    public ResonanceNotice NoticeFor(Item item) =>
+        item != null && _notices.TryGetValue(Descriptor(item), out var notice)
+            ? notice : ResonanceNotice.None;
+
+    /// <summary>
+    /// Acknowledge an item's news. Called when the player selects it, which is the moment they have
+    /// actually seen what it had to say.
+    /// </summary>
+    public void MarkSeen(Item item)
+    {
+        if (item == null) return;
+        if (_notices.Remove(Descriptor(item))) OnNoticesChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Flag an item, keeping the more urgent of what it already carried and what just happened —
+    /// an item that tiered up AND became engravable should show the decision, not the news.
+    /// </summary>
+    private void Raise(string key, ResonanceNotice notice)
+    {
+        if (_notices.TryGetValue(key, out var current) && current >= notice) return;
+        _notices[key] = notice;
+        OnNoticesChanged?.Invoke();
+    }
+
+    /// <summary>
     /// This hero's private copies of engraving assets, one per GRANT rather than one per asset — see
     /// <see cref="InstanceFor"/>. Two items carrying the same engraving need separate copies or they
     /// would share both their per-bearer fields and their modifier source, and so could not stack.
@@ -132,7 +193,15 @@ public class Resonance : MonoBehaviour
             _attunement[key] = updated;
             changed = true;
 
-            if (entry.TierAt(updated) != entry.TierAt(current)) crossedTier = true;
+            if (entry.TierAt(updated) != entry.TierAt(current))
+            {
+                crossedTier = true;
+                Raise(key, ResonanceNotice.TierUp);
+            }
+
+            // Becoming bankable is the one that asks something of the player, so it outranks a tier.
+            if (!entry.CanEngrave(current) && entry.CanEngrave(updated))
+                Raise(key, ResonanceNotice.EngraveReady);
         }
         _credited.Clear();
 
@@ -177,6 +246,7 @@ public class Resonance : MonoBehaviour
         // The item is spent — its essence is engraved, and what stays equipped is the husk.
         inventory.HollowItem(item);
         _attunement.Remove(spentKey);
+        _notices.Remove(spentKey);
         OnAttunementChanged?.Invoke();
 
         Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at tier {tier}.");

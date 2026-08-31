@@ -79,6 +79,18 @@ public class CharacterInventory : ItemWorkspace
         // window changed the character but left its avatar head showing the old helmet.
         Equipment.OnRefresh += RefreshAvatar;
 
+        // The grid rebuilds its slot objects on every Refresh, so badges have to be re-hung each
+        // time — the same reason the active-spell highlight re-applies here.
+        Equipment.OnRefresh += RefreshNoticeBadges;
+
+        if (CharacterEntity != null && CharacterEntity.Resonance != null)
+        {
+            CharacterEntity.Resonance.OnNoticesChanged += RefreshNoticeBadges;
+
+            // Selecting an item IS the act of reading its news, so that is what clears it.
+            OnSelectionChanged += CharacterEntity.Resonance.MarkSeen;
+        }
+
         var statsPanel = transform.Find("HeroStats");
         if (statsPanel != null)
         {
@@ -93,6 +105,33 @@ public class CharacterInventory : ItemWorkspace
 
         // Show initial stats
         RefreshStatsUI();
+        RefreshNoticeBadges();
+    }
+
+    /// <summary>
+    /// Hang an unread dot on every equipped slot whose item has news, and clear the rest.
+    ///
+    /// Worn slots only. Only worn items attune, so they are the ones with anything to report — and
+    /// the bag is a scrolling list that recycles its slot objects, which would carry a badge from
+    /// the item that just scrolled away onto whatever took its place.
+    /// </summary>
+    private void RefreshNoticeBadges()
+    {
+        if (CharacterEntity == null || CharacterEntity.Resonance == null || Equipment == null) return;
+
+        foreach (var slot in Equipment.InventoryItems)
+        {
+            if (slot == null) continue;
+
+            var rect = slot.transform as RectTransform;
+            if (rect == null) continue;
+
+            var badge = slot.GetComponentInChildren<NoticeBadge>(true);
+            if (badge == null) badge = NoticeBadge.AttachTo(rect, 14f, new Vector2(-3f, -3f));
+            if (badge == null) continue;
+
+            badge.Show(CharacterEntity.Resonance.NoticeFor(slot.Item));
+        }
     }
 
     /// <summary>
