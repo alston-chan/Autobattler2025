@@ -56,11 +56,11 @@ public class EquipmentManagement : MonoBehaviour
         var helmet = EquipRandomFromCollection(ItemType.Helmet);
         if (helmet != null) equipped.Add(helmet);
 
-        if (!isRanged)
-        {
-            var shield = EquipRandomFromCollection(ItemType.Shield);
-            if (shield != null) equipped.Add(shield);
-        }
+        // Weapon BEFORE shield, because whether a shield is allowed at all depends on what the unit
+        // ended up holding. Rolling the shield first and then a weapon from every melee class handed
+        // out shield + two-handed sword, which the equipment window forbids but this path never
+        // checked — the shield simply sat hidden behind the weapon until the weapon came off.
+        Item weapon = null;
 
         if (isRanged)
         {
@@ -70,9 +70,7 @@ public class EquipmentManagement : MonoBehaviour
             if (bows != null && bows.Count > 0)
             {
                 var picked = bows[Random.Range(0, bows.Count)];
-                var bow = new Item(picked.Id);
-                Character.Equip(bow);
-                equipped.Add(bow);
+                weapon = new Item(picked.Id);
             }
         }
         else
@@ -86,10 +84,23 @@ public class EquipmentManagement : MonoBehaviour
             if (melee != null && melee.Count > 0)
             {
                 var picked = melee[Random.Range(0, melee.Count)];
-                var weapon = new Item(picked.Id);
-                Character.Equip(weapon);
-                equipped.Add(weapon);
+                weapon = new Item(picked.Id);
             }
+        }
+
+        if (weapon != null)
+        {
+            Character.Equip(weapon);
+            equipped.Add(weapon);
+        }
+
+        // A free hand is the requirement, so this covers bows too rather than treating ranged as a
+        // special case — a bow is two-handed like any greatsword.
+        bool handFree = weapon == null || !weapon.IsTwoHanded;
+        if (handFree)
+        {
+            var shield = EquipRandomFromCollection(ItemType.Shield);
+            if (shield != null) equipped.Add(shield);
         }
 
         Appearance.Refresh();
@@ -169,14 +180,18 @@ public class EquipmentManagement : MonoBehaviour
     {
         EquipRandomArmor();
         EquipRandomHelmet();
-        EquipRandomShield();
+
         if (isRanged)
         {
+            // No shield: a bow is two-handed. Handing out both left the shield equipped and hidden
+            // behind the bow, surfacing only when the bow was taken off.
             EquipRandomBow();
         }
         else
         {
+            // EquipRandomWeapon draws from the one-handed collection, so a shield is always fine here.
             EquipRandomWeapon();
+            EquipRandomShield();
         }
     }
 }
