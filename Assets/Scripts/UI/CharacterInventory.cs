@@ -418,6 +418,10 @@ public class CharacterInventory : ItemWorkspace
         var held = Equipment.Items.Find(i => i != null && i.Params.Type == ItemType.Weapon);
         CharacterEntity.SetWeaponClass(held != null ? held.Params.Class : ItemClass.Unknown);
 
+        // And let the weapon choose how its bearer swings — picking up a wand is what turns a hero
+        // into a caster, rather than a separate flag somewhere agreeing that it should.
+        if (held != null) WeaponAttacks.Apply(CharacterEntity, held.Params.Class);
+
         var spells = new List<Spell>();
         foreach (var item in Equipment.Items)
         {

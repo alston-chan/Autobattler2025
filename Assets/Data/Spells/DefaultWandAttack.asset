@@ -18,7 +18,7 @@ MonoBehaviour:
   alwaysOn: 0
   manaCost: 0
   weaponRequirement: 3
-  boltPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
+  boltPrefab: {fileID: 5858267466996162301, guid: 9105d03ace1c04f49be4db52e54740e2, type: 3}
   damage: 6
   knockbackForce: 1.5
   boltSpeed: 11

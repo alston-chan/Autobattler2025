@@ -93,9 +93,15 @@ public class EquipmentManagement : MonoBehaviour
             Character.Equip(weapon);
             equipped.Add(weapon);
 
-            // Enemies have no inventory window, so this is where their weapon class gets recorded.
+            // Enemies have no inventory window, so this is where their weapon class gets recorded —
+            // and where the weapon gets to choose their attack. An enemy rolling a wand out of the
+            // melee pool used to stand in sword range swinging it.
             var entity = GetComponent<Entity>();
-            if (entity != null) entity.SetWeaponClass(weapon.Params.Class);
+            if (entity != null)
+            {
+                entity.SetWeaponClass(weapon.Params.Class);
+                WeaponAttacks.Apply(entity, weapon.Params.Class);
+            }
         }
 
         // A free hand is the requirement, so this covers bows too rather than treating ranged as a

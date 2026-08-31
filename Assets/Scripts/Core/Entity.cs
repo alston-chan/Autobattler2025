@@ -103,6 +103,28 @@ public class Entity : MonoBehaviour
     public void SetWeaponClass(Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass value) =>
         weaponClass = value;
 
+    /// <summary>
+    /// Swap the weapon basic attack — spells[0], which is what the rest of the game treats as "how
+    /// this unit hits things".
+    ///
+    /// Two things read that slot once and cache the answer, so both have to be told. EntityStats
+    /// seeds Damage from the attack's BaseDamage, and CombatAI takes its attack range and cooldowns
+    /// from it; a unit handed a new weapon otherwise keeps swinging at the old damage from the old
+    /// distance. Only the base is rewritten, so modifiers from gear and engravings survive.
+    /// </summary>
+    public void SetBasicAttack(Spell attack)
+    {
+        if (attack == null) return;
+
+        if (spells == null) spells = new List<Spell>();
+        if (spells.Count == 0) spells.Add(attack);
+        else if (spells[0] == attack) return;
+        else spells[0] = attack;
+
+        if (Stats != null && Stats.Damage != null) Stats.Damage.BaseValue = attack.BaseDamage;
+        if (CombatAI != null) CombatAI.RefreshSpells();
+    }
+
     [Header("Signature item")]
     [Tooltip("Item id equipped at the start of a run. This is where a hero's identity comes from: " +
              "wearing it grants its Engraving, and resonating it banks that Engraving permanently " +

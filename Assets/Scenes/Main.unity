@@ -2145,6 +2145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabRadius: 1.1
+  headroom: 0.7
 --- !u!114 &1171582541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2752,6 +2753,10 @@ PrefabInstance:
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: maxHealth
       value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: signatureItemId
+      value: Extensions.AbandonedWorkshop.MeleeWeapon1H.AzureStaff
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
