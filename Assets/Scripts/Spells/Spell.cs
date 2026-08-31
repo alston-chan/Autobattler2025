@@ -8,7 +8,21 @@ using UnityEngine;
 /// from spellbooks (Docs), but stay thematically coherent — arrows need a bow, slashes need a melee
 /// weapon. Groups HeroEditor's granular WeaponType (Melee1H/2H/Paired, Bow, …) into game classes.
 /// </summary>
-public enum WeaponClass { Any, Melee, Bow }
+/// <summary>
+/// What a spell needs in the caster's hands. Explicit values because spell assets store them.
+/// </summary>
+public enum WeaponClass
+{
+    Any = 0,
+    Melee = 1,
+    Bow = 2,
+
+    /// <summary>
+    /// A wand. Cannot be answered by the rig's WeaponType, which calls a wand Melee1H exactly like a
+    /// sword — so this one is checked against the equipped item's class instead.
+    /// </summary>
+    Wand = 3
+}
 
 public abstract class Spell : ScriptableObject
 {
@@ -40,13 +54,21 @@ public abstract class Spell : ScriptableObject
         if (caster == null || caster.character == null)
             return weaponRequirement == WeaponClass.Melee;
 
+        // A wand reads as Melee1H on the rig, so asking the rig would let any sword pass. The item's
+        // class is the only record of the difference — see Entity.weaponClass.
+        if (weaponRequirement == WeaponClass.Wand)
+            return caster.weaponClass == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Wand;
+
         WeaponType wt = caster.character.WeaponType;
         switch (weaponRequirement)
         {
             case WeaponClass.Bow:
                 return wt == WeaponType.Bow;
             case WeaponClass.Melee:
-                return wt == WeaponType.Melee1H || wt == WeaponType.Melee2H || wt == WeaponType.MeleePaired;
+                // A wand is swung like a sword but is not one, so a melee spell does not accept it.
+                return (wt == WeaponType.Melee1H || wt == WeaponType.Melee2H ||
+                        wt == WeaponType.MeleePaired) &&
+                       caster.weaponClass != Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Wand;
             default:
                 return true;
         }

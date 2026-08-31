@@ -89,6 +89,20 @@ public class Entity : MonoBehaviour
     }
     public Transform fireTransform;
 
+    /// <summary>
+    /// What KIND of weapon this unit is holding, for spells that ask for one.
+    ///
+    /// The rig's own WeaponType cannot answer this: a wand and a sword are both Melee1H to
+    /// HeroEditor, since they are held and swung the same way. The distinction only exists in the
+    /// item's ItemClass, so it is recorded here as gear changes — by the inventory for the company,
+    /// and by the random loadout for enemies, which have no inventory to read.
+    /// </summary>
+    public Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass weaponClass =
+        Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Unknown;
+
+    public void SetWeaponClass(Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass value) =>
+        weaponClass = value;
+
     [Header("Signature item")]
     [Tooltip("Item id equipped at the start of a run. This is where a hero's identity comes from: " +
              "wearing it grants its Engraving, and resonating it banks that Engraving permanently " +

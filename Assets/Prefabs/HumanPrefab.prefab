@@ -736,6 +736,7 @@ MonoBehaviour:
   attackSpeed: 1
   isRanged: 1
   fireTransform: {fileID: 4059777504579930}
+  weaponClass: 0
   signatureItemId: 
   spells: []
   spellSlots: []

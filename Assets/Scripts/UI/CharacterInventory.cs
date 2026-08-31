@@ -413,6 +413,11 @@ public class CharacterInventory : ItemWorkspace
         // hero is no longer holding. Drop it rather than let it finish.
         if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.InterruptCast();
 
+        // Record what kind of weapon is in hand, for spells that require one — the rig cannot tell a
+        // wand from a sword, so the item's own class is the only place this exists.
+        var held = Equipment.Items.Find(i => i != null && i.Params.Type == ItemType.Weapon);
+        CharacterEntity.SetWeaponClass(held != null ? held.Params.Class : ItemClass.Unknown);
+
         var spells = new List<Spell>();
         foreach (var item in Equipment.Items)
         {

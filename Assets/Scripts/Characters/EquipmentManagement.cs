@@ -92,6 +92,10 @@ public class EquipmentManagement : MonoBehaviour
         {
             Character.Equip(weapon);
             equipped.Add(weapon);
+
+            // Enemies have no inventory window, so this is where their weapon class gets recorded.
+            var entity = GetComponent<Entity>();
+            if (entity != null) entity.SetWeaponClass(weapon.Params.Class);
         }
 
         // A free hand is the requirement, so this covers bows too rather than treating ranged as a
