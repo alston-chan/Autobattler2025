@@ -43,6 +43,10 @@ public class UnitInspector : MonoBehaviour
     [Tooltip("Seconds between text repaints. The bars follow every frame; only the numbers wait.")]
     public float refreshInterval = 0.1f;
 
+    [Tooltip("How long after clicking a unit a second click still counts as a double-click, opening " +
+             "that unit's equipment window.")]
+    public float doubleClickSeconds = 0.35f;
+
     [Header("Card")]
     public Vector2 cardSize = new Vector2(330f, 316f);
     [Tooltip("Inset from the bottom-right corner of the canvas. Bottom-LEFT is taken by the avatar " +
@@ -80,6 +84,9 @@ public class UnitInspector : MonoBehaviour
     /// <summary>Running Y position while the card is laid out, in canvas units below its top edge.</summary>
     private float _cursor;
 
+    private Entity _lastClicked;
+    private float _lastClickTime;
+
     /// <summary>Build the card under <paramref name="canvas"/>. Starts hidden.</summary>
     public void Initialize(Transform canvas)
     {
@@ -109,9 +116,11 @@ public class UnitInspector : MonoBehaviour
     {
         if (_card == null) return;
 
-        if (Input.GetKeyDown(KeyCode.Escape) && _selected != null) Select(null);
+        if (Input.GetKeyDown(KeyCode.Escape)) Dismiss();
 
         // Press and release are tracked separately so a formation drag doesn't also open a card.
+        // A press that STARTS over the UI is ignored outright, which is what lets an item be dragged
+        // out of an open window and released over the board without that reading as "click away".
         if (Input.GetMouseButtonDown(0))
         {
             _pressed = !IsPointerOverUI();
@@ -120,9 +129,76 @@ public class UnitInspector : MonoBehaviour
         else if (Input.GetMouseButtonUp(0) && _pressed)
         {
             _pressed = false;
-            if (Vector3.Distance(Input.mousePosition, _pressPosition) <= clickTolerance)
-                Select(UnitUnderCursor());
+            if (Vector3.Distance(Input.mousePosition, _pressPosition) > clickTolerance) return;
+
+            HandleClick(UnitUnderCursor());
         }
+    }
+
+    /// <summary>
+    /// One click inspects, two open the equipment window, and a click on empty ground puts
+    /// everything away.
+    ///
+    /// Opening goes through the same toggle the number keys use, which closes whatever else was
+    /// showing — so double-clicking a second hero moves straight to them rather than making the
+    /// player close one window before opening the next.
+    /// </summary>
+    private void HandleClick(Entity unit)
+    {
+        if (unit == null)
+        {
+            // Clicking the empty board means "I'm done", so it clears everything at once rather than
+            // peeling off one layer per click — Escape is the one that steps back gradually. It costs
+            // nothing to get wrong either: all of it is a click away from coming back.
+            var manager = GameManager.Instance;
+            if (manager != null) manager.CloseCharacterInventories();
+            if (_selected != null) Select(null);
+
+            _lastClicked = null;
+            return;
+        }
+
+        bool again = unit == _lastClicked &&
+                     Time.unscaledTime - _lastClickTime <= doubleClickSeconds;
+
+        _lastClicked = unit;
+        _lastClickTime = Time.unscaledTime;
+
+        if (again)
+        {
+            OpenEquipment(unit);
+            // Consume the pairing so a third click starts a fresh one rather than toggling madly.
+            _lastClicked = null;
+            return;
+        }
+
+        Select(unit);
+    }
+
+    /// <summary>Open a unit's equipment window. Enemies have none, so they simply stay inspected.</summary>
+    private void OpenEquipment(Entity unit)
+    {
+        var manager = GameManager.Instance;
+        if (manager == null || unit.characterInventory == null) return;
+
+        manager.ToggleCharacterInventories(unit.characterInventory);
+    }
+
+    /// <summary>
+    /// Put away one layer of UI: the equipment window first, then the inspector card. Going in that
+    /// order means Escape never rips away everything at once — the heavier thing goes first, and the
+    /// card the player is reading survives to the second press.
+    /// </summary>
+    private void Dismiss()
+    {
+        var manager = GameManager.Instance;
+        if (manager != null && manager.AnyCharacterInventoryOpen)
+        {
+            manager.CloseCharacterInventories();
+            return;
+        }
+
+        if (_selected != null) Select(null);
     }
 
     private void LateUpdate()

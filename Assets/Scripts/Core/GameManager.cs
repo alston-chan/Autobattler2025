@@ -412,11 +412,7 @@ public class GameManager : Singleton<GameManager>
     {
         bool currState = characterInventory.isActiveAndEnabled;
 
-        foreach (CharacterInventory i in characterInventories)
-        {
-            i.gameObject.SetActive(false);
-        }
-        PlayerInventory.SetActive(false);
+        CloseCharacterInventories();
 
         if (currState == false)
         {
@@ -424,6 +420,23 @@ public class GameManager : Singleton<GameManager>
             characterInventory.gameObject.SetActive(true);
             PlayerInventory.SetActive(true);
         }
+    }
+
+    /// <summary>Whether any hero's equipment window is currently open.</summary>
+    public bool AnyCharacterInventoryOpen =>
+        characterInventories.Exists(i => i != null && i.isActiveAndEnabled);
+
+    /// <summary>
+    /// Shut every equipment window and the shared bag. Safe when none are open, so callers that
+    /// dismiss the UI — clicking away, pressing Escape — need not first work out what was showing.
+    /// </summary>
+    public void CloseCharacterInventories()
+    {
+        foreach (CharacterInventory i in characterInventories)
+        {
+            if (i != null) i.gameObject.SetActive(false);
+        }
+        if (PlayerInventory != null) PlayerInventory.SetActive(false);
     }
 
     #region Round lifecycle
