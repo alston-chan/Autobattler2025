@@ -39,12 +39,19 @@ public class WandAttackSpell : Spell
              "damage is seen to cross the gap rather than arriving the instant it is cast.")]
     public float boltSpeed = 11f;
 
-    [Tooltip("Pause between the cast gesture and the bolt leaving, in seconds at 1x attack speed. " +
-             "Small — this is a flick of the wrist, not a draw.")]
-    public float releaseDelay = 0.12f;
+    [Tooltip("Fallback delay before the bolt leaves, used only if the cast animation has no release " +
+             "event. Cast1H does have one, so this is a safety net rather than the usual path.")]
+    public float releaseDelay = 0.25f;
+
+    [Tooltip("Safety timeout: max seconds to wait for the animation's release event before firing " +
+             "anyway, so a missing event can never leave a caster stuck mid-cast.")]
+    public float maxReleaseWait = 1f;
 
     /// <summary>Animator trigger for the rig's one-handed cast (state <c>Cast1H</c>).</summary>
     private const string CastTrigger = "Cast";
+
+    /// <summary>The cast animation's release frame, fired by Cast1H as CustomEvent("Hit").</summary>
+    private const string ReleaseEvent = "Hit";
 
     // Basic weapon attack — its rate scales with the caster's AttackSpeed, like the bow and melee.
     public override bool ScalesWithAttackSpeed => true;
@@ -77,8 +84,16 @@ public class WandAttackSpell : Spell
             animator.speed = attackSpeed;
         }
 
-        yield return new WaitForSeconds(releaseDelay / Mathf.Max(0.01f, attackSpeed));
+        // Release on the animation's own frame rather than a guessed delay. Cast1H fires
+        // CustomEvent("Hit") at 0.25 of its half-second, which is the moment the hand comes forward
+        // — the bolt used to leave before that, so it appeared to jump out ahead of the gesture.
+        // The event also travels with the clip, so speeding the animation up moves the release with
+        // it instead of drifting out of step.
+        yield return WaitForAnimationEvent(caster, ReleaseEvent, null,
+            releaseDelay / Mathf.Max(0.01f, attackSpeed),
+            maxReleaseWait / Mathf.Max(0.01f, attackSpeed));
 
+        // The bolt only carries the damage — it lands when the projectile arrives, not now.
         Fire(caster, target);
 
         if (animator != null) animator.speed = 1f;

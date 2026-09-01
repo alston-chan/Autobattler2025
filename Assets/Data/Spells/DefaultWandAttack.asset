@@ -22,4 +22,5 @@ MonoBehaviour:
   damage: 6
   knockbackForce: 0
   boltSpeed: 11
-  releaseDelay: 0.12
+  releaseDelay: 0.25
+  maxReleaseWait: 1
