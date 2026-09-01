@@ -173,7 +173,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (1)
+      value: Enemy_Bow
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -465,7 +465,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (7)
+      value: Enemy_Reserve_Melee
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -816,7 +816,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human
+      value: Hero_Greatsword_2H
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -1098,7 +1098,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (7)
+      value: Hero_Bow
       objectReference: {fileID: 0}
     - target: {fileID: 4305108561794920, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1211,7 +1211,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (2)
+      value: Hero_Melee_KnightShield
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -1442,7 +1442,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (3)
+      value: Hero_Melee_BlazeShield
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -1696,7 +1696,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (6)
+      value: Hero_Reserve_Melee
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -2677,7 +2677,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (4)
+      value: Enemy_Melee_A
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
@@ -2788,7 +2788,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (8)
+      value: Hero_Wand
       objectReference: {fileID: 0}
     - target: {fileID: 4305108561794920, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2893,7 +2893,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
-      value: Human (5)
+      value: Enemy_Melee_B
       objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_IsActive
