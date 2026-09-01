@@ -77,7 +77,12 @@ Shader "Sprites/Flash"
                 fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
 
                 // Blend RGB toward the flash colour; alpha (the silhouette) is untouched.
-                c.rgb = lerp(c.rgb, _FlashColor.rgb * c.a, _FlashAmount);
+                // Lerp in STRAIGHT colour, not premultiplied: the premultiply below applies to the
+                // blended result. Multiplying the flash target by c.a here as well squared the alpha
+                // on flashed pixels, so the flash only ever reached full strength where alpha was
+                // exactly 1 and faded out early everywhere else — soft edges and any part-transparent
+                // artwork flashed visibly weaker than opaque ones on the same unit.
+                c.rgb = lerp(c.rgb, _FlashColor.rgb, _FlashAmount);
 
                 c.rgb *= c.a;   // premultiply for the blend mode above
                 return c;

@@ -115,15 +115,21 @@ public class HitFeedback : MonoBehaviour
     }
 
     /// <summary>
-    /// Grab the sprite renderers. Includes inactive ones so equipment that is hidden at cache time
-    /// still flashes once shown, and re-caches when the count changes (equipment swaps).
+    /// Grab the sprite renderers, including inactive ones so equipment hidden at cache time still
+    /// flashes once shown.
+    ///
+    /// Re-scanned on every flash rather than cached behind a count comparison. Equal counts do not
+    /// mean the same renderers: swapping one weapon for another replaces the renderer while leaving
+    /// the count untouched, and the old test would then keep a destroyed entry, skip the new one,
+    /// and — because the material is only assigned while rebuilding — leave that piece on a material
+    /// with no flash in it at all. A unit would flash everywhere except the thing it had just picked
+    /// up. The scan costs one GetComponentsInChildren per hit, which is far cheaper than a hit that
+    /// only half registers.
     /// </summary>
     private void CacheRenderers()
     {
         Transform root = _flashRoot != null ? _flashRoot : transform;
-        var found = root.GetComponentsInChildren<SpriteRenderer>(true);
-        if (_renderers != null && _renderers.Length == found.Length) return;
-        _renderers = found;
+        _renderers = root.GetComponentsInChildren<SpriteRenderer>(true);
 
         // The flash lives in the shader, so the renderers must be using it. One shared material
         // keeps batching intact — the per-renderer flash amount rides on a MaterialPropertyBlock.
