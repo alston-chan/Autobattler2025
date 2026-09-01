@@ -6,7 +6,9 @@ using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
+using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -407,7 +409,37 @@ public class GameManager : Singleton<GameManager>
         }
 
         equippedItems.RemoveAll(i => ItemCollection.Active.GetItemParams(i)?.Type == itemParams.Type);
-        equippedItems.Add(new Item(id));
+
+        var signature = new Item(id);
+        equippedItems.Add(signature);
+
+        // Same-type replacement is not enough on its own: a shield and a two-handed weapon occupy
+        // different slots but the same pair of hands. The random roll already refuses to hand out
+        // both, and the equipment window refuses too — without this, a signature could put them back
+        // together, and the shield would sit hidden behind the weapon until the weapon came off.
+        if (signature.IsTwoHanded)
+        {
+            equippedItems.RemoveAll(i => i != signature && i.IsShield);
+            return;
+        }
+
+        if (!signature.IsShield) return;
+
+        // A shield signature displaces a two-handed weapon — but taking it away would leave the hero
+        // holding nothing, so it is swapped for a one-hander rather than simply removed. The roll
+        // that produced it could not know a shield was coming.
+        if (equippedItems.RemoveAll(i => i != signature && i.IsWeapon && i.IsTwoHanded) == 0) return;
+
+        var oneHanded = ItemCollection.Active.Items
+            .Where(i => i.Type == ItemType.Weapon && i.Class != ItemClass.Bow &&
+                        i.Class != ItemClass.Firearm && i.Class != ItemClass.Wand &&
+                        !i.Tags.Contains(ItemTag.TwoHanded)).ToList();
+
+        if (oneHanded.Count > 0)
+            equippedItems.Add(new Item(oneHanded[Random.Range(0, oneHanded.Count)].Id));
+        else
+            Debug.LogWarning($"[GameManager] {characterEntity.name} lost a two-handed weapon to a " +
+                             "shield signature and no one-handed replacement exists.");
     }
 
     private int EquipAuthoredSpellsAsBooks(Entity characterEntity, List<Item> equippedItems)

@@ -78,9 +78,15 @@ public class EquipmentManagement : MonoBehaviour
             // For melee, exclude bows — and firearms, which HeroEditor's CharacterInventorySetup
             // can't equip on these rigs ("Firearm equipping is not implemented"). Rolling one left
             // the unit weaponless and unable to attack.
+            //
+            // Wands are excluded too. They sit in this pool only because they are neither bow nor
+            // firearm, and that was harmless while every non-bow weapon swung the same way. Now that
+            // a wand brings its own attack, a melee roll could quietly turn a front-line fighter
+            // into a caster who wants to stand at range.
             var melee = ItemCollection.Active?.Items?
                 .Where(i => i.Type == ItemType.Weapon &&
-                            i.Class != ItemClass.Bow && i.Class != ItemClass.Firearm).ToList();
+                            i.Class != ItemClass.Bow && i.Class != ItemClass.Firearm &&
+                            i.Class != ItemClass.Wand).ToList();
             if (melee != null && melee.Count > 0)
             {
                 var picked = melee[Random.Range(0, melee.Count)];
