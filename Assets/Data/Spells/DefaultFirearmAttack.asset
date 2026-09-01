@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da5a82264437db49970f59cb5d5090b, type: 3}
+  m_Name: DefaultFirearmAttack
+  m_EditorClassIdentifier: 
+  spellName: 
+  cooldown: 1.6
+  range: 10
+  alwaysOn: 0
+  manaCost: 0
+  weaponRequirement: 0
+  damage: 22
+  knockbackForce: 0
+  projectilePrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
+  projectileSpeed: 26
+  maxShotWait: 2.5

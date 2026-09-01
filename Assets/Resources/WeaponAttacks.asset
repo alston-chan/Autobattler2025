@@ -34,3 +34,6 @@ MonoBehaviour:
   - weaponClass: 5
     basicAttack: {fileID: 11400000, guid: 5b7db0f50e41ccf4b9bd4ccb061a76d5, type: 2}
     twoHandedAttack: {fileID: 0}
+  - weaponClass: 21
+    basicAttack: {fileID: 11400000, guid: d480432569bc86444bd04a75cfd4faa5, type: 2}
+    twoHandedAttack: {fileID: 0}

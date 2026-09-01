@@ -109,7 +109,9 @@ public static class Loadout
 
         if (weapon != null) WeaponAttacks.Apply(entity, weapon);
 
-        // Last: promotes the main-hand blade to a pair, or clears the off hand again.
-        DualWield.Apply(entity, weapon);
+        // Last, and in this order: a gun and a pair of blades are competing answers to what the
+        // hands are doing, so the gun is asked first and the pair only when there is no gun.
+        FirearmRig.Apply(entity, weapon);
+        if (!FirearmRig.IsFirearm(weapon)) DualWield.Apply(entity, weapon);
     }
 }
