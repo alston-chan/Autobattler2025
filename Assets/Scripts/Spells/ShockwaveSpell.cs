@@ -8,6 +8,10 @@ public class ShockwaveSpell : Spell
     public float damage = 15f;
     public float radius = 4f;
     public float knockbackForce = 5f;
+    [Tooltip("Chance for a hit to land as a critical. Rolled per victim, so an attack that hits " +
+             "several people gives each their own chance.")]
+    public float critChance = 0.15f;
+
 
     public GameObject shockwaveEffectPrefab;
 
@@ -44,7 +48,8 @@ public class ShockwaveSpell : Spell
                 float dist = Vector3.Distance(caster.transform.position, entity.transform.position);
                 if (dist <= radius)
                 {
-                    entity.TakeDamage(damage, caster);
+                    entity.TakeDamage(AttackRoll.DamageOf(caster, damage), caster,
+                                      AttackRoll.IsCrit(critChance));
                     Vector3 dir = (entity.transform.position - caster.transform.position).normalized;
                     entity.ApplyKnockback(dir, knockbackForce);
                     if (!freezeEntireBattlefield) entity.ApplyHitstop(hitstopDuration);

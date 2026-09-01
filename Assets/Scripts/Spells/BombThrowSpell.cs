@@ -18,6 +18,9 @@ public class BombThrowSpell : ThrownSupplySpell
     public float damage = 30f;
     public float radius = 2.5f;
 
+    [Tooltip("Chance for a hit to land as a critical, rolled per victim.")]
+    public float critChance = 0.15f;
+
     [Tooltip("Applied outward from the point of impact, so a bomb in a crowd scatters it.")]
     public float knockbackForce = 4f;
     public float hitstopDuration = 0.12f;
@@ -46,6 +49,6 @@ public class BombThrowSpell : ThrownSupplySpell
         // Aimed where the target stands AT RELEASE, and committed to from there.
         go.AddComponent<ThrownBomb>()
           .Launch(caster, target.transform.position, flightTime, arcHeight, damage, radius,
-                  knockbackForce, hitstopDuration, spinDegreesPerSecond);
+                  knockbackForce, hitstopDuration, spinDegreesPerSecond, critChance);
     }
 }

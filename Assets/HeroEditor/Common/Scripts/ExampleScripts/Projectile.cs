@@ -14,6 +14,11 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
         public Rigidbody2D Rigidbody;
 
         public float damage = 10f;
+
+        // Added for this project: a shot that cannot crit while every melee swing can is a rule
+        // nobody chose. Set by whichever spell fires this, rolled per hit in Bang below.
+        public float critChance;
+
         public float knockbackForce = 3.5f;
         public float homingSpeed = 18.75f;
 
@@ -76,7 +81,7 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
             Entity entity = other.GetComponent<Entity>();
             if (entity != null && target != null && entity == target)
             {
-                entity.TakeDamage(damage, shooter);
+                entity.TakeDamage(damage, shooter, AttackRoll.IsCrit(critChance));
                 Vector3 direction = (other.transform.position - transform.position).normalized;
                 entity.ApplyKnockback(direction, knockbackForce);
 

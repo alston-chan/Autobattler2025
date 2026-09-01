@@ -15,12 +15,12 @@ public class ThrownBomb : MonoBehaviour
     private Vector3 _start, _end;
     private float _flightTime, _arcHeight, _elapsed;
     private float _damage, _radius, _knockback, _hitstop;
-    private float _spin;
+    private float _spin, _critChance;
     private bool _detonated;
 
     /// <summary>Send the bomb on its way. It owns its own destruction from here.</summary>
     public void Launch(Entity thrower, Vector3 landing, float flightTime, float arcHeight,
-                       float damage, float radius, float knockback, float hitstop, float spin)
+                       float damage, float radius, float knockback, float hitstop, float spin, float critChance)
     {
         _thrower = thrower;
         _start = transform.position;
@@ -32,6 +32,7 @@ public class ThrownBomb : MonoBehaviour
         _knockback = knockback;
         _hitstop = hitstop;
         _spin = spin;
+        _critChance = critChance;
     }
 
     private void Update()
@@ -67,7 +68,7 @@ public class ThrownBomb : MonoBehaviour
             if (_thrower != null && entity.isTeam == _thrower.isTeam) continue;
             if (Vector3.Distance(transform.position, entity.transform.position) > _radius) continue;
 
-            entity.TakeDamage(_damage, _thrower);
+            entity.TakeDamage(_damage, _thrower, AttackRoll.IsCrit(_critChance));
 
             if (_knockback > 0f)
             {

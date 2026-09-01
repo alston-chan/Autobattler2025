@@ -27,6 +27,10 @@ public class FirearmAttackSpell : Spell
 {
     [Header("Firearm Attack Properties")]
     public float damage = 18f;
+    [Tooltip("Chance for a hit to land as a critical. Rolled per victim, so an attack that hits " +
+             "several people gives each their own chance.")]
+    public float critChance = 0.15f;
+
 
     [Tooltip("Zero by default. A bullet's stopping power is damage, not shove, and knocking the " +
              "target away only lengthens the next reload's walk.")]
@@ -125,6 +129,7 @@ public class FirearmAttackSpell : Spell
 
         projectile.shooter = caster;
         projectile.target = target;
+        projectile.critChance = critChance;
         projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
         projectile.knockbackForce = knockbackForce;
         projectile.homingSpeed = projectileSpeed;

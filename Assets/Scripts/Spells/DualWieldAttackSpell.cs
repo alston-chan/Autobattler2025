@@ -86,8 +86,8 @@ public class DualWieldAttackSpell : Spell
         // The target may have died on the first strike, or walked off mid-swing.
         if (target == null || target.isDead) yield break;
 
-        bool isCrit = Random.value < critChance;
-        float finalDamage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
+        bool isCrit = AttackRoll.IsCrit(critChance);
+        float finalDamage = AttackRoll.DamageOf(caster, damage);
         target.TakeDamage(finalDamage, caster, isCrit);
 
         if (knockbackForce <= 0f || target == null || target.isDead) yield break;

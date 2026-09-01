@@ -12,10 +12,10 @@ public class ThrownStar : MonoBehaviour
 {
     private Entity _thrower;
     private Vector3 _end;
-    private float _speed, _damage, _hitRadius, _spin;
+    private float _speed, _damage, _hitRadius, _spin, _critChance;
     private bool _spent;
 
-    public void Launch(Entity thrower, Vector3 end, float speed, float damage, float hitRadius, float spin)
+    public void Launch(Entity thrower, Vector3 end, float speed, float damage, float hitRadius, float spin, float critChance)
     {
         _thrower = thrower;
         _end = end;
@@ -23,6 +23,7 @@ public class ThrownStar : MonoBehaviour
         _damage = damage;
         _hitRadius = hitRadius;
         _spin = spin;
+        _critChance = critChance;
 
         Vector3 heading = _end - transform.position;
         if (heading.sqrMagnitude > 0.0001f) transform.right = heading.normalized;
@@ -46,7 +47,7 @@ public class ThrownStar : MonoBehaviour
             if (_thrower != null && entity.isTeam == _thrower.isTeam) continue;
             if (Vector3.Distance(transform.position, entity.transform.position) > _hitRadius) continue;
 
-            entity.TakeDamage(_damage, _thrower);
+            entity.TakeDamage(_damage, _thrower, AttackRoll.IsCrit(_critChance));
             _spent = true;
             Destroy(gameObject);
             return;

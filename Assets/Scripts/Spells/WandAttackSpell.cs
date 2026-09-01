@@ -38,6 +38,10 @@ public class WandAttackSpell : Spell
     [Tooltip("How fast the bolt travels. Deliberately slower than an arrow (18.75) so a wand's " +
              "damage is seen to cross the gap rather than arriving the instant it is cast.")]
     public float boltSpeed = 11f;
+    [Tooltip("Chance for a hit to land as a critical. Rolled per victim, so an attack that hits " +
+             "several people gives each their own chance.")]
+    public float critChance = 0.15f;
+
 
     [Tooltip("Fallback delay before the bolt leaves, used only if the cast animation has no release " +
              "event. Cast1H does have one, so this is a safety net rather than the usual path.")]
@@ -108,6 +112,7 @@ public class WandAttackSpell : Spell
         var projectile = bolt.GetComponent<Assets.HeroEditor.Common.Scripts.ExampleScripts.Projectile>();
         if (projectile == null) return;
 
+        projectile.critChance = critChance;
         projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
         projectile.knockbackForce = knockbackForce;
         projectile.shooter = caster;

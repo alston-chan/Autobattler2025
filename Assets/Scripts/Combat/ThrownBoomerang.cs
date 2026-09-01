@@ -19,13 +19,13 @@ public class ThrownBoomerang : MonoBehaviour
 {
     private Entity _thrower;
     private Vector3 _apex;
-    private float _speed, _damage, _hitRadius, _spin;
+    private float _speed, _damage, _hitRadius, _spin, _critChance;
     private bool _returning;
 
     // Cleared at the turn, so each enemy is cut once on the way out and once on the way home.
     private readonly HashSet<Entity> _hitThisLeg = new HashSet<Entity>();
 
-    public void Launch(Entity thrower, Vector3 apex, float speed, float damage, float hitRadius, float spin)
+    public void Launch(Entity thrower, Vector3 apex, float speed, float damage, float hitRadius, float spin, float critChance)
     {
         _thrower = thrower;
         _apex = apex;
@@ -33,6 +33,7 @@ public class ThrownBoomerang : MonoBehaviour
         _damage = damage;
         _hitRadius = hitRadius;
         _spin = spin;
+        _critChance = critChance;
 
         // A boomerang that somehow never comes home must not orbit for the rest of the fight.
         Destroy(gameObject, 8f);
@@ -74,7 +75,7 @@ public class ThrownBoomerang : MonoBehaviour
             if (_hitThisLeg.Contains(entity)) continue;
             if (Vector3.Distance(transform.position, entity.transform.position) > _hitRadius) continue;
 
-            entity.TakeDamage(_damage, _thrower);
+            entity.TakeDamage(_damage, _thrower, AttackRoll.IsCrit(_critChance));
             _hitThisLeg.Add(entity);
         }
     }

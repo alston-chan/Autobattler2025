@@ -6,6 +6,10 @@ public class BowAttackSpell : Spell
 {
     [Header("Bow Attack Properties")]
     public GameObject arrowPrefab;
+    [Tooltip("Chance for a hit to land as a critical. Rolled per victim, so an attack that hits " +
+             "several people gives each their own chance.")]
+    public float critChance = 0.15f;
+
     public float damage = 10f;
     public float knockbackForce = 3.5f;
     public float chargeTime = 0.5f;
@@ -50,7 +54,8 @@ public class BowAttackSpell : Spell
             var projectile = arrow.GetComponent<Assets.HeroEditor.Common.Scripts.ExampleScripts.Projectile>();
             if (projectile != null)
             {
-                projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
+                projectile.critChance = critChance;
+            projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
                 projectile.knockbackForce = knockbackForce;
                 projectile.shooter = caster;
                 projectile.target = target;

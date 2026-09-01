@@ -14,6 +14,10 @@ public class DoubleStrikeSpell : Spell
     public int strikes = 2;
     [Tooltip("Damage per strike, as a multiple of the caster's Damage stat.")]
     public float damagePerStrike = 1f;
+
+    [Tooltip("Chance for a strike to land as a critical. Rolled per strike, so a flurry can crit " +
+             "on one blow and not the next.")]
+    public float critChance = 0.15f;
     public float knockbackForce = 4f;
     [Tooltip("How much faster than a normal swing each strike animates. This is what makes Double " +
              "Strike a burst — at 1x it's just two normal attacks in a row; ~2.5x reads as a flurry.")]
@@ -60,7 +64,7 @@ public class DoubleStrikeSpell : Spell
 
             if (target != null && !target.isDead)
             {
-                target.TakeDamage(damage, caster);
+                target.TakeDamage(damage, caster, AttackRoll.IsCrit(critChance));
                 AbilityFeedback.Impact(target);   // heavy hitstop on each strike
 
                 if (knockbackForce > 0f && !target.isDead)

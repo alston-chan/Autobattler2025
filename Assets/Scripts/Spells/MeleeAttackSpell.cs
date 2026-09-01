@@ -78,8 +78,8 @@ public class MeleeAttackSpell : Spell
         // The target may have died or despawned during the wind-up.
         if (target == null || target.isDead) yield break;
 
-        bool isCrit = Random.value < critChance;
-        float finalDamage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
+        bool isCrit = AttackRoll.IsCrit(critChance);
+        float finalDamage = AttackRoll.DamageOf(caster, damage);
         target.TakeDamage(finalDamage, caster, isCrit);
 
         // May have died from this hit — nothing left to knock back.

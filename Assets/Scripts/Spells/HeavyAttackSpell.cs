@@ -73,8 +73,8 @@ public class HeavyAttackSpell : Spell
         // The target may have died or walked off during a wind-up this long.
         if (target == null || target.isDead) yield break;
 
-        bool isCrit = Random.value < critChance;
-        float finalDamage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
+        bool isCrit = AttackRoll.IsCrit(critChance);
+        float finalDamage = AttackRoll.DamageOf(caster, damage);
         target.TakeDamage(finalDamage, caster, isCrit);
 
         if (target == null || target.isDead) yield break;

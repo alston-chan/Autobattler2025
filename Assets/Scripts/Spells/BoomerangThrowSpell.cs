@@ -16,6 +16,9 @@ public class BoomerangThrowSpell : ThrownSupplySpell
              "the damage a throw is worth depends entirely on how many bodies the line crosses.")]
     public float damage = 12f;
 
+    [Tooltip("Chance for a hit to land as a critical, rolled per victim.")]
+    public float critChance = 0.15f;
+
     public float speed = 11f;
     public float hitRadius = 0.7f;
 
@@ -42,6 +45,6 @@ public class BoomerangThrowSpell : ThrownSupplySpell
         direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.right;
         Vector3 apex = target.transform.position + direction * overshoot;
         go.AddComponent<ThrownBoomerang>()
-          .Launch(caster, apex, speed, damage, hitRadius, spinDegreesPerSecond);
+          .Launch(caster, apex, speed, damage, hitRadius, spinDegreesPerSecond, critChance);
     }
 }

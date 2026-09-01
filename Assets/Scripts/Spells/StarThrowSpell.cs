@@ -13,6 +13,9 @@ public class StarThrowSpell : ThrownSupplySpell
     [Header("Star")]
     public float damage = 18f;
 
+    [Tooltip("Chance for a hit to land as a critical, rolled per victim.")]
+    public float critChance = 0.15f;
+
     [Tooltip("Flat and fast. A thrown blade that floats reads as a leaf.")]
     public float speed = 16f;
 
@@ -44,6 +47,6 @@ public class StarThrowSpell : ThrownSupplySpell
         direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.right;
         Vector3 end = target.transform.position + direction * overshoot;
         go.AddComponent<ThrownStar>()
-          .Launch(caster, end, speed, damage, hitRadius, spinDegreesPerSecond);
+          .Launch(caster, end, speed, damage, hitRadius, spinDegreesPerSecond, critChance);
     }
 }
