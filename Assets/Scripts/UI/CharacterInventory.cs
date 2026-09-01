@@ -337,8 +337,11 @@ public class CharacterInventory : ItemWorkspace
             AutoRemove(equipped, Equipment.Slots.Count(i => i.Supports(SelectedItem)));
         }
 
-        if (SelectedItem.IsTwoHanded) AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
-        if (SelectedItem.IsShield) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded).ToList());
+        // A pair of blades takes both hands just as a greatsword does, so both refuse a shield.
+        if (DualWield.OccupiesBothHands(SelectedItem))
+            AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
+        if (SelectedItem.IsShield)
+            AutoRemove(Equipment.Items.Where(i => DualWield.OccupiesBothHands(i)).ToList());
 
         if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
         if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded).ToList());
@@ -421,6 +424,9 @@ public class CharacterInventory : ItemWorkspace
         // And let the weapon choose how its bearer swings — picking up a wand is what turns a hero
         // into a caster, rather than a separate flag somewhere agreeing that it should.
         if (held != null) WeaponAttacks.Apply(CharacterEntity, held);
+
+        // After the normal equip pass, which has already put the blade in the main hand.
+        DualWield.Apply(CharacterEntity, held);
 
         var spells = new List<Spell>();
         foreach (var item in Equipment.Items)

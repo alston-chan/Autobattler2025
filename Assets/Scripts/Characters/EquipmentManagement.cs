@@ -107,12 +107,14 @@ public class EquipmentManagement : MonoBehaviour
             {
                 entity.SetWeaponClass(weapon.Params.Class);
                 WeaponAttacks.Apply(entity, weapon);
+                DualWield.Apply(entity, weapon);
             }
         }
 
         // A free hand is the requirement, so this covers bows too rather than treating ranged as a
-        // special case — a bow is two-handed like any greatsword.
-        bool handFree = weapon == null || !weapon.IsTwoHanded;
+        // special case — a bow is two-handed like any greatsword, and paired blades fill both hands
+        // without being tagged that way at all.
+        bool handFree = weapon == null || !DualWield.OccupiesBothHands(weapon);
         if (handFree)
         {
             var shield = EquipRandomFromCollection(ItemType.Shield);

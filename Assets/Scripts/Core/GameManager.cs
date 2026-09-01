@@ -417,7 +417,7 @@ public class GameManager : Singleton<GameManager>
         // different slots but the same pair of hands. The random roll already refuses to hand out
         // both, and the equipment window refuses too — without this, a signature could put them back
         // together, and the shield would sit hidden behind the weapon until the weapon came off.
-        if (signature.IsTwoHanded)
+        if (DualWield.OccupiesBothHands(signature))
         {
             equippedItems.RemoveAll(i => i != signature && i.IsShield);
             return;
@@ -428,7 +428,7 @@ public class GameManager : Singleton<GameManager>
         // A shield signature displaces a two-handed weapon — but taking it away would leave the hero
         // holding nothing, so it is swapped for a one-hander rather than simply removed. The roll
         // that produced it could not know a shield was coming.
-        if (equippedItems.RemoveAll(i => i != signature && i.IsWeapon && i.IsTwoHanded) == 0) return;
+        if (equippedItems.RemoveAll(i => i != signature && DualWield.OccupiesBothHands(i)) == 0) return;
 
         var oneHanded = ItemCollection.Active.Items
             .Where(i => i.Type == ItemType.Weapon && i.Class != ItemClass.Bow &&
