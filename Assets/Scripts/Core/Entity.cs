@@ -247,14 +247,22 @@ public class Entity : MonoBehaviour
         HitFeedback.Initialize(this);
         DeathFeedback.Initialize(this);
         Resonance.Initialize(this);
-
-        // Subscribe to death event for cleanup and round-end checks
-        Health.OnDied += HandleDeath;
     }
 
     private void OnEnable()
     {
         EntityRegistry.Register(this);
+
+        // Paired with the unsubscribe in OnDisable, and here rather than in Awake because Awake runs
+        // once while OnDisable runs every time a unit falls: the fallen are deactivated so they can
+        // be revived for the next fight, and that deactivation took the subscription with it. A hero
+        // who died once never announced a death again, so from the second fight onward the win/lose
+        // check could not see them fall — and a battle whose last ally dies silently never ends.
+        if (Health != null)
+        {
+            Health.OnDied -= HandleDeath;   // never subscribe twice
+            Health.OnDied += HandleDeath;
+        }
     }
 
     private void OnDisable()

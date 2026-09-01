@@ -63,6 +63,20 @@ public class Health : MonoBehaviour
         maxHealth = updated;
         currentHealth = Mathf.Clamp(currentHealth + gained, 0f, maxHealth);
 
+        RefreshBar();
+    }
+
+    /// <summary>
+    /// Push current health onto the bar.
+    ///
+    /// Every path that changes health has to end here, and two did not: <see cref="Revive"/> and
+    /// <see cref="HealToFull"/> — the two the between-fight patch-up uses. A company walked into its
+    /// second fight at full health behind bars still showing how the last one ended. The revived
+    /// were worst: <see cref="Die"/> empties the bar, and reviving refilled the health without ever
+    /// refilling the bar, so a hero back on their feet looked dead.
+    /// </summary>
+    public void RefreshBar()
+    {
         if (healthBar != null && maxHealth > 0f) healthBar.SetSize(currentHealth / maxHealth);
     }
 
@@ -76,6 +90,7 @@ public class Health : MonoBehaviour
     {
         IsDead = false;
         currentHealth = maxHealth;
+        RefreshBar();
         OnRevived?.Invoke();
     }
 
@@ -84,6 +99,7 @@ public class Health : MonoBehaviour
     {
         if (IsDead) return;
         currentHealth = maxHealth;
+        RefreshBar();
     }
 
     /// <summary>Fired when a dead entity is brought back, so visuals can be reset.</summary>
@@ -110,7 +126,7 @@ public class Health : MonoBehaviour
             source.Resonance.Accrue(ResonanceRequirement.DamageDealt, amount);
 
         currentHealth -= amount;
-        if (healthBar != null) healthBar.SetSize(currentHealth / maxHealth);
+        RefreshBar();
 
         // Visual hit feedback — flash / shake / squash, all configurable on the HitFeedback component.
         // Hitstop and flinch are spell-driven (a spell calls ApplyHitstop / HitReact), not per-hit.
@@ -156,7 +172,7 @@ public class Health : MonoBehaviour
 
         IsDead = true;
         currentHealth = 0f;
-        if (healthBar != null) healthBar.SetSize(0f);
+        RefreshBar();
 
         // Fire BEFORE the death sequence: GameManager decides win/lose from IsDead, and it should
         // not have to wait out a second of corpse animation to call the round.
