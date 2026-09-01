@@ -88,6 +88,35 @@ Vendor namespaces collide with obvious type names. `Firearms` is both
 `Character.Firearms` (a field), so a global `Firearms` class is ambiguous wherever either is
 in scope — hence `FirearmRig`. Check for a vendor namespace before naming a new global type.
 
+## Tests
+
+Live in `Assets/Editor/Tests/`, plain NUnit, and **no assembly definition is needed or wanted**.
+Being under an `Editor/` folder puts them in `Assembly-CSharp-Editor`, which already references
+`Assembly-CSharp` — where all the game code is — and resolves NUnit. An `.asmdef` would actively
+break this: asmdef assemblies cannot reference the predefined `Assembly-CSharp`, so testing this
+code that way would mean moving the whole game into an asmdef, and HeroEditor with it, since the
+game depends on it.
+
+Run them:
+
+```bash
+npx unity-mcp-cli run-tool tests-run . --input '{"testMode":"EditMode"}'
+```
+
+About a second for the current suite. In the editor it is Window → General → Test Runner →
+EditMode → Run All. Note that `tests-run` reports compilation errors clearly and reliably, which
+`console-get-logs` does not — when a refresh seems to have gone quiet, run the tests to find out.
+
+Writing them:
+
+- Anything touching items must set `ItemCollection.Active` itself. The game assigns it from an
+  inspector field on the inventory prefab at runtime, so it is null in a test; a `[OneTimeSetUp]`
+  loading `Assets/Data/ItemCollection.asset` is the pattern.
+- Assert on collections with `Has.Member` / `Has.No.Member`. `Does.Contain` binds to the string
+  overload and fails to compile against a `List<Item>`.
+- **A test that has never failed is not evidence.** Break the rule on purpose, watch the right test
+  go red with a message that explains it, then restore. The suite here was checked that way.
+
 ## Project facts that look like bugs
 
 - **The company fields five heroes.** Extra heroes are benched as *inactive* scene objects;
