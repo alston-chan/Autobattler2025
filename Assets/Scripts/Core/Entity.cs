@@ -64,6 +64,35 @@ public class Entity : MonoBehaviour
 
     /// <summary>Told to us when a fight starts or ends. See <see cref="IsFighting"/>.</summary>
     public void SetFighting(bool fighting) => _fighting = fighting;
+
+    [Header("Targeting")]
+    [Tooltip("How this unit chooses whom to fight. Nearest is the ordinary front-line answer; " +
+             "LowestHealth makes a finisher; Furthest reaches past the front rank.")]
+    public TargetMode targetMode = TargetMode.Nearest;
+
+    [Tooltip("How much better a rival target must be before this unit turns away from the one it " +
+             "is already fighting, as a fraction: 0.25 means a quarter better. Zero makes a unit " +
+             "flip between two equally close enemies every frame and close on neither.")]
+    [Range(0f, 0.9f)] public float targetStickiness = 0.25f;
+
+    /// <summary>
+    /// Until when this unit cannot be picked as a target.
+    ///
+    /// Not serialized and not a stat: it is a brief window, bought by doing something — vanishing
+    /// behind the enemy line — and it buys time rather than immunity. If every enemy is hidden at
+    /// once, <see cref="Targeting"/> ignores it and the fight continues, because a battle that
+    /// politely stops is worse than a dive that goes unpunished.
+    /// </summary>
+    [System.NonSerialized] private float _hiddenUntil;
+
+    public bool IsAggroDropped => Time.time < _hiddenUntil;
+
+    /// <summary>Slip out of sight for a moment. Extends an existing window, never shortens it.</summary>
+    public void DropAggro(float seconds)
+    {
+        if (seconds <= 0f) return;
+        _hiddenUntil = Mathf.Max(_hiddenUntil, Time.time + seconds);
+    }
     #endregion
 
     #region Data

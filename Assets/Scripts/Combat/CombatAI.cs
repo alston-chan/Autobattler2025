@@ -100,9 +100,13 @@ public class CombatAI : MonoBehaviour
 
     private void HandleAI()
     {
+        // Whom to fight is its own question now, asked of Targeting, which knows about modes and
+        // about not flip-flopping between two enemies a hair apart.
+        Entity closestEnemy = Targeting.Choose(_entity, _entity.targetMode, CurrentTarget,
+                                               _entity.targetStickiness);
+
+        // Keeping clear of the neighbours is a separate concern and stays here.
         var allEntities = EntityRegistry.All;
-        Entity closestEnemy = null;
-        float closestDist = Mathf.Infinity;
         Vector3 separation = Vector3.zero;
         int neighborCount = 0;
 
@@ -111,23 +115,15 @@ public class CombatAI : MonoBehaviour
             var other = allEntities[idx];
             if (other == _entity) continue;
 
-            // Corpses stay registered while their death sequence plays. They must not be targeted,
-            // and they must not push living units around either — a body should be walked over,
-            // not swerved around.
+            // Corpses stay registered while their death sequence plays, and must not push living
+            // units around — a body should be walked over, not swerved around.
             if (other.isDead) continue;
 
             float dist = Vector3.Distance(transform.position, other.transform.position);
-
             if (dist < separationDistance)
             {
                 separation += (transform.position - other.transform.position).normalized / dist;
                 neighborCount++;
-            }
-
-            if (other.isTeam != _entity.isTeam && dist < closestDist)
-            {
-                closestDist = dist;
-                closestEnemy = other;
             }
         }
 
