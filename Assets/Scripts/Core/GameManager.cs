@@ -61,7 +61,45 @@ public class GameManager : Singleton<GameManager>
     /// <summary>Backward-compatible shorthand. True when combat is active.</summary>
     public bool isGameStarted => StateMachine.Current == GameState.Combat;
 
+    /// <summary>
+    /// Bring the game up in the one order that works.
+    ///
+    /// This was a flat list of nine calls whose order carried real constraints and said so only in
+    /// comments attached to individual lines — "after the roster, because…", "last, so the company
+    /// is fully built…". The constraints are named as stages here instead, because the failure mode
+    /// when one is broken is silent: a stage that runs too early finds nothing to work on and does
+    /// nothing at all. Hero notice badges were once built before the roster and simply produced
+    /// none — no error, no badges, nothing to grep for.
+    ///
+    /// Each stage needs the one above it:
+    ///
+    /// <list type="number">
+    /// <item><b>Listen</b> — before anything exists that could fire an event.</item>
+    /// <item><b>World</b> — the arena units are clamped into, and the canvas everything is drawn
+    /// on top of.</item>
+    /// <item><b>Unit presentation</b> — bars and damage numbers hook entity registration, so they
+    /// have to exist before units are dressed and long before any encounter is spawned.</item>
+    /// <item><b>Company</b> — avatar cards, then the roster, then inventories and gear, then the
+    /// badges that hang off a card belonging to a hero on the roster. Each reads what the step
+    /// before it wrote; this is the run of the sequence that actually cannot be reordered.</item>
+    /// <item><b>Player tools</b> — the inspector reads whatever is on the board, so it needs only
+    /// the canvas and not the run.</item>
+    /// <item><b>Run</b> — last, because the first encounter is staged against a finished company.</item>
+    /// </list>
+    ///
+    /// The stages that can quietly do nothing now say so out loud instead.
+    /// </summary>
     void Start()
+    {
+        ListenForGameEvents();
+        BuildWorld();
+        BuildUnitPresentation();
+        BuildCompany();
+        BuildPlayerTools();
+        StartRun();
+    }
+
+    private void ListenForGameEvents()
     {
         StateMachine.OnStateChanged += HandleStateChanged;
 
@@ -71,40 +109,50 @@ public class GameManager : Singleton<GameManager>
 
         // The win/lose check listens for deaths rather than being called by the dying unit.
         Entity.OnAnyDied += OnEntityDied;
+    }
 
+    private void BuildWorld()
+    {
         EnsureArenaBounds();
         EnsureUiSortsAboveWorld();
-        CreateAvatarUI();
-        SetupUnitBars();
-        SetupDamageNumbers();
-        BuildRoster();
-
-        SetupCharacterInventories();
-
-        // After the roster, because this hangs a badge on each hero's avatar card and there are no
-        // heroes to hang them on until BuildRoster has run.
-        CreateHeroNoticeBadges();
-
-        // Inspects any unit on the board, company or enemy, so it doesn't depend on the run existing.
-        var inspector = gameObject.AddComponent<UnitInspector>();
-        inspector.Initialize(canvas != null ? canvas.transform : null);
-
-        // Last, so the company is fully built (gear, spells, inventories) before the first fight is
-        // put on the board.
-        if (runManager != null)
-        {
-            runManager.BeginRun(allyCharacters);
-
-            var rewards = gameObject.AddComponent<RewardPanel>();
-            rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
-        }
     }
 
     /// <summary>
-    /// Guarantee a global <see cref="ArenaBounds"/> so entities stay on-screen. If the scene already
-    /// has one (placed to tune the rectangle via its gizmo) it's left alone; otherwise a default one
-    /// is spawned so the clamp works with no scene setup.
+    /// Bars and damage numbers, both of which provision themselves per unit off entity registration.
+    /// Ahead of the company so that dressing a unit — which moves max health through Stats — lands
+    /// on a bar that already exists rather than one built later from the result.
     /// </summary>
+    private void BuildUnitPresentation()
+    {
+        SetupUnitBars();
+        SetupDamageNumbers();
+    }
+
+    private void BuildCompany()
+    {
+        CreateAvatarUI();
+        BuildRoster();
+        SetupCharacterInventories();
+        CreateHeroNoticeBadges();
+    }
+
+    private void BuildPlayerTools()
+    {
+        // Inspects any unit on the board, company or enemy, so it doesn't depend on the run existing.
+        var inspector = gameObject.AddComponent<UnitInspector>();
+        inspector.Initialize(canvas != null ? canvas.transform : null);
+    }
+
+    private void StartRun()
+    {
+        if (runManager == null) return;
+
+        runManager.BeginRun(allyCharacters);
+
+        var rewards = gameObject.AddComponent<RewardPanel>();
+        rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
+    }
+
     /// <summary>
     /// Whoever is still standing when a fight ends is stood down. Handled on the transition rather
     /// than inside the win/lose check so every way out of combat is covered.
@@ -184,6 +232,11 @@ public class GameManager : Singleton<GameManager>
             if (hero != null && hero.Resonance != null) hero.Resonance.AccrueAfterCombat();
     }
 
+    /// <summary>
+    /// Guarantee a global <see cref="ArenaBounds"/> so entities stay on-screen. If the scene already
+    /// has one (placed to tune the rectangle via its gizmo) it's left alone; otherwise a default one
+    /// is spawned so the clamp works with no scene setup.
+    /// </summary>
     private void EnsureArenaBounds()
     {
         if (ArenaBounds.Instance == null)
@@ -263,13 +316,25 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     private void CreateHeroNoticeBadges()
     {
+        if (allyCharacters.Count == 0)
+        {
+            Debug.LogError("[GameManager] Notice badges built with an empty roster — no hero will " +
+                           "ever show one. This stage must run after BuildRoster.");
+            return;
+        }
+
         foreach (var hero in allyCharacters)
         {
             if (hero == null || hero.Resonance == null) continue;
 
             var card = hero.Appearance != null ? hero.Appearance.avatar : null;
             var rect = card != null ? card.transform as RectTransform : null;
-            if (rect == null) continue;
+            if (rect == null)
+            {
+                Debug.LogError($"[GameManager] {hero.name} has no avatar card, so it cannot carry a " +
+                               "notice badge. This stage must run after CreateAvatarUI.");
+                continue;
+            }
 
             var watcher = card.AddComponent<HeroNoticeBadge>();
             watcher.Initialize(hero.Resonance, rect);
@@ -354,6 +419,22 @@ public class GameManager : Singleton<GameManager>
 
     public void SetupCharacterInventories()
     {
+        if (canvas == null || characterInventoryPrefab == null)
+        {
+            Debug.LogError("[GameManager] No canvas or character inventory prefab — the company gets " +
+                           "no equipment windows, so nobody is dressed, given a signature item, or " +
+                           "handed the weapon that decides how they fight.");
+            return;
+        }
+
+        if (allyCharacters.Count == 0)
+        {
+            Debug.LogError("[GameManager] Building inventories with an empty roster — the company " +
+                           "will fight in whatever it was authored with. This stage must run after " +
+                           "BuildRoster.");
+            return;
+        }
+
         foreach (Entity characterEntity in allyCharacters)
         {
             CharacterInventory characterInventory = Instantiate(characterInventoryPrefab, canvas.transform).GetComponent<CharacterInventory>();
