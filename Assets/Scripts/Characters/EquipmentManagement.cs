@@ -100,7 +100,7 @@ public class EquipmentManagement : MonoBehaviour
             if (entity != null)
             {
                 entity.SetWeaponClass(weapon.Params.Class);
-                WeaponAttacks.Apply(entity, weapon.Params.Class);
+                WeaponAttacks.Apply(entity, weapon);
             }
         }
 

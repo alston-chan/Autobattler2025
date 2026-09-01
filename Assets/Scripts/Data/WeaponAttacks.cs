@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using UnityEngine;
 
@@ -24,6 +25,10 @@ public class WeaponAttacks : ScriptableObject
     {
         public ItemClass weaponClass;
         public Spell basicAttack;
+
+        [Tooltip("Used instead when the item carries the TwoHanded tag. Leave empty for classes " +
+                 "where the grip changes nothing — a bow is two-handed by nature, not as a variant.")]
+        public Spell twoHandedAttack;
     }
 
     public List<Entry> entries = new List<Entry>();
@@ -45,23 +50,39 @@ public class WeaponAttacks : ScriptableObject
         }
     }
 
-    /// <summary>The basic attack this weapon class brings, or null to leave the unit's alone.</summary>
-    public Spell For(ItemClass weaponClass)
+    /// <summary>
+    /// The basic attack this weapon brings, or null to leave the unit's alone.
+    ///
+    /// Takes the item rather than its class, because how a weapon is held is a TAG and not a class:
+    /// Sword covers both an arming sword and a greatsword, and only the tag separates them.
+    /// </summary>
+    public Spell For(Item item)
     {
-        if (entries == null) return null;
+        if (item == null || entries == null) return null;
+
+        var itemParams = item.Params;
+        if (itemParams == null) return null;
 
         for (int i = 0; i < entries.Count; i++)
-            if (entries[i] != null && entries[i].weaponClass == weaponClass) return entries[i].basicAttack;
+        {
+            var entry = entries[i];
+            if (entry == null || entry.weaponClass != itemParams.Class) continue;
+
+            // A class with no two-handed variant ignores the tag, which is what keeps bows — always
+            // two-handed — on their own attack rather than falling into the greatsword's.
+            if (item.IsTwoHanded && entry.twoHandedAttack != null) return entry.twoHandedAttack;
+            return entry.basicAttack;
+        }
 
         return null;
     }
 
     /// <summary>Convenience for callers that just want to apply the mapping to a unit.</summary>
-    public static void Apply(Entity entity, ItemClass weaponClass)
+    public static void Apply(Entity entity, Item item)
     {
         if (entity == null || Active == null) return;
 
-        var attack = Active.For(weaponClass);
+        var attack = Active.For(item);
         if (attack != null) entity.SetBasicAttack(attack);
     }
 }

@@ -420,7 +420,7 @@ public class CharacterInventory : ItemWorkspace
 
         // And let the weapon choose how its bearer swings — picking up a wand is what turns a hero
         // into a caster, rather than a separate flag somewhere agreeing that it should.
-        if (held != null) WeaponAttacks.Apply(CharacterEntity, held.Params.Class);
+        if (held != null) WeaponAttacks.Apply(CharacterEntity, held);
 
         var spells = new List<Spell>();
         foreach (var item in Equipment.Items)
