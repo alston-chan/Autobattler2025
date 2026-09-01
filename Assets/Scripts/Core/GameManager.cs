@@ -270,6 +270,13 @@ public class GameManager : Singleton<GameManager>
 
     void Update()
     {
+        // A fight can become unwinnable-to-observe without a death — see EvaluateRoundOutcome.
+        if (StateMachine.Current == GameState.Combat && Time.time >= _nextRoundOutcomeCheck)
+        {
+            _nextRoundOutcomeCheck = Time.time + RoundOutcomeCheckInterval;
+            EvaluateRoundOutcome();
+        }
+
         // Reload the whole scene for a fresh fight.
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -629,7 +636,20 @@ public class GameManager : Singleton<GameManager>
     /// Called by any Entity when it dies. Checks if all allies or all enemies
     /// are dead and transitions to RoundEnd when appropriate.
     /// </summary>
-    public void OnEntityDied(Entity entity)
+    public void OnEntityDied(Entity entity) => EvaluateRoundOutcome();
+
+    /// <summary>
+    /// Decide whether the fight is over.
+    ///
+    /// Driven by deaths, because that is when the answer can change — but not ONLY by deaths. A
+    /// death is a poor sole trigger for "is anyone left", since a side can be empty without anyone
+    /// having died in front of us: a fight entered with nothing to fight, or an encounter that
+    /// staged no enemies. Combat then runs forever waiting for a death that cannot happen, with
+    /// every unit standing idle and no way out but reloading the scene. Update polls this a few
+    /// times a second as well, which costs a loop over a handful of units and removes the whole
+    /// category.
+    /// </summary>
+    private void EvaluateRoundOutcome()
     {
         if (StateMachine.Current != GameState.Combat) return;
 
@@ -639,7 +659,7 @@ public class GameManager : Singleton<GameManager>
         var all = EntityRegistry.All;
         for (int i = 0; i < all.Count; i++)
         {
-            if (all[i].isDead) continue;
+            if (all[i] == null || all[i].isDead) continue;
             if (all[i].isTeam) alliesAlive = true;
             else enemiesAlive = true;
         }
@@ -647,6 +667,10 @@ public class GameManager : Singleton<GameManager>
         if (!alliesAlive) EndRound(false);
         else if (!enemiesAlive) EndRound(true);
     }
+
+    /// <summary>How often the safety check above runs while a fight is on.</summary>
+    private const float RoundOutcomeCheckInterval = 0.5f;
+    private float _nextRoundOutcomeCheck;
 
     /// <summary>
     /// A fight has been decided. With a run configured this hands off to <see cref="RunManager"/>,
