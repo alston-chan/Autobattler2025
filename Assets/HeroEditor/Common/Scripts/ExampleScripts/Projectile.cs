@@ -34,7 +34,12 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
         {
             if (Rigidbody != null)
             {
-                if (target != null)
+                // A dead target counts as no target. Its colliders are switched off the moment it
+                // dies (DeathFeedback, so corpses stop eating arrows), which means Bang can never
+                // fire and destroy this — while homing kept steering onto the body. The projectile
+                // sat on the corpse until its five-second self-destruct. Losing the target here lets
+                // it carry on past on its last heading and leave, which is what a missed shot does.
+                if (target != null && !target.isDead)
                 {
                     Vector2 dir = ((Vector2)target.transform.position - (Vector2)transform.position).normalized;
                     Rigidbody.velocity = homingSpeed * dir;
