@@ -69,18 +69,22 @@ public class DeathFeedback : MonoBehaviour
     {
         _entity = entity;
 
-        // Snapshot the intact body so a revived unit can be put back exactly as it started — the
-        // death sequence fades the sprites out, squashes the silhouette and disables the colliders.
+        // Only the scale is snapshotted here. Sprite colours deliberately are NOT: this runs from
+        // Entity.Awake, and a unit is dressed afterwards, so a renderer arriving with a weapon or a
+        // shield would be missing from the snapshot. The fade scans live and would darken it; a
+        // restore working from the older list would then never put it back, leaving that one piece
+        // invisible for the rest of the run. What the fade changes, the fade records.
         _restoreScale = transform.localScale;
-        _restoreRenderers = GetComponentsInChildren<SpriteRenderer>(true);
-        _restoreColors = new Color[_restoreRenderers.Length];
-        for (int i = 0; i < _restoreRenderers.Length; i++)
-            if (_restoreRenderers[i] != null) _restoreColors[i] = _restoreRenderers[i].color;
     }
 
     private Vector3 _restoreScale;
-    private SpriteRenderer[] _restoreRenderers;
-    private Color[] _restoreColors;
+
+    /// <summary>
+    /// Exactly which renderers the fade dimmed, and what they were before it did — captured as it
+    /// happens rather than ahead of time, so it cannot go stale against a change of equipment.
+    /// </summary>
+    private SpriteRenderer[] _fadedRenderers;
+    private Color[] _fadedColors;
 
     /// <summary>
     /// Undo the death sequence's visual damage so a revived unit looks alive again: sprites back to
@@ -94,13 +98,17 @@ public class DeathFeedback : MonoBehaviour
 
         transform.localScale = _restoreScale;
 
-        if (_restoreRenderers != null)
+        if (_fadedRenderers != null)
         {
-            for (int i = 0; i < _restoreRenderers.Length; i++)
+            for (int i = 0; i < _fadedRenderers.Length; i++)
             {
-                if (_restoreRenderers[i] == null) continue;
-                _restoreRenderers[i].color = _restoreColors[i];
+                if (_fadedRenderers[i] == null) continue;
+                _fadedRenderers[i].color = _fadedColors[i];
             }
+
+            // Nothing outstanding now; a revive with no fade behind it must not repaint anything.
+            _fadedRenderers = null;
+            _fadedColors = null;
         }
 
         foreach (var col in GetComponentsInChildren<Collider2D>(true)) col.enabled = true;
@@ -232,6 +240,10 @@ public class DeathFeedback : MonoBehaviour
         var colors = new Color[renderers.Length];
         for (int i = 0; i < renderers.Length; i++)
             if (renderers[i] != null) colors[i] = renderers[i].color;
+
+        // Hand the undo to whoever revives this unit, covering whatever it is wearing right now.
+        _fadedRenderers = renderers;
+        _fadedColors = colors;
 
         Vector3 start = transform.position;
         Vector3 end = start + Vector3.down * sinkDistance;
