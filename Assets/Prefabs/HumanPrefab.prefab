@@ -730,6 +730,8 @@ MonoBehaviour:
   FixedArm: 0
   isCharacter: 1
   isTeam: 1
+  targetMode: 0
+  targetStickiness: 0.25
   unitData: {fileID: 0}
   maxHealth: 100
   healthBarOffset: {x: 0, y: 1.5, z: 1}
