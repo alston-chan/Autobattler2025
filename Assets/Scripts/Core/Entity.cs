@@ -43,6 +43,27 @@ public class Entity : MonoBehaviour
     [SerializeField] public bool isCharacter = true;
     public bool isTeam = true;
     public bool isDead => Health != null && Health.IsDead;
+
+    /// <summary>
+    /// Whether this unit is in a fight, and so should move, aim and attack.
+    ///
+    /// Pushed in by whoever owns the game state on each transition, rather than read back out of a
+    /// global every frame. A unit that must ask a manager for permission to act cannot be reasoned
+    /// about — or exercised in a test — on its own; and the pull had a worse failure mode than the
+    /// coupling it created. The manager is a singleton whose static reference is wiped while the
+    /// editor reloads assemblies, so every entity silently stopped ticking with nothing logged to
+    /// say why, which reads exactly like a combat bug.
+    ///
+    /// Deliberately NOT serialized. An assembly reload also resets the state machine to Setup, so a
+    /// flag that survived one would leave units fighting a battle the rest of the game had already
+    /// forgotten. A stopped fight is the honest outcome of reloading mid-combat.
+    /// </summary>
+    [System.NonSerialized] private bool _fighting;
+
+    public bool IsFighting => _fighting;
+
+    /// <summary>Told to us when a fight starts or ends. See <see cref="IsFighting"/>.</summary>
+    public void SetFighting(bool fighting) => _fighting = fighting;
     #endregion
 
     #region Data
@@ -242,22 +263,24 @@ public class Entity : MonoBehaviour
         if (Health != null) Health.OnDied -= HandleDeath;
     }
 
+    /// <summary>
+    /// Fired when any entity dies. Announced rather than reported to a particular manager: a unit
+    /// dying is a fact about the unit, and who cares about it — the win/lose check today, a kill
+    /// feed or a bounty tomorrow — is not the dying unit's business to know.
+    /// </summary>
+    public static event System.Action<Entity> OnAnyDied;
+
     private void HandleDeath()
     {
         // Bars are owned by UnitBarsManager, which tears them down on EntityRegistry.OnUnregistered
         // (fired from OnDisable). Whoever creates a thing destroys it.
 
-        // Notify GameManager for win/lose evaluation
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnEntityDied(this);
+        OnAnyDied?.Invoke(this);
     }
 
     private void Update()
     {
-        // GameManager.Instance is briefly null during editor domain reloads (e.g. recompiling while
-        // in play mode); guard so entities don't flood the console with NREs until it re-initializes.
-        if (GameManager.Instance == null || !GameManager.Instance.isGameStarted) return;
-        if (isDead) return;
+        if (!_fighting || isDead) return;
 
         // Hitstop freezes the entity: skip movement/knockback/AI while active.
         // (Hitstop counts down in its own Update and freezes the animator itself.)

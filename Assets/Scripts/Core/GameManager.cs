@@ -65,6 +65,13 @@ public class GameManager : Singleton<GameManager>
     {
         StateMachine.OnStateChanged += HandleStateChanged;
 
+        // Units that appear once a fight is under way — an encounter's enemies, anything summoned —
+        // missed the transition that told everyone else, so they are told on arrival instead.
+        EntityRegistry.OnRegistered += HandleEntityRegistered;
+
+        // The win/lose check listens for deaths rather than being called by the dying unit.
+        Entity.OnAnyDied += OnEntityDied;
+
         EnsureArenaBounds();
         EnsureUiSortsAboveWorld();
         CreateAvatarUI();
@@ -104,6 +111,10 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     private void HandleStateChanged(GameState previous, GameState next)
     {
+        // Tell every unit whether it is fighting. Entities gate their own Update on this instead of
+        // reading the state machine back out of here every frame.
+        BroadcastFighting(next == GameState.Combat);
+
         if (next == GameState.Combat) NotifyResonance(true);
 
         if (previous != GameState.Combat) return;
@@ -118,6 +129,31 @@ public class GameManager : Singleton<GameManager>
             // The dead are mid death-sequence — putting them back to idle would cancel it.
             if (entity == null || entity.isDead || entity.CombatAI == null) continue;
             entity.CombatAI.StopCombat();
+        }
+    }
+
+    /// <summary>
+    /// Both events above are static, so a subscription outlives this object — and a stale one would
+    /// fire into a destroyed manager on the next play session. Hand them back.
+    /// </summary>
+    private void OnDestroy()
+    {
+        EntityRegistry.OnRegistered -= HandleEntityRegistered;
+        Entity.OnAnyDied -= OnEntityDied;
+        StateMachine.OnStateChanged -= HandleStateChanged;
+    }
+
+    private void HandleEntityRegistered(Entity entity)
+    {
+        if (entity != null) entity.SetFighting(isGameStarted);
+    }
+
+    private void BroadcastFighting(bool fighting)
+    {
+        var all = EntityRegistry.All;
+        for (int i = all.Count - 1; i >= 0; i--)
+        {
+            if (all[i] != null) all[i].SetFighting(fighting);
         }
     }
 
