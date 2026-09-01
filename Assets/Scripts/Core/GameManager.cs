@@ -182,11 +182,12 @@ public class GameManager : Singleton<GameManager>
             telemetry.WriteReport();
         }
 
+        RaiseTheFallen();
+
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
         {
             var entity = all[i];
-            // The dead are mid death-sequence — putting them back to idle would cancel it.
             if (entity == null || entity.isDead || entity.CombatAI == null) continue;
             entity.CombatAI.StopCombat();
 
@@ -196,6 +197,40 @@ public class GameManager : Singleton<GameManager>
             // rounds. Done here rather than when the next encounter is staged, because that only
             // happens after a victory, and a fight can end in more ways than winning.
             entity.SetFacing(entity.isTeam);
+        }
+    }
+
+    /// <summary>
+    /// Get the fallen back on their feet now the fighting has stopped.
+    ///
+    /// The company was already revived between encounters, but only on the way to the NEXT
+    /// encounter — which never comes if the fight was lost. A wipe therefore left five corpses
+    /// lying on the field for as long as the scene stayed open, and nothing was going to move them.
+    /// Doing it on the way out of combat covers every ending rather than the winning one.
+    ///
+    /// Only the company. Enemies are spawned per encounter and discarded, and a dead one standing
+    /// up would be a resurrection rather than a reset.
+    /// </summary>
+    private void RaiseTheFallen()
+    {
+        // Collected first: reviving reactivates the object, which re-registers it, and that must
+        // not happen while walking the registry.
+        var fallen = new List<Entity>();
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            var entity = all[i];
+            if (entity != null && entity.isTeam && entity.isDead) fallen.Add(entity);
+        }
+
+        foreach (var entity in fallen)
+        {
+            if (!entity.gameObject.activeSelf) entity.gameObject.SetActive(true);
+
+            entity.Health.Revive();
+
+            // Undoes what the death sequence did to the body — the fade, the collapse, the pose.
+            if (entity.DeathFeedback != null) entity.DeathFeedback.RestoreAfterRevive();
         }
     }
 
