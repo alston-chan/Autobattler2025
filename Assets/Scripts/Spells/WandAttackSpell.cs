@@ -113,8 +113,22 @@ public class WandAttackSpell : Spell
         projectile.shooter = caster;
         projectile.target = target;
 
-        // Projectile steers toward its target every frame at this speed, so this is the whole of the
-        // bolt's flight behaviour — no launch velocity needed.
         projectile.homingSpeed = boltSpeed;
+
+        // Launch it aimed, rather than leaving homing to supply the whole of the motion. Homing only
+        // steers at a target that is still alive, so a bolt released after its target died — the
+        // target can die during the cast, since the bolt leaves on a later animation event — was
+        // never given a velocity by anything and simply hung in the air at the caster's hand until
+        // it timed out. With a heading of its own it flies on and leaves, the way a missed shot does.
+        var rb = bolt.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            Vector2 heading = ((Vector2)target.transform.position - (Vector2)bolt.transform.position);
+            if (heading.sqrMagnitude > 0.0001f)
+            {
+                rb.velocity = boltSpeed * heading.normalized;
+                bolt.transform.right = heading.normalized;
+            }
+        }
     }
 }

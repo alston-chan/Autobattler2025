@@ -49,6 +49,15 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
                 {
                     transform.right = Rigidbody.velocity.normalized;
                 }
+                else
+                {
+                    // No target left to steer at and no heading to coast on. Bang only fires on the
+                    // target, so this can never hit anything either: it would hang exactly where it
+                    // was spawned — in practice in the caster's hand — for the full five seconds
+                    // before the self-destruct. Whoever launches a projectile owes it a velocity;
+                    // when that hasn't happened there is nothing worth drawing.
+                    Destroy(gameObject);
+                }
             }
         }
 
