@@ -177,6 +177,13 @@ public class GameManager : Singleton<GameManager>
             // The dead are mid death-sequence — putting them back to idle would cancel it.
             if (entity == null || entity.isDead || entity.CombatAI == null) continue;
             entity.CombatAI.StopCombat();
+
+            // Turn back to face the enemy. A unit ends a fight looking wherever the last thing it
+            // chased happened to be — and an assassin ends it behind the enemy line looking the
+            // wrong way entirely — so without this the company stands around backwards between
+            // rounds. Done here rather than when the next encounter is staged, because that only
+            // happens after a victory, and a fight can end in more ways than winning.
+            entity.SetFacing(entity.isTeam);
         }
     }
 
