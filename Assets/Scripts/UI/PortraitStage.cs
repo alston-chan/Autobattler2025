@@ -35,7 +35,12 @@ public static class PortraitStage
     public static Camera CreateCamera(string name, Vector3 stage, int layer, int width, int height,
                                       float orthographicSize, out RenderTexture texture)
     {
-        texture = new RenderTexture(width, height, 16) { name = name + "RT" };
+        // 24 bits, not 16, because that is what carries a STENCIL buffer alongside the depth.
+        // HeroEditor hides hair under a helmet with a SpriteMask, and sprite masks are drawn through
+        // the stencil — on a depth-only target the mask silently does nothing, so every staged figure
+        // wore its hair billowing out through the helmet while the same character looked right in the
+        // world, which renders to the backbuffer and has a stencil.
+        texture = new RenderTexture(width, height, 24) { name = name + "RT" };
 
         var go = new GameObject(name);
         go.transform.position = stage + new Vector3(0f, 0f, -10f);
