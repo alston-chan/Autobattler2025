@@ -29,6 +29,11 @@ public class Hitstop : MonoBehaviour
     {
         if (duration <= 0f) return;
 
+        // One switch for all of it. Every hitstop in the game — hits, kills, abilities, blasts —
+        // arrives here, so this is the only place that has to ask.
+        var settings = CombatFeelSettings.Active;
+        if (settings != null && !settings.enableHitstop) return;
+
         // Remember the speed to return to, but only when starting a fresh freeze so we don't
         // capture our own 0.
         if (!IsActive && _animator != null) _restoreSpeed = _animator.speed;

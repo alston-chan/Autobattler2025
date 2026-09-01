@@ -13,6 +13,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/Combat Feel Settings", fileName = "CombatFeelSettings")]
 public class CombatFeelSettings : ScriptableObject
 {
+    [Header("Diagnostics")]
+    [Tooltip("Turn hitstop off across the whole game. Hitstop deliberately freezes units for a " +
+             "fraction of a second on impact, which is very hard to tell apart from the game " +
+             "stuttering — so when frames feel wrong, turn this off first and see whether the " +
+             "problem goes with it. A ScriptableObject, so it can be toggled during play.")]
+    public bool enableHitstop = true;
+
     /// <summary>Whether the health/mana bars draw over the characters or behind them.</summary>
     public enum BarLayering { InFrontOfCharacters, BehindCharacters }
 
