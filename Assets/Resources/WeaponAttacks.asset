@@ -23,14 +23,14 @@ MonoBehaviour:
     basicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     twoHandedAttack: {fileID: 11400000, guid: 382d674395482914ea201ed61181169e, type: 2}
   - weaponClass: 3
-    basicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
+    basicAttack: {fileID: 11400000, guid: 06126b58cf2e5c7459c2923785b92200, type: 2}
     twoHandedAttack: {fileID: 11400000, guid: 382d674395482914ea201ed61181169e, type: 2}
   - weaponClass: 4
-    basicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
+    basicAttack: {fileID: 11400000, guid: 6715fa0073b57be428e46a5d169673ff, type: 2}
     twoHandedAttack: {fileID: 11400000, guid: 382d674395482914ea201ed61181169e, type: 2}
   - weaponClass: 1
     basicAttack: {fileID: 11400000, guid: 648c62a3236971a489a3e524851fc5f4, type: 2}
     twoHandedAttack: {fileID: 0}
   - weaponClass: 5
-    basicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
-    twoHandedAttack: {fileID: 11400000, guid: 382d674395482914ea201ed61181169e, type: 2}
+    basicAttack: {fileID: 11400000, guid: 5b7db0f50e41ccf4b9bd4ccb061a76d5, type: 2}
+    twoHandedAttack: {fileID: 0}

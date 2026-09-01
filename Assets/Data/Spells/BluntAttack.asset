@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12d1f6e97c8bd14ca915878b53c229b, type: 3}
-  m_Name: DefaultMeleeAttack
+  m_Name: BluntAttack
   m_EditorClassIdentifier: 
   spellName: 
-  cooldown: 1
+  cooldown: 1.1
   range: 1.5
   alwaysOn: 0
   manaCost: 0
   weaponRequirement: 0
   swing: 0
-  swingSpeedScale: 1
-  damage: 10
-  critChance: 0.2
-  critKnockbackForce: 3.5
-  normalKnockbackForce: 0
+  swingSpeedScale: 0.95
+  damage: 9
+  critChance: 0.1
+  critKnockbackForce: 4.5
+  normalKnockbackForce: 2.5
   hitDelayFallback: 0.2
   maxHitWait: 1
