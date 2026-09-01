@@ -337,15 +337,15 @@ public class CharacterInventory : ItemWorkspace
             AutoRemove(equipped, Equipment.Slots.Count(i => i.Supports(SelectedItem)));
         }
 
-        // A pair of blades takes both hands just as a greatsword does, so both refuse a shield.
-        if (DualWield.OccupiesBothHands(SelectedItem))
-            AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
-        if (SelectedItem.IsShield)
-            AutoRemove(Equipment.Items.Where(i => DualWield.OccupiesBothHands(i)).ToList());
-
-        if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsShield).ToList());
-        if (SelectedItem.IsFirearm) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsTwoHanded).ToList());
-        if (SelectedItem.IsTwoHanded || SelectedItem.IsShield) AutoRemove(Equipment.Items.Where(i => i.IsWeapon && i.IsFirearm).ToList());
+        // Which pieces cannot share a body with the one being put on — the same rules the random
+        // roll and signature items answer to, rather than a third opinion. AutoRemove rather than a
+        // plain removal because the displaced gear goes back to the bag, which is a window concern.
+        var conflicts = new List<Item>();
+        foreach (var worn in Equipment.Items)
+        {
+            if (Loadout.Conflicts(SelectedItem, worn)) conflicts.Add(worn);
+        }
+        if (conflicts.Count > 0) AutoRemove(conflicts, conflicts.Count);
 
         MoveItem(SelectedItem, PlayerInventory, Equipment);
         AudioSource.PlayOneShot(EquipSound, SfxVolume);
@@ -414,17 +414,7 @@ public class CharacterInventory : ItemWorkspace
     {
         if (CharacterEntity == null || Equipment == null) return;
 
-        // The rig cannot tell a wand from a sword — both are Melee1H — so the item's own class is
-        // the only place that distinction exists.
-        var held = Equipment.Items.Find(i => i != null && i.Params.Type == ItemType.Weapon);
-        CharacterEntity.SetWeaponClass(held != null ? held.Params.Class : ItemClass.Unknown);
-
-        // Picking up a wand is what turns a hero into a caster, rather than a flag elsewhere
-        // agreeing that it should.
-        if (held != null) WeaponAttacks.Apply(CharacterEntity, held);
-
-        // Last, after the normal equip pass has already put a blade in the main hand.
-        DualWield.Apply(CharacterEntity, held);
+        Loadout.ApplyTo(CharacterEntity, Loadout.WeaponIn(Equipment.Items));
     }
 
     /// <summary>

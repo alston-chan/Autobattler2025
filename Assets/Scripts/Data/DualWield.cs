@@ -24,16 +24,6 @@ public static class DualWield
         weapon != null && weapon.Params != null && weapon.Params.Class == ItemClass.Dagger;
 
     /// <summary>
-    /// Whether this weapon leaves no hand free for a shield — a two-hander, or a pair.
-    ///
-    /// The rig hides a shield in paired mode anyway, which is worse than refusing it: the shield
-    /// would go on being worn, and go on granting its Blocking, while showing nothing on screen to
-    /// say why the hero was harder to hurt.
-    /// </summary>
-    public static bool OccupiesBothHands(Item weapon) =>
-        weapon != null && weapon.IsWeapon && (weapon.IsTwoHanded || IsPaired(weapon));
-
-    /// <summary>
     /// Bring the rig in line with what is equipped. Runs AFTER the normal equip pass, which has
     /// already chosen Melee1H and put the blade in the main hand — this promotes that to a pair, or
     /// clears the off hand again when something else is picked up.

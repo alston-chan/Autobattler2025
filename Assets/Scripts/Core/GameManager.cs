@@ -418,22 +418,17 @@ public class GameManager : Singleton<GameManager>
         equippedItems.Add(signature);
 
         // Same-type replacement is not enough on its own: a shield and a two-handed weapon occupy
-        // different slots but the same pair of hands. The random roll already refuses to hand out
-        // both, and the equipment window refuses too — without this, a signature could put them back
-        // together, and the shield would sit hidden behind the weapon until the weapon came off.
-        if (DualWield.OccupiesBothHands(signature))
-        {
-            equippedItems.RemoveAll(i => i != signature && i.IsShield);
-            return;
-        }
+        // different slots but the same pair of hands. Loadout owns that rule, so a signature answers
+        // to exactly what the random roll and the equipment window answer to.
+        var displaced = Loadout.Normalise(equippedItems, signature);
 
+        // Nothing was displaced, or the signature IS the weapon — either way the hero is still armed.
         if (!signature.IsShield) return;
+        if (displaced.Find(i => i.IsWeapon) == null) return;
 
-        // A shield signature displaces a two-handed weapon — but taking it away would leave the hero
-        // holding nothing, so it is swapped for a one-hander rather than simply removed. The roll
-        // that produced it could not know a shield was coming.
-        if (equippedItems.RemoveAll(i => i != signature && DualWield.OccupiesBothHands(i)) == 0) return;
-
+        // A shield signature can only have displaced the weapon, and leaving the hero empty-handed
+        // is worse than the conflict was: swap in a one-hander instead. The roll that produced the
+        // two-hander could not have known a shield was coming.
         var oneHanded = ItemCollection.Active.Items
             .Where(i => i.Type == ItemType.Weapon && i.Class != ItemClass.Bow &&
                         i.Class != ItemClass.Firearm && i.Class != ItemClass.Wand &&
