@@ -59,9 +59,13 @@ public class CombatAI : MonoBehaviour
         if (_spells.Count > 0 && _spells[0] != null)
             _attackRange = _spells[0].range;
 
+        // Ready to go. Starting each spell on a full cooldown meant nothing could open a fight:
+        // an ability with a nine second cooldown was unusable for the first nine seconds however
+        // full the mana bar was, so a player who saw a charged bar and no ability was watching a
+        // timer they were never shown. For a cost ability the bar IS the gate — it starts empty
+        // every fight and has to be earned — and for a basic attack, swinging on the first frame in
+        // range is what anyone would expect.
         _spellCooldowns = new float[_spells.Count];
-        for (int i = 0; i < _spellCooldowns.Length; i++)
-            _spellCooldowns[i] = EffectiveCooldown(i);
     }
 
     /// <summary>
@@ -136,27 +140,24 @@ public class CombatAI : MonoBehaviour
             CurrentTarget = closestEnemy;
             float distToTarget = Vector3.Distance(transform.position, CurrentTarget.transform.position);
 
-            if (distToTarget > _attackRange)
+            // Ask first, walk second. Something with the reach to be used from here should be used
+            // from here, whatever the weapon's reach is.
+            bool acted = Attack(CurrentTarget, distToTarget);
+
+
+            if (!acted && !_isAttacking && distToTarget > _attackRange)
             {
-                if (!_isAttacking)
-                {
-                    Vector3 dir = (CurrentTarget.transform.position - transform.position).normalized;
-                    float fade = Mathf.Clamp01((distToTarget - _attackRange) / _attackRange);
-                    Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
-                    float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
-                    Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
-                    move = (dir + lateralOffset).normalized * moveSpeed;
-                    SetAnimState(true);
-                }
-                else
-                {
-                    SetAnimState(false);
-                }
+                Vector3 dir = (CurrentTarget.transform.position - transform.position).normalized;
+                float fade = Mathf.Clamp01((distToTarget - _attackRange) / _attackRange);
+                Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
+                float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
+                Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
+                move = (dir + lateralOffset).normalized * moveSpeed;
+                SetAnimState(true);
             }
             else
             {
                 SetAnimState(false);
-                Attack(CurrentTarget);
             }
         }
         else
@@ -242,9 +243,19 @@ public class CombatAI : MonoBehaviour
             _entity.monster.SetState(running ? MonsterState.Run : MonsterState.Idle);
     }
 
-    private void Attack(Entity target)
+    /// <summary>
+    /// Cast whatever is ready, and say whether anything was.
+    ///
+    /// Each spell is gated by ITS OWN range rather than by the weapon's reach. That distinction is
+    /// the whole difference between an ability and a heavier swing: a unit used to have to walk
+    /// into knife range before any ability was even considered, so an assassin with a dive that
+    /// crosses the battlefield stood there charging its mana, closed the distance on foot, and only
+    /// then teleported the last stride. Anything that reaches further than the weapon — a lobbed
+    /// bomb, a thrown blade, a dive — was unreachable by construction.
+    /// </summary>
+    private bool Attack(Entity target, float distance)
     {
-        if (_isAttacking || target == null || _spells == null || _spells.Count == 0) return;
+        if (_isAttacking || target == null || _spells == null || _spells.Count == 0) return false;
 
         // Pass 1: an affordable cost ability (ult) preempts the basic attack — cast-on-full.
         for (int i = 0; i < _spells.Count; i++)
@@ -254,9 +265,10 @@ public class CombatAI : MonoBehaviour
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
             if (!spell.MeetsWeaponRequirement(_entity)) continue;   // wrong weapon → ability inert
             if (_entity.Mana == null || _entity.Mana.currentMana < spell.manaCost) continue;
+            if (distance > spell.range) continue;                   // its own reach, not the weapon's
 
             StartCoroutine(CastSpellWithCooldown(i, target));
-            return;
+            return true;
         }
 
         // Pass 2: otherwise the first ready basic attack (the mana charger).
@@ -266,10 +278,13 @@ public class CombatAI : MonoBehaviour
             if (spell == null || spell.alwaysOn || spell.IsUltimate) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
             if (!spell.MeetsWeaponRequirement(_entity)) continue;
+            if (distance > spell.range) continue;
 
             StartCoroutine(CastSpellWithCooldown(i, target));
-            return;
+            return true;
         }
+
+        return false;
     }
 
     private void TryAlwaysOnSpells()
