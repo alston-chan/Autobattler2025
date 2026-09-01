@@ -33190,6 +33190,66 @@ MonoBehaviour:
     Localization:
     - Language: English
       Value: Shockwave
+  - Id: Spellbook.Backstab
+    Level: 1
+    Rarity: 0
+    Type: 16
+    Class: 8
+    Tags: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: FantasyHeroes.Basic.Shield.CardinalBook
+    SpriteId: 
+    Meta: 
+    Localization:
+    - Language: English
+      Value: Backstab
+  - Id: Spellbook.Bomb
+    Level: 1
+    Rarity: 0
+    Type: 16
+    Class: 8
+    Tags: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: FantasyHeroes.Basic.Shield.CardinalBook
+    SpriteId: 
+    Meta: 
+    Localization:
+    - Language: English
+      Value: Bomb
+  - Id: Spellbook.Star
+    Level: 1
+    Rarity: 0
+    Type: 16
+    Class: 8
+    Tags: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: FantasyHeroes.Basic.Shield.CardinalBook
+    SpriteId: 
+    Meta: 
+    Localization:
+    - Language: English
+      Value: Throwing Star
+  - Id: Spellbook.Boomerang
+    Level: 1
+    Rarity: 0
+    Type: 16
+    Class: 8
+    Tags: 
+    Properties: []
+    Price: 0
+    Weight: 0
+    IconId: FantasyHeroes.Basic.Shield.CardinalBook
+    SpriteId: 
+    Meta: 
+    Localization:
+    - Language: English
+      Value: Boomerang
   BackgroundBlue: {fileID: 21300000, guid: 6a7965a697c24a689633cfa2a821ca7e, type: 3}
   BackgroundBrown: {fileID: 21300000, guid: 533abca1f345417e984b150a43d1ef78, type: 3}
   BackgroundGreen: {fileID: 21300000, guid: b7b50a648b914b71a63c6ede8a31ea9b, type: 3}

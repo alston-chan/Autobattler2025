@@ -19,3 +19,11 @@ MonoBehaviour:
     spell: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
   - itemId: Spellbook.Shockwave
     spell: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
+  - itemId: Spellbook.Backstab
+    spell: {fileID: 11400000, guid: aecfb1f60f0354a47bec4a2163bee139, type: 2}
+  - itemId: Spellbook.Bomb
+    spell: {fileID: 11400000, guid: 5b0f18f7b7ca4b84b9b90259b30996c6, type: 2}
+  - itemId: Spellbook.Star
+    spell: {fileID: 11400000, guid: b0f8eb5a203abb74c988898e441936e0, type: 2}
+  - itemId: Spellbook.Boomerang
+    spell: {fileID: 11400000, guid: b74402f7ed1483944b8b546ac5730fd0, type: 2}
