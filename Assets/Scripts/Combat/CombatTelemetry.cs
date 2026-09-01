@@ -150,4 +150,94 @@ public class CombatTelemetry : MonoBehaviour
     }
 
     private static string Trim(string s, int max) => s.Length <= max ? s : s.Substring(0, max);
+
+    /// <summary>
+    /// Write the standings beside the project, next to the Assets folder rather than inside it, so
+    /// Unity does not import a text file every time a fight ends.
+    ///
+    /// A file rather than only the console because the table is wider and longer than a log line
+    /// wants to be, and because the point of measuring across a run is to still have the numbers
+    /// afterwards.
+    /// </summary>
+    public string WriteReport()
+    {
+        string path = System.IO.Path.GetFullPath(
+            System.IO.Path.Combine(Application.dataPath, "..", "Telemetry.txt"));
+        try
+        {
+            System.IO.File.WriteAllText(path, BuildReport());
+            return path;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[Telemetry] could not write {path}: {e.Message}");
+            return null;
+        }
+    }
+
+    // ── Harness ──────────────────────────────────────────────────────────────────────────────
+    //
+    // Measuring balance needs many fights, and many fights need neither a person pressing Space
+    // nor real time. These three keys turn a session into a batch run: one to read the table, one
+    // to stop waiting between fights, one to stop waiting during them.
+
+    [Tooltip("Start each next fight automatically instead of waiting for Space. Toggled with F2.")]
+    public bool autoAdvance;
+
+    [Tooltip("Playback rate while running. Cycled with F3. Physics is not used for combat, so " +
+             "speeding time up changes how long a fight takes and nothing about how it resolves.")]
+    public float speed = 1f;
+
+    private static readonly float[] Speeds = { 1f, 4f, 8f };
+    private int _speedIndex;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            Debug.Log(BuildReport());
+            string written = WriteReport();
+            if (written != null) Debug.Log($"[Telemetry] written to {written}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            autoAdvance = !autoAdvance;
+            Debug.Log($"[Telemetry] auto-advance {(autoAdvance ? "on" : "off")}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            _speedIndex = (_speedIndex + 1) % Speeds.Length;
+            speed = Speeds[_speedIndex];
+            Time.timeScale = speed;
+            Debug.Log($"[Telemetry] speed {speed}x");
+        }
+
+        if (autoAdvance) AdvanceIfWaiting();
+    }
+
+    /// <summary>
+    /// Start the next fight without being asked.
+    ///
+    /// An unclaimed reward blocks the next fight, which is right for a player — the choice is the
+    /// point — but stops a batch run dead after its first victory. So the harness takes the first
+    /// thing offered and carries on. That is a real choice being made arbitrarily, which is worth
+    /// remembering when reading the numbers: a run measured this way is a run where nobody drafted
+    /// well, and the units are being compared on their own merits rather than on their gear.
+    /// </summary>
+    private void AdvanceIfWaiting()
+    {
+        var game = GameManager.Instance;
+        if (game == null || game.isGameStarted) return;
+
+        var run = game.runManager;
+        if (run != null && run.PendingRewards.Count > 0)
+        {
+            run.TakeReward(run.PendingRewards[0]);
+            return;                            // let the claim settle before starting the fight
+        }
+
+        game.StateMachine.TransitionTo(GameState.Combat);
+    }
 }

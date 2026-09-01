@@ -170,6 +170,9 @@ public class Health : MonoBehaviour
         if (killer != null && killer.Resonance != null)
             killer.Resonance.Accrue(ResonanceRequirement.EnemiesKilled, 1f);
 
+        // Die is the one place that knows who struck last, so it is where a kill can be credited.
+        CombatTelemetry.RecordKill(killer);
+
         IsDead = true;
         currentHealth = 0f;
         RefreshBar();

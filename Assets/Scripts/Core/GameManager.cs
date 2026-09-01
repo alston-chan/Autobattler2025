@@ -126,6 +126,10 @@ public class GameManager : Singleton<GameManager>
     {
         SetupUnitBars();
         SetupDamageNumbers();
+
+        // Watches entity registration to record who does what. Here rather than later because it
+        // has to be listening before the first unit is dressed, let alone the first blow.
+        if (GetComponent<CombatTelemetry>() == null) gameObject.AddComponent<CombatTelemetry>();
     }
 
     private void BuildCompany()
@@ -169,6 +173,14 @@ public class GameManager : Singleton<GameManager>
 
         NotifyResonance(false);
         AccrueResonance();
+
+        var telemetry = GetComponent<CombatTelemetry>();
+        if (telemetry != null)
+        {
+            telemetry.NoteFightEnded();
+            Debug.Log(telemetry.BuildReport());
+            telemetry.WriteReport();
+        }
 
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
