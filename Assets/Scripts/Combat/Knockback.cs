@@ -24,6 +24,12 @@ public class Knockback : MonoBehaviour
     {
         if (_immunityTimer > 0f) return;
 
+        // No force, no effect — including no stun. The stun is a consequence of being knocked, so a
+        // weapon that does not knock must not freeze its target either. Without this, giving an
+        // attack zero knockback still stunned on every hit, which for a fast weapon reads as a
+        // target that has stopped working with nothing on screen to explain it.
+        if (force <= 0f) return;
+
         _velocity += direction.normalized * force;
         _stunTimer = stunTime;
         // _immunityTimer = immunityTime;  // Uncomment to enable immunity window
