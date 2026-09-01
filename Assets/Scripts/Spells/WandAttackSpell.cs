@@ -43,6 +43,9 @@ public class WandAttackSpell : Spell
              "Small — this is a flick of the wrist, not a draw.")]
     public float releaseDelay = 0.12f;
 
+    /// <summary>Animator trigger for the rig's one-handed cast (state <c>Cast1H</c>).</summary>
+    private const string CastTrigger = "Cast";
+
     // Basic weapon attack — its rate scales with the caster's AttackSpeed, like the bow and melee.
     public override bool ScalesWithAttackSpeed => true;
     public override float BaseDamage => damage;
@@ -64,11 +67,15 @@ public class WandAttackSpell : Spell
         float attackSpeed = GetAttackSpeed(caster);
         Animator animator = caster.character.Animator;
 
-        // Reuses the melee swing as the cast gesture. HeroEditor has no dedicated cast animation and
-        // holds a wand exactly as it holds a sword, so this reads as a flourish rather than a swing
-        // only because nothing connects at the end of it.
-        caster.character.Slash();
-        if (animator != null) animator.speed = attackSpeed;
+        // The rig has a real cast: Human.controller carries a Cast trigger wired to a Cast1H state.
+        // HeroEditor's CharacterAnimation helper never exposes it — it offers only Slash, Jab and the
+        // bow's Charge sequence — so the trigger is set directly, the same way the bow spells drive
+        // "Charge". A wand is Melee1H, which is precisely what Cast1H animates.
+        if (animator != null)
+        {
+            animator.SetTrigger(CastTrigger);
+            animator.speed = attackSpeed;
+        }
 
         yield return new WaitForSeconds(releaseDelay / Mathf.Max(0.01f, attackSpeed));
 
