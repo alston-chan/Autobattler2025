@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Linq;
+using Assets.HeroEditor.Common.Scripts.CharacterScripts.Firearms.Enums;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts.Firearms;
 using UnityEngine;
@@ -93,7 +95,16 @@ public class FirearmAttackSpell : Spell
     {
         if (character.Animator != null) character.Animator.SetBool("Reloading", true);
 
-        yield return new WaitForSeconds(reloadSeconds);
+        // A crossbow shows that it is spent: firing swaps its sprite to the undrawn "RifleEmpty",
+        // and it is the reload that draws it again. Taking the reload over means taking that too —
+        // without it the bow stays slack for the rest of the fight while still shooting.
+        bool crossbow = firearm.Params.Type == FirearmType.Crossbow;
+
+        yield return new WaitForSeconds(crossbow ? reloadSeconds * 0.5f : reloadSeconds);
+
+        if (crossbow) SetCrossbowDrawn(character);
+
+        if (crossbow) yield return new WaitForSeconds(reloadSeconds * 0.5f);
 
         firearm.AmmoShooted = 0;
         if (character.Animator != null)
@@ -126,5 +137,15 @@ public class FirearmAttackSpell : Spell
             body.velocity = projectileSpeed * heading.normalized;
             shot.transform.right = heading.normalized;
         }
+    }
+
+    /// <summary>Put the crossbow's drawn sprite back, undoing the empty look firing left behind.</summary>
+    private static void SetCrossbowDrawn(Character character)
+    {
+        if (character.FirearmsRenderers == null || character.Firearms == null) return;
+
+        var rifle = character.FirearmsRenderers.FirstOrDefault(i => i != null && i.name == "Rifle");
+        var drawn = character.Firearms.FirstOrDefault(i => i != null && i.name == "Rifle");
+        if (rifle != null && drawn != null) rifle.sprite = drawn;
     }
 }

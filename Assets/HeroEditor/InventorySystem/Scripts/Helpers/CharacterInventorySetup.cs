@@ -53,7 +53,16 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Helpers
                                 default:
                                     if (item.IsFirearm)
                                     {
-                                        throw new NotImplementedException("Firearm equipping is not implemented. Implement if needed.");
+                                        // Was: throw new NotImplementedException(...). Implemented as
+                                        // invited, mirroring the Bow case above — without it a hero
+                                        // whose starting gear includes a firearm has the equip
+                                        // swallowed by the catch below and carries an invisible gun.
+                                        var twoHanded = item.Params.Tags.Contains(ItemTag.TwoHanded);
+
+                                        character.WeaponType = twoHanded ? WeaponType.Firearm2H : WeaponType.Firearm1H;
+                                        character.Firearms = (twoHanded
+                                            ? character.SpriteCollection.Firearm2H
+                                            : character.SpriteCollection.Firearm1H).FindSpritesById(item.Params.SpriteId);
                                     }
                                     else
                                     {

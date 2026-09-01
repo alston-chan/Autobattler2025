@@ -105,6 +105,11 @@ public static class FirearmRig
                 return;
             }
 
+            // Put the actual gun in their hands. Setting WeaponType alone leaves the firearm
+            // renderers with no sprite — the hero aims and shoots holding nothing — because the
+            // sprites live on the item and only the equip path copies them across.
+            character.Equip(weapon);
+
             // Initialize reads Params to build the gun, so it has to be set first.
             character.Firearm.Params = firearmParams;
             character.SecondaryMeleeWeapon = null;          // no off-hand blade behind a gun
