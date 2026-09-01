@@ -3166,12 +3166,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spells.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: spells.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5b0f18f7b7ca4b84b9b90259b30996c6, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
       value: 2
