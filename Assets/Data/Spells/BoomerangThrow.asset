@@ -9,23 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8827f002ae90af34881439643be7f804, type: 3}
-  m_Name: BombThrow
+  m_Script: {fileID: 11500000, guid: 0c6aa5f93d7807d4882383f83e8c4cbc, type: 3}
+  m_Name: BoomerangThrow
   m_EditorClassIdentifier: 
-  spellName: Bomb
-  cooldown: 6
+  spellName: Boomerang
+  cooldown: 5
   range: 7
   alwaysOn: 0
-  manaCost: 100
+  manaCost: 75
   weaponRequirement: 0
-  supplySpriteName: HandBomb
+  supplySpriteName: Boomerang
   supplyScale: 1
   spinDegreesPerSecond: 540
   releaseFallback: 0.33
   maxReleaseWait: 1
-  damage: 30
-  radius: 2.5
-  knockbackForce: 4
-  hitstopDuration: 0.12
-  flightTime: 0.55
-  arcHeight: 2.2
+  damage: 12
+  speed: 11
+  hitRadius: 0.7
+  overshoot: 3.5
