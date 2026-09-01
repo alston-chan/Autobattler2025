@@ -375,6 +375,10 @@ public class GameManager : Singleton<GameManager>
             }
             characterInventory.RefreshStatsUI();
 
+            // Unconditionally, unlike SyncSpellSlots below: what a hero is holding decides how they
+            // fight whether or not they also carry a spellbook.
+            characterInventory.ApplyWeaponLoadout();
+
             // Only rebuild spell slots from equipment when we actually materialized authored spells as
             // books. SyncSpellSlots drives spellSlots purely from equipped books, so calling it when a
             // character has none would WIPE ults still sitting in innate 'spells' — leave those alone

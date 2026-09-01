@@ -402,6 +402,32 @@ public class CharacterInventory : ItemWorkspace
     }
 
     /// <summary>
+    /// Make the equipped weapon decide how this character fights: what class they are holding, which
+    /// basic attack that brings, and whether it fills both hands.
+    ///
+    /// Separate from <see cref="SyncSpellSlots"/> because that only runs at startup for characters
+    /// who materialised authored spellbooks. A hero with no books never had this applied, so their
+    /// weapon was ignored — a duelist stood there swinging one dagger with the ordinary melee attack
+    /// while every hero who happened to carry a spellbook worked correctly.
+    /// </summary>
+    public void ApplyWeaponLoadout()
+    {
+        if (CharacterEntity == null || Equipment == null) return;
+
+        // The rig cannot tell a wand from a sword — both are Melee1H — so the item's own class is
+        // the only place that distinction exists.
+        var held = Equipment.Items.Find(i => i != null && i.Params.Type == ItemType.Weapon);
+        CharacterEntity.SetWeaponClass(held != null ? held.Params.Class : ItemClass.Unknown);
+
+        // Picking up a wand is what turns a hero into a caster, rather than a flag elsewhere
+        // agreeing that it should.
+        if (held != null) WeaponAttacks.Apply(CharacterEntity, held);
+
+        // Last, after the normal equip pass has already put a blade in the main hand.
+        DualWield.Apply(CharacterEntity, held);
+    }
+
+    /// <summary>
     /// Mirror the equipped spellbook items onto the character's spell slots. Spellbooks fill the
     /// slots in order; each resolves to its Spell via <see cref="SpellbookDatabase"/>. The active
     /// slot is clamped, and CombatAI is refreshed so the change takes effect. Called after any
@@ -416,17 +442,7 @@ public class CharacterInventory : ItemWorkspace
         // hero is no longer holding. Drop it rather than let it finish.
         if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.InterruptCast();
 
-        // Record what kind of weapon is in hand, for spells that require one — the rig cannot tell a
-        // wand from a sword, so the item's own class is the only place this exists.
-        var held = Equipment.Items.Find(i => i != null && i.Params.Type == ItemType.Weapon);
-        CharacterEntity.SetWeaponClass(held != null ? held.Params.Class : ItemClass.Unknown);
-
-        // And let the weapon choose how its bearer swings — picking up a wand is what turns a hero
-        // into a caster, rather than a separate flag somewhere agreeing that it should.
-        if (held != null) WeaponAttacks.Apply(CharacterEntity, held);
-
-        // After the normal equip pass, which has already put the blade in the main hand.
-        DualWield.Apply(CharacterEntity, held);
+        ApplyWeaponLoadout();
 
         var spells = new List<Spell>();
         foreach (var item in Equipment.Items)
