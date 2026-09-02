@@ -6,8 +6,8 @@ using UnityEngine;
 ///
 /// The loop (Docs/RunLoop.md, Slice 1 — a straight sequence of fights):
 /// <code>
-///   spawn encounter → fight → victory → revive + heal the company → next encounter
-///                          ↘ defeat  → run over
+///   spawn encounter → fight → victory → spoils → revive + heal → next encounter
+///                          ↘ defeat  → run over        ↘ on a map: choose a path first
 /// </code>
 /// Two of the design's decisions are load-bearing here: the company is <b>fully restored between
 /// fights</b> (the run's resources are gear and progress, not HP), and <b>only a wipe ends the run</b>
@@ -35,7 +35,7 @@ public class RunManager : MonoBehaviour
     /// </summary>
     public void BeginRun(IEnumerable<Entity> company)
     {
-        if (runData == null || runData.encounters == null || runData.encounters.Count == 0)
+        if (runData == null || !runData.HasContent)
         {
             Debug.Log("[RunManager] No RunData assigned — leaving the scene's own units in place.");
             return;
@@ -62,6 +62,20 @@ public class RunManager : MonoBehaviour
         Formation.AutoPlace(_company);
 
         State = new RunState(runData);
+
+        // A run begins from a known board. The flat run got this for free, because staging its first
+        // fight clears the field; a map run stages nothing until a path is chosen, and the scene's
+        // hand-placed test enemies stood on the field beside the map until then.
+        _spawner.ClearEnemies();
+
+        if (State.AwaitingPath)
+        {
+            // A map run opens on the map. Nothing is staged until the player picks where to start.
+            Debug.Log($"[RunManager] Map rolled with seed {State.Map.Seed} — choose a path.");
+            OnPathChanged?.Invoke();
+            return;
+        }
+
         StartCurrentEncounter();
     }
 
@@ -72,7 +86,7 @@ public class RunManager : MonoBehaviour
         if (encounter == null) return;
 
         _spawner.ClearEnemies();
-        int spawned = _spawner.Spawn(encounter);
+        int spawned = _spawner.Spawn(encounter, State.CurrentLoadout);
 
         Debug.Log($"[RunManager] {State.Progress} — {encounter.encounterName} ({spawned} enemies).");
     }
@@ -103,6 +117,36 @@ public class RunManager : MonoBehaviour
         }
 
         RestoreCompany();
+
+        if (State.AwaitingPath)
+        {
+            // The next fight is the player's to pick. The map shows itself once the spoils are taken.
+            OnPathChanged?.Invoke();
+            return true;
+        }
+
+        StartCurrentEncounter();
+        return true;
+    }
+
+    /// <summary>True while a map run is waiting for the player to pick the next node.</summary>
+    public bool AwaitingPath => State != null && State.AwaitingPath;
+
+    /// <summary>Raised when the run starts or stops waiting on a path choice.</summary>
+    public event System.Action OnPathChanged;
+
+    /// <summary>
+    /// Take the path to <paramref name="node"/> and stage the fight there. Refused while spoils are
+    /// still on offer — the reward is for the fight just won and is settled before the next is
+    /// chosen — and for any node the current one does not lead to.
+    /// </summary>
+    public bool ChoosePath(MapNode node)
+    {
+        if (!IsRunning || !AwaitingPath) return false;
+        if (PendingRewards.Count > 0) return false;
+        if (!State.Choose(node)) return false;
+
+        OnPathChanged?.Invoke();
         StartCurrentEncounter();
         return true;
     }
@@ -118,14 +162,36 @@ public class RunManager : MonoBehaviour
     {
         PendingRewards.Clear();
 
-        var pool = cleared != null && cleared.rewardPool != null
-            ? cleared.rewardPool
-            : runData.defaultRewardPool;
+        var pool = RewardPoolFor(cleared);
 
         if (pool != null)
             PendingRewards.AddRange(pool.Draw(Mathf.Max(1, runData.rewardChoices)));
 
         OnRewardsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Elites and the boss drop from their own pools when the act names them, so routing through a
+    /// harder fight is paid for in kind. Otherwise the encounter's own pool, then the run's.
+    /// </summary>
+    private RewardPool RewardPoolFor(EncounterData cleared)
+    {
+        var act = runData.act;
+        if (act != null)
+        {
+            switch (State.CurrentNodeType)
+            {
+                case NodeType.Boss:
+                    if (act.bossRewardPool != null) return act.bossRewardPool;
+                    if (act.eliteRewardPool != null) return act.eliteRewardPool;
+                    break;
+                case NodeType.Elite:
+                    if (act.eliteRewardPool != null) return act.eliteRewardPool;
+                    break;
+            }
+        }
+
+        return cleared != null && cleared.rewardPool != null ? cleared.rewardPool : runData.defaultRewardPool;
     }
 
     /// <summary>

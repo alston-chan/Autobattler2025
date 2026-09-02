@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b9f1e2ac4d54a7e8f60b1c2d3e4a501, type: 3}
+  m_Name: Act1_Early
+  m_EditorClassIdentifier: 
+  entries:
+  - encounter: {fileID: 11400000, guid: 4516ba7bb59cd2643b4427f24c5c6151, type: 2}
+    weight: 2
+  - encounter: {fileID: 11400000, guid: 2292c935f6be2df499675b22965a9fea, type: 2}
+    weight: 1
+  - encounter: {fileID: 11400000, guid: 172dc1135e21040488a20d1e38ac051a, type: 2}
+    weight: 1
+  loadout: {fileID: 0}

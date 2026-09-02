@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f625a8b0317eb94f8994d1c59570292, type: 3}
+  m_Name: Act1Run
+  m_EditorClassIdentifier: 
+  encounters: []
+  act: {fileID: 11400000, guid: 5d1b3a4ce6f76c9a0b82d3e4f5a6c723, type: 2}
+  mapSeed: 0
+  defaultRewardPool: {fileID: 11400000, guid: e416c813a24646e47a64a20f352ce5b8, type: 2}
+  rewardChoices: 3
+  startingGear: 1
+  fallbackKitItemIds:
+  - FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest

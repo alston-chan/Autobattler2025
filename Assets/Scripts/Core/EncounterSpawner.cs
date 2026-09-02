@@ -30,8 +30,12 @@ public class EncounterSpawner : MonoBehaviour
         }
     }
 
-    /// <summary>Spawn the encounter's enemies. Returns how many were placed.</summary>
-    public int Spawn(EncounterData encounter)
+    /// <summary>
+    /// Spawn the encounter's enemies. Returns how many were placed. <paramref name="loadoutOverride"/>
+    /// is the toughness the map wants this fight at; a spawn that names its own loadout keeps it,
+    /// since that is a designed unit rather than a tier.
+    /// </summary>
+    public int Spawn(EncounterData encounter, EnemyLoadout loadoutOverride = null)
     {
         if (encounter == null) return 0;
 
@@ -58,7 +62,9 @@ public class EncounterSpawner : MonoBehaviour
             entity.isTeam = false;
             if (spawn.unitData != null) entity.unitData = spawn.unitData;
 
-            var loadout = spawn.loadout != null ? spawn.loadout : encounter.defaultLoadout;
+            var loadout = spawn.loadout != null ? spawn.loadout
+                        : loadoutOverride != null ? loadoutOverride
+                        : encounter.defaultLoadout;
             if (loadout != null) ArmBeforeWake(entity, loadout);
 
             pending.Add(entity);

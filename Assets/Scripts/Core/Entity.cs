@@ -182,6 +182,12 @@ public class Entity : MonoBehaviour
              "(Docs/Resonance.md). Leave empty for no signature.")]
     public string signatureItemId;
 
+    [Tooltip("Worn from the first fight of a run that starts heroes in a kit rather than a random " +
+             "roll (RunData.startingGear). Kept small on purpose — a weapon if the signature isn't " +
+             "one, and a piece of armour — because the run is where the rest is found. Empty means " +
+             "the run's fallback kit.")]
+    public List<string> startingItemIds = new List<string>();
+
     [Header("Innate spells")]
     [Tooltip("Always-available spells: the weapon basic attack and any always-on spells. NOT the " +
              "learnable ability loadout — those live in spellSlots.")]

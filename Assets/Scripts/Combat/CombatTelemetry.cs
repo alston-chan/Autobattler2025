@@ -238,6 +238,16 @@ public class CombatTelemetry : MonoBehaviour
             return;                            // let the claim settle before starting the fight
         }
 
+        // On a map the harness always takes the first path offered. Like the reward above, that is a
+        // real choice made arbitrarily: numbers from such a run describe a company that never routed
+        // for anything, around anything.
+        if (run != null && run.AwaitingPath)
+        {
+            var next = run.State.AvailableNext;
+            if (next.Count > 0) run.ChoosePath(next[0]);
+            return;
+        }
+
         game.StateMachine.TransitionTo(GameState.Combat);
     }
 }

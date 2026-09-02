@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b9f1e2ac4d54a7e8f60b1c2d3e4a501, type: 3}
+  m_Name: Act1_Boss
+  m_EditorClassIdentifier: 
+  entries:
+  - encounter: {fileID: 11400000, guid: c4faf6f53523bd845a95b055c2202881, type: 2}
+    weight: 1
+  loadout: {fileID: 11400000, guid: ce8cab1dfd0eddf17cf9eafb0c1de39a, type: 2}

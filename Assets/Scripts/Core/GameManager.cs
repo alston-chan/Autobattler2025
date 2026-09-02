@@ -155,6 +155,10 @@ public class GameManager : Singleton<GameManager>
 
         var rewards = gameObject.AddComponent<RewardPanel>();
         rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
+
+        // The map, for runs that have one. It shows itself only while a path is waiting to be chosen.
+        var map = gameObject.AddComponent<MapPanel>();
+        map.Initialize(runManager, canvas != null ? canvas.transform : null);
     }
 
     /// <summary>
@@ -339,6 +343,10 @@ public class GameManager : Singleton<GameManager>
             // spoils of the fight just won, and the choice is the reason they were offered.
             if (runManager != null && runManager.PendingRewards.Count > 0)
                 Debug.Log("[GameManager] Choose your spoils before the next fight.");
+            else if (runManager != null && runManager.AwaitingPath)
+                // With no destination there are no enemies staged, and a fight with nobody in it
+                // would resolve as an instant victory.
+                Debug.Log("[GameManager] Choose a path on the map before the next fight.");
             else
                 StateMachine.TransitionTo(GameState.Combat);
         }
@@ -530,8 +538,8 @@ public class GameManager : Singleton<GameManager>
                 initializedPlayerInventory = true;
             }
 
-            // Equip ally with random items from ItemCollection and add to Equipment UI
-            var equippedItems = characterEntity.EquipmentManagement.EquipRandomFromCollection(characterEntity.IsRanged);
+            // What the hero walks in wearing: a random roll for the sandbox, an authored kit for a run.
+            var equippedItems = StartingGearFor(characterEntity);
 
             // Materialize the character's editor-authored spell loadout (Entity.spellSlots) as equipped
             // spellbooks, so the starting spells show in the spell row and drive combat through the
@@ -542,6 +550,12 @@ public class GameManager : Singleton<GameManager>
             // The hero's signature item — where their identity comes from. Added before the random
             // roll is committed so it can't be crowded out of its slot.
             EquipSignatureItem(characterEntity, equippedItems);
+
+            // A hero with nothing to swing has no basic attack and no damage stat, and stands in the
+            // fight doing nothing — quietly, because every stage after this still runs.
+            if (equippedItems.Find(i => i.IsWeapon) == null)
+                Debug.LogWarning($"[GameManager] {characterEntity.name} starts with no weapon — give " +
+                                 "it one in its starting kit or as its signature item.");
 
             characterInventory.Equipment.Initialize(ref equippedItems);
 
@@ -577,6 +591,39 @@ public class GameManager : Singleton<GameManager>
     /// signature is the hero's identity — the piece they are meant to wear and eventually resonate —
     /// so it wins the slot rather than competing with a random drop for it.
     /// </summary>
+    /// <summary>
+    /// The items a hero starts in. The sandbox rolls them at random so every feature is exercised
+    /// against gear nobody chose; a run hands out an authored kit, small on purpose, because the run
+    /// is where the rest is meant to be found (Docs/RunSimulation.md: a weapon and one Common piece).
+    /// The signature item is added afterwards either way.
+    /// </summary>
+    private List<Item> StartingGearFor(Entity hero)
+    {
+        var run = runManager != null ? runManager.runData : null;
+        if (run == null || run.startingGear == StartingGear.Randomized)
+            return hero.EquipmentManagement.EquipRandomFromCollection(hero.IsRanged);
+
+        var ids = hero.startingItemIds != null && hero.startingItemIds.Count > 0
+            ? hero.startingItemIds
+            : run.fallbackKitItemIds;
+
+        var items = new List<Item>();
+        if (ids == null) return items;
+
+        foreach (var id in ids)
+        {
+            if (string.IsNullOrEmpty(id)) continue;
+            if (!ItemCollection.Active.Items.Any(i => i.Id == id))
+            {
+                Debug.LogWarning($"[GameManager] Starting kit item '{id}' on {hero.name} isn't a known " +
+                                 "item — skipped.");
+                continue;
+            }
+            items.Add(new Item(id));
+        }
+        return items;
+    }
+
     private void EquipSignatureItem(Entity characterEntity, List<Item> equippedItems)
     {
         if (characterEntity == null || string.IsNullOrEmpty(characterEntity.signatureItemId)) return;

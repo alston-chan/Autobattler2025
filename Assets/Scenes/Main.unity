@@ -1004,6 +1004,14 @@ PrefabInstance:
       propertyPath: spellSlots.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[0]
+      value: FantasyHeroes.Basic.Armor.BerserkArmor.vest
+      objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Hero_Greatsword_2H
@@ -1400,6 +1408,18 @@ PrefabInstance:
       propertyPath: spellSlots.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: b0f8eb5a203abb74c988898e441936e0, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[0]
+      value: FantasyHeroes.Basic.Bow.HunterBow
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[1]
+      value: FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].vest
+      objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Hero_Bow
@@ -1513,6 +1533,18 @@ PrefabInstance:
       propertyPath: spellSlots.Array.data[1]
       value: 
       objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[0]
+      value: FantasyHeroes.Basic.MeleeWeapon1H.Bilbo
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[1]
+      value: FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest
+      objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Hero_Melee_KnightShield
@@ -2816,6 +2848,14 @@ PrefabInstance:
       propertyPath: spellSlots.Array.data[1]
       value: 
       objectReference: {fileID: 11400000, guid: b74402f7ed1483944b8b546ac5730fd0, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[0]
+      value: FantasyHeroes.Basic.Armor.AssassinArmor [Paint].vest
+      objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Hero_Daggers
@@ -3309,6 +3349,14 @@ PrefabInstance:
       propertyPath: spellSlots.Array.data[1]
       value: 
       objectReference: {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+      propertyPath: startingItemIds.Array.data[0]
+      value: FantasyHeroes.Basic.Armor.Cleric [Paint].vest
+      objectReference: {fileID: 0}
     - target: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: m_Name
       value: Hero_Wand
