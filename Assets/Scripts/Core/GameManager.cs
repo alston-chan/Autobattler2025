@@ -151,6 +151,19 @@ public class GameManager : Singleton<GameManager>
         preview.Initialize(runManager);
     }
 
+    /// <summary>
+    /// Start over: a fresh scene, a fresh map, a fresh company. The one exit from a finished run,
+    /// and the developer's reload key, so both leave the game in the same state.
+    /// </summary>
+    public void RestartRun()
+    {
+        // Statics survive a scene reload. The registry would otherwise hold stale entries, and the
+        // telemetry would go on counting the last run's fights into the next one's table.
+        EntityRegistry.Clear();
+        CombatTelemetry.Reset();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     private void StartRun()
     {
         if (runManager == null) return;
@@ -159,6 +172,10 @@ public class GameManager : Singleton<GameManager>
 
         var rewards = gameObject.AddComponent<RewardPanel>();
         rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
+
+        // The verdict when the run is over, won or lost, with the way back to a new one.
+        var ending = gameObject.AddComponent<RunEndPanel>();
+        ending.Initialize(runManager, canvas != null ? canvas.transform : null);
 
         // The map, for runs that have one. It shows itself only while a path is waiting to be chosen.
         var map = gameObject.AddComponent<MapPanel>();
@@ -342,12 +359,10 @@ public class GameManager : Singleton<GameManager>
             EvaluateRoundOutcome();
         }
 
-        // Reload the whole scene for a fresh fight.
+        // Reload the whole scene for a fresh run.
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // EntityRegistry is static and survives the reload — drop stale entries first.
-            EntityRegistry.Clear();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            RestartRun();
             return;
         }
 
