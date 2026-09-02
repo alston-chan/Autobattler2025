@@ -43,3 +43,9 @@ MonoBehaviour:
     tierIICost: 15
     tierIIICost: 40
     engraveCost: 8
+  - itemId: FantasyHeroes.Basic.Armor.BanditArmor.gloves
+    engraving: {fileID: 11400000, guid: 2b3c4d5e6f7a4b8c9d0e1f2a3b4c5d6e, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3

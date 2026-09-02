@@ -1,0 +1,74 @@
+using UnityEngine;
+
+/// <summary>
+/// "The enemy deployed directly across from the bearer starts the fight already wounded."
+///
+/// The third positional engraving, and the first to read the <i>enemy's</i> half of the grid.
+/// Bulwark and Vanguard make where a hero stands matter relative to the company; this makes it
+/// matter relative to the opposition — the scouting step turned into a formation decision. The map
+/// says a sniper waits in the back rank; a player who wants it softened has to put this bearer in
+/// the back rank too, and give up whatever else that cell was for.
+///
+/// Applied as a starting condition, not a hit. The target simply begins below full health — no
+/// flash, no hit-stop, no kill credit, and no mana for the victim. A "hit" landed before the fight
+/// begins would charge the enemy's ultimate for free.
+///
+/// Read at the start of the fight, when enemies still stand on their spawn cells; a second later
+/// everyone has moved and "across" means nothing. Two grants on the same target (worn and banked)
+/// set the same floor rather than cutting twice, so the deeper cut wins and nothing stacks.
+/// </summary>
+[CreateAssetMenu(menuName = "Data/Engraving/Marked", fileName = "Engraving_Marked")]
+public class MarkedEngraving : Engraving
+{
+    [Tooltip("Fraction of max health the target is missing at Tier I. 0.2 means it starts at 80%.")]
+    [Range(0f, 0.9f)] public float startingCut = 0.2f;
+    [Tooltip("Extra fraction per tier above I. 0.1 makes Tier II start at 70% and Tier III at 60%.")]
+    [Range(0f, 0.5f)] public float extraCutPerTier = 0.1f;
+
+    private void Reset()
+    {
+        engravingName = "Marked";
+        description = "The enemy deployed directly across from the bearer starts the fight wounded.";
+    }
+
+    /// <summary>How much of its health the target is missing at <paramref name="tier"/>, 0..1.</summary>
+    public float CutFor(int tier) =>
+        Mathf.Clamp01(startingCut + extraCutPerTier * (Mathf.Max(1, tier) - 1));
+
+    public override string DescribeTier(int tier) =>
+        $"The enemy across from the bearer starts the fight at {(1f - CutFor(tier)) * 100f:0}% health.";
+
+    public override void OnCombatStart(Entity owner, int tier)
+    {
+        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
+        if (runManager == null || owner == null || !owner.isTeam) return;
+        if (!runManager.Formation.TryGetCell(owner, out var cell)) return;
+
+        var target = EnemyStandingAt(cell);
+        if (target == null || target.Health == null) return;
+
+        float floor = target.Health.maxHealth * (1f - CutFor(tier));
+        if (target.Health.currentHealth <= floor) return;
+
+        target.Health.currentHealth = floor;
+        target.Health.RefreshBar();
+    }
+
+    /// <summary>The enemy standing on the enemy-side cell with the same column and row, or null.</summary>
+    private static Entity EnemyStandingAt(Vector2Int cell)
+    {
+        var grid = BattleGrid.Instance;
+        if (grid == null) return null;
+
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            var enemy = all[i];
+            if (enemy == null || enemy.isTeam || enemy.isDead) continue;
+
+            grid.ClosestCell(false, enemy.transform.position, out int column, out int row);
+            if (column == cell.x && row == cell.y) return enemy;
+        }
+        return null;
+    }
+}
