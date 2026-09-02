@@ -740,6 +740,7 @@ MonoBehaviour:
   fireTransform: {fileID: 4059777504579930}
   weaponClass: 0
   signatureItemId: 
+  startingItemIds: []
   spells: []
   spellSlots: []
   activeSpellSlot: 0
