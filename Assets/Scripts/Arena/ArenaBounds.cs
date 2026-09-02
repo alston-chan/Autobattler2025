@@ -29,14 +29,14 @@ public class ArenaBounds : MonoBehaviour
 
     [Header("Play area (world space)")]
     [Tooltip("Rectangle clamps to the box; Ellipse clamps to the oval inscribed in the box (round arenas).")]
-    public ArenaShape shape = ArenaShape.Rectangle;
+    public ArenaShape shape = ArenaShape.Ellipse;
 
     [Tooltip("Middle of the play area. Move the arena by moving this; the edges follow.")]
-    public Vector2 center = new Vector2(0f, -1.5f);
+    public Vector2 center = new Vector2(0f, -1.67f);
 
     [Tooltip("Width and height. The height runs from the ground line up to the ceiling a " +
              "knockback can throw someone.")]
-    public Vector2 size = new Vector2(17f, 5f);
+    public Vector2 size = new Vector2(17.6f, 6.2f);
 
     // Edges, derived. The arena is authored as a middle and a span because those are the two things
     // anyone actually wants to change — nudge it across, make it bigger. Four independent edges made
