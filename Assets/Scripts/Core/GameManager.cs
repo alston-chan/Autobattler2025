@@ -55,6 +55,9 @@ public class GameManager : Singleton<GameManager>
     public List<Entity> allyCharacters = new List<Entity>();
     public List<CharacterInventory> characterInventories = new List<CharacterInventory>();
 
+    /// <summary>The saved run being resumed this session, or null for a fresh one. Read once, before the company is dressed.</summary>
+    private RunSnapshot _resume;
+
     // ── Game State ──
     public GameStateMachine StateMachine { get; private set; } = new GameStateMachine();
 
@@ -136,6 +139,9 @@ public class GameManager : Singleton<GameManager>
     {
         CreateAvatarUI();
         BuildRoster();
+
+        // Before the company is dressed: a resumed run dresses it from the save instead of the kit.
+        _resume = LoadResumableRun();
         SetupCharacterInventories();
         CreateHeroNoticeBadges();
     }
@@ -161,6 +167,7 @@ public class GameManager : Singleton<GameManager>
         // telemetry would go on counting the last run's fights into the next one's table.
         EntityRegistry.Clear();
         CombatTelemetry.Reset();
+        RunSave.Delete();                             // a new run, not the old one again
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -168,7 +175,8 @@ public class GameManager : Singleton<GameManager>
     {
         if (runManager == null) return;
 
-        runManager.BeginRun(allyCharacters);
+        runManager.BeginRun(allyCharacters, _resume);
+        runManager.SaveIfSafe();                     // the first safe point: a run exists
 
         var rewards = gameObject.AddComponent<RewardPanel>();
         rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
@@ -199,6 +207,10 @@ public class GameManager : Singleton<GameManager>
             if (runManager != null && runManager.IsRunning) runManager.RestoreCompany();
             NotifyResonance(true);
         }
+
+        // Between fights is the safe point. Nothing on offer and nothing in the air; the run as it
+        // stands is the run worth keeping.
+        if (next == GameState.Setup && runManager != null) runManager.SaveIfSafe();
 
         if (previous != GameState.Combat) return;
 
@@ -565,22 +577,28 @@ public class GameManager : Singleton<GameManager>
             if (!initializedPlayerInventory)
             {
                 var run = runManager != null ? runManager.runData : null;
-                characterInventory.InitializePlayerInventory(BagStock.For(run != null ? run.bag : StartingBag.Workshop));
+                characterInventory.InitializePlayerInventory(_resume != null
+                    ? RunSave.ToItems(_resume.bag)
+                    : BagStock.For(run != null ? run.bag : StartingBag.Workshop));
                 initializedPlayerInventory = true;
             }
 
-            // What the hero walks in wearing: a random roll for the sandbox, an authored kit for a run.
-            var equippedItems = StartingGearFor(characterEntity);
+            // What the hero walks in wearing: what it was saved wearing, else a random roll for the
+            // sandbox or an authored kit for a run. A saved list already holds the signature item
+            // and the spellbooks, so neither is added again.
+            var saved = SavedHeroFor(characterEntity);
+            var equippedItems = saved != null ? RunSave.ToItems(saved.equipped) : StartingGearFor(characterEntity);
 
             // Materialize the character's editor-authored spell loadout (Entity.spellSlots) as equipped
             // spellbooks, so the starting spells show in the spell row and drive combat through the
             // SAME equipped-books path as runtime equipping. Equipment.Initialize slots them; the
             // SyncSpellSlots below rebuilds spellSlots from those books (matching what was authored).
-            int addedBooks = EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
+            int addedBooks = saved != null ? CountSpellbooks(equippedItems)
+                                           : EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
 
             // The hero's signature item — where their identity comes from. Added before the random
             // roll is committed so it can't be crowded out of its slot.
-            EquipSignatureItem(characterEntity, equippedItems);
+            if (saved == null) EquipSignatureItem(characterEntity, equippedItems);
 
             // A hero with nothing to swing has no basic attack and no damage stat, and stands in the
             // fight doing nothing — quietly, because every stage after this still runs.
@@ -608,7 +626,51 @@ public class GameManager : Singleton<GameManager>
             // (CombatAI already picked them up in Awake).
             if (addedBooks > 0)
                 characterInventory.SyncSpellSlots();
+
+            // Last, once the hero is wearing what it wore: resonance keys by item, and its refresh
+            // reads what is equipped, so restoring it earlier would grant against an empty rig.
+            if (saved != null && characterEntity.Resonance != null)
+                characterEntity.Resonance.RestoreState(saved.resonance);
         }
+    }
+
+    /// <summary>
+    /// The run save to pick up, if there is one for the run this scene plays. A save for a
+    /// different run asset is discarded rather than half-applied: its heroes and path belong to
+    /// content this scene does not have.
+    /// </summary>
+    private RunSnapshot LoadResumableRun()
+    {
+        if (runManager == null || runManager.runData == null) return null;
+
+        var snapshot = RunSave.Read();
+        if (snapshot == null) return null;
+
+        if (snapshot.runAsset != runManager.runData.name)
+        {
+            Debug.Log($"[RunSave] Found a save for '{snapshot.runAsset}' but this scene plays " +
+                      $"'{runManager.runData.name}' — discarded.");
+            RunSave.Delete();
+            return null;
+        }
+
+        Debug.Log($"[RunSave] Resuming {snapshot.progress} (saved {snapshot.savedAt}).");
+        return snapshot;
+    }
+
+    private SavedHero SavedHeroFor(Entity hero)
+    {
+        if (_resume == null || hero == null) return null;
+        return _resume.heroes.Find(h => h != null && h.name == hero.name);
+    }
+
+    private static int CountSpellbooks(List<Item> items)
+    {
+        var database = SpellbookDatabase.Active;
+        if (database == null) return 0;
+        int count = 0;
+        foreach (var item in items) if (item != null && database.IsSpellbook(item.Id)) count++;
+        return count;
     }
 
     /// <summary>

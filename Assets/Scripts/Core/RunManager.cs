@@ -33,7 +33,7 @@ public class RunManager : MonoBehaviour
     /// Begin a run: remember the company, then put the first encounter on the board.
     /// <paramref name="company"/> is the player's roster, which persists for the whole run.
     /// </summary>
-    public void BeginRun(IEnumerable<Entity> company)
+    public void BeginRun(IEnumerable<Entity> company, RunSnapshot resume = null)
     {
         if (runData == null || !runData.HasContent)
         {
@@ -61,7 +61,8 @@ public class RunManager : MonoBehaviour
         // cell automatically, so a run always starts from a real formation.
         Formation.AutoPlace(_company);
 
-        State = new RunState(runData);
+        State = new RunState(runData, resume != null ? resume.mapSeed : 0);
+        if (resume != null) Resume(resume);
 
         // A run begins from a known board. The flat run got this for free, because staging its first
         // fight clears the field; a map run stages nothing until a path is chosen, and the scene's
@@ -77,6 +78,103 @@ public class RunManager : MonoBehaviour
         }
 
         StartCurrentEncounter();
+    }
+
+    /// <summary>
+    /// Put a saved run back: every hero on the cell it was saved on, and the run at the fight or
+    /// the choice it was saved at. Gear, bag and resonance were restored while the company was
+    /// dressed (GameManager reads the same snapshot); this is the part only the run can do.
+    /// </summary>
+    private void Resume(RunSnapshot resume)
+    {
+        foreach (var saved in resume.heroes)
+        {
+            if (saved == null) continue;
+            var hero = _company.Find(h => h != null && h.name == saved.name);
+            if (hero == null)
+            {
+                Debug.LogWarning($"[RunSave] Saved hero '{saved.name}' is not in the company — skipped.");
+                continue;
+            }
+            Formation.Place(hero, saved.column, saved.row);
+        }
+
+        if (State.IsMapRun)
+        {
+            var path = new List<Vector2Int>();
+            int count = Mathf.Min(resume.pathRows.Count, resume.pathLanes.Count);
+            for (int i = 0; i < count; i++) path.Add(new Vector2Int(resume.pathRows[i], resume.pathLanes[i]));
+
+            if (!State.Replay(path, resume.awaitingPath))
+                Debug.LogWarning("[RunSave] The saved path no longer fits the act's map — the act's " +
+                                 "recipe changed since the save. Starting the act over.");
+        }
+        else
+        {
+            State.ResumeAt(resume.encounterIndex);
+        }
+
+        Debug.Log($"[RunSave] Resumed {State.Progress} (saved {resume.savedAt}).");
+    }
+
+    /// <summary>Everything a save needs, as the run stands right now.</summary>
+    public RunSnapshot CaptureSnapshot()
+    {
+        var snapshot = new RunSnapshot
+        {
+            runAsset = runData != null ? runData.name : "",
+            progress = State != null ? State.Progress : "",
+            mapSeed = State != null && State.IsMapRun ? State.Map.Seed : 0,
+            awaitingPath = State != null && State.AwaitingPath,
+            encounterIndex = State != null ? State.EncounterIndex : 0
+        };
+
+        if (State != null && State.IsMapRun)
+        {
+            foreach (var step in State.Path)
+            {
+                snapshot.pathRows.Add(step.x);
+                snapshot.pathLanes.Add(step.y);
+            }
+        }
+
+        foreach (var hero in _company)
+        {
+            if (hero == null) continue;
+            var saved = new SavedHero { name = hero.name };
+            if (Formation.TryGetCell(hero, out var cell))
+            {
+                saved.column = cell.x;
+                saved.row = cell.y;
+            }
+
+            var inventory = hero.characterInventory;
+            if (inventory != null && inventory.Equipment != null)
+                saved.equipped = RunSave.FromItems(inventory.Equipment.Items);
+            if (hero.Resonance != null) saved.resonance = hero.Resonance.CaptureState();
+
+            snapshot.heroes.Add(saved);
+        }
+
+        var bag = _company.Count > 0 && _company[0] != null && _company[0].characterInventory != null
+            ? _company[0].characterInventory.PlayerInventory : null;
+        if (bag != null) snapshot.bag = RunSave.FromItems(bag.Items);
+
+        return snapshot;
+    }
+
+    /// <summary>
+    /// Write the save if this is a safe point: a run in progress, between fights, with nothing on
+    /// offer. Not during a fight — a fight interrupted is fought again — and not while spoils wait,
+    /// since the choice is the point and a save made before it would replay the offer.
+    /// </summary>
+    public void SaveIfSafe()
+    {
+        if (!IsRunning || PendingRewards.Count > 0) return;
+        var game = GameManager.Instance;
+        if (game != null && game.StateMachine.Current != GameState.Setup) return;
+
+        RunSave.Write(CaptureSnapshot());
     }
 
     /// <summary>Clear the field and spawn whatever fight the run is on.</summary>
@@ -102,6 +200,7 @@ public class RunManager : MonoBehaviour
         if (!won)
         {
             State.MarkDefeat();
+            RunSave.Delete();                          // a finished run is not a run to come back to
             Debug.Log($"[RunManager] Run over — the company fell on {State.Progress}.");
             return false;
         }
@@ -112,6 +211,7 @@ public class RunManager : MonoBehaviour
 
         if (!State.AdvanceAfterVictory())
         {
+            RunSave.Delete();
             Debug.Log("[RunManager] Run won — every encounter cleared.");
             return false;
         }
@@ -148,6 +248,7 @@ public class RunManager : MonoBehaviour
 
         OnPathChanged?.Invoke();
         StartCurrentEncounter();
+        SaveIfSafe();
         return true;
     }
 
@@ -211,6 +312,7 @@ public class RunManager : MonoBehaviour
 
         PendingRewards.Clear();
         OnRewardsChanged?.Invoke();
+        SaveIfSafe();
 
         Debug.Log($"[RunManager] Took {itemId}.");
         return true;

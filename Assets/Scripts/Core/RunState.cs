@@ -10,6 +10,10 @@ using UnityEngine;
 /// questions (<see cref="Current"/>, <see cref="AdvanceAfterVictory"/>), which is what let the map
 /// arrive without touching any of it (Docs/RunLoop.md).
 ///
+/// A run is also its own record: the seed the map was rolled from and the path taken across it are
+/// everything needed to rebuild the position later, so a save stores those two things and replays
+/// them (<see cref="Replay"/>) rather than storing the map.
+///
 /// Pure state with no Unity dependencies beyond the data assets, so it stays easy to reason about
 /// as gold, curses and roster changes get added to it later.
 /// </summary>
@@ -17,6 +21,7 @@ public class RunState
 {
     private readonly RunData _data;
     private bool _awaitingPath;
+    private readonly List<Vector2Int> _path = new List<Vector2Int>();
 
     /// <summary>Index of the encounter being fought (0-based). Flat runs only.</summary>
     public int EncounterIndex { get; private set; }
@@ -30,17 +35,26 @@ public class RunState
     /// <summary>The node being fought or just cleared. Null until the first path is chosen.</summary>
     public MapNode CurrentNode { get; private set; }
 
+    /// <summary>Every node chosen so far, in order, as (row, lane). What a save keeps instead of the map.</summary>
+    public IReadOnlyList<Vector2Int> Path => _path;
+
     public bool IsMapRun => Map != null;
 
-    public RunState(RunData data)
+    public RunState(RunData data) : this(data, 0) { }
+
+    /// <summary>
+    /// <paramref name="seed"/> forces the map's seed — how a saved run rebuilds the exact map it was
+    /// on. Zero defers to the run asset: its own seed if set, otherwise a fresh roll.
+    /// </summary>
+    public RunState(RunData data, int seed)
     {
         _data = data;
         if (data == null || data.act == null) return;
 
-        // A seed of 0 means a fresh map; anything else reproduces the run, which is the whole point
-        // of being able to set one.
-        int seed = data.mapSeed != 0 ? data.mapSeed : Random.Range(1, int.MaxValue);
-        Map = MapGenerator.Generate(data.act, seed);
+        int chosen = seed != 0 ? seed
+                   : data.mapSeed != 0 ? data.mapSeed
+                   : Random.Range(1, int.MaxValue);
+        Map = MapGenerator.Generate(data.act, chosen);
         _awaitingPath = true;
     }
 
@@ -94,6 +108,7 @@ public class RunState
 
         CurrentNode = node;
         _awaitingPath = false;
+        _path.Add(new Vector2Int(node.Row, node.Lane));
         return true;
     }
 
@@ -123,6 +138,35 @@ public class RunState
 
         Outcome = RunOutcome.Won;
         return false;
+    }
+
+    /// <summary>
+    /// Walk a saved <paramref name="path"/> across a map rolled from the same seed, clearing every
+    /// node along it. With <paramref name="awaitingPath"/> the last node is cleared too and the
+    /// choice is open again; without it the last node is the fight being staged. Returns false if
+    /// the path does not fit the map, which means the act's recipe changed since the save.
+    /// </summary>
+    public bool Replay(IList<Vector2Int> path, bool awaitingPath)
+    {
+        if (!IsMapRun || path == null) return true;
+
+        for (int i = 0; i < path.Count; i++)
+        {
+            var row = Map.Row(path[i].x);
+            if (path[i].y < 0 || path[i].y >= row.Count) return false;
+            if (!Choose(row[path[i].y])) return false;
+
+            bool last = i == path.Count - 1;
+            if (!last || awaitingPath) AdvanceAfterVictory();
+        }
+        return true;
+    }
+
+    /// <summary>Pick up a flat run at <paramref name="encounterIndex"/>.</summary>
+    public void ResumeAt(int encounterIndex)
+    {
+        if (IsMapRun) return;
+        EncounterIndex = Mathf.Clamp(encounterIndex, 0, Mathf.Max(0, TotalEncounters - 1));
     }
 
     /// <summary>The company fell — the run is over (Docs/RunLoop.md: a wipe is the fail state).</summary>
