@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1474bb256568824dbd7a6626631a608, type: 3}
+  m_Name: Bulwark_Warden
+  m_EditorClassIdentifier: 
+  problems:
+  - 1
+  defaultLoadout: {fileID: 11400000, guid: 8b7c9daebfca4b3c4d5e6f7a8b9cadb6, type: 2}
+  rewardPool: {fileID: 0}
+  encounterName: The Warden
+  spawns:
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 1
+    unitData: {fileID: 11400000, guid: 5e4f6a7b8c9d4e0f1a2b3c4d5e6f7a83, type: 2}
+    loadout: {fileID: 11400000, guid: 8b7c9daebfca4b3c4d5e6f7a8b9cadb6, type: 2}

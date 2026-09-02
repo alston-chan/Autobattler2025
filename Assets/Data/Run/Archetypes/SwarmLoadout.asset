@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b615282ac0206754490e0d2f8e67c6ec, type: 3}
+  m_Name: SwarmLoadout
+  m_EditorClassIdentifier: 
+  meleeBasicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
+  bowBasicAttack: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
+  healthMultiplier: 1
+  rangedChance: 0
+  abilityChance: 0
+  abilities: []
+  randomizeAppearance: 1
+  randomizeEquipment: 1

@@ -9,9 +9,41 @@ using UnityEngine;
 /// archer behind two brawlers reads differently from three brawlers), which is what makes scouting
 /// and countering meaningful later.
 /// </summary>
+/// <summary>
+/// The question a fight asks of a build (Docs/Enemies.md): what it punishes, and what it demands.
+/// Named on the map so a route can be chosen for what it asks — that is the whole reason the map
+/// branches. Only the problems the game can currently pose exist here; the rest of the doc's
+/// roster (Mender, Warden, Stalker...) arrives with the mechanics each one needs.
+/// </summary>
+public enum EnemyProblem
+{
+    /// <summary>Many weak bodies. Punishes single-target; demands AoE.</summary>
+    Swarm,
+    /// <summary>One huge wall. Punishes AoE-only and slow damage; demands single-target and sustain.</summary>
+    Bulwark,
+    /// <summary>Backline glass cannons. Punishes slow starts and pure melee; demands reach or a dive.</summary>
+    Sniper
+}
+
 [CreateAssetMenu(menuName = "Data/Encounter", fileName = "Encounter")]
 public class EncounterData : ScriptableObject
 {
+    [Tooltip("The problems this fight poses (Docs/Enemies.md). Shown on the map so a route can be " +
+             "chosen for what it asks. Empty means an ordinary fight.")]
+    public List<EnemyProblem> problems = new List<EnemyProblem>();
+
+    /// <summary>"SWARM", "BULWARK + SNIPER", or empty for an ordinary fight.</summary>
+    public string ProblemLabel
+    {
+        get
+        {
+            if (problems == null || problems.Count == 0) return "";
+            var names = new List<string>(problems.Count);
+            foreach (var problem in problems) names.Add(problem.ToString().ToUpperInvariant());
+            return string.Join(" + ", names);
+        }
+    }
+
     [System.Serializable]
     public class Spawn
     {

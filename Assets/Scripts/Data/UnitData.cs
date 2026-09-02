@@ -18,6 +18,10 @@ public class UnitData : ScriptableObject
     public float moveSpeed = 3f;
     [Tooltip("Attacks-per-second multiplier for weapon spells (melee/bow). 1 = normal speed.")]
     public float attackSpeed = 1f;
+    [Tooltip("Multiplies every hit. 1 = as the weapon says. The archetype dial: a glass sniper is " +
+             "2.5 at 150 health, a bulwark 1.5 at 3000. Applied as a modifier rather than a base so " +
+             "it survives the weapon swap that rewrites base damage at spawn.")]
+    public float damageMultiplier = 1f;
 
     [Header("Combat")]
     public float separationDistance = 1.0f;

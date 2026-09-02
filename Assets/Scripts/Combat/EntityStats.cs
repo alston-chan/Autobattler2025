@@ -42,6 +42,14 @@ public class EntityStats : MonoBehaviour
             baseDamage = _entity.spells[0].BaseDamage;
 
         Damage = new CharacterStat(baseDamage);
+
+        // An archetype's damage is a modifier, never a base. The base is rewritten every time a
+        // weapon is equipped (Entity.SetBasicAttack), and a glass sniper handed a bow at spawn would
+        // have gone back to a bow's ten damage the moment it was dressed.
+        if (_entity.unitData != null && !Mathf.Approximately(_entity.unitData.damageMultiplier, 1f))
+            Damage.AddModifier(new StatModifier(_entity.unitData.damageMultiplier - 1f,
+                                                StatModType.PercentMult, _entity.unitData));
+
         MaxHealth = new CharacterStat(_entity.maxHealth);
         Speed = new CharacterStat(_entity.unitData != null ? _entity.unitData.moveSpeed : 3f);
         Blocking = new CharacterStat(0f);

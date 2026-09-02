@@ -124,9 +124,20 @@ public class MapPanel : MonoBehaviour
         var label = NewText("Label", go.transform, 15f, Color.white);
         Place(label.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(NodeWidth - 10f, NodeHeight - 6f), Vector2.zero);
         label.color = new Color(1f, 1f, 1f, alpha);
-        label.text = node.Type == NodeType.Combat
+        // The problem is the headline and the name is the footnote: "SWARM" is what a route is chosen
+        // for, "Rat Pack" is only what it is called. An ordinary fight leads with its name.
+        string kind = node.Type == NodeType.Combat ? "" : node.Type.ToString().ToUpperInvariant();
+        string problem = node.Encounter != null ? node.Encounter.ProblemLabel : "";
+        string tag = string.IsNullOrEmpty(kind) ? problem
+                   : string.IsNullOrEmpty(problem) ? kind
+                   : kind + " · " + problem;
+
+        // A stacked elite's tag ("ELITE · BULWARK + SNIPER") is three times the width of a plain one
+        // and wrapped onto three lines inside a two-line node. It shrinks instead.
+        int tagSize = tag.Length > 14 ? 12 : 15;
+        label.text = string.IsNullOrEmpty(tag)
             ? $"{node.Label}\n<size=12>{node.EnemyCount} enemies</size>"
-            : $"<b>{node.Type.ToString().ToUpperInvariant()}</b> {node.Label}\n<size=12>{node.EnemyCount} enemies</size>";
+            : $"<size={tagSize}><b>{tag}</b></size>\n<size=11>{node.Label} · {node.EnemyCount} enemies</size>";
     }
 
     private static Color FaceFor(NodeType type)
