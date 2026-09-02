@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
-using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using UnityEngine;
 
 /// <summary>What the shared bag holds when a run begins.</summary>
@@ -11,8 +10,9 @@ public enum StartingBag
     /// <summary>Nothing. A run's bag fills from what the run drops.</summary>
     Empty,
 
-    /// <summary>One random item of every slot, plus a copy of every designed item — everything that
-    /// carries an engraving or teaches a spell — so any of it can be tested at any time.</summary>
+    /// <summary>A copy of every designed item — everything that carries an engraving or teaches a
+    /// spell — so any of it can be tested at any time. Nothing else: plain gear is what a run finds,
+    /// and in a workshop it is only clutter between the pieces worth testing.</summary>
     Workshop
 }
 
@@ -29,12 +29,6 @@ public enum StartingBag
 /// </summary>
 public static class BagStock
 {
-    private static readonly ItemType[] Slots =
-    {
-        ItemType.VestBeltPauldron, ItemType.Gloves, ItemType.Boots,
-        ItemType.Helmet, ItemType.Shield, ItemType.Weapon
-    };
-
     /// <summary>
     /// Every designed item id, engraved gear first, then spellbooks, each once. An id the collection
     /// does not know is skipped with a warning — a database entry for an item that does not exist is
@@ -73,15 +67,6 @@ public static class BagStock
     {
         var items = new List<Item>();
         if (bag != StartingBag.Workshop || ItemCollection.Active == null) return items;
-
-        // Variety first: one unremarkable item per slot, so the equipment window has something
-        // ordinary to compare the designed pieces against.
-        foreach (var slot in Slots)
-        {
-            var candidates = ItemCollection.Active.Items.Where(i => i.Type == slot).ToList();
-            if (candidates.Count > 0)
-                items.Add(new Item(candidates[Random.Range(0, candidates.Count)].Id));
-        }
 
         foreach (var id in DesignedItemIds()) items.Add(new Item(id));
         return items;

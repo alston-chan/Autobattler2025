@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DoubleStrike
   m_EditorClassIdentifier: 
   spellName: Double Strike
+  description: Two rapid strikes on the current target, each for full weapon damage. Needs a melee weapon. Costs full mana.
   cooldown: 0
   range: 1.6
   alwaysOn: 0

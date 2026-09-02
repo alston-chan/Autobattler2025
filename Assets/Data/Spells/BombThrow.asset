@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BombThrow
   m_EditorClassIdentifier: 
   spellName: Bomb
+  description: Lob a bomb at where the target stands. Everything within 2.5 takes 30 and is knocked back. Costs full mana.
   cooldown: 6
   range: 7
   alwaysOn: 0

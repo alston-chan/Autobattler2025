@@ -67,6 +67,16 @@ public class BagStockTests
     }
 
     [Test]
+    public void TheWorkshopHoldsNothingUndesigned()
+    {
+        // Plain gear is what a run finds; in the workshop it was only clutter between the pieces
+        // worth testing.
+        var designed = BagStock.DesignedItemIds();
+        foreach (var item in BagStock.For(StartingBag.Workshop))
+            Assert.That(designed, Has.Member(item.Id), item.Id + " is in the workshop but designed nowhere");
+    }
+
+    [Test]
     public void ARunsBagOpensEmpty()
     {
         Assert.That(BagStock.For(StartingBag.Empty), Is.Empty);

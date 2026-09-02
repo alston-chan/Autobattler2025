@@ -10,7 +10,9 @@ using UnityEngine;
 /// worn Tier III item and a banked Tier III engraving are the same effect at the same strength — and
 /// tiering up pays off immediately instead of only at cash-out.
 ///
-/// Effects granted for a fight must be undone in <see cref="OnCombatEnd"/>, or they stack every
+/// Two lifetimes. Something true while the engraving is held goes in <see cref="OnGranted"/> and
+/// is undone in <see cref="OnRevoked"/>; something true for a fight goes in
+/// <see cref="OnCombatStart"/> and is undone in <see cref="OnCombatEnd"/>, or it stacks every
 /// encounter.
 /// </summary>
 public abstract class Engraving : ScriptableObject
@@ -21,8 +23,20 @@ public abstract class Engraving : ScriptableObject
     public string description;
 
     /// <summary>
+    /// Called when the hero comes to hold this engraving — the item goes on, or the mark is banked —
+    /// whether or not a fight is on. For effects that are simply true while held, like a stat
+    /// bonus, and that the equipment window should therefore show. <paramref name="tier"/> is 1..3.
+    /// </summary>
+    public virtual void OnGranted(Entity owner, int tier) { }
+
+    /// <summary>Called when the hero stops holding it. Undo <see cref="OnGranted"/>.</summary>
+    public virtual void OnRevoked(Entity owner, int tier) { }
+
+    /// <summary>
     /// Called as a fight begins, after the formation is set — so an engraving can read where everyone
-    /// stands. <paramref name="tier"/> is 1..3.
+    /// stands, on both sides. Never at equip time: what the board looks like when an item goes on
+    /// in the setup screen is not what it looks like when the fight starts, and an effect that read
+    /// it early could not follow the hero when they were moved.
     /// </summary>
     public virtual void OnCombatStart(Entity owner, int tier) { }
 

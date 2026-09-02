@@ -23,7 +23,7 @@ public class SwiftEngraving : Engraving
     public override string DescribeTier(int tier) =>
         $"+{attackSpeedPerTier * Mathf.Max(1, tier) * 100f:0.#}% attack speed.";
 
-    public override void OnCombatStart(Entity owner, int tier)
+    public override void OnGranted(Entity owner, int tier)
     {
         if (owner == null || owner.Stats == null || owner.Stats.AttackSpeed == null) return;
 
@@ -35,7 +35,7 @@ public class SwiftEngraving : Engraving
         if (owner.CombatAI != null) owner.CombatAI.RefreshSpells();
     }
 
-    public override void OnCombatEnd(Entity owner, int tier)
+    public override void OnRevoked(Entity owner, int tier)
     {
         if (owner == null || owner.Stats == null || owner.Stats.AttackSpeed == null) return;
         owner.Stats.AttackSpeed.RemoveAllModifiersFromSource(this);

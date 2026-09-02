@@ -145,6 +145,49 @@ public class CharacterInventory : ItemWorkspace
             CharacterEntity.Appearance.Refresh();
     }
 
+    private TextMeshProUGUI spellDescriptionLabel;
+
+    /// <summary>
+    /// What the selected spellbook's spell does, under the item panel — with its real numbers. A
+    /// spellbook's own info panel is blank, because HeroEditor items describe themselves through
+    /// stat properties and a book has none; a player choosing between three books was choosing
+    /// between three names. Hidden for anything that isn't a spellbook.
+    /// </summary>
+    private void UpdateSpellDescription()
+    {
+        var spell = SelectedItem != null && SpellbookDatabase.Active != null
+            ? SpellbookDatabase.Active.GetSpell(SelectedItem.Id) : null;
+        bool show = spell != null && !string.IsNullOrEmpty(spell.description);
+
+        if (spellDescriptionLabel == null)
+        {
+            if (!show || ItemInfo == null) return;
+
+            var go = new GameObject("SpellDescription", typeof(RectTransform));
+            go.transform.SetParent(ItemInfo.transform, false);
+
+            var tmp = go.AddComponent<TextMeshProUGUI>();
+            tmp.fontSize = 17;
+            tmp.alignment = TextAlignmentOptions.Top;
+            tmp.color = new Color(0.92f, 0.92f, 0.92f, 1f);
+            tmp.enableWordWrapping = true;
+            tmp.raycastTarget = false;
+
+            var rt = tmp.rectTransform;
+            rt.anchorMin = new Vector2(0.5f, 0f);   // hangs below the item panel
+            rt.anchorMax = new Vector2(0.5f, 0f);
+            rt.pivot = new Vector2(0.5f, 1f);
+            rt.sizeDelta = new Vector2(320f, 110f);
+            rt.anchoredPosition = new Vector2(0f, -6f);
+
+            spellDescriptionLabel = tmp;
+        }
+
+        spellDescriptionLabel.gameObject.SetActive(show);
+        if (show)
+            spellDescriptionLabel.text = $"<b>{spell.DisplayName}</b>\n{spell.description}";
+    }
+
     /// <summary>(B) Spawn the "Active Spell: …" label under the equipment grid.</summary>
     private void CreateActiveSpellLabel()
     {
@@ -560,6 +603,8 @@ public class CharacterInventory : ItemWorkspace
             RemoveButton.SetActive(equipped);
             UseButton.SetActive(CanUse());
         }
+
+        UpdateSpellDescription();
 
         var receipt = SelectedItem != null && SelectedItem.Params.Type == ItemType.Recipe;
 

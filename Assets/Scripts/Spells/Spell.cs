@@ -27,6 +27,9 @@ public enum WeaponClass
 public abstract class Spell : ScriptableObject
 {
     public string spellName;
+    [TextArea, Tooltip("What it does, with the real numbers. Shown when the spellbook is clicked. " +
+                       "Weapon attacks can leave this empty.")]
+    public string description;
     public float cooldown;
     [Tooltip("The effective range of this spell (used for AI and targeting)")]
     public float range = 1.5f;

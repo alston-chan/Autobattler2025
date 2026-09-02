@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ShockwaveSpell
   m_EditorClassIdentifier: 
   spellName: Shockwave
+  description: Slam the ground. Everything within 3 takes 10 and is hurled back. Costs full mana.
   cooldown: 0
   range: 4
   alwaysOn: 0

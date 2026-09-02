@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MultiShot
   m_EditorClassIdentifier: 
   spellName: Multi Shot
+  description: Loose an arrow at each of the 3 closest enemies, each for full weapon damage. Needs a bow. Costs full mana.
   cooldown: 0
   range: 15
   alwaysOn: 0

@@ -310,34 +310,26 @@ public class Resonance : MonoBehaviour
     /// some engravings read the world around them when they open — Bulwark buffs whoever is standing
     /// beside the bearer — and that reading goes stale when the formation is rearranged.
     /// </summary>
-    public void Refresh(bool force = false)
+    public void Refresh()
     {
         var desired = DesiredGrants();
 
-        if (force)
+        // A source that is gone, or now owed a different tier or a different engraving, is taken
+        // back before its replacement goes on — otherwise a change would leave both applied.
+        _stale.Clear();
+        foreach (var pair in _active)
         {
-            foreach (var pair in _active) Invoke(pair.Key, pair.Value, false);
-            _active.Clear();
+            if (!desired.TryGetValue(pair.Key, out var want) ||
+                want.tier != pair.Value.tier || want.asset != pair.Value.asset)
+            {
+                _stale.Add(pair.Key);
+            }
         }
-        else
-        {
-            // A source that is gone, or now owed a different tier or a different engraving, is taken
-            // back before its replacement goes on — otherwise a change would leave both applied.
-            _stale.Clear();
-            foreach (var pair in _active)
-            {
-                if (!desired.TryGetValue(pair.Key, out var want) ||
-                    want.tier != pair.Value.tier || want.asset != pair.Value.asset)
-                {
-                    _stale.Add(pair.Key);
-                }
-            }
 
-            for (int i = 0; i < _stale.Count; i++)
-            {
-                Invoke(_stale[i], _active[_stale[i]], false);
-                _active.Remove(_stale[i]);
-            }
+        for (int i = 0; i < _stale.Count; i++)
+        {
+            Invoke(_stale[i], _active[_stale[i]], false);
+            _active.Remove(_stale[i]);
         }
 
         foreach (var pair in desired)
@@ -393,9 +385,52 @@ public class Resonance : MonoBehaviour
     /// reconcile from scratch, which clears out per-fight state while leaving the grants a hero has
     /// earned by wearing something in place.
     /// </summary>
-    public void ApplyForCombat(bool starting) => Refresh(force: true);
+    /// <summary>
+    /// The fight boundary. Every held engraving gets its combat hook here, all at once, after the
+    /// formation is set — and its end hook when the fight ends.
+    ///
+    /// This used to be Refresh with a flag, and Refresh invoked OnCombatStart the moment a grant
+    /// appeared: when the item was equipped, in the setup screen, with the flag ignored. So a
+    /// positional engraving read the board as it stood at equip time and never again — dragging the
+    /// hero to another cell moved nothing, and Marked wounded an enemy before the fight had begun.
+    /// Holding an engraving and fighting with it are two different moments now.
+    /// </summary>
+    public void ApplyForCombat(bool starting)
+    {
+        if (starting)
+        {
+            Refresh();                       // settle what is worn and banked, without fighting yet
+            _inCombat = true;
+            foreach (var pair in _active) Fight(pair.Key, pair.Value, true);
+        }
+        else
+        {
+            foreach (var pair in _active) Fight(pair.Key, pair.Value, false);
+            _inCombat = false;
+        }
+    }
 
-    private void Invoke(string sourceKey, Grant grant, bool starting)
+    private bool _inCombat;
+
+    /// <summary>A grant coming or going. Mid-fight, that includes its combat hook.</summary>
+    private void Invoke(string sourceKey, Grant grant, bool granting)
+    {
+        var engraving = InstanceFor(sourceKey, grant.asset);
+        if (engraving == null) return;
+
+        if (granting)
+        {
+            engraving.OnGranted(_entity, grant.tier);
+            if (_inCombat) engraving.OnCombatStart(_entity, grant.tier);
+        }
+        else
+        {
+            if (_inCombat) engraving.OnCombatEnd(_entity, grant.tier);
+            engraving.OnRevoked(_entity, grant.tier);
+        }
+    }
+
+    private void Fight(string sourceKey, Grant grant, bool starting)
     {
         var engraving = InstanceFor(sourceKey, grant.asset);
         if (engraving == null) return;
@@ -511,7 +546,7 @@ public class Resonance : MonoBehaviour
             }
         }
 
-        Refresh(force: true);
+        Refresh();
         OnAttunementChanged?.Invoke();
     }
 
