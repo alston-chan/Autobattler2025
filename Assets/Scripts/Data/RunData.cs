@@ -46,6 +46,11 @@ public class RunData : ScriptableObject
     [Tooltip("Under Kit: worn by any hero whose own starting kit is empty.")]
     public List<string> fallbackKitItemIds = new List<string>();
 
+    [Tooltip("What the shared bag opens with. Workshop stocks one random item per slot plus a copy " +
+             "of every designed item, so any of it can be tested at any time. Empty is a run: the bag " +
+             "fills from what drops.")]
+    public StartingBag bag = StartingBag.Empty;
+
     /// <summary>Whether there is anything here to run at all.</summary>
     public bool HasContent => act != null || (encounters != null && encounters.Count > 0);
 }

@@ -531,10 +531,12 @@ public class GameManager : Singleton<GameManager>
             characterInventory.gameObject.SetActive(false);
             characterInventories.Add(characterInventory);
 
-            // TODO: Refactor this to static 
+            // The shared bag opens once, with whatever the run says. A scene with no run at all is
+            // the sandbox, and gets the workshop.
             if (!initializedPlayerInventory)
             {
-                characterInventory.InitializePlayerInventory();
+                var run = runManager != null ? runManager.runData : null;
+                characterInventory.InitializePlayerInventory(BagStock.For(run != null ? run.bag : StartingBag.Workshop));
                 initializedPlayerInventory = true;
             }
 

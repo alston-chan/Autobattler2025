@@ -20,3 +20,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c4faf6f53523bd845a95b055c2202881, type: 2}
   defaultRewardPool: {fileID: 11400000, guid: e416c813a24646e47a64a20f352ce5b8, type: 2}
   rewardChoices: 3
+  bag: 1

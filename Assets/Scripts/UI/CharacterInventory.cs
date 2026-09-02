@@ -170,47 +170,17 @@ public class CharacterInventory : ItemWorkspace
         activeSpellLabel = tmp;
     }
 
-    public void InitializePlayerInventory()
+    /// <summary>
+    /// Open the shared bag with <paramref name="contents"/>. What goes in is the run's decision
+    /// (RunData.bag, built by <see cref="BagStock"/>); this only owns the wiring. The contents used
+    /// to be composed here by hand — a random item per slot, one engraved bow, three spellbooks —
+    /// which meant every run opened with the same test stock and no item designed later ever made it in.
+    /// </summary>
+    public void InitializePlayerInventory(List<Item> contents)
     {
         ItemCollection.Active.Reset();
 
-        // For testing: add 1 random item of each equipment type
-        var equipmentTypes = new[]
-        {
-            ItemType.VestBeltPauldron, ItemType.Gloves, ItemType.Boots,
-            ItemType.Helmet, ItemType.Shield, ItemType.Weapon
-        };
-
-        var inventory = new List<Item>();
-        foreach (var type in equipmentTypes)
-        {
-            var candidates = ItemCollection.Active.Items.Where(i => i.Type == type).ToList();
-            if (candidates.Count > 0)
-            {
-                var picked = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-                inventory.Add(new Item(picked.Id));
-            }
-        }
-
-        // Engraved gear in the starting bag, so the resonance loop can be exercised without waiting for
-        // a drop. The bow carries Swift, which needs an archer to be worth anything — putting it here
-        // rather than on a hero keeps the choice of who gets it in the player's hands.
-        foreach (var gearId in new[] { "FantasyHeroes.Basic.Bow.BattleBow" })
-        {
-            if (ItemCollection.Active.Items.Any(i => i.Id == gearId))
-                inventory.Add(new Item(gearId));
-        }
-
-        // Spellbooks left UNEQUIPPED in the shared pool, so they can be dragged onto the spell row to
-        // test the equip→cast path (weapon-gating decides if they fire). Shockwave is the weapon-agnostic
-        // one that works on any character. Characters' own starting books are auto-equipped from their
-        // authored spellSlots (see GameManager.EquipAuthoredSpellsAsBooks), so these are spare test copies.
-        foreach (var bookId in new[] { "Spellbook.DoubleStrike", "Spellbook.MultiShot", "Spellbook.Shockwave" })
-        {
-            if (ItemCollection.Active.Items.Any(i => i.Id == bookId))
-                inventory.Add(new Item(bookId));
-        }
-
+        var inventory = contents ?? new List<Item>();
         RegisterCallbacks();
         PlayerInventory.Initialize(ref inventory);
     }
