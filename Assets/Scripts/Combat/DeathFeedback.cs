@@ -113,6 +113,11 @@ public class DeathFeedback : MonoBehaviour
 
         foreach (var col in GetComponentsInChildren<Collider2D>(true)) col.enabled = true;
 
+        // The killing blow froze the animator (hitstop); a revive that arrives inside that freeze
+        // would otherwise leave the body standing at speed zero, in whatever frame it died on.
+        var animator = _entity != null ? GetAnimator() : null;
+        if (animator != null) animator.speed = 1f;
+
         if (_entity != null)
         {
             if (_entity.character != null) _entity.character.SetState(CharacterState.Idle);

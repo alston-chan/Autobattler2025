@@ -220,7 +220,7 @@ public class RunManager : MonoBehaviour
     /// Patch the company up between fights: the fallen are revived, the survivors healed, and
     /// everyone is put back in fighting shape.
     /// </summary>
-    private void RestoreCompany()
+    public void RestoreCompany()
     {
         foreach (var unit in _company)
         {

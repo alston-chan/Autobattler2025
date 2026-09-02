@@ -115,6 +115,12 @@ public class Health : MonoBehaviour
     {
         if (IsDead) return;
 
+        // Nothing is hurt outside a fight. A round ends the instant the last enemy dies, but its
+        // arrow is still in the air; letting it land killed a hero AFTER the revive pass for the
+        // next fight had already run, so the hero lay dead through the map screen and began the
+        // next fight in its death pose with nothing left to bring it back.
+        if (_entity != null && !_entity.IsFighting) return;
+
         float incoming = amount;
         amount = ApplyBlocking(amount);
 

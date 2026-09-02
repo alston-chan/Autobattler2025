@@ -175,7 +175,13 @@ public class GameManager : Singleton<GameManager>
         // reading the state machine back out of here every frame.
         BroadcastFighting(next == GameState.Combat);
 
-        if (next == GameState.Combat) NotifyResonance(true);
+        if (next == GameState.Combat)
+        {
+            // No hero begins a fight dead. RestoreCompany already runs after a victory; this is the
+            // guarantee at the bell itself, for whatever might have happened in between.
+            if (runManager != null && runManager.IsRunning) runManager.RestoreCompany();
+            NotifyResonance(true);
+        }
 
         if (previous != GameState.Combat) return;
 
@@ -191,6 +197,10 @@ public class GameManager : Singleton<GameManager>
         }
 
         RaiseTheFallen();
+
+        // Whatever was still flying when the round ended, before it lands on someone.
+        int swept = CombatDebris.Sweep();
+        if (swept > 0) Debug.Log($"[GameManager] Cleared {swept} in-flight objects at round end.");
 
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)

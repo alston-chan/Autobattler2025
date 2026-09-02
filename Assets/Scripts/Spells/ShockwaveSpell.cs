@@ -32,8 +32,13 @@ public class ShockwaveSpell : Spell
     {
         if (shockwaveEffectPrefab != null)
         {
+            // In the world, not under the caster. A child inherits the caster's facing flip, its
+            // hit-squash, and — for a hero that dies with the burst still playing — its deactivation
+            // and then a replay on revive, since the systems play on awake. A shockwave erupts at a
+            // place; the place does not move. The prefab destroys itself once its particles die;
+            // the timed destroy behind it is the guarantee for a prefab that does not.
             GameObject effect = GameObject.Instantiate(shockwaveEffectPrefab, caster.transform.position, Quaternion.identity);
-            effect.transform.SetParent(caster.transform);
+            GameObject.Destroy(effect, 4f);
         }
 
         // Damage + knockback every enemy in the radius. Apply knockback BEFORE the freeze so the
