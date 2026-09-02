@@ -320,7 +320,7 @@ public class CharacterInventory : ItemWorkspace
         var spell = activeBook != null && SpellbookDatabase.Active != null
             ? SpellbookDatabase.Active.GetSpell(activeBook.Id) : null;
         activeSpellLabel.text = spell != null
-            ? "Active Spell: " + (string.IsNullOrEmpty(spell.spellName) ? spell.name : spell.spellName)
+            ? "Active Spell: " + spell.DisplayName
             : "Active Spell: —";
     }
 

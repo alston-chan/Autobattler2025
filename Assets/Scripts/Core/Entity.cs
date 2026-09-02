@@ -203,6 +203,24 @@ public class Entity : MonoBehaviour
     public Spell ActiveSpell =>
         spellSlots != null && activeSpellSlot >= 0 && activeSpellSlot < spellSlots.Count
             ? spellSlots[activeSpellSlot] : null;
+
+    /// <summary>
+    /// Everything this unit can cast: the innate set (weapon basic attack, always-on spells) plus
+    /// the one learnable spell in the active slot.
+    ///
+    /// The two lists exist for different reasons — innate spells come from the weapon and from the
+    /// spawn roll, slots come from spellbooks — but nothing downstream cares which is which, only
+    /// what the unit will actually do. Keeping that answer in one place is what lets the inspector
+    /// card promise the same thing CombatAI fights from; while the card read only the slot, enemies
+    /// (whose ability is always innate) showed as having none.
+    /// </summary>
+    public List<Spell> CastableSpells()
+    {
+        var castable = new List<Spell>();
+        if (spells != null) castable.AddRange(spells);
+        if (ActiveSpell != null && !castable.Contains(ActiveSpell)) castable.Add(ActiveSpell);
+        return castable;
+    }
     #endregion
 
     // Convenience — kept so existing code (spells, projectiles) still compiles

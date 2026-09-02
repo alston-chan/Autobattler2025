@@ -51,9 +51,7 @@ public class CombatAI : MonoBehaviour
     /// </summary>
     public void RefreshSpells()
     {
-        _spells = new List<Spell>();
-        if (_entity.spells != null) _spells.AddRange(_entity.spells);
-        if (_entity.ActiveSpell != null) _spells.Add(_entity.ActiveSpell);
+        _spells = _entity.CastableSpells();
 
         // Attack range comes from the first innate spell (the weapon basic attack).
         if (_spells.Count > 0 && _spells[0] != null)
@@ -311,7 +309,7 @@ public class CombatAI : MonoBehaviour
         if (spell.IsUltimate && _entity.Mana != null)
         {
             _entity.Mana.TrySpend(spell.manaCost);
-            AbilityFeedback.Announce(_entity, string.IsNullOrEmpty(spell.spellName) ? spell.name : spell.spellName);
+            AbilityFeedback.Announce(_entity, spell.DisplayName);
         }
 
         // Every spell comes through here, the weapon's own attack included, so the two are counted

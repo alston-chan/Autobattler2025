@@ -33,8 +33,10 @@ public class EnemyLoadout : ScriptableObject
 
     [Header("Abilities")]
     [Range(0f, 1f)]
-    [Tooltip("Chance the unit also brings an ultimate from the pool below.")]
-    public float abilityChance = 0.4f;
+    [Tooltip("Chance the unit also brings an ultimate from the pool below. 1 = every unit does, " +
+             "which is the point: an enemy with nothing but a basic attack is one the player never " +
+             "has to read. Lower it to make a pool feel like conscripts.")]
+    public float abilityChance = 1f;
     [Tooltip("Ultimates to draw from. Ones whose weapon requirement doesn't match what the unit " +
              "ended up holding are skipped, so a bow user never rolls a melee-only ability.")]
     public List<Spell> abilities = new List<Spell>();
@@ -69,6 +71,18 @@ public class EnemyLoadout : ScriptableObject
             if (fits) usable.Add(spell);
         }
 
-        return usable.Count == 0 ? null : usable[Random.Range(0, usable.Count)];
+        if (usable.Count == 0)
+        {
+            // Silent here means the unit walks out with a basic attack and nothing else, which looks
+            // exactly like a deliberately plain enemy. Say it instead: the pool needs an entry this
+            // unit's weapon can satisfy, or an 'Any' one to cover both branches.
+            Debug.LogWarning("[EnemyLoadout] " + name + " has no ability a " +
+                             (ranged ? "bow" : "melee") + " unit can use — that unit spawns with " +
+                             "only a basic attack. Add one requiring " +
+                             (ranged ? "Bow" : "Melee") + " or Any.");
+            return null;
+        }
+
+        return usable[Random.Range(0, usable.Count)];
     }
 }

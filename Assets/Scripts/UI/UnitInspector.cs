@@ -385,17 +385,44 @@ public class UnitInspector : MonoBehaviour
     }
 
     /// <summary>
-    /// What this unit is carrying into the fight: the spell it casts and the engravings acting on
-    /// it. Engravings are the reason two units with identical stat lines behave differently, so a
-    /// card that listed only numbers would hide the most important thing about a unit.
+    /// What this unit is carrying into the fight: the abilities it can cast and the engravings
+    /// acting on it. Engravings are the reason two units with identical stat lines behave
+    /// differently, so a card that listed only numbers would hide the most important thing about a
+    /// unit.
+    ///
+    /// Every ability is listed, not just the slotted one. Enemies never fill a spell slot — theirs
+    /// is rolled into the innate list at spawn — so reading only the active slot meant an enemy's
+    /// card named nothing at all, directly above a mana bar the player could watch filling toward
+    /// it. The cost is shown for the same reason: with both, a full bar beside "100 mana" tells the
+    /// player what is about to happen while there is still time to answer it.
+    ///
+    /// The weapon basic attack is deliberately left out. It is the one spell that is not an ability
+    /// (<see cref="Spell.IsAbility"/>), the silhouette already says whether a unit swings or shoots,
+    /// and listing it would bury the line that varies under one that never does.
     /// </summary>
     private void PaintKit()
     {
         var text = new StringBuilder();
 
-        var spell = _selected.ActiveSpell;
-        if (spell != null)
-            text.Append("<color=#BFC6D4>Ability</color>  ").Append(spell.name).Append('\n');
+        foreach (var spell in _selected.CastableSpells())
+        {
+            if (spell == null || !spell.IsAbility) continue;
+
+            // An ability the current weapon can't satisfy never fires — CombatAI skips it every
+            // pass. Listing it unmarked is worse than not listing it at all: the player reads a
+            // threat, or a plan, that the unit cannot carry out, and nothing on screen ever
+            // contradicts them. Naming the weapon it wants also makes the fix obvious.
+            bool inert = !spell.MeetsWeaponRequirement(_selected);
+
+            text.Append("<color=#BFC6D4>Ability</color>  ").Append(spell.DisplayName);
+            if (spell.IsUltimate)
+                text.Append("  <color=#5C9AF2>").Append(Mathf.RoundToInt(spell.manaCost))
+                    .Append(" mana</color>");
+            if (inert)
+                text.Append("  <color=#C86A6A>needs ").Append(spell.weaponRequirement)
+                    .Append("</color>");
+            text.Append('\n');
+        }
 
         AppendEngravings(text);
 

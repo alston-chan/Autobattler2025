@@ -40,6 +40,20 @@ public abstract class Spell : ScriptableObject
     /// <summary>A cost ability (ultimate) rather than a free basic attack.</summary>
     public bool IsUltimate => manaCost > 0f;
 
+    /// <summary>
+    /// An ability rather than a weapon swing. The weapon basic attack is the one spell that neither
+    /// costs mana nor runs on its own, which makes this the line between "how this unit hits" and
+    /// "what this unit can do" — the second is what a player wants named on a card.
+    /// </summary>
+    public bool IsAbility => IsUltimate || alwaysOn;
+
+    /// <summary>
+    /// What to call this spell out loud. Authored names are for the player; the asset name is the
+    /// fallback so an unnamed spell still reads as something. Three places were spelling this rule
+    /// out for themselves and would have drifted apart the first time one of them was edited.
+    /// </summary>
+    public string DisplayName => string.IsNullOrEmpty(spellName) ? name : spellName;
+
     [Tooltip("Which weapon the caster must have equipped. A spellbook can teach Multi Shot, but it " +
              "only works while a bow is held. 'Any' skips the check (e.g. a self-buff).")]
     public WeaponClass weaponRequirement = WeaponClass.Any;
