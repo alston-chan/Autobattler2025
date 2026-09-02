@@ -67,6 +67,13 @@ public class FirearmAttackSpell : Spell
         var firearm = character != null ? character.Firearm : null;
         if (firearm == null || firearm.Params == null || firearm.Fire == null) yield break;
 
+        // Come up into the combat stance. This is not decoration: the animator's "Ready" flag is what
+        // Entity gates arm-aiming on, and only the two bow spells were ever setting it. A gunner was
+        // therefore never "ready", so the aiming returned before touching anything and the revolver
+        // stayed at whatever angle the idle pose left it — measured at twenty to thirty degrees off
+        // a target it was busily shooting.
+        character.GetReady();
+
         // Reload first if the magazine is spent, so the pause is seen before the shot rather than
         // stranded after it.
         if (firearm.AmmoShooted >= firearm.Params.MagazineCapacity)

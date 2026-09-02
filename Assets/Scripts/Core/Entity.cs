@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.FantasyMonsters.Common.Scripts;
+using HeroEditor.Common.Enums;
 using UnityEngine;
 
 /// <summary>
@@ -353,27 +354,56 @@ public class Entity : MonoBehaviour
 
     private void LateUpdate()
     {
-        // A corpse must not keep tracking with its bow arm while the death animation plays.
+        // A corpse must not keep tracking with its weapon arm while the death animation plays.
         if (isDead) return;
 
-        // Bow aiming logic (for ranged characters)
-        if (IsRanged && CombatAI.CurrentTarget != null && character != null && ArmL != null)
+        if (!IsRanged || CombatAI.CurrentTarget == null || character == null) return;
+        if (!character.IsReady()) return;
+
+        if (!TryGetAimingArm(out Transform arm, out Transform weapon)) return;
+
+        RotateArm(arm, weapon,
+                  FixedArm ? arm.position + 1000 * Vector3.right : CombatAI.CurrentTarget.transform.position,
+                  -40, 40);
+    }
+
+    /// <summary>
+    /// Which arm follows the target, and what on the end of it has to finish up pointing there.
+    ///
+    /// Both answers change with the weapon, which is why neither is a constant. A bow is drawn in the
+    /// left hand and aimed by its riser; a gun is held in the right and aimed down its barrel.
+    ///
+    /// This used to assume the bow's answer to both, and decided a unit was holding one by asking
+    /// whether the rig had bow renderers — which it still has while a gun is out, only disabled. So a
+    /// gunner tracked the target with an empty left arm aiming an invisible bow, while the hand
+    /// actually holding the revolver stayed wherever the animation had left it.
+    ///
+    /// Aiming the muzzle rather than the gun's body is deliberate: the shot is spawned at
+    /// FireTransform and sent at the target, so pointing that same transform at the target is what
+    /// makes the barrel agree with where the bullet actually goes.
+    /// </summary>
+    private bool TryGetAimingArm(out Transform arm, out Transform weapon)
+    {
+        arm = null;
+        weapon = null;
+
+        if (FirearmRig.IsHoldingFirearm(character))
         {
-            Transform arm = ArmL;
-            Transform weapon = null;
-            if (character.BowRenderers != null && character.BowRenderers.Count > 3)
-            {
-                weapon = character.BowRenderers[3].transform;
-            }
-            else
-            {
-                return;
-            }
-            if (character.IsReady())
-            {
-                RotateArm(arm, weapon, FixedArm ? arm.position + 1000 * Vector3.right : CombatAI.CurrentTarget.transform.position, -40, 40);
-            }
+            arm = ArmR;
+            weapon = character.Firearm != null ? character.Firearm.FireTransform : null;
+            return arm != null && weapon != null;
         }
+
+        if (character.WeaponType == WeaponType.Bow &&
+            character.BowRenderers != null && character.BowRenderers.Count > 3 &&
+            character.BowRenderers[3] != null)
+        {
+            arm = ArmL;
+            weapon = character.BowRenderers[3].transform;
+            return arm != null;
+        }
+
+        return false;
     }
 
     #region Public API — delegates to components
