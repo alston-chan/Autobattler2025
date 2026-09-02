@@ -21,13 +21,52 @@ public class CombatTelemetry : MonoBehaviour
 {
     public class Row
     {
-        public float DamageDealt, DamageTaken;
-        public int Hits, Crits, Kills, Deaths, Fights;
+        public float DamageDealt, DamageTaken, Blocked;
+        public int Hits, Crits, Kills, Deaths, Fights, Ults;
 
         public float CritRate => Hits > 0 ? (float)Crits / Hits : 0f;
+
+        public Row Copy() => new Row
+        {
+            DamageDealt = DamageDealt, DamageTaken = DamageTaken, Blocked = Blocked,
+            Hits = Hits, Crits = Crits, Kills = Kills, Deaths = Deaths, Fights = Fights, Ults = Ults
+        };
+
+        /// <summary>This row less <paramref name="earlier"/> — what happened in between. Null means "nothing before".</summary>
+        public Row Since(Row earlier)
+        {
+            if (earlier == null) return Copy();
+            return new Row
+            {
+                DamageDealt = DamageDealt - earlier.DamageDealt,
+                DamageTaken = DamageTaken - earlier.DamageTaken,
+                Blocked = Blocked - earlier.Blocked,
+                Hits = Hits - earlier.Hits,
+                Crits = Crits - earlier.Crits,
+                Kills = Kills - earlier.Kills,
+                Deaths = Deaths - earlier.Deaths,
+                Ults = Ults - earlier.Ults,
+                Fights = 1
+            };
+        }
     }
 
     private static readonly Dictionary<string, Row> _rows = new Dictionary<string, Row>();
+
+    // The last fight on its own. Totals are what balance is measured against, because one fight is
+    // noise; but the player reading a scoreboard after a fight wants that fight, since it is the
+    // one they can still do something about. Kept as the rows at the fight's start, so the delta
+    // needs no second set of hooks.
+    private static readonly Dictionary<string, Row> _atFightStart = new Dictionary<string, Row>();
+    private static readonly Dictionary<string, Row> _lastFight = new Dictionary<string, Row>();
+
+    /// <summary>What each unit did in the most recent fight. Empty until one has ended.</summary>
+    public static IReadOnlyDictionary<string, Row> LastFight => _lastFight;
+
+    /// <summary>The whole run so far, by unit name.</summary>
+    public static IReadOnlyDictionary<string, Row> Totals => _rows;
+
+    public static int FightsRecorded { get; private set; }
     private readonly Dictionary<Entity, System.Action<DamageInfo>> _watched =
         new Dictionary<Entity, System.Action<DamageInfo>>();
 
@@ -79,7 +118,9 @@ public class CombatTelemetry : MonoBehaviour
 
     private static void RecordHit(Entity victim, DamageInfo info)
     {
-        RowFor(victim).DamageTaken += info.amount;
+        var victimRow = RowFor(victim);
+        victimRow.DamageTaken += info.amount;
+        victimRow.Blocked += info.blocked;
 
         if (info.source == null) return;      // burn, decay, anything with no author
 
@@ -104,6 +145,12 @@ public class CombatTelemetry : MonoBehaviour
         if (killer != null) RowFor(killer).Kills++;
     }
 
+    /// <summary>Credit a cost ability cast. Called from CombatAI as the mana is spent.</summary>
+    public static void RecordUlt(Entity caster)
+    {
+        if (caster != null) RowFor(caster).Ults++;
+    }
+
     private static Row RowFor(Entity entity)
     {
         string key = NameOf(entity);
@@ -119,16 +166,34 @@ public class CombatTelemetry : MonoBehaviour
         return clone >= 0 ? name.Substring(0, clone) : name;
     }
 
-    /// <summary>Note that a fight finished, so averages can be per-fight rather than per-run.</summary>
+    /// <summary>Note that a fight is beginning: remember where every row stood, so the fight's own numbers can be read off afterwards.</summary>
+    public void NoteFightStarted()
+    {
+        _atFightStart.Clear();
+        foreach (var pair in _rows) _atFightStart[pair.Key] = pair.Value.Copy();
+    }
+
+    /// <summary>Note that a fight finished: fix the fight's own numbers, and let averages be per-fight rather than per-run.</summary>
     public void NoteFightEnded()
     {
         _fightsRecorded++;
+        FightsRecorded = _fightsRecorded;
         foreach (var row in _rows.Values) row.Fights = _fightsRecorded;
+
+        _lastFight.Clear();
+        foreach (var pair in _rows)
+        {
+            _atFightStart.TryGetValue(pair.Key, out var before);
+            _lastFight[pair.Key] = pair.Value.Since(before);
+        }
     }
 
     public static void Reset()
     {
         _rows.Clear();
+        _atFightStart.Clear();
+        _lastFight.Clear();
+        FightsRecorded = 0;
     }
 
     /// <summary>The standings as a table, for the console.</summary>
@@ -138,13 +203,13 @@ public class CombatTelemetry : MonoBehaviour
 
         var sb = new StringBuilder();
         sb.AppendLine($"[Telemetry] after {_fightsRecorded} fight(s)");
-        sb.AppendLine($"{"unit",-26}{"dealt",9}{"taken",9}{"hits",7}{"crit%",7}{"kills",7}{"deaths",7}");
+        sb.AppendLine($"{"unit",-26}{"dealt",9}{"taken",9}{"blocked",9}{"hits",7}{"crit%",7}{"kills",7}{"deaths",7}{"ults",6}");
 
         foreach (var pair in Standings)
         {
             var r = pair.Value;
-            sb.AppendLine($"{Trim(pair.Key, 25),-26}{r.DamageDealt,9:F0}{r.DamageTaken,9:F0}" +
-                          $"{r.Hits,7}{r.CritRate * 100f,6:F0}%{r.Kills,7}{r.Deaths,7}");
+            sb.AppendLine($"{Trim(pair.Key, 25),-26}{r.DamageDealt,9:F0}{r.DamageTaken,9:F0}{r.Blocked,9:F0}" +
+                          $"{r.Hits,7}{r.CritRate * 100f,6:F0}%{r.Kills,7}{r.Deaths,7}{r.Ults,6}");
         }
         return sb.ToString();
     }

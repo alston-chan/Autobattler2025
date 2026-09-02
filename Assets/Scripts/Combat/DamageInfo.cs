@@ -20,11 +20,15 @@ public readonly struct DamageInfo
     /// <summary>True for a critical hit — drives the louder number, per the readability rule.</summary>
     public readonly bool isCrit;
 
-    public DamageInfo(float amount, float remainingHealth, Entity source, bool isCrit)
+    /// <summary>What the victim's Blocking took off this hit before it landed. Feedback and telemetry only.</summary>
+    public readonly float blocked;
+
+    public DamageInfo(float amount, float remainingHealth, Entity source, bool isCrit, float blocked = 0f)
     {
         this.amount = amount;
         this.remainingHealth = remainingHealth;
         this.source = source;
         this.isCrit = isCrit;
+        this.blocked = blocked;
     }
 }

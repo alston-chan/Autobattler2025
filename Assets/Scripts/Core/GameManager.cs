@@ -185,6 +185,10 @@ public class GameManager : Singleton<GameManager>
         var ending = gameObject.AddComponent<RunEndPanel>();
         ending.Initialize(runManager, canvas != null ? canvas.transform : null);
 
+        // Who did what in the fight just fought, while there is still something to do about it.
+        var scoreboard = gameObject.AddComponent<FightScoreboard>();
+        scoreboard.Initialize(canvas != null ? canvas.transform : null);
+
         // The map, for runs that have one. It shows itself only while a path is waiting to be chosen.
         var map = gameObject.AddComponent<MapPanel>();
         map.Initialize(runManager, canvas != null ? canvas.transform : null);
@@ -206,6 +210,9 @@ public class GameManager : Singleton<GameManager>
             // guarantee at the bell itself, for whatever might have happened in between.
             if (runManager != null && runManager.IsRunning) runManager.RestoreCompany();
             NotifyResonance(true);
+
+            var startingTelemetry = GetComponent<CombatTelemetry>();
+            if (startingTelemetry != null) startingTelemetry.NoteFightStarted();
         }
 
         // Between fights is the safe point. Nothing on offer and nothing in the air; the run as it

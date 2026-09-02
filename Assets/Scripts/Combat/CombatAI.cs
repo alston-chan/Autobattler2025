@@ -310,6 +310,7 @@ public class CombatAI : MonoBehaviour
         {
             _entity.Mana.TrySpend(spell.manaCost);
             AbilityFeedback.Announce(_entity, spell.DisplayName);
+            CombatTelemetry.RecordUlt(_entity);
         }
 
         // Every spell comes through here, the weapon's own attack included, so the two are counted

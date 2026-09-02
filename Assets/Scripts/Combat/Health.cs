@@ -142,7 +142,7 @@ public class Health : MonoBehaviour
         // Mana charges from participation — taking hits is the secondary source.
         if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
 
-        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit));
+        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit, incoming - amount));
 
         if (!IsDead && currentHealth <= 0)
         {
