@@ -78,7 +78,7 @@ public class FightScoreboard : MonoBehaviour
         var lines = new List<string>();
         if (_root == null || !_root.activeSelf) return lines;
         foreach (var row in Ranked())
-            lines.Add(row.Key + ": " + Format(row.Value));
+            lines.Add(UnitInspector.DisplayName(row.Key) + ": " + Format(row.Value));
         return lines;
     }
 
@@ -133,18 +133,20 @@ public class FightScoreboard : MonoBehaviour
     }
 
     /// <summary>The company's heroes and their value for the current stat and scope, best first.</summary>
-    private List<KeyValuePair<string, float>> Ranked()
+    private List<KeyValuePair<Entity, float>> Ranked()
     {
-        var result = new List<KeyValuePair<string, float>>();
+        var result = new List<KeyValuePair<Entity, float>>();
         var game = GameManager.Instance;
         if (game == null) return result;
 
+        // Telemetry rows are keyed by the entity's own name; what the player reads is the display
+        // name, the same one the inspector card uses.
         var source = _wholeRun ? CombatTelemetry.Totals : CombatTelemetry.LastFight;
         foreach (var hero in game.allyCharacters)
         {
             if (hero == null) continue;
             source.TryGetValue(hero.name, out var row);
-            result.Add(new KeyValuePair<string, float>(hero.name, ValueOf(row, _stat)));
+            result.Add(new KeyValuePair<Entity, float>(hero, ValueOf(row, _stat)));
         }
         result.Sort((a, b) => b.Value.CompareTo(a.Value));
         return result;
@@ -227,15 +229,15 @@ public class FightScoreboard : MonoBehaviour
         }
     }
 
-    private GameObject BuildRow(string heroName, float value, float fraction, int index)
+    private GameObject BuildRow(Entity hero, float value, float fraction, int index)
     {
-        var row = NewChild("Row_" + heroName, _rows, new Vector2(0.5f, 1f), new Vector2(Width - 20f, RowHeight - 6f),
+        var row = NewChild("Row_" + hero.name, _rows, new Vector2(0.5f, 1f), new Vector2(Width - 20f, RowHeight - 6f),
                            new Vector2(0f, -index * RowHeight - (RowHeight - 6f) * 0.5f));
 
         var name = NewText("Name", row.transform, 14f, Color.white);
         name.alignment = TextAlignmentOptions.Left;
         Place(name.rectTransform, new Vector2(0f, 1f), new Vector2(Width - 20f, 16f), new Vector2((Width - 20f) * 0.5f, -8f));
-        name.text = Readable(heroName);
+        name.text = UnitInspector.DisplayName(hero);
 
         var amount = NewText("Value", row.transform, 14f, Gold);
         amount.alignment = TextAlignmentOptions.Right;
@@ -259,13 +261,6 @@ public class FightScoreboard : MonoBehaviour
         fillImage.raycastTarget = false;
 
         return row;
-    }
-
-    /// <summary>"Hero_Melee_KnightShield" reads as "Melee KnightShield" on a bar.</summary>
-    private static string Readable(string heroName)
-    {
-        string name = heroName.StartsWith("Hero_") ? heroName.Substring(5) : heroName;
-        return name.Replace('_', ' ');
     }
 
     private static Image SmallButton(Transform parent, string text, UnityEngine.Events.UnityAction onClick)

@@ -474,7 +474,12 @@ public class UnitInspector : MonoBehaviour
         _ => ""
     };
 
-    private static string DisplayName(Entity unit)
+    /// <summary>
+    /// The one name a unit is shown under, everywhere. The scoreboard used to trim "Hero_" and
+    /// underscores for itself, so the same hero read as "Hero_Wand" on its card and "Wand" on its
+    /// bar — two rules for one name, which is wrong whichever is prettier.
+    /// </summary>
+    public static string DisplayName(Entity unit)
     {
         if (unit.unitData != null && !string.IsNullOrEmpty(unit.unitData.unitName))
             return unit.unitData.unitName;
