@@ -109,7 +109,7 @@ public class BackgroundCycler : MonoBehaviour
         int i = ((index % backgrounds.Count) + backgrounds.Count) % backgrounds.Count;
         var preset = PresetFor(backgrounds[i]);
         if (preset == null) return;
-        ArenaBounds.DrawGizmo(preset.minX, preset.maxX, preset.minY, preset.maxY, preset.shape,
+        ArenaBounds.DrawGizmo(preset.center, preset.size, preset.shape,
             new Color(1f, 0.7f, 0.1f, 0.9f));
     }
 

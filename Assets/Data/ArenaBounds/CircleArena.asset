@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: CircleArena
   m_EditorClassIdentifier: 
   shape: 1
-  minX: -8.8
-  maxX: 8.8
-  minY: -5
-  maxY: 1.25
+  center: {x: 0, y: -1.875}
+  size: {x: 17.6, y: 6.25}

@@ -30,12 +30,22 @@ public class ArenaBounds : MonoBehaviour
     [Header("Play area (world space)")]
     [Tooltip("Rectangle clamps to the box; Ellipse clamps to the oval inscribed in the box (round arenas).")]
     public ArenaShape shape = ArenaShape.Rectangle;
-    public float minX = -8.5f;
-    public float maxX = 8.5f;
-    [Tooltip("Floor — the lowest an entity can be pushed. Set to your ground line.")]
-    public float minY = -4f;
-    [Tooltip("Ceiling — the highest an entity can be. Knockback (e.g. Shockwave) can't launch anyone above this.")]
-    public float maxY = 1f;
+
+    [Tooltip("Middle of the play area. Move the arena by moving this; the edges follow.")]
+    public Vector2 center = new Vector2(0f, -1.5f);
+
+    [Tooltip("Width and height. The height runs from the ground line up to the ceiling a " +
+             "knockback can throw someone.")]
+    public Vector2 size = new Vector2(17f, 5f);
+
+    // Edges, derived. The arena is authored as a middle and a span because those are the two things
+    // anyone actually wants to change — nudge it across, make it bigger. Four independent edges made
+    // the first of those a two-field edit with arithmetic in between, and nothing kept the halves in
+    // step with each other.
+    public float MinX => center.x - size.x * 0.5f;
+    public float MaxX => center.x + size.x * 0.5f;
+    public float MinY => center.y - size.y * 0.5f;
+    public float MaxY => center.y + size.y * 0.5f;
 
     private void Awake()
     {
@@ -57,8 +67,8 @@ public class ArenaBounds : MonoBehaviour
 
     private Vector3 ClampRect(Vector3 p)
     {
-        p.x = Mathf.Clamp(p.x, minX, maxX);
-        p.y = Mathf.Clamp(p.y, minY, maxY);
+        p.x = Mathf.Clamp(p.x, MinX, MaxX);
+        p.y = Mathf.Clamp(p.y, MinY, MaxY);
         return p;
     }
 
@@ -68,19 +78,17 @@ public class ArenaBounds : MonoBehaviour
     /// </summary>
     private Vector3 ClampEllipse(Vector3 p)
     {
-        float cx = (minX + maxX) * 0.5f;
-        float cy = (minY + maxY) * 0.5f;
-        float rx = (maxX - minX) * 0.5f;
-        float ry = (maxY - minY) * 0.5f;
+        float rx = size.x * 0.5f;
+        float ry = size.y * 0.5f;
         if (rx <= 0.0001f || ry <= 0.0001f) return ClampRect(p);   // degenerate box
 
-        float dx = (p.x - cx) / rx;
-        float dy = (p.y - cy) / ry;
+        float dx = (p.x - center.x) / rx;
+        float dy = (p.y - center.y) / ry;
         float d = Mathf.Sqrt(dx * dx + dy * dy);
         if (d <= 1f) return p;   // already inside
 
-        p.x = cx + (dx / d) * rx;
-        p.y = cy + (dy / d) * ry;
+        p.x = center.x + (dx / d) * rx;
+        p.y = center.y + (dy / d) * ry;
         return p;
     }
 
@@ -91,51 +99,47 @@ public class ArenaBounds : MonoBehaviour
     /// Set the global bounds, creating the instance if none exists yet. Lets a per-map driver (e.g.
     /// <see cref="BackgroundCycler"/>) push a map's play area without caring about script order.
     /// </summary>
-    public static void SetBounds(float minX, float maxX, float minY, float maxY, ArenaShape shape = ArenaShape.Rectangle)
+    public static void SetBounds(Vector2 center, Vector2 size, ArenaShape shape = ArenaShape.Rectangle)
     {
         var inst = Instance;
         if (inst == null)
             inst = new GameObject("ArenaBounds (auto)").AddComponent<ArenaBounds>();
         inst.shape = shape;
-        inst.minX = minX;
-        inst.maxX = maxX;
-        inst.minY = minY;
-        inst.maxY = maxY;
+        inst.center = center;
+        inst.size = size;
     }
 
     private void OnDrawGizmos()
     {
-        DrawGizmo(minX, maxX, minY, maxY, shape, new Color(0.25f, 0.9f, 1f, 0.8f));
+        DrawGizmo(center, size, shape, new Color(0.25f, 0.9f, 1f, 0.8f));
     }
 
     /// <summary>Draw a bounds outline (rectangle or ellipse) — shared by the per-map gizmo too.</summary>
-    public static void DrawGizmo(float minX, float maxX, float minY, float maxY, ArenaShape shape, Color color)
+    public static void DrawGizmo(Vector2 center, Vector2 size, ArenaShape shape, Color color)
     {
         Gizmos.color = color;
 
+        float rx = size.x * 0.5f;
+        float ry = size.y * 0.5f;
+
         if (shape == ArenaShape.Ellipse)
         {
-            float cx = (minX + maxX) * 0.5f;
-            float cy = (minY + maxY) * 0.5f;
-            float rx = (maxX - minX) * 0.5f;
-            float ry = (maxY - minY) * 0.5f;
-
             const int segments = 48;
-            Vector3 prev = new Vector3(cx + rx, cy, 0f);
+            Vector3 prev = new Vector3(center.x + rx, center.y, 0f);
             for (int i = 1; i <= segments; i++)
             {
                 float a = (i / (float)segments) * Mathf.PI * 2f;
-                var next = new Vector3(cx + Mathf.Cos(a) * rx, cy + Mathf.Sin(a) * ry, 0f);
+                var next = new Vector3(center.x + Mathf.Cos(a) * rx, center.y + Mathf.Sin(a) * ry, 0f);
                 Gizmos.DrawLine(prev, next);
                 prev = next;
             }
             return;
         }
 
-        var bl = new Vector3(minX, minY, 0f);
-        var br = new Vector3(maxX, minY, 0f);
-        var tr = new Vector3(maxX, maxY, 0f);
-        var tl = new Vector3(minX, maxY, 0f);
+        var bl = new Vector3(center.x - rx, center.y - ry, 0f);
+        var br = new Vector3(center.x + rx, center.y - ry, 0f);
+        var tr = new Vector3(center.x + rx, center.y + ry, 0f);
+        var tl = new Vector3(center.x - rx, center.y + ry, 0f);
         Gizmos.DrawLine(bl, br);
         Gizmos.DrawLine(br, tr);
         Gizmos.DrawLine(tr, tl);
