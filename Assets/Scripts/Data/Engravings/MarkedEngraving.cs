@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -38,13 +39,18 @@ public class MarkedEngraving : Engraving
     public override string DescribeTier(int tier) =>
         $"The enemy across from the bearer starts the fight at {(1f - CutFor(tier)) * 100f:0}% health.";
 
+    /// <summary>The badge shown over the enemy this will mark: "MARKED · 80%".</summary>
+    public string PreviewLabel(int tier) => $"MARKED · {(1f - CutFor(tier)) * 100f:0}%";
+
+    public override void Preview(Entity owner, int tier, List<Badge> into)
+    {
+        var target = TargetFor(owner);
+        if (target != null) into.Add(new Badge(target, PreviewLabel(tier)));
+    }
+
     public override void OnCombatStart(Entity owner, int tier)
     {
-        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
-        if (runManager == null || owner == null || !owner.isTeam) return;
-        if (!runManager.Formation.TryGetCell(owner, out var cell)) return;
-
-        var target = EnemyStandingAt(cell);
+        var target = TargetFor(owner);
         if (target == null || target.Health == null) return;
 
         float floor = target.Health.maxHealth * (1f - CutFor(tier));
@@ -52,6 +58,19 @@ public class MarkedEngraving : Engraving
 
         target.Health.currentHealth = floor;
         target.Health.RefreshBar();
+        Callout(target, DisplayName);
+    }
+
+    /// <summary>
+    /// Whom this would mark from where the bearer stands now. One lookup for both the badge and the
+    /// bell, so the preview can never promise a different enemy than the effect delivers.
+    /// </summary>
+    private static Entity TargetFor(Entity owner)
+    {
+        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
+        if (runManager == null || owner == null || !owner.isTeam) return null;
+        if (!runManager.Formation.TryGetCell(owner, out var cell)) return null;
+        return EnemyStandingAt(cell);
     }
 
     /// <summary>The enemy standing on the enemy-side cell with the same column and row, or null.</summary>

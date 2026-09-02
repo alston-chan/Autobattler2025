@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -42,6 +43,41 @@ public abstract class Engraving : ScriptableObject
 
     /// <summary>Called as a fight ends. Undo anything granted for the fight.</summary>
     public virtual void OnCombatEnd(Entity owner, int tier) { }
+
+    /// <summary>One badge an engraving will earn at the bell: who it will touch, and what to say over them.</summary>
+    public struct Badge
+    {
+        public Entity target;
+        public string label;
+
+        public Badge(Entity target, string label)
+        {
+            this.target = target;
+            this.label = label;
+        }
+    }
+
+    /// <summary>
+    /// What <see cref="OnCombatStart"/> would do if the fight began now, read from the formation as
+    /// it stands. Shown over the units concerned while the player arranges the company and redrawn
+    /// as heroes are moved, so a positional effect is a decision made with the hero still in hand
+    /// rather than a surprise at the bell. Adding nothing means the engraving would do nothing from
+    /// here — which is also worth a player knowing.
+    /// </summary>
+    public virtual void Preview(Entity owner, int tier, List<Badge> into) { }
+
+    /// <summary>
+    /// Say the engraving's name over a unit as it takes effect — the ability callout, without the
+    /// caster flash. A flash is what a hit looks like, and an engraving landing at the bell is not
+    /// one; it is the promise the setup badge made, kept.
+    /// </summary>
+    protected static void Callout(Entity over, string text)
+    {
+        if (over == null || CombatFeelSettings.Active == null) return;
+        var settings = CombatFeelSettings.Active.abilityFeedback;
+        if (settings == null || !settings.enableCallout) return;
+        AbilityCallout.Show(over.transform.position + settings.offset, text, settings);
+    }
 
     public string DisplayName => string.IsNullOrEmpty(engravingName) ? name : engravingName;
 

@@ -430,6 +430,16 @@ public class Resonance : MonoBehaviour
         }
     }
 
+    /// <summary>What every held engraving would do if the fight began now (<see cref="Engraving.Preview"/>).</summary>
+    public void CollectPreviews(List<Engraving.Badge> into)
+    {
+        foreach (var pair in _active)
+        {
+            var engraving = InstanceFor(pair.Key, pair.Value.asset);
+            if (engraving != null) engraving.Preview(_entity, pair.Value.tier, into);
+        }
+    }
+
     private void Fight(string sourceKey, Grant grant, bool starting)
     {
         var engraving = InstanceFor(sourceKey, grant.asset);

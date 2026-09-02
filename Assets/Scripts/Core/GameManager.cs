@@ -145,6 +145,10 @@ public class GameManager : Singleton<GameManager>
         // Inspects any unit on the board, company or enemy, so it doesn't depend on the run existing.
         var inspector = gameObject.AddComponent<UnitInspector>();
         inspector.Initialize(canvas != null ? canvas.transform : null);
+
+        // Badges over whoever the company's engravings will touch at the bell, while it is arranged.
+        var preview = gameObject.AddComponent<FormationPreview>();
+        preview.Initialize(runManager);
     }
 
     private void StartRun()

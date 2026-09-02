@@ -32,6 +32,18 @@ public class BulwarkEngraving : Engraving
         $"Allies adjacent to the bearer take {blockingPerTier * Mathf.Max(1, tier):0.#} less damage " +
         "from every hit.";
 
+    /// <summary>The badge shown over each ally beside the bearer: "BULWARK -6".</summary>
+    public string PreviewLabel(int tier) => $"BULWARK -{blockingPerTier * Mathf.Max(1, tier):0.#}";
+
+    public override void Preview(Entity owner, int tier, List<Badge> into)
+    {
+        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
+        if (runManager == null || owner == null) return;
+
+        foreach (var ally in runManager.Formation.AdjacentTo(owner))
+            if (ally != null) into.Add(new Badge(ally, PreviewLabel(tier)));
+    }
+
     public override void OnCombatStart(Entity owner, int tier)
     {
         _buffed.Clear();
@@ -51,6 +63,8 @@ public class BulwarkEngraving : Engraving
                 amount, Kryz.CharacterStats.StatModType.Flat, this));
             _buffed.Add(ally);
         }
+
+        if (_buffed.Count > 0) Callout(owner, DisplayName);
     }
 
     public override void OnCombatEnd(Entity owner, int tier)

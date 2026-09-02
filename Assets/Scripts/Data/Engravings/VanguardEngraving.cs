@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -28,16 +29,28 @@ public class VanguardEngraving : Engraving
     public override string DescribeTier(int tier) =>
         $"+{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}% damage while deployed in the front rank.";
 
+    /// <summary>The badge shown over the bearer while it stands in the front rank: "VANGUARD +20%".</summary>
+    public string PreviewLabel(int tier) => $"VANGUARD +{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}%";
+
+    public override void Preview(Entity owner, int tier, List<Badge> into)
+    {
+        if (InFrontRank(owner)) into.Add(new Badge(owner, PreviewLabel(tier)));
+    }
+
     public override void OnCombatStart(Entity owner, int tier)
     {
-        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
-        if (runManager == null || owner == null || owner.Stats == null) return;
-
-        if (!runManager.Formation.TryGetCell(owner, out var cell)) return;
-        if (cell.x != frontColumn) return;
+        if (owner == null || owner.Stats == null || !InFrontRank(owner)) return;
 
         owner.Stats.Damage.AddModifier(new Kryz.CharacterStats.StatModifier(
             damageBonusPerTier * Mathf.Max(1, tier), Kryz.CharacterStats.StatModType.PercentAdd, this));
+        Callout(owner, DisplayName);
+    }
+
+    private bool InFrontRank(Entity owner)
+    {
+        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
+        if (runManager == null || owner == null) return false;
+        return runManager.Formation.TryGetCell(owner, out var cell) && cell.x == frontColumn;
     }
 
     public override void OnCombatEnd(Entity owner, int tier)
