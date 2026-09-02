@@ -2562,7 +2562,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1000
-  m_Sprite: {fileID: 21300000, guid: 1fc56a16a51f5a043915247f137687e2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c5a0bee083d29d1478438505ac325937, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2627,7 +2627,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0a7c06736ddca374eb0a11715127ce44, type: 3}
   index: 0
   mapPresets:
-  - background: {fileID: 21300000, guid: 1fc56a16a51f5a043915247f137687e2, type: 3}
+  - background: {fileID: 21300000, guid: c5a0bee083d29d1478438505ac325937, type: 3}
     preset: {fileID: 11400000, guid: 0f2f23eb813cfb343a7a5c7308b516ba, type: 2}
   defaultPreset: {fileID: 11400000, guid: 0f2f23eb813cfb343a7a5c7308b516ba, type: 2}
   previousKey: 276
