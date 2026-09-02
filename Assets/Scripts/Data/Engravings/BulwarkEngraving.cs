@@ -33,15 +33,27 @@ public class BulwarkEngraving : Engraving
         "from every hit.";
 
     /// <summary>The badge shown over each ally beside the bearer: "BULWARK -6".</summary>
-    public string PreviewLabel(int tier) => $"BULWARK -{blockingPerTier * Mathf.Max(1, tier):0.#}";
+    public override string PreviewLabel(int tier) => $"BULWARK -{blockingPerTier * Mathf.Max(1, tier):0.#}";
+
+    /// <summary>
+    /// Flat blocking adds, so an ally between two bearers reads as the total it will get. Bounded
+    /// in play by the damage floor a hit can never go below, not by anything here.
+    /// </summary>
+    public override string MergedLabel(List<int> tiers)
+    {
+        if (tiers.Count <= 1) return base.MergedLabel(tiers);
+        float total = 0f;
+        foreach (var tier in tiers) total += blockingPerTier * Mathf.Max(1, tier);
+        return $"BULWARK -{total:0.#} ×{tiers.Count}";
+    }
 
     public override void Preview(Entity owner, int tier, List<Badge> into)
     {
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager == null || owner == null) return;
 
-        foreach (var ally in runManager.Formation.AdjacentTo(owner))
-            if (ally != null) into.Add(new Badge(ally, PreviewLabel(tier)));
+        foreach (var ally in runManager.Formation.PlannedAdjacentTo(owner))
+            if (ally != null) into.Add(new Badge(ally, this, tier));
     }
 
     public override void OnCombatStart(Entity owner, int tier)
@@ -64,7 +76,6 @@ public class BulwarkEngraving : Engraving
             _buffed.Add(ally);
         }
 
-        if (_buffed.Count > 0) Callout(owner, DisplayName);
     }
 
     public override void OnCombatEnd(Entity owner, int tier)

@@ -23,6 +23,28 @@ public class FormationDragger : MonoBehaviour
     private Entity _held;
     private Vector3 _heldOrigin;
 
+    /// <summary>The unit in the player's hand, or null.</summary>
+    public Entity Held => _held;
+
+    /// <summary>Raised when a held unit is put down on the board.</summary>
+    public event System.Action<Entity> OnDropped;
+
+    /// <summary>
+    /// Where the held unit would land if dropped now: the cell under it, if it is over the company's
+    /// half. This is what a preview should read while the unit is in hand — the same cell Drop will
+    /// choose, by the same rule, so what the player is shown is what they will get.
+    /// </summary>
+    public bool TryGetPlannedCell(out Vector2Int cell)
+    {
+        cell = default;
+        var grid = BattleGrid.Instance;
+        if (_held == null || grid == null || !grid.IsOnAllySide(_held.transform.position)) return false;
+
+        grid.ClosestCell(true, _held.transform.position, out int column, out int row);
+        cell = new Vector2Int(column, row);
+        return true;
+    }
+
     /// <summary>
     /// Where the unit sat relative to the cursor when it was picked up, preserved for the whole drag.
     ///
@@ -137,6 +159,7 @@ public class FormationDragger : MonoBehaviour
         {
             grid.ClosestCell(true, standing, out int column, out int row);
             runManager.Formation.Place(_held, column, row);
+            OnDropped?.Invoke(_held);
         }
         else
         {

@@ -64,6 +64,9 @@ public class UnitInspector : MonoBehaviour
 
     private Camera _camera;
     private Entity _selected;
+
+    /// <summary>The unit whose card is open, or null.</summary>
+    public Entity Selected => _selected;
     private Vector3 _pressPosition;
     private bool _pressed;
     private float _nextRefresh;
@@ -594,7 +597,7 @@ public class UnitInspector : MonoBehaviour
         go.SetActive(false);
     }
 
-    private static Sprite RingSprite()
+    public static Sprite RingSprite()
     {
         const int size = 128;
         const float outer = 0.47f;

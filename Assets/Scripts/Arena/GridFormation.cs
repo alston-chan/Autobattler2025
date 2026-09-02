@@ -28,6 +28,79 @@ public class GridFormation
 
     public bool TryGetCell(Entity entity, out Vector2Int cell) => _cells.TryGetValue(entity, out cell);
 
+    // ---- a planned move: "where would things stand if this unit were dropped here?"
+    //
+    // Previews ask the formation as it would be, not as it is, so a unit in the player's hand shows
+    // its effects from the cell under it. Nothing moves; the plan is an overlay on the real cells
+    // with the same swap rule Place uses — whoever is on the planned cell is treated as standing
+    // where the planned unit really is. The fight itself never reads the plan.
+    private Entity _planned;
+    private Vector2Int _plannedCell;
+    private bool _hasPlan;
+
+    public void Plan(Entity entity, Vector2Int cell)
+    {
+        _planned = entity;
+        _plannedCell = cell;
+        _hasPlan = entity != null;
+    }
+
+    public void ClearPlan()
+    {
+        _planned = null;
+        _hasPlan = false;
+    }
+
+    /// <summary>The unit's cell under the plan, or its real cell when it is not the one being planned.</summary>
+    public bool TryGetPlannedCell(Entity entity, out Vector2Int cell)
+    {
+        if (_hasPlan && entity == _planned)
+        {
+            cell = _plannedCell;
+            return true;
+        }
+        return TryGetCell(entity, out cell);
+    }
+
+    /// <summary>Who would stand on a cell once the plan is carried out.</summary>
+    public Entity PlannedAt(int column, int row)
+    {
+        var occupant = At(column, row);
+        if (!_hasPlan) return occupant;
+
+        var cell = new Vector2Int(column, row);
+        if (cell == _plannedCell) return _planned;
+
+        if (occupant == _planned)
+        {
+            // The planned unit is leaving this cell; whoever it displaces lands here.
+            var displaced = At(_plannedCell.x, _plannedCell.y);
+            return displaced != null && displaced != _planned ? displaced : null;
+        }
+
+        return occupant;
+    }
+
+    /// <summary><see cref="AdjacentTo"/>, under the plan.</summary>
+    public List<Entity> PlannedAdjacentTo(Entity entity)
+    {
+        var result = new List<Entity>();
+        if (entity == null || !TryGetPlannedCell(entity, out var cell)) return result;
+
+        var offsets = new[]
+        {
+            new Vector2Int(1, 0), new Vector2Int(-1, 0),
+            new Vector2Int(0, 1), new Vector2Int(0, -1)
+        };
+
+        foreach (var offset in offsets)
+        {
+            var neighbour = PlannedAt(cell.x + offset.x, cell.y + offset.y);
+            if (neighbour != null && neighbour != entity) result.Add(neighbour);
+        }
+        return result;
+    }
+
     /// <summary>
     /// Put a unit on a cell and move it there. If another unit already holds the cell the two swap,
     /// which keeps every unit deployed — dropping onto an occupied tile should rearrange the

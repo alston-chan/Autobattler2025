@@ -30,27 +30,39 @@ public class VanguardEngraving : Engraving
         $"+{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}% damage while deployed in the front rank.";
 
     /// <summary>The badge shown over the bearer while it stands in the front rank: "VANGUARD +20%".</summary>
-    public string PreviewLabel(int tier) => $"VANGUARD +{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}%";
+    public override string PreviewLabel(int tier) => $"VANGUARD +{damageBonusPerTier * Mathf.Max(1, tier) * 100f:0.#}%";
+
+    /// <summary>Percent bonuses add, so two Vanguards read as their total.</summary>
+    public override string MergedLabel(List<int> tiers)
+    {
+        if (tiers.Count <= 1) return base.MergedLabel(tiers);
+        float total = 0f;
+        foreach (var tier in tiers) total += damageBonusPerTier * Mathf.Max(1, tier);
+        return $"VANGUARD +{total * 100f:0.#}% ×{tiers.Count}";
+    }
 
     public override void Preview(Entity owner, int tier, List<Badge> into)
     {
-        if (InFrontRank(owner)) into.Add(new Badge(owner, PreviewLabel(tier)));
+        if (InFrontRank(owner, planned: true)) into.Add(new Badge(owner, this, tier));
     }
 
     public override void OnCombatStart(Entity owner, int tier)
     {
-        if (owner == null || owner.Stats == null || !InFrontRank(owner)) return;
+        if (owner == null || owner.Stats == null || !InFrontRank(owner, planned: false)) return;
 
         owner.Stats.Damage.AddModifier(new Kryz.CharacterStats.StatModifier(
             damageBonusPerTier * Mathf.Max(1, tier), Kryz.CharacterStats.StatModType.PercentAdd, this));
-        Callout(owner, DisplayName);
     }
 
-    private bool InFrontRank(Entity owner)
+    private bool InFrontRank(Entity owner, bool planned)
     {
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager == null || owner == null) return false;
-        return runManager.Formation.TryGetCell(owner, out var cell) && cell.x == frontColumn;
+
+        Vector2Int cell;
+        bool placed = planned ? runManager.Formation.TryGetPlannedCell(owner, out cell)
+                              : runManager.Formation.TryGetCell(owner, out cell);
+        return placed && cell.x == frontColumn;
     }
 
     public override void OnCombatEnd(Entity owner, int tier)

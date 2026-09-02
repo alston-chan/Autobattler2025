@@ -44,17 +44,36 @@ public abstract class Engraving : ScriptableObject
     /// <summary>Called as a fight ends. Undo anything granted for the fight.</summary>
     public virtual void OnCombatEnd(Entity owner, int tier) { }
 
-    /// <summary>One badge an engraving will earn at the bell: who it will touch, and what to say over them.</summary>
+    /// <summary>One thing an engraving will do at the bell: whom it will touch, from which engraving, at what tier.</summary>
     public struct Badge
     {
         public Entity target;
-        public string label;
+        public Engraving engraving;
+        public int tier;
 
-        public Badge(Entity target, string label)
+        public Badge(Entity target, Engraving engraving, int tier)
         {
             this.target = target;
-            this.label = label;
+            this.engraving = engraving;
+            this.tier = tier;
         }
+    }
+
+    /// <summary>The words shown over a unit this touches, at one tier: "BULWARK -6".</summary>
+    public virtual string PreviewLabel(int tier) => DisplayName.ToUpperInvariant();
+
+    /// <summary>
+    /// How several grants of this engraving landing on one unit read as one line. The default is
+    /// the strongest-wins reading — one label at the highest tier, with a count — because that is
+    /// the safe assumption for anything not written to add. Engravings whose numbers add override
+    /// this with the total, so the badge says what the unit will actually get.
+    /// </summary>
+    public virtual string MergedLabel(List<int> tiers)
+    {
+        int highest = 1;
+        foreach (var tier in tiers) if (tier > highest) highest = tier;
+        string label = PreviewLabel(highest);
+        return tiers.Count > 1 ? label + " ×" + tiers.Count : label;
     }
 
     /// <summary>
@@ -66,18 +85,7 @@ public abstract class Engraving : ScriptableObject
     /// </summary>
     public virtual void Preview(Entity owner, int tier, List<Badge> into) { }
 
-    /// <summary>
-    /// Say the engraving's name over a unit as it takes effect — the ability callout, without the
-    /// caster flash. A flash is what a hit looks like, and an engraving landing at the bell is not
-    /// one; it is the promise the setup badge made, kept.
-    /// </summary>
-    protected static void Callout(Entity over, string text)
-    {
-        if (over == null || CombatFeelSettings.Active == null) return;
-        var settings = CombatFeelSettings.Active.abilityFeedback;
-        if (settings == null || !settings.enableCallout) return;
-        AbilityCallout.Show(over.transform.position + settings.offset, text, settings);
-    }
+
 
     public string DisplayName => string.IsNullOrEmpty(engravingName) ? name : engravingName;
 

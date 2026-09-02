@@ -40,17 +40,20 @@ public class MarkedEngraving : Engraving
         $"The enemy across from the bearer starts the fight at {(1f - CutFor(tier)) * 100f:0}% health.";
 
     /// <summary>The badge shown over the enemy this will mark: "MARKED · 80%".</summary>
-    public string PreviewLabel(int tier) => $"MARKED · {(1f - CutFor(tier)) * 100f:0}%";
+    public override string PreviewLabel(int tier) => $"MARKED · {(1f - CutFor(tier)) * 100f:0}%";
+
+    // Two bearers across from one enemy do not cut twice: the floor is set by the deeper cut, so
+    // the merged badge is the base one — strongest wins, with the count.
 
     public override void Preview(Entity owner, int tier, List<Badge> into)
     {
-        var target = TargetFor(owner);
-        if (target != null) into.Add(new Badge(target, PreviewLabel(tier)));
+        var target = TargetFor(owner, planned: true);
+        if (target != null) into.Add(new Badge(target, this, tier));
     }
 
     public override void OnCombatStart(Entity owner, int tier)
     {
-        var target = TargetFor(owner);
+        var target = TargetFor(owner, planned: false);
         if (target == null || target.Health == null) return;
 
         float floor = target.Health.maxHealth * (1f - CutFor(tier));
@@ -58,19 +61,22 @@ public class MarkedEngraving : Engraving
 
         target.Health.currentHealth = floor;
         target.Health.RefreshBar();
-        Callout(target, DisplayName);
     }
 
     /// <summary>
-    /// Whom this would mark from where the bearer stands now. One lookup for both the badge and the
-    /// bell, so the preview can never promise a different enemy than the effect delivers.
+    /// Whom this would mark from where the bearer stands — or, for a preview, from where the player
+    /// is about to put it down. One lookup for both the badge and the bell, so the preview can never
+    /// promise a different enemy than the effect delivers.
     /// </summary>
-    private static Entity TargetFor(Entity owner)
+    private static Entity TargetFor(Entity owner, bool planned)
     {
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager == null || owner == null || !owner.isTeam) return null;
-        if (!runManager.Formation.TryGetCell(owner, out var cell)) return null;
-        return EnemyStandingAt(cell);
+
+        Vector2Int cell;
+        bool placed = planned ? runManager.Formation.TryGetPlannedCell(owner, out cell)
+                              : runManager.Formation.TryGetCell(owner, out cell);
+        return placed ? EnemyStandingAt(cell) : null;
     }
 
     /// <summary>The enemy standing on the enemy-side cell with the same column and row, or null.</summary>
