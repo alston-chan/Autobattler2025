@@ -646,6 +646,14 @@ public class GameManager : Singleton<GameManager>
         var snapshot = RunSave.Read();
         if (snapshot == null) return null;
 
+        // A run that does not persist never resumes. A save left over for it — from before the flag
+        // was turned off, say — is removed so it cannot surprise anyone later.
+        if (!runManager.runData.persist)
+        {
+            if (snapshot.runAsset == runManager.runData.name) RunSave.Delete();
+            return null;
+        }
+
         if (snapshot.runAsset != runManager.runData.name)
         {
             Debug.Log($"[RunSave] Found a save for '{snapshot.runAsset}' but this scene plays " +

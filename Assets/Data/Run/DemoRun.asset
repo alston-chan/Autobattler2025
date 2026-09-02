@@ -21,3 +21,4 @@ MonoBehaviour:
   defaultRewardPool: {fileID: 11400000, guid: e416c813a24646e47a64a20f352ce5b8, type: 2}
   rewardChoices: 3
   bag: 1
+  persist: 0

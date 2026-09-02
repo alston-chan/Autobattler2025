@@ -170,6 +170,7 @@ public class RunManager : MonoBehaviour
     /// </summary>
     public void SaveIfSafe()
     {
+        if (runData == null || !runData.persist) return;
         if (!IsRunning || PendingRewards.Count > 0) return;
         var game = GameManager.Instance;
         if (game != null && game.StateMachine.Current != GameState.Setup) return;

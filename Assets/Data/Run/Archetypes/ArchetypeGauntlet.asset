@@ -24,3 +24,4 @@ MonoBehaviour:
   startingGear: 1
   fallbackKitItemIds:
   - FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest
+  persist: 0

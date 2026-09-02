@@ -84,6 +84,16 @@ public class RunSaveTests
     }
 
     [Test]
+    public void OnlyRunsPersist()
+    {
+        // The sandbox and the harness start clean every play; a progression run comes back.
+        Assert.That(Demo().persist, Is.False, "the sandbox must not resume");
+        Assert.That(Act1().persist, Is.True, "the progression run must resume");
+        Assert.That(AssetDatabase.LoadAssetAtPath<RunData>("Assets/Data/Run/Archetypes/ArchetypeGauntlet.asset").persist,
+                    Is.False, "the gauntlet measures a fresh company");
+    }
+
+    [Test]
     public void ASnapshotSurvivesJson()
     {
         var snapshot = new RunSnapshot

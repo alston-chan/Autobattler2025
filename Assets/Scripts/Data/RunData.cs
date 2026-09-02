@@ -51,6 +51,12 @@ public class RunData : ScriptableObject
              "Empty is a run: the bag fills from what drops.")]
     public StartingBag bag = StartingBag.Empty;
 
+    [Header("Persistence")]
+    [Tooltip("Save this run at every safe point and resume it on launch. Off for the sandbox and the " +
+             "harness, where every play should start clean; a save found for a run that does not " +
+             "persist is discarded.")]
+    public bool persist = true;
+
     /// <summary>Whether there is anything here to run at all.</summary>
     public bool HasContent => act != null || (encounters != null && encounters.Count > 0);
 }
