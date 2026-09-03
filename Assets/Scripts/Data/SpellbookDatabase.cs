@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
@@ -16,10 +17,17 @@ public class SpellbookDatabase : ScriptableObject
     public class Entry
     {
         [Tooltip("HeroEditor ItemParams.Id of the spellbook item, e.g. \"Spellbook.DoubleStrike\".")]
+        [ValueDropdown("ItemIds"), ValidateInput("KnownItem", "Not in ItemCollection", InfoMessageType.Error)]
+        [TableColumnWidth(260, Resizable = true)]
         public string itemId;
+        [Required, AssetsOnly]
         public Spell spell;
+
+        private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
+        private static bool KnownItem(string id) => Catalog.IsKnown(id);
     }
 
+    [TableList(AlwaysExpanded = true, DrawScrollView = false)]
     public List<Entry> entries = new List<Entry>();
 
     private static SpellbookDatabase _active;

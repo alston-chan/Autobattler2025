@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
@@ -15,7 +16,10 @@ public class RewardPool : ScriptableObject
     [Tooltip("HeroEditor item ids this pool can offer. Ids that carry an Engraving (see " +
              "ResonanceDatabase) are the interesting ones; plain gear is the filler that makes them " +
              "feel like finds.")]
+    [ValueDropdown("ItemIds")]
     public List<string> itemIds = new List<string>();
+
+    private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
 
     /// <summary>
     /// Draw <paramref name="count"/> distinct items. Distinct because an offer of the same item three

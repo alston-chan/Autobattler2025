@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.FantasyMonsters.Common.Scripts;
 using HeroEditor.Common.Enums;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
@@ -198,13 +199,17 @@ public class Entity : MonoBehaviour
     [Tooltip("Item id equipped at the start of a run. This is where a hero's identity comes from: " +
              "wearing it grants its Engraving, and resonating it banks that Engraving permanently " +
              "(Docs/Resonance.md). Leave empty for no signature.")]
+    [ValueDropdown("ItemIds")]
     public string signatureItemId;
 
     [Tooltip("Worn from the first fight of a run that starts heroes in a kit rather than a random " +
              "roll (RunData.startingGear). Kept small on purpose — a weapon if the signature isn't " +
              "one, and a piece of armour — because the run is where the rest is found. Empty means " +
              "the run's fallback kit.")]
+    [ValueDropdown("ItemIds")]
     public List<string> startingItemIds = new List<string>();
+
+    private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
 
     [Header("Innate spells")]
     [Tooltip("Always-available spells: the weapon basic attack and any always-on spells. NOT the " +

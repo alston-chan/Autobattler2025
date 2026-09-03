@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>How the company is dressed when a run begins.</summary>
@@ -44,7 +45,10 @@ public class RunData : ScriptableObject
     [Header("Starting gear")]
     public StartingGear startingGear = StartingGear.Randomized;
     [Tooltip("Under Kit: worn by any hero whose own starting kit is empty.")]
+    [ValueDropdown("ItemIds")]
     public List<string> fallbackKitItemIds = new List<string>();
+
+    private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
 
     [Tooltip("What the shared bag opens with. Workshop stocks a copy of every designed item — " +
              "everything with an engraving or a spell — so any of it can be tested at any time. " +

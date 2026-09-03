@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
@@ -71,7 +72,10 @@ public class ResonanceDatabase : ScriptableObject
     public class Entry
     {
         [Tooltip("HeroEditor ItemParams.Id of the item that carries this engraving.")]
+        [ValueDropdown("ItemIds"), ValidateInput("KnownItem", "Not in ItemCollection", InfoMessageType.Error)]
+        [TableColumnWidth(260, Resizable = true)]
         public string itemId;
+        [Required, AssetsOnly]
         public Engraving engraving;
 
         [Tooltip("What this item counts to attune. Pick something the item's own fantasy implies — " +
@@ -94,6 +98,9 @@ public class ResonanceDatabase : ScriptableObject
         /// <summary>True once the engraving has been attuned enough to bank permanently.</summary>
         public bool CanEngrave(float attunement) => attunement >= engraveCost;
 
+        private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
+        private static bool KnownItem(string id) => Catalog.IsKnown(id);
+
         /// <summary>
         /// Tier reached at a given attunement: 1 through 3. Never 0 — a worn engraving is always at
         /// least Tier I, so equipping an item is never a dead period waiting for it to switch on.
@@ -115,6 +122,7 @@ public class ResonanceDatabase : ScriptableObject
         }
     }
 
+    [TableList(AlwaysExpanded = true, DrawScrollView = false)]
     public List<Entry> entries = new List<Entry>();
 
     private static ResonanceDatabase _active;

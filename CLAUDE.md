@@ -81,6 +81,16 @@ print([k for k in set(list(cur)+list(head)) if head.get(k,'(absent)') != cur.get
 - The MCP layer may run a script twice. Make probes idempotent, and never write an unbounded
   `while` loop — one hung Unity's main thread and needed a force-kill.
 
+## Odin
+
+Odin Inspector is installed (`Assets/Plugins/Sirenix`) for its **attributes only**. Never derive from
+`SerializedScriptableObject` / `SerializedMonoBehaviour` or otherwise turn on Odin serialization:
+it stores those fields as opaque bytes in the YAML, which breaks readable diffs and every text-based
+asset edit this project relies on. Item ids are offered as dropdowns through `Catalog.ItemIds()`
+(one `ItemIds()` provider per class, referenced by member name so it works on any Odin version);
+`Tools > Equipment > Designer` is the Odin window that puts an item, its resonance entry and its
+engraving on one page. `Sirenix` is one more vendor namespace to check before naming a global type.
+
 ## Naming against HeroEditor
 
 Vendor namespaces collide with obvious type names. `Firearms` is both
