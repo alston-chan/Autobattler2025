@@ -35,6 +35,9 @@ public class EquipmentWindow : OdinMenuEditorWindow
         var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>(ResonancePath);
         var spellbooks = AssetDatabase.LoadAssetAtPath<SpellbookDatabase>(SpellbooksPath);
 
+        // Art first: the whole collection as pictures, and where a new designed item starts.
+        tree.Add("Art", new ArtPage(this));
+
         // Items: the designed ones — anything with a resonance entry. Named by the item, so the
         // menu reads as the company's wardrobe rather than as ids.
         if (resonance != null)
@@ -62,6 +65,16 @@ public class EquipmentWindow : OdinMenuEditorWindow
         if (spellbooks != null) tree.Add("Databases/Spellbooks", spellbooks);
 
         return tree;
+    }
+
+    /// <summary>Rebuild the menu and open the page of the item with this id.</summary>
+    public void ShowItem(string itemId)
+    {
+        ForceMenuTreeRebuild();
+        string path = "Items/" + Catalog.DisplayName(itemId);
+        var item = MenuTree.EnumerateTree().FirstOrDefault(i => i.GetFullPath() == path);
+        if (item != null) item.Select();
+        else Debug.LogWarning($"[Equipment] No page for {itemId} after rebuild.");
     }
 
     protected override void OnBeginDrawEditors()
