@@ -302,7 +302,7 @@ public class ItemPage
         if (_setKey == null) return;
         EditorGUILayout.BeginHorizontal();
         foreach (var part in Catalog.ArmorParts)
-            DrawSibling(part, Catalog.PartId(_setKey, part));
+            DrawSibling(Catalog.PartLabel(part), Catalog.PartId(_setKey, part));
         EditorGUILayout.EndHorizontal();
 
         // The helmets and capes on the theme — there can be several, each a fit.

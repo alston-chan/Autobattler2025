@@ -13,7 +13,7 @@ using UnityEditor;
 public class BagStockTests
 {
     private const string CataloguePath = "Assets/Data/ItemCollection.asset";
-    private const string MarkedGloves = "FantasyHeroes.Basic.Armor.BanditArmor.gloves";
+    private const string MarkedGloves = "FantasyHeroes.Basic.Armor.BanditArmor.vest";
 
     [OneTimeSetUp]
     public void LoadCatalogue()

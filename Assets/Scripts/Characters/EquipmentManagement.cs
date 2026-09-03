@@ -44,11 +44,10 @@ public class EquipmentManagement : MonoBehaviour
     {
         var equipped = new List<Item>();
 
+        // Two armour pieces, not three: the upper (vest, with pauldrons and gloves) and the lower
+        // (boots, with the belt). Gloves rows are disabled in the collection and would roll nothing.
         var vest = EquipRandomFromCollection(ItemType.VestBeltPauldron);
         if (vest != null) equipped.Add(vest);
-
-        var gloves = EquipRandomFromCollection(ItemType.Gloves);
-        if (gloves != null) equipped.Add(gloves);
 
         var boots = EquipRandomFromCollection(ItemType.Boots);
         if (boots != null) equipped.Add(boots);

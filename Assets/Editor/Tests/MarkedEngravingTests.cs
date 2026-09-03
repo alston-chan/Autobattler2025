@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class MarkedEngravingTests
 {
-    private const string ItemId = "FantasyHeroes.Basic.Armor.BanditArmor.gloves";
+    private const string ItemId = "FantasyHeroes.Basic.Armor.BanditArmor.vest";
 
     private static MarkedEngraving Fresh()
     {

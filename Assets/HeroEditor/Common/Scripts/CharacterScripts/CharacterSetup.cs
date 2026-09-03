@@ -20,7 +20,11 @@ namespace Assets.HeroEditor.Common.Scripts.CharacterScripts
         private static readonly Dictionary<EquipmentPart, EquipmentPart[]> EquipmentDependencies =
             new Dictionary<EquipmentPart, EquipmentPart[]>
             {
-                { EquipmentPart.Vest, new[] { EquipmentPart.Belt, EquipmentPart.Pauldrons } }
+                // PROJECT EDIT (Autobattler2025): armour is two pieces, split at the waist. The upper
+                // (vest) brings the pauldrons and the gloves; the lower (boots) brings the belt. The
+                // original had the vest bring the belt and pauldrons, and gloves and boots on their own.
+                { EquipmentPart.Vest, new[] { EquipmentPart.Pauldrons, EquipmentPart.Gloves } },
+                { EquipmentPart.Boots, new[] { EquipmentPart.Belt } },
             };
         /// <summary>
         /// Set character's body parts.

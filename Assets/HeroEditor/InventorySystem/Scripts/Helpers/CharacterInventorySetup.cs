@@ -41,6 +41,11 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Helpers
                             }
                             character.Armor = character.SpriteCollection.Armor.FindSpritesById(item.Params.SpriteId);
                             break;
+                        // PROJECT EDIT (Autobattler2025): armour is two pieces. The upper
+                        // (VestBeltPauldron) dresses the vest, and with it the pauldrons and gloves;
+                        // the lower (Boots) dresses the boots, and with it the belt — the dependency
+                        // table in CharacterSetup carries the extra parts. A Gloves item still dresses
+                        // gloves alone, for a save from before the change.
                         case ItemType.VestBeltPauldron:
                         case ItemType.Gloves:
                         case ItemType.Boots:

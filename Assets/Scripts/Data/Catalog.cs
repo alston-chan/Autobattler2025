@@ -74,7 +74,12 @@ public static class Catalog
     // collection: 165 of the 297 sets find a helmet this way and 35 a cape, where exact names
     // found 7. Several can match (a TypeB, a Helm1/Helm2), and all of them are the set's.
 
-    public static readonly string[] ArmorParts = { "vest", "gloves", "boots" };
+    // Two pieces since the waist split: the upper keeps the vest's id and dresses pauldrons and
+    // gloves with it; the lower keeps the boots' id and dresses the belt. Gloves rows are disabled.
+    public static readonly string[] ArmorParts = { "vest", "boots" };
+
+    /// <summary>What a part is called on a card: the vest id is the Upper, the boots id the Lower.</summary>
+    public static string PartLabel(string part) => part == "vest" ? "Upper" : part == "boots" ? "Lower" : part;
 
     private static readonly string[] GarmentWords =
     {

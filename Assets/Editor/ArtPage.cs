@@ -14,7 +14,7 @@ using UnityEngine;
 /// engraving yet, make it a designed item in one step: a resonance entry with an engraving, and a
 /// place to find it.
 ///
-/// Armour comes in sets — vest, gloves and boots on one sprite family, 297 of them — with helmets
+/// Armour comes in sets — an upper and a lower on one sprite family, 297 of them — with helmets
 /// and capes on the same theme in the same pack (<see cref="Catalog.Theme"/>), so the page also
 /// shows the collection as sets: one tile each, expanding to every piece on the theme, and a button
 /// that designs the pieces together.
@@ -38,11 +38,11 @@ public class ArtPage
     {
         public string key;
         public string name;
-        public Entry vest, gloves, boots;
+        public Entry vest, boots;   // the upper and the lower
         public readonly List<Entry> extras = new List<Entry>();       // helmets and capes on the theme: pieces
         public readonly List<Entry> companions = new List<Entry>();   // weapons and shields on the theme: goes with
         public string search;
-        public IEnumerable<Entry> Pieces => new[] { vest, gloves, boots }.Where(p => p != null).Concat(extras);
+        public IEnumerable<Entry> Pieces => new[] { vest, boots }.Where(p => p != null).Concat(extras);
     }
 
     /// <summary>A helmet or cape on the set's theme, as a row: what it is, and the engraving to give it.</summary>
@@ -135,7 +135,6 @@ public class ArtPage
                     if (_byId.TryGetValue(piece.Id, out var companion)) set.companions.Add(companion);
             }
             if (part == "vest") set.vest = entry;
-            else if (part == "gloves") set.gloves = entry;
             else if (part == "boots") set.boots = entry;
         }
         foreach (var set in sets.Values)
@@ -228,7 +227,7 @@ public class ArtPage
     {
         _selectedSet = set;
         _selected = null;
-        _vestEngraving = _glovesEngraving = _bootsEngraving = null;
+        _vestEngraving = _bootsEngraving = null;
         _extras = set != null ? set.extras.Select(e => new ExtraPiece(e)).ToList() : new List<ExtraPiece>();
         _companions = set != null ? set.companions.Select(e => new ExtraPiece(e)).ToList() : new List<ExtraPiece>();
     }
@@ -258,7 +257,7 @@ public class ArtPage
             if (IsSetsView)
             {
                 set = _shownSets[i];
-                icon = set.vest?.icon ?? set.gloves?.icon ?? set.boots?.icon;
+                icon = set.vest?.icon ?? set.boots?.icon;
                 tooltip = set.name + (set.extras.Count > 0 ? "  +" + set.extras.Count : "");
                 isSelected = set == _selectedSet;
                 designedPieces = set.Pieces.Count(p => designed.Contains(p.item.Id));
@@ -452,11 +451,9 @@ public class ArtPage
     private string SetKey => _selectedSet == null ? "" : $"{_selectedSet.key}   ·   {Catalog.Theme(_selectedSet.name)}";
 
     [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(4)]
-    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Vest")]
+    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Upper")]
     private Sprite VestIcon => _selectedSet?.vest?.icon;
-    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Gloves"), ShowIf("HasSet"), PropertyOrder(4)]
-    private Sprite GlovesIcon => _selectedSet?.gloves?.icon;
-    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Boots"), ShowIf("HasSet"), PropertyOrder(4)]
+    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Lower"), ShowIf("HasSet"), PropertyOrder(4)]
     private Sprite BootsIcon => _selectedSet?.boots?.icon;
     [HorizontalGroup("Set/art"), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, ShowIf("HasSet"), PropertyOrder(4)]
     [Tooltip("The vest as worn; the three parts share the sprite family.")]
@@ -523,7 +520,7 @@ public class ArtPage
         {
             var list = new List<string>();
             if (_selectedSet == null) return list;
-            foreach (var piece in new[] { _selectedSet.vest, _selectedSet.gloves, _selectedSet.boots })
+            foreach (var piece in new[] { _selectedSet.vest, _selectedSet.boots })
             {
                 if (piece == null) continue;
                 var entry = ResonanceEntryFor(piece.item.Id);
@@ -537,11 +534,9 @@ public class ArtPage
 
     // One engraving per piece. The doc's model: a set is pieces designed together, each with a
     // different engraving that combos with the others — not one item with a bonus.
-    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Vest"), EnableIf("@this.CanDesign(\"vest\")")]
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Upper"), EnableIf("@this.CanDesign(\"vest\")")]
     private Engraving _vestEngraving;
-    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Gloves"), EnableIf("@this.CanDesign(\"gloves\")")]
-    private Engraving _glovesEngraving;
-    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Boots"), EnableIf("@this.CanDesign(\"boots\")")]
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Lower"), EnableIf("@this.CanDesign(\"boots\")")]
     private Engraving _bootsEngraving;
 
     [BoxGroup("Set/Make this a set"), ShowIf("HasExtras"), PropertyOrder(6), ShowInInspector, LabelText("Helmets and capes on the theme")]
@@ -564,7 +559,7 @@ public class ArtPage
     private RewardPool _setPool;
 
     private Entry Piece(string part) => _selectedSet == null ? null
-        : part == "vest" ? _selectedSet.vest : part == "gloves" ? _selectedSet.gloves : _selectedSet.boots;
+        : part == "vest" ? _selectedSet.vest : _selectedSet.boots;
 
     private bool CanDesign(string part)
     {
@@ -574,7 +569,7 @@ public class ArtPage
 
     private IEnumerable<(Entry piece, Engraving engraving)> ToDesign()
     {
-        foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("gloves", _glovesEngraving), ("boots", _bootsEngraving) })
+        foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("boots", _bootsEngraving) })
             if (engraving != null && CanDesign(part)) yield return (Piece(part), engraving);
         foreach (var extra in _extras.Concat(_companions))
             if (extra.engraving != null && extra.CanDesign) yield return (extra.entry, extra.engraving);
@@ -589,7 +584,7 @@ public class ArtPage
     {
         if (_selectedSet == null) return;
         var pieces = new List<SetDrafts.Piece>();
-        foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("gloves", _glovesEngraving), ("boots", _bootsEngraving) })
+        foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("boots", _bootsEngraving) })
         {
             var piece = Piece(part);
             if (piece != null) pieces.Add(new SetDrafts.Piece { itemId = piece.item.Id, engraving = engraving });

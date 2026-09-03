@@ -19,6 +19,5 @@ MonoBehaviour:
   - Extensions.Epic.Shield.BlazeShield
   - FantasyHeroes.Basic.Armor.ArielDress [Paint].vest
   - FantasyHeroes.Basic.Armor.ArielDress [Paint].boots
-  - FantasyHeroes.Basic.Armor.ArielDress [Paint].gloves
   - FantasyHeroes.Basic.Bow.BattleBow
-  - FantasyHeroes.Basic.Armor.BanditArmor.gloves
+  - FantasyHeroes.Basic.Armor.BanditArmor.vest
