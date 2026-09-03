@@ -3,6 +3,7 @@ using System.Linq;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 /// <summary>
 /// The item catalogue as something an inspector can offer: every item id as a dropdown, grouped
@@ -60,6 +61,24 @@ public static class Catalog
         var collection = Items();
         if (collection == null || collection.Items == null || string.IsNullOrEmpty(id)) return null;
         return collection.Items.FirstOrDefault(i => i != null && i.Id == id);
+    }
+
+    /// <summary>The item's inventory icon, or null. Looked up once per caller: the collection warns for a missing one.</summary>
+    public static Sprite Icon(string id)
+    {
+        var item = Find(id);
+        var collection = Items();
+        if (item == null || collection == null || string.IsNullOrEmpty(item.IconId)) return null;
+        return collection.FindIcon(item.IconId);
+    }
+
+    /// <summary>The sprite the item wears on a character, or null.</summary>
+    public static Sprite Look(string id)
+    {
+        var item = Find(id);
+        var collection = Items();
+        if (item == null || collection == null || string.IsNullOrEmpty(item.SpriteId)) return null;
+        return collection.FindSprite(item.SpriteId);
     }
 
     /// <summary>The item's English name, else the last segment of its id, else the id itself.</summary>

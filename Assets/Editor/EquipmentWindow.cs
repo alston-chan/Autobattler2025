@@ -40,14 +40,17 @@ public class EquipmentWindow : OdinMenuEditorWindow
         if (resonance != null)
         {
             foreach (var entry in resonance.entries.OrderBy(e => Catalog.DisplayName(e.itemId)))
-                tree.Add("Items/" + Catalog.DisplayName(entry.itemId), new ItemPage(resonance, entry));
+            {
+                var page = new ItemPage(resonance, entry);
+                tree.Add("Items/" + Catalog.DisplayName(entry.itemId), page, page.Icon);
+            }
         }
 
         if (spellbooks != null)
         {
             foreach (var entry in spellbooks.entries.OrderBy(e => Catalog.DisplayName(e.itemId)))
                 if (entry.spell != null)
-                    tree.Add("Spellbooks/" + Catalog.DisplayName(entry.itemId), entry.spell);
+                    tree.Add("Spellbooks/" + Catalog.DisplayName(entry.itemId), entry.spell, Catalog.Icon(entry.itemId));
         }
 
         tree.AddAllAssetsAtPath("Engravings", "Assets/Data/Engravings", typeof(Engraving), true);
@@ -89,9 +92,22 @@ public class ItemPage
     {
         _database = database;
         _entry = entry;
+        // Resolved once: the collection logs a warning for a missing icon, and a getter would
+        // repeat it on every repaint.
+        Icon = Catalog.Icon(entry.itemId);
+        Look = Catalog.Look(entry.itemId);
     }
 
     // ---- the item, as the collection has it
+
+    [BoxGroup("Item"), HorizontalGroup("Item/art", 220), PreviewField(96, ObjectFieldAlignment.Left)]
+    [ShowInInspector, ReadOnly, HideLabel, PropertyOrder(-2)]
+    public Sprite Icon { get; }
+
+    [HorizontalGroup("Item/art"), PreviewField(96, ObjectFieldAlignment.Left)]
+    [ShowInInspector, ReadOnly, HideLabel, PropertyOrder(-1)]
+    [Tooltip("What the item looks like worn.")]
+    public Sprite Look { get; }
 
     [BoxGroup("Item"), ShowInInspector, ReadOnly, LabelText("Name")]
     private string Name => Catalog.DisplayName(_entry.itemId);
@@ -162,10 +178,12 @@ public class ItemPage
 
     // ---- try it
 
-    [BoxGroup("Try it"), ShowInInspector, Range(1, 3), LabelText("Tier")]
+    // Ordered last by hand: Odin draws fields before properties, which put this box above the
+    // numbers it exists to try.
+    [BoxGroup("Try it"), ShowInInspector, Range(1, 3), LabelText("Tier"), PropertyOrder(100)]
     private int _testTier = 1;
 
-    [BoxGroup("Try it"), Button(ButtonSizes.Large), EnableIf("@UnityEngine.Application.isPlaying")]
+    [BoxGroup("Try it"), Button(ButtonSizes.Large), EnableIf("@UnityEngine.Application.isPlaying"), PropertyOrder(101)]
     [InfoBox("In play, in Setup: banks this engraving on the selected hero (or the first one) and " +
              "reconciles, so the badges and the fight show it without finding the item first.")]
     private void BankOnSelectedHero()
@@ -184,10 +202,10 @@ public class ItemPage
         Debug.Log($"[Equipment] Banked {_entry.engraving.DisplayName} {_testTier} on {UnitInspector.DisplayName(hero)}.");
     }
 
-    [BoxGroup("Try it"), Button, HorizontalGroup("Try it/find")]
+    [BoxGroup("Try it"), Button, HorizontalGroup("Try it/find"), PropertyOrder(102)]
     private void PingDatabase() => EditorGUIUtility.PingObject(_database);
 
-    [BoxGroup("Try it"), Button, HorizontalGroup("Try it/find"), EnableIf("@this.Engraving != null")]
+    [BoxGroup("Try it"), Button, HorizontalGroup("Try it/find"), EnableIf("@this.Engraving != null"), PropertyOrder(103)]
     private void PingEngraving() => EditorGUIUtility.PingObject(_entry.engraving);
 
     private void Dirty()

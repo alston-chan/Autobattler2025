@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Engraving_Marked
   m_EditorClassIdentifier: 
   engravingName: Marked
-  description: The enemy deployed directly across from the bearer starts the fight wounded.
+  description: The first enemy in the bearer's lane starts the fight wounded.
   startingCut: 0.2
   extraCutPerTier: 0.1
