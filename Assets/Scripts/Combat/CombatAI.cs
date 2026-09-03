@@ -16,6 +16,17 @@ public class CombatAI : MonoBehaviour
 
     private float _attackRange = 1.5f;
     private bool _isAttacking;
+
+    // The leash (see Targeting.LeashSeconds): when progress toward the target was last made, and
+    // the target a broken leash keeps off the table for a moment.
+    private float _lastProgressTime;
+    private float _lastDistanceToTarget = float.MaxValue;
+    private Entity _leashed;
+    private float _leashedUntil;
+    private const float LeashHoldoffSeconds = 2f;
+
+    /// <summary>How many times any unit's leash has broken this session — for measuring the rule.</summary>
+    public static int LeashBreaks;
     private float[] _spellCooldowns;
 
     // The spells this unit actually casts this combat: its innate spells (weapon basic + always-on)
@@ -103,9 +114,11 @@ public class CombatAI : MonoBehaviour
     private void HandleAI()
     {
         // Whom to fight is its own question now, asked of Targeting, which knows about modes and
-        // about not flip-flopping between two enemies a hair apart.
+        // about not flip-flopping between two enemies a hair apart. A target the leash just broke
+        // on is kept out of the running for a moment, or it would be chosen straight back.
+        Entity avoid = Time.time < _leashedUntil ? _leashed : null;
         Entity closestEnemy = Targeting.Choose(_entity, _entity.targetMode, CurrentTarget,
-                                               _entity.targetStickiness);
+                                               _entity.targetStickiness, avoid);
 
         // Keeping clear of the neighbours is a separate concern and stays here.
         var allEntities = EntityRegistry.All;
@@ -135,12 +148,35 @@ public class CombatAI : MonoBehaviour
 
         if (closestEnemy != null)
         {
-            CurrentTarget = closestEnemy;
+            if (closestEnemy != CurrentTarget)
+            {
+                // A fresh target: the leash starts now.
+                CurrentTarget = closestEnemy;
+                _lastProgressTime = Time.time;
+                _lastDistanceToTarget = float.MaxValue;
+            }
             float distToTarget = Vector3.Distance(transform.position, CurrentTarget.transform.position);
 
             // Ask first, walk second. Something with the reach to be used from here should be used
             // from here, whatever the weapon's reach is.
             bool acted = Attack(CurrentTarget, distToTarget);
+
+            // The leash. Progress is any of: a swing, standing within reach, or having closed the
+            // distance since last frame. None of that for LeashSeconds means the target cannot be
+            // reached — blocked by bodies, or drifting away — and the lock breaks.
+            bool inReach = distToTarget <= _attackRange || _isAttacking;
+            if (acted || inReach || distToTarget < _lastDistanceToTarget - 0.02f) _lastProgressTime = Time.time;
+            _lastDistanceToTarget = distToTarget;
+            if (Targeting.LockOn && Targeting.LeashBroke(Time.time - _lastProgressTime, inReach))
+            {
+                LeashBreaks++;
+                _leashed = CurrentTarget;
+                _leashedUntil = Time.time + LeashHoldoffSeconds;
+                CurrentTarget = null;
+                _lastProgressTime = Time.time;
+                SetAnimState(false);
+                return;                                   // pick again next frame, without this one
+            }
 
 
             if (!acted && !_isAttacking && distToTarget > _attackRange)

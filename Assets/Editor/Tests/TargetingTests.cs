@@ -96,4 +96,18 @@ public class TargetingTests
         Assert.That(Targeting.BeatsIncumbent(4.99f, 5f, 0f), Is.True,
                     "an ability that picks its own target asks with no stickiness at all");
     }
+
+    // ---- the leash
+
+    [Test]
+    public void TheLeashBreaksOnlyOutOfReachAndOnlyAfterItsTime()
+    {
+        float leash = Targeting.LeashSeconds;
+        // Within reach, no amount of waiting breaks it: the unit is fighting, not chasing.
+        Assert.That(Targeting.LeashBroke(leash * 10f, inReach: true), Is.False);
+        // Out of reach but still making progress recently: not yet.
+        Assert.That(Targeting.LeashBroke(leash * 0.5f, inReach: false), Is.False);
+        // Out of reach and no progress for longer than the leash: it breaks.
+        Assert.That(Targeting.LeashBroke(leash + 0.01f, inReach: false), Is.True);
+    }
 }

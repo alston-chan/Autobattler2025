@@ -43,9 +43,38 @@ public static class Targeting
     /// 0.25 means a quarter better. Without it, two enemies a hair apart trade the unit back and
     /// forth every frame and it closes on neither.
     /// </summary>
-    public static Entity Choose(Entity chooser, TargetMode mode, Entity current, float stickiness)
+    public static Entity Choose(Entity chooser, TargetMode mode, Entity current, float stickiness) =>
+        Choose(chooser, mode, current, stickiness, null);
+
+    /// <summary>
+    /// Lock on: a target, once chosen, is kept until it dies or drops out of sight — the TFT rule.
+    /// Nothing closer, weaker or louder turns a unit away; only an ability that says so, or the
+    /// leash. With it off, the old rule applies: nearest, with <c>stickiness</c> as the margin.
+    /// </summary>
+    public static bool LockOn = true;
+
+    /// <summary>
+    /// The leash: how long a locked unit may go without reaching or hitting its target before the
+    /// lock breaks and it picks again. TFT's hex grid guarantees a melee unit stands beside its
+    /// target; here bodies block and targets drift, and a unit chasing what it cannot reach while
+    /// others hit it reads as broken.
+    /// </summary>
+    public static float LeashSeconds = 1.5f;
+
+    /// <summary>Whether the leash has run out: out of reach, and no progress for longer than it allows.</summary>
+    public static bool LeashBroke(float secondsWithoutProgress, bool inReach) =>
+        !inReach && secondsWithoutProgress > LeashSeconds;
+
+    /// <summary>
+    /// As above, with one enemy the chooser will not pick — the target its leash just broke on,
+    /// which it would otherwise choose right back and fail to reach again.
+    /// </summary>
+    public static Entity Choose(Entity chooser, TargetMode mode, Entity current, float stickiness, Entity avoid)
     {
         if (chooser == null) return null;
+
+        // Locked on: the current target stands until it dies or vanishes.
+        if (LockOn && current != null && current != avoid && IsEnemyOf(chooser, current)) return current;
 
         Entity best = null;
         float bestScore = float.MaxValue;
@@ -56,6 +85,7 @@ public static class Targeting
         {
             var candidate = all[i];
             if (!IsEnemyOf(chooser, candidate)) continue;
+            if (candidate == avoid) continue;
 
             anyTargetable = true;
 
@@ -66,8 +96,9 @@ public static class Targeting
             best = candidate;
         }
 
-        // Nobody left to fight, or everyone worth fighting has slipped out of sight.
-        if (!anyTargetable) return FallbackWhenAllHidden(chooser, mode);
+        // Nobody left to fight, or everyone worth fighting has slipped out of sight. The one the
+        // leash broke on still counts if it is the only one there is.
+        if (!anyTargetable) return avoid != null && IsEnemyOf(chooser, avoid) ? avoid : FallbackWhenAllHidden(chooser, mode);
 
         // A target that has vanished from view is dropped at once — that is the whole point of
         // dropping aggro, and honouring stickiness here would leave the assassin still being chased.
