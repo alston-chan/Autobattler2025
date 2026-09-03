@@ -58,6 +58,12 @@ auto-refresh or the old rule blaming the wrong thing is unmeasured, so the rule 
   `Responding: True`. Unity's dialogs are custom-drawn IMGUI, so they cannot be found or
   clicked programmatically: only the user can dismiss it. Undo from *inside* Unity instead
   (destroy the objects, save the scene).
+- **When every MCP call times out, look before concluding.** Windows UI Automation from
+  PowerShell can enumerate Unity's top-level windows and read a native dialog's text and buttons
+  without touching anything (`AutomationElement.RootElement.FindAll` filtered by Unity's process
+  id; a native dialog has class `#32770`). Measured 2026-09-03: a 60 s-timeout "freeze" that
+  looked like a modal was a long stall — one window, no dialog, `Responding=True` a few minutes
+  later. Do not restart the editor on the timeout alone.
 - **Never `Object.Instantiate` a scene prefab instance to duplicate a unit.** It unpacks the
   prefab and writes the entire rig into the scene: measured at 85,530 inserted lines versus
   333 for the correct route. Use
