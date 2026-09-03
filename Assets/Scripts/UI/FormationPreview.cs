@@ -52,6 +52,7 @@ public class FormationPreview : MonoBehaviour
     private static Sprite _arrowSprite;
     private static readonly Color OpenerColor = new Color(1f, 0.85f, 0.3f, 1f);
     private Entity _lingering;
+    private Entity _lastSelected;
     private float _lingerUntil;
     private float _bellUntil;
 
@@ -99,6 +100,11 @@ public class FormationPreview : MonoBehaviour
         Entity focus = null;
         bool inHand = false;
         float alpha = 1f;
+
+        // A new selection takes over at once: whatever was lingering from a drop goes, and the
+        // badges are collected this frame rather than at the next poll.
+        var selected = _inspector != null ? _inspector.Selected : null;
+        if (selected != _lastSelected) { _lastSelected = selected; _lingering = null; _nextPoll = 0f; }
 
         if (_dragger != null && _dragger.Held != null)
         {

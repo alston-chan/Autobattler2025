@@ -69,6 +69,9 @@ public class UnitInspector : MonoBehaviour
     public Entity Selected => _selected;
     private Vector3 _pressPosition;
     private bool _pressed;
+    private FormationDragger _dragger;
+    private bool _lookedForDragger;
+    private Entity _grabSelected;
     private float _nextRefresh;
 
     private GameObject _card;
@@ -107,6 +110,7 @@ public class UnitInspector : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_dragger != null) _dragger.OnGrabbed -= Grabbed;
         EntityRegistry.OnUnregistered -= HandleUnregistered;
     }
 
@@ -121,6 +125,13 @@ public class UnitInspector : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape)) Dismiss();
 
+        if (!_lookedForDragger)
+        {
+            _lookedForDragger = true;
+            _dragger = FindObjectOfType<FormationDragger>();
+            if (_dragger != null) _dragger.OnGrabbed += Grabbed;
+        }
+
         // Press and release are tracked separately so a formation drag doesn't also open a card.
         // A press that STARTS over the UI is ignored outright, which is what lets an item be dragged
         // out of an open window and released over the board without that reading as "click away".
@@ -128,6 +139,7 @@ public class UnitInspector : MonoBehaviour
         {
             _pressed = !IsPointerOverUI();
             _pressPosition = Input.mousePosition;
+            _grabSelected = null;
         }
         else if (Input.GetMouseButtonUp(0) && _pressed)
         {
@@ -158,6 +170,18 @@ public class UnitInspector : MonoBehaviour
             if (_selected != null) Select(null);
 
             _lastClicked = null;
+            return;
+        }
+
+        // Picking the unit up already selected it (Grabbed). The release of a drag that never moved
+        // arrives here as a click, and must not read as "click the selected unit again" — that
+        // would put the card away the moment it came out. It still counts as a first click, so a
+        // second one opens the equipment.
+        if (unit == _grabSelected)
+        {
+            _grabSelected = null;
+            _lastClicked = unit;
+            _lastClickTime = Time.unscaledTime;
             return;
         }
 
@@ -293,6 +317,14 @@ public class UnitInspector : MonoBehaviour
             Gizmos.color = new Color(0.4f, 1f, 0.5f, 0.28f);
             Gizmos.DrawWireCube(full.center, new Vector3(full.size.x, full.size.y, 0f));
         }
+    }
+
+    /// <summary>Picking a unit up is looking at it: the card and the opener follow the hand.</summary>
+    private void Grabbed(Entity unit)
+    {
+        if (unit == null || unit == _selected) return;
+        Select(unit);
+        _grabSelected = unit;
     }
 
     private void Select(Entity unit)

@@ -29,6 +29,9 @@ public class FormationDragger : MonoBehaviour
     /// <summary>Raised when a held unit is put down on the board.</summary>
     public event System.Action<Entity> OnDropped;
 
+    /// <summary>Raised when a unit is picked up.</summary>
+    public event System.Action<Entity> OnGrabbed;
+
     /// <summary>
     /// Where the held unit would land if dropped now: the cell under it, if it is over the company's
     /// half. This is what a preview should read while the unit is in hand — the same cell Drop will
@@ -133,6 +136,7 @@ public class FormationDragger : MonoBehaviour
         _held = best;
         _heldOrigin = best.transform.position;
         _grabOffset = best.transform.position - mouse;
+        OnGrabbed?.Invoke(best);
     }
 
     private void Carry()
