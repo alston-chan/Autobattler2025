@@ -642,6 +642,13 @@ public class GameManager : Singleton<GameManager>
             // reads what is equipped, so restoring it earlier would grant against an empty rig.
             if (saved != null && characterEntity.Resonance != null)
                 characterEntity.Resonance.RestoreState(saved.resonance);
+
+            // And hold the engravings now, not at the bell. The inventory screen reconciles on
+            // every change, but gear that arrives here never passes through it, so until the
+            // first fight a hero wore its engravings without holding them: a Bulwark bearer
+            // clicked in the first Setup showed nothing on its neighbours, and the bell made
+            // the badges appear out of nowhere.
+            if (characterEntity.Resonance != null) characterEntity.Resonance.Refresh();
         }
     }
 

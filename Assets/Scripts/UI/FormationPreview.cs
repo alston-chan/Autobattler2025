@@ -47,10 +47,7 @@ public class FormationPreview : MonoBehaviour
     private readonly List<int> _tiers = new List<int>();
 
     private float _nextPoll;
-    private float _nextThreatPoll;
-    private readonly List<SpriteRenderer> _threats = new List<SpriteRenderer>();
     private static Sprite _lineSprite;
-    private static readonly Color ThreatColor = new Color(1f, 0.38f, 0.32f, 1f);
     private SpriteRenderer _opener, _openerRing, _openerHead;
     private static Sprite _arrowSprite;
     private static readonly Color OpenerColor = new Color(1f, 0.85f, 0.3f, 1f);
@@ -103,16 +100,14 @@ public class FormationPreview : MonoBehaviour
         bool inHand = false;
         float alpha = 1f;
 
-        // Threat lines — enemy to the hero it will engage at the bell — show whenever the company is
-        // being arranged, not only for a selected hero: they are the board's weather, and the reason
-        // a lane left open is a decision rather than a gap.
-
         if (_dragger != null && _dragger.Held != null)
         {
             focus = _dragger.Held;
             inHand = true;
         }
-        else if (_lingering != null && now < _lingerUntil)
+        // A dropped unit lingers and fades — unless it is also the selected one, which would fade
+        // out and then pop straight back as the selection took over below.
+        else if (_lingering != null && now < _lingerUntil && !(_inspector != null && _inspector.Selected == _lingering))
         {
             focus = _lingering;
             alpha = (_lingerUntil - now) / LingerSeconds;
@@ -128,12 +123,11 @@ public class FormationPreview : MonoBehaviour
         Entity looked = focus;
         if (looked == null && _inspector != null && _inspector.Selected != null) looked = _inspector.Selected;
 
+        // The opener is the only line drawn. A full set of threat lines, one per enemy, was tried
+        // and read as the board's weather: always there, so never looked at.
         bool held = _dragger != null && _dragger.Held != null;
-        if (held || looked != null || now >= _nextThreatPoll)
-        {
-            _nextThreatPoll = now + PollInterval;
-            DrawThreats(held ? _dragger.Held : null, held, looked, alpha);
-        }
+        if (looked != null) DrawOpening(held ? _dragger.Held : null, held, looked, alpha);
+        else HideOpener();
 
         if (focus == null) { HideMarkers(); return; }
 
@@ -173,8 +167,8 @@ public class FormationPreview : MonoBehaviour
         // Runs after GameManager's own handler, so the effects have landed by now; the previews still
         // name the same units, because they read the same formation the effects did.
         _bellUntil = Time.unscaledTime + BellSeconds;
-        // The lines said who would engage whom; the moment that is happening they are noise.
-        HideThreats();
+        // The arrow said whom a unit would charge; the moment that is happening it is noise.
+        HideOpener();
         Collect(null, inHand: false);
     }
 
@@ -300,7 +294,7 @@ public class FormationPreview : MonoBehaviour
     private void Hide()
     {
         HideMarkers();
-        HideThreats();
+        HideOpener();
     }
 
     private void HideMarkers()
@@ -314,47 +308,18 @@ public class FormationPreview : MonoBehaviour
     }
 
     /// <summary>
-    /// One line per enemy, from where it stands to the hero it will engage at the bell, computed by
-    /// the same rule targeting uses — under the plan, so a hero in hand sees the lines move with it.
-    /// Lines that end on the unit being looked at are drawn brighter and the rest fall back; the
-    /// looked-at unit's own opener is drawn on top by <see cref="DrawOpener"/>.
+    /// The board as it would be at the bell — under the plan, so a hero in hand is read where it
+    /// will land — and the looked-at unit's opener on it.
     /// </summary>
-    private void DrawThreats(Entity planned, bool inHand, Entity focus, float alpha)
+    private void DrawOpening(Entity planned, bool inHand, Entity focus, float alpha)
     {
-        if (_runManager == null) { HideThreats(); return; }
+        if (_runManager == null) { HideOpener(); return; }
 
         var formation = _runManager.Formation;
         if (inHand && _dragger != null && _dragger.TryGetPlannedCell(out var cell)) formation.Plan(planned, cell);
         else formation.ClearPlan();
         var board = BoardSnapshot.Capture(formation, planned: true);
         formation.ClearPlan();
-
-        var grid = BattleGrid.Instance;
-        int used = 0;
-        foreach (var enemy in board.Units)
-        {
-            if (enemy == null || enemy.isTeam) continue;
-            if (enemy == focus) continue;                 // its line is the opener, drawn below
-
-            var target = BoardSnapshot.PredictOpening(board, enemy);
-            if (target == null || !board.TryGet(target, out var to)) continue;
-
-            var line = used < _threats.Count ? _threats[used] : MakeThreat();
-            used++;
-
-            // The hero's planned cell rather than its transform: a hero in hand is under the cursor,
-            // and the line should point at where it will land.
-            Vector3 from = enemy.transform.position + Vector3.up * 0.35f;
-            Vector3 at = (grid != null ? grid.CellToWorld(true, to.column, to.row) : target.transform.position) + Vector3.up * 0.35f;
-            Lay(line, from, at);
-
-            bool onFocus = focus != null && target == focus;
-            float a = onFocus ? 0.85f : focus != null ? 0.18f : 0.3f;
-            line.color = new Color(ThreatColor.r, ThreatColor.g, ThreatColor.b, a);
-            line.gameObject.SetActive(true);
-        }
-        for (int i = used; i < _threats.Count; i++)
-            if (_threats[i] != null) _threats[i].gameObject.SetActive(false);
 
         DrawOpener(board, focus, alpha);
     }
@@ -369,13 +334,7 @@ public class FormationPreview : MonoBehaviour
         var target = BoardSnapshot.PredictOpening(board, focus);
         if (target == null || !board.TryGet(target, out var toCell)) { HideOpener(); return; }
 
-        if (_opener == null)
-        {
-            _opener = MakeThreat();
-            _threats.Remove(_opener);
-            _opener.name = "OpenerLine";
-            _opener.sortingOrder = -401;
-        }
+        if (_opener == null) _opener = MakeLine("OpenerLine", -401);
         if (_openerRing == null)
         {
             var go = new GameObject("OpenerRing");
@@ -459,13 +418,6 @@ public class FormationPreview : MonoBehaviour
         return _arrowSprite;
     }
 
-    private void HideThreats()
-    {
-        foreach (var line in _threats)
-            if (line != null && line.gameObject.activeSelf) line.gameObject.SetActive(false);
-        HideOpener();
-    }
-
     private static void Lay(SpriteRenderer line, Vector3 from, Vector3 to)
     {
         var delta = to - from;
@@ -474,15 +426,14 @@ public class FormationPreview : MonoBehaviour
         line.transform.localScale = new Vector3(delta.magnitude, 0.06f, 1f);
     }
 
-    private SpriteRenderer MakeThreat()
+    private SpriteRenderer MakeLine(string name, int sortingOrder)
     {
-        var go = new GameObject("ThreatLine");
+        var go = new GameObject(name);
         go.transform.SetParent(transform, false);
         var renderer = go.AddComponent<SpriteRenderer>();
         renderer.sprite = LineSprite();
         renderer.sortingLayerName = "Default";
-        renderer.sortingOrder = -402;                // on the ground, under the rings
-        _threats.Add(renderer);
+        renderer.sortingOrder = sortingOrder;        // on the ground, under the rings
         return renderer;
     }
 
