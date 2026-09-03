@@ -260,13 +260,14 @@ public class CombatAI : MonoBehaviour
         {
             var spell = _spells[i];
             if (spell == null || spell.alwaysOn || !spell.IsUltimate) continue;
+            if (CombatFeelSettings.IsDisabled(spell)) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
             if (!spell.MeetsWeaponRequirement(_entity)) continue;   // wrong weapon → ability inert
             if (_entity.Mana == null || _entity.Mana.currentMana < spell.manaCost) continue;
             if (distance > spell.range) continue;                   // its own reach, not the weapon's
 
-            StartCoroutine(CastSpellWithCooldown(i, target));
             _entity.OpeningPending = false;   // the charge is over; from here it is whoever is closest
+            StartCoroutine(CastSpellWithCooldown(i, target));
             return true;
         }
 
@@ -275,13 +276,14 @@ public class CombatAI : MonoBehaviour
         {
             var spell = _spells[i];
             if (spell == null || spell.alwaysOn || spell.IsUltimate) continue;
+            if (CombatFeelSettings.IsDisabled(spell)) continue;
             if (_spellCooldowns[i] > 0f || !spell.CanCast(_entity, target)) continue;
             if (!spell.MeetsWeaponRequirement(_entity)) continue;
             if (distance > spell.range) continue;
 
+            _entity.OpeningPending = false;
             StartCoroutine(CastSpellWithCooldown(i, target));
             return true;
-            _entity.OpeningPending = false;
         }
 
         return false;
@@ -291,7 +293,7 @@ public class CombatAI : MonoBehaviour
     {
         for (int i = 0; i < _spells.Count; i++)
         {
-            if (_spells[i] != null && _spells[i].alwaysOn &&
+            if (_spells[i] != null && _spells[i].alwaysOn && !CombatFeelSettings.IsDisabled(_spells[i]) &&
                 _spells[i].CanCast(_entity, null) && _spellCooldowns[i] <= 0)
             {
                 StartCoroutine(CastSpellWithCooldown(i, null));

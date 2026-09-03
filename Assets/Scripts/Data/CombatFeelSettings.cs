@@ -20,6 +20,20 @@ public class CombatFeelSettings : ScriptableObject
              "problem goes with it. A ScriptableObject, so it can be toggled during play.")]
     public bool enableHitstop = true;
 
+    [Tooltip("Turn knockback off across the whole game — every weapon, bomb and shockwave. For " +
+             "seeing what a fight looks like when nobody is pushed around.")]
+    public bool enableKnockback = true;
+
+    [Tooltip("Spells the AI will not cast, from anyone. For taking one ability out of the game to " +
+             "see the fight without it, without touching the enemies that carry it.")]
+    public System.Collections.Generic.List<Spell> disabledSpells = new System.Collections.Generic.List<Spell>();
+
+    public static bool IsDisabled(Spell spell)
+    {
+        var list = Active.disabledSpells;
+        return spell != null && list != null && list.Contains(spell);
+    }
+
     /// <summary>Whether the health/mana bars draw over the characters or behind them.</summary>
     public enum BarLayering { InFrontOfCharacters, BehindCharacters }
 

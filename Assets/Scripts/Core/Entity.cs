@@ -472,6 +472,7 @@ public class Entity : MonoBehaviour
 
     public void ApplyKnockback(Vector3 direction, float force)
     {
+        if (!CombatFeelSettings.Active.enableKnockback) return;
         Knockback.Apply(direction, force);
     }
 
