@@ -186,7 +186,18 @@ public class ItemPage
 
     private bool InSet => _setKey != null;
 
-    [BoxGroup("Set"), ShowIf("InSet"), ShowInInspector, ReadOnly, LabelText("Set"), PropertyOrder(-0.5f)]
+    // A weapon or shield is not a piece of the set; it goes with it. Same box, said differently.
+    private bool IsCompanion
+    {
+        get
+        {
+            var item = Catalog.Find(_entry.itemId);
+            return item != null && (item.Type == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Weapon ||
+                                    item.Type == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Shield);
+        }
+    }
+
+    [BoxGroup("Set"), ShowIf("InSet"), ShowInInspector, ReadOnly, LabelText("@this.IsCompanion ? \"Goes with\" : \"Set\""), PropertyOrder(-0.5f)]
     private string SetName => _setKey != null ? Catalog.SetName(_setKey) : "";
 
     [BoxGroup("Set"), ShowIf("InSet"), OnInspectorGUI, PropertyOrder(-0.4f)]
@@ -200,11 +211,24 @@ public class ItemPage
 
         // The helmets and capes on the theme — there can be several, each a fit.
         var extras = Catalog.MatchingPieces(_setKey);
-        if (extras.Count == 0) return;
-        EditorGUILayout.BeginHorizontal();
-        foreach (var extra in extras)
-            DrawSibling(Catalog.DisplayName(extra.Id), extra.Id);
-        EditorGUILayout.EndHorizontal();
+        if (extras.Count > 0)
+        {
+            EditorGUILayout.BeginHorizontal();
+            foreach (var extra in extras)
+                DrawSibling(Catalog.DisplayName(extra.Id), extra.Id);
+            EditorGUILayout.EndHorizontal();
+        }
+
+        // And what goes with it: the weapons and shields on the theme.
+        var companions = Catalog.Companions(_setKey);
+        if (companions.Count > 0)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("goes with", EditorStyles.miniLabel, GUILayout.Width(60f));
+            foreach (var companion in companions)
+                DrawSibling(Catalog.DisplayName(companion.Id), companion.Id);
+            EditorGUILayout.EndHorizontal();
+        }
     }
 
     // Each sibling is a button: a designed one opens its page, an undesigned one opens the Art

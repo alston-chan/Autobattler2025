@@ -39,7 +39,8 @@ public class ArtPage
         public string key;
         public string name;
         public Entry vest, gloves, boots;
-        public readonly List<Entry> extras = new List<Entry>();   // helmets and capes on the theme
+        public readonly List<Entry> extras = new List<Entry>();       // helmets and capes on the theme: pieces
+        public readonly List<Entry> companions = new List<Entry>();   // weapons and shields on the theme: goes with
         public string search;
         public IEnumerable<Entry> Pieces => new[] { vest, gloves, boots }.Where(p => p != null).Concat(extras);
     }
@@ -130,6 +131,8 @@ public class ArtPage
                 set = sets[key] = new SetEntry { key = key, name = Catalog.SetName(key) };
                 foreach (var piece in Catalog.MatchingPieces(key))
                     if (_byId.TryGetValue(piece.Id, out var extra)) set.extras.Add(extra);
+                foreach (var piece in Catalog.Companions(key))
+                    if (_byId.TryGetValue(piece.Id, out var companion)) set.companions.Add(companion);
             }
             if (part == "vest") set.vest = entry;
             else if (part == "gloves") set.gloves = entry;
@@ -137,7 +140,7 @@ public class ArtPage
         }
         foreach (var set in sets.Values)
         {
-            set.search = (set.name + " " + set.key + " " + string.Join(" ", set.extras.Select(e => e.name))).ToLowerInvariant();
+            set.search = (set.name + " " + set.key + " " + string.Join(" ", set.extras.Concat(set.companions).Select(e => e.name))).ToLowerInvariant();
             _sets.Add(set);
         }
         _sets.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
@@ -227,6 +230,7 @@ public class ArtPage
         _selected = null;
         _vestEngraving = _glovesEngraving = _bootsEngraving = null;
         _extras = set != null ? set.extras.Select(e => new ExtraPiece(e)).ToList() : new List<ExtraPiece>();
+        _companions = set != null ? set.companions.Select(e => new ExtraPiece(e)).ToList() : new List<ExtraPiece>();
     }
 
     // ---- the grid
@@ -472,6 +476,11 @@ public class ArtPage
             _wearingSet = _selectedSet.key;
             _wearing.Clear();
             foreach (var piece in pieces) _wearing.Add(piece.item.Id);
+            // The first weapon and the first shield on the theme go in hand; two swords cannot.
+            var firstWeapon = _selectedSet.companions.FirstOrDefault(c => c.item.Type == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Weapon);
+            var firstShield = _selectedSet.companions.FirstOrDefault(c => c.item.Type == Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Shield);
+            if (firstWeapon != null) _wearing.Add(firstWeapon.item.Id);
+            if (firstShield != null) _wearing.Add(firstShield.item.Id);
         }
 
         EditorGUILayout.BeginHorizontal();
@@ -481,11 +490,13 @@ public class ArtPage
 
         EditorGUILayout.BeginVertical();
         GUILayout.Label("Wearing", EditorStyles.miniBoldLabel);
-        foreach (var piece in pieces)
+        foreach (var piece in pieces) DrawWearToggle(piece);
+        if (_selectedSet.companions.Count > 0)
         {
-            bool on = _wearing.Contains(piece.item.Id);
-            bool now = GUILayout.Toggle(on, " " + piece.name, GUILayout.Height(20f));
-            if (now != on) { if (now) _wearing.Add(piece.item.Id); else _wearing.Remove(piece.item.Id); }
+            GUILayout.Space(4f);
+            GUILayout.Label("Goes with", EditorStyles.miniBoldLabel);
+            // One weapon in hand at a time reads; the first goes on by default, the rest are a click.
+            foreach (var companion in _selectedSet.companions) DrawWearToggle(companion);
         }
         GUILayout.Space(6f);
         EditorGUILayout.BeginHorizontal();
@@ -495,6 +506,13 @@ public class ArtPage
         EditorGUILayout.EndVertical();
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawWearToggle(Entry entry)
+    {
+        bool on = _wearing.Contains(entry.item.Id);
+        bool now = GUILayout.Toggle(on, " " + entry.name, GUILayout.Height(20f));
+        if (now != on) { if (now) _wearing.Add(entry.item.Id); else _wearing.Remove(entry.item.Id); }
     }
 
     [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(5), ShowInInspector, ReadOnly, ListDrawerSettings(IsReadOnly = true, ShowFoldout = false), LabelText("Pieces")]
@@ -529,6 +547,14 @@ public class ArtPage
     [TableList(AlwaysExpanded = true, DrawScrollView = false, IsReadOnly = true, ShowIndexLabels = false)]
     private List<ExtraPiece> _extras = new List<ExtraPiece>();
 
+    // Goes with, not part of: a set is something any hero can wear whatever they swing. Designing
+    // a companion here is offered for convenience — the weapon often says what the set is for.
+    private bool HasCompanions => HasSet && _companions.Count > 0;
+
+    [BoxGroup("Set/Make this a set"), ShowIf("HasCompanions"), PropertyOrder(6), ShowInInspector, LabelText("Goes with — weapons and shields on the theme")]
+    [TableList(AlwaysExpanded = true, DrawScrollView = false, IsReadOnly = true, ShowIndexLabels = false)]
+    private List<ExtraPiece> _companions = new List<ExtraPiece>();
+
     [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, LabelText("Counts")]
     [Tooltip("The same counting rule for every piece; change any one on its page afterwards.")]
     private ResonanceRequirement _setRequirement = ResonanceRequirement.CombatsWorn;
@@ -549,7 +575,7 @@ public class ArtPage
     {
         foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("gloves", _glovesEngraving), ("boots", _bootsEngraving) })
             if (engraving != null && CanDesign(part)) yield return (Piece(part), engraving);
-        foreach (var extra in _extras)
+        foreach (var extra in _extras.Concat(_companions))
             if (extra.engraving != null && extra.CanDesign) yield return (extra.entry, extra.engraving);
     }
 

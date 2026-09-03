@@ -84,7 +84,38 @@ public static class Catalog
         "Circlet", "Tiara", "Veil", "Bandana", "Turban", "Cowl", "Hair", "Wreath", "Horns", "Headdress",
         "Visor", "Bonnet", "Beret", "Hairpin", "Ears", "Glasses", "Goggles", "Eyeguard",
         "Cape", "Wings", "Cloak", "Mantle", "Scarf", "Backpack",
+        // Weapons and shields share the theme too — SwordOfCryingDemon, BennuBow, BlacksmithHammer.
+        "Greatsword", "Sword", "Blade", "Saber", "Sabre", "Katana", "Dagger", "Knife", "Axe", "Hatchet",
+        "Hammer", "Mace", "Club", "Flail", "Scepter", "Sceptre", "Staff", "Wand", "Rod", "Spear", "Lance",
+        "Pike", "Halberd", "Scythe", "Glaive", "Crossbow", "Bow", "Gun", "Rifle", "Pistol", "Musket",
+        "Shotgun", "Blaster", "Cannon", "Shield", "Buckler", "Claws", "Claw", "Whip", "Trident", "Stake",
+        "Torch", "Fan", "Boomerang", "Star",
     };
+
+    private static bool IsCompanionType(ItemType type) => type == ItemType.Weapon || type == ItemType.Shield;
+
+    /// <summary>
+    /// The weapons and shields on the set's theme, in its pack. Not pieces of the set — a set is
+    /// something any hero can wear whatever they swing — but what goes with it: the weapon often
+    /// says what the set is for (BennuRobe and BennuBow; ArmorOfAncestors and StaffOfAncestors).
+    /// Measured: 115 of the 297 sets have a weapon on their theme, 41 a shield.
+    /// </summary>
+    public static List<ItemParams> Companions(string setKey)
+    {
+        var found = new List<ItemParams>();
+        var collection = Items();
+        if (collection == null || collection.Items == null || string.IsNullOrEmpty(setKey)) return found;
+
+        string family = Family(setKey);
+        string theme = Theme(SetName(setKey));
+        foreach (var item in collection.Items)
+        {
+            if (item == null || string.IsNullOrEmpty(item.Id) || !IsCompanionType(item.Type)) continue;
+            if (Family(item.Id) != family || Theme(Tail(item.Id)) != theme) continue;
+            found.Add(item);
+        }
+        return found.OrderBy(i => i.Type).ThenBy(i => i.Id).ToList();
+    }
 
     /// <summary>"Extensions.Epic" — the pack and tier an id belongs to, which is where its set lives.</summary>
     public static string Family(string id)
@@ -148,14 +179,15 @@ public static class Catalog
     }
 
     /// <summary>
-    /// The set an item belongs to: its own for an armour part; for a helmet or cape, the armour set
-    /// in the same pack on the same theme, if there is one. Null for anything else.
+    /// The set an item belongs to — or goes with. Its own for an armour part; for a helmet, cape,
+    /// weapon or shield, the armour set in the same pack on the same theme, if there is one. Null
+    /// for anything else.
     /// </summary>
     public static string SetKeyFor(string id)
     {
         if (TryParseArmorPart(id, out var own, out _)) return own;
         var item = Find(id);
-        if (item == null || (item.Type != ItemType.Helmet && item.Type != ItemType.Armor)) return null;
+        if (item == null || (item.Type != ItemType.Helmet && item.Type != ItemType.Armor && !IsCompanionType(item.Type))) return null;
 
         var collection = Items();
         string family = Family(id);
