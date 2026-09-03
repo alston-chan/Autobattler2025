@@ -29,6 +29,16 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Helpers
                             character.FullHair = helmet.Tags.Contains("FullHair");
                             break;
                         case ItemType.Armor:
+                            // PROJECT EDIT (Autobattler2025): capes are typed Armor in the collection but live
+                            // in SpriteCollection.Cape. The original looked every Armor item up in the armour
+                            // list, found nothing for a cape, and assigned the null — which wiped the vest,
+                            // gloves and boots equipped just before it. A cape now goes on as a cape.
+                            var cape = character.SpriteCollection.Cape.SingleOrDefault(i => i.Id == item.Params.SpriteId);
+                            if (cape != null)
+                            {
+                                character.Equip(cape, EquipmentPart.Cape);
+                                break;
+                            }
                             character.Armor = character.SpriteCollection.Armor.FindSpritesById(item.Params.SpriteId);
                             break;
                         case ItemType.VestBeltPauldron:

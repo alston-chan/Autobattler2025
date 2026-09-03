@@ -161,5 +161,6 @@ Writing them:
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
-  project (`Projectile`'s 3D bullet, `CharacterInventorySetup`'s unimplemented firearm equip).
+  project (`Projectile`'s 3D bullet, `CharacterInventorySetup`'s unimplemented firearm equip and its
+  cape handling — a cape is typed Armor and used to wipe the armour equipped before it).
   Each such edit says in a comment what it replaced and why.

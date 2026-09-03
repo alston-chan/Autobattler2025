@@ -26,6 +26,17 @@ public class EquipmentWindow : OdinMenuEditorWindow
         window.minSize = new Vector2(960f, 600f);
     }
 
+    /// <summary>One body for the whole window: pages dress it and draw it, the window owns it.</summary>
+    public MannequinPreview Mannequin => _mannequin ?? (_mannequin = new MannequinPreview());
+    private MannequinPreview _mannequin;
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _mannequin?.Dispose();
+        _mannequin = null;
+    }
+
     protected override OdinMenuTree BuildMenuTree()
     {
         var tree = new OdinMenuTree(supportsMultiSelect: false);
@@ -134,6 +145,15 @@ public class ItemPage
     [ShowInInspector, ReadOnly, HideLabel, PropertyOrder(-1)]
     [Tooltip("What the item looks like worn.")]
     public Sprite Look { get; }
+
+    // The item on a body, alone — the mannequin wears only this, so the piece reads on its own.
+    [HorizontalGroup("Item/art", 150), OnInspectorGUI, PropertyOrder(-0.9f)]
+    private void DrawOnBody()
+    {
+        var rect = GUILayoutUtility.GetRect(140f, 200f, GUILayout.ExpandWidth(false));
+        _window.Mannequin.Dress(new[] { _entry.itemId });
+        _window.Mannequin.Draw(rect);
+    }
 
     [BoxGroup("Item"), ShowInInspector, ReadOnly, LabelText("Name")]
     private string Name => Catalog.DisplayName(_entry.itemId);

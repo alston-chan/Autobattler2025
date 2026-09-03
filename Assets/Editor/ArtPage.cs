@@ -117,6 +117,8 @@ public class ArtPage
             _byId[item.Id] = entry;
         }
         _types.AddRange(_all.Select(e => e.item.Type.ToString()).Distinct().OrderBy(t => t));
+        // Packs by size, so the big ones — Basic, Epic, AbandonedWorkshop — come first.
+        _packs.AddRange(_all.GroupBy(e => Catalog.Family(e.item.Id)).OrderByDescending(g => g.Count()).ThenBy(g => g.Key).Select(g => g.Key));
 
         // Sets: group the armour parts by what they share, then the helmets and capes on the theme.
         var sets = new Dictionary<string, SetEntry>();
@@ -153,8 +155,33 @@ public class ArtPage
     [HorizontalGroup("filters", 180), ShowInInspector, HideLabel, EnumToggleButtons]
     private View Show { get; set; } = View.Items;
 
+    // Where the art came from, and what kind of thing it is. The pack is the first two segments of
+    // the id (Extensions.Epic, FantasyHeroes.Basic, …); the class is the collection's own — Sword,
+    // Bow, Wand, Firearm — which for weapons is the question "what does it swing".
+    [HorizontalGroup("filters2", 0.5f), ShowInInspector, LabelWidth(60), LabelText("Pack"), ValueDropdown("Packs")]
+    private string Pack { get; set; } = "All";
+
+    [HorizontalGroup("filters2"), ShowInInspector, LabelWidth(40), LabelText("Class"), ValueDropdown("Classes"), HideIf("IsSetsView")]
+    private string Class { get; set; } = "All";
+
     private bool IsSetsView => Show == View.Sets;
     private IEnumerable<string> Types => _types;
+    private IEnumerable<string> Packs => _packs;
+
+    // Only the classes the current type has: a helmet has no Sword/Bow to pick from.
+    private IEnumerable<string> Classes
+    {
+        get
+        {
+            yield return "All";
+            foreach (var c in _all.Where(e => Type == "All" || e.item.Type.ToString() == Type)
+                                  .Select(e => e.item.Class.ToString()).Distinct().OrderBy(c => c))
+                yield return c;
+        }
+    }
+
+    private readonly List<string> _packs = new List<string> { "All" };
+    private string _lastPack = null, _lastClass = null;
 
     [ShowInInspector, ReadOnly, HideLabel, DisplayAsString, PropertyOrder(1)]
     private string Count
@@ -172,13 +199,16 @@ public class ArtPage
 
     private void Refilter()
     {
-        if (_lastSearch == Search && _lastType == Type && _lastView == Show) return;
-        _lastSearch = Search; _lastType = Type; _lastView = Show;
+        if (_lastSearch == Search && _lastType == Type && _lastView == Show && _lastPack == Pack && _lastClass == Class) return;
+        _lastSearch = Search; _lastType = Type; _lastView = Show; _lastPack = Pack; _lastClass = Class;
         string needle = (Search ?? "").Trim().ToLowerInvariant();
         if (IsSetsView)
-            _shownSets = _sets.Where(s => needle.Length == 0 || s.search.Contains(needle)).ToList();
+            _shownSets = _sets.Where(s => (Pack == "All" || Catalog.Family(s.key) == Pack) &&
+                                          (needle.Length == 0 || s.search.Contains(needle))).ToList();
         else
             _shown = _all.Where(e => (Type == "All" || e.item.Type.ToString() == Type) &&
+                                     (Pack == "All" || Catalog.Family(e.item.Id) == Pack) &&
+                                     (Class == "All" || e.item.Class.ToString() == Class) &&
                                      (needle.Length == 0 || e.search.Contains(needle))).ToList();
     }
 
@@ -304,6 +334,16 @@ public class ArtPage
     [HorizontalGroup("Picked/art"), PreviewField(96, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, ShowIf("HasSelection"), PropertyOrder(3)]
     private Sprite Look => _look;
 
+    // The picked item on a body, alone.
+    [HorizontalGroup("Picked/art", 150), OnInspectorGUI, ShowIf("HasSelection"), PropertyOrder(3)]
+    private void DrawPickedOnBody()
+    {
+        if (_selected == null) return;
+        var rect = GUILayoutUtility.GetRect(140f, 200f, GUILayout.ExpandWidth(false));
+        _window.Mannequin.Dress(new[] { _selected.item.Id });
+        _window.Mannequin.Draw(rect);
+    }
+
     [BoxGroup("Picked"), ShowInInspector, ReadOnly, ShowIf("HasSelection"), PropertyOrder(4)]
     private string Name => _selected?.name;
 
@@ -416,6 +456,46 @@ public class ArtPage
     [HorizontalGroup("Set/art"), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, ShowIf("HasSet"), PropertyOrder(4)]
     [Tooltip("The vest as worn; the three parts share the sprite family.")]
     private Sprite SetLook => _selectedSet?.vest != null ? Catalog.Look(_selectedSet.vest.item.Id) : null;
+
+    // The set on a body. Every piece is a toggle, so the boots can be seen on their own as well as
+    // with the dress: the two are different questions. New selection: everything on.
+    private readonly HashSet<string> _wearing = new HashSet<string>();
+    private string _wearingSet;
+
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(4.5f), OnInspectorGUI]
+    private void DrawSetOnBody()
+    {
+        if (_selectedSet == null) return;
+        var pieces = _selectedSet.Pieces.ToList();
+        if (_wearingSet != _selectedSet.key)
+        {
+            _wearingSet = _selectedSet.key;
+            _wearing.Clear();
+            foreach (var piece in pieces) _wearing.Add(piece.item.Id);
+        }
+
+        EditorGUILayout.BeginHorizontal();
+        var rect = GUILayoutUtility.GetRect(180f, 260f, GUILayout.ExpandWidth(false));
+        _window.Mannequin.Dress(_wearing);
+        _window.Mannequin.Draw(rect);
+
+        EditorGUILayout.BeginVertical();
+        GUILayout.Label("Wearing", EditorStyles.miniBoldLabel);
+        foreach (var piece in pieces)
+        {
+            bool on = _wearing.Contains(piece.item.Id);
+            bool now = GUILayout.Toggle(on, " " + piece.name, GUILayout.Height(20f));
+            if (now != on) { if (now) _wearing.Add(piece.item.Id); else _wearing.Remove(piece.item.Id); }
+        }
+        GUILayout.Space(6f);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("All", GUILayout.Width(50f))) foreach (var piece in pieces) _wearing.Add(piece.item.Id);
+        if (GUILayout.Button("None", GUILayout.Width(50f))) _wearing.Clear();
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+    }
 
     [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(5), ShowInInspector, ReadOnly, ListDrawerSettings(IsReadOnly = true, ShowFoldout = false), LabelText("Pieces")]
     private List<string> SetPieces
