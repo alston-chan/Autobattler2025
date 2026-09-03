@@ -139,12 +139,15 @@ public class UnitInspector : MonoBehaviour
         {
             _pressed = !IsPointerOverUI();
             _pressPosition = Input.mousePosition;
-            _grabSelected = null;
         }
         else if (Input.GetMouseButtonUp(0) && _pressed)
         {
             _pressed = false;
-            if (Vector3.Distance(Input.mousePosition, _pressPosition) > clickTolerance) return;
+            if (Vector3.Distance(Input.mousePosition, _pressPosition) > clickTolerance)
+            {
+                _grabSelected = null;        // a real drag: no click follows, so nothing to swallow
+                return;
+            }
 
             HandleClick(UnitUnderCursor());
         }
@@ -176,10 +179,13 @@ public class UnitInspector : MonoBehaviour
         // Picking the unit up already selected it (Grabbed). The release of a drag that never moved
         // arrives here as a click, and must not read as "click the selected unit again" — that
         // would put the card away the moment it came out. It still counts as a first click, so a
-        // second one opens the equipment.
-        if (unit == _grabSelected)
+        // second one opens the equipment. The note is consumed here, never on mouse-down: the
+        // dragger's Update may run first in the same frame, and a mouse-down reset then wiped the
+        // note the grab had just written.
+        bool swallow = unit == _grabSelected;
+        _grabSelected = null;
+        if (swallow)
         {
-            _grabSelected = null;
             _lastClicked = unit;
             _lastClickTime = Time.unscaledTime;
             return;
