@@ -164,6 +164,8 @@ public class FormationPreview : MonoBehaviour
         // Runs after GameManager's own handler, so the effects have landed by now; the previews still
         // name the same units, because they read the same formation the effects did.
         _bellUntil = Time.unscaledTime + BellSeconds;
+        // The lines said who would engage whom; the moment that is happening they are noise.
+        HideThreats();
         Collect(null, inHand: false);
     }
 

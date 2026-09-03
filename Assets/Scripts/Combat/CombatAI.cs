@@ -266,6 +266,7 @@ public class CombatAI : MonoBehaviour
             if (distance > spell.range) continue;                   // its own reach, not the weapon's
 
             StartCoroutine(CastSpellWithCooldown(i, target));
+            _entity.OpeningPending = false;   // the charge is over; from here it is whoever is closest
             return true;
         }
 
@@ -280,6 +281,7 @@ public class CombatAI : MonoBehaviour
 
             StartCoroutine(CastSpellWithCooldown(i, target));
             return true;
+            _entity.OpeningPending = false;
         }
 
         return false;

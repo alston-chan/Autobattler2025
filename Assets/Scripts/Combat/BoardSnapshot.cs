@@ -5,10 +5,10 @@ using UnityEngine;
 /// under a dragged hero — and the enemy from where it spawned.
 ///
 /// Also where deployment is frozen. At the bell every unit's lane and column are stamped onto it
-/// (<see cref="Entity.DeployedLane"/>), and that stamp is what targeting reads for the rest of the
-/// fight. Units scatter the instant combat starts; a lane read live would hand the preference out
-/// and take it back as the AI shuffled people, which the player can neither see nor plan
-/// (Docs/PositionalKeywords.md, rule 1).
+/// (<see cref="Entity.DeployedLane"/>), and that stamp is what targeting reads for the opening pick
+/// (<see cref="Entity.OpeningPending"/>). Units scatter the instant combat starts; a lane read live
+/// would hand the preference out and take it back as the AI shuffled people, which the player can
+/// neither see nor plan (Docs/PositionalKeywords.md, rule 0).
 /// </summary>
 public static class BoardSnapshot
 {
@@ -54,7 +54,7 @@ public static class BoardSnapshot
     {
         var all = EntityRegistry.All;
         for (int i = 0; i < all.Count; i++)
-            if (all[i] != null) all[i].DeployedLane = all[i].DeployedColumn = -1;
+            if (all[i] != null) { all[i].DeployedLane = all[i].DeployedColumn = -1; all[i].OpeningPending = false; }
 
         var board = Capture(formation, planned: false);
         foreach (var unit in board.Units)
@@ -62,6 +62,7 @@ public static class BoardSnapshot
             if (unit == null || !board.TryGet(unit, out var placement)) continue;
             unit.DeployedLane = placement.row;
             unit.DeployedColumn = placement.column;
+            unit.OpeningPending = true;
         }
     }
 

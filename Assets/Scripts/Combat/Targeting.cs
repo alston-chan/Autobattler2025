@@ -125,7 +125,7 @@ public static class Targeting
         ScoreFor(mode,
                  Vector3.Distance(chooser.transform.position, candidate.transform.position),
                  HealthFraction(candidate),
-                 chooser.DeployedLane >= 0 && chooser.DeployedLane == candidate.DeployedLane);
+                 chooser.OpeningPending && chooser.DeployedLane >= 0 && chooser.DeployedLane == candidate.DeployedLane);
 
     public static float ScoreFor(TargetMode mode, float distance, float healthFraction) =>
         ScoreFor(mode, distance, healthFraction, sameLane: false);

@@ -86,6 +86,15 @@ public class Entity : MonoBehaviour
     [System.NonSerialized] public int DeployedColumn = -1;
 
     /// <summary>
+    /// True from the bell until this unit's first swing. The lane preference applies while it is
+    /// set — units charge their lanes — and not afterwards: once the board has dissolved into a
+    /// brawl, a preference for a row nobody stands in any more is noise. It has to last the whole
+    /// charge, not just the first pick: a lane target a third further than the neighbour beats the
+    /// stickiness margin, so a one-frame preference would be undone on the second frame.
+    /// </summary>
+    [System.NonSerialized] public bool OpeningPending;
+
+    /// <summary>
     /// Until when this unit cannot be picked as a target.
     ///
     /// Not serialized and not a stat: it is a brief window, bought by doing something — vanishing
