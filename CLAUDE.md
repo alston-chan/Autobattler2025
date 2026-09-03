@@ -105,6 +105,15 @@ head = heroes(subprocess.run(['git','show','HEAD:Assets/Scenes/Main.unity'],
 print([k for k in set(list(cur)+list(head)) if head.get(k,'(absent)') != cur.get(k,'(absent)')])
 ```
 
+## Saving assets from editor tooling
+
+`AssetDatabase.SaveAssets()` writes **every** dirty asset, not the one you meant. A play session
+can leave a run asset dirty in memory — `DemoRun` came back from a fight carrying an `act`
+reference it never had on disk — and the next save-all from a designer button wrote it out, which
+failed `RunSaveTests.AFlatRunResumesAtItsIndex` with a null encounter and nothing in the diff to
+say why. Prefer `AssetDatabase.SaveAssetIfDirty(asset)` for the asset you changed, and check
+`git status` after any save from tooling: an unexpected `M` on a data asset is this.
+
 ## Building test rigs
 
 - Don't make enemies unkillable to lengthen a fight — the company is slaughtered and every

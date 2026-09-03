@@ -105,10 +105,58 @@ public class EquipmentWindow : OdinMenuEditorWindow
         tree.AddAllAssetsAtPath("Reward pools", "Assets/Data/Run", typeof(RewardPool), true, true);
         tree.AddAllAssetsAtPath("Runs", "Assets/Data/Run", typeof(RunData), true, true);
 
+        // Drafts: sets still being thought about. Nothing here is in the game until promoted.
+        var drafts = Drafts;
+        tree.Add("Drafts", drafts);
+        foreach (var draft in drafts.drafts)
+        {
+            var page = new DraftPage(this, drafts, draft);
+            tree.Add("Drafts/" + draft.status + " · " + (string.IsNullOrEmpty(draft.title) ? "(untitled)" : draft.title), page, page.Icon);
+        }
+
         if (resonance != null) tree.Add("Databases/Resonance", resonance);
         if (spellbooks != null) tree.Add("Databases/Spellbooks", spellbooks);
 
         return tree;
+    }
+
+    // ---- drafts
+
+    private const string DraftsPath = "Assets/Data/SetDrafts.asset";
+
+    /// <summary>The one drafts asset, created on first use.</summary>
+    public SetDrafts Drafts
+    {
+        get
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<SetDrafts>(DraftsPath);
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<SetDrafts>();
+                AssetDatabase.CreateAsset(asset, DraftsPath);
+            }
+            return asset;
+        }
+    }
+
+    /// <summary>Start a draft — from the Sets view with its choices, or empty — and open it.</summary>
+    public void NewDraft(string title, string setKey, IEnumerable<SetDrafts.Piece> pieces)
+    {
+        var asset = Drafts;
+        var draft = new SetDrafts.Draft { title = title, setKey = setKey, status = SetDrafts.Status.Idea };
+        if (pieces != null) draft.pieces.AddRange(pieces);
+        if (draft.pieces.Any(p => p.engraving != null)) draft.status = SetDrafts.Status.Drafting;
+        asset.drafts.Add(draft);
+        EditorUtility.SetDirty(asset);
+        AssetDatabase.SaveAssetIfDirty(asset);
+        ShowDraft(draft);
+    }
+
+    public void ShowDraft(SetDrafts.Draft draft)
+    {
+        ForceMenuTreeRebuild();
+        var item = MenuTree.EnumerateTree().FirstOrDefault(i => i.Value is DraftPage page && page.Draft == draft);
+        if (item != null) item.Select();
     }
 
     /// <summary>Rebuild the menu and open the page of the item with this id, wherever it sits.</summary>
@@ -145,6 +193,8 @@ public class EquipmentWindow : OdinMenuEditorWindow
         {
             GUILayout.Label(selected != null ? selected.Name : "Equipment", EditorStyles.boldLabel);
             GUILayout.FlexibleSpace();
+            if (Sirenix.Utilities.Editor.SirenixEditorGUI.ToolbarButton("New draft"))
+                NewDraft("New set", null, null);
             if (Sirenix.Utilities.Editor.SirenixEditorGUI.ToolbarButton("Reload"))
                 ForceMenuTreeRebuild();
         }

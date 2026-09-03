@@ -415,7 +415,8 @@ public class ArtPage
         if (resonance == null) { Debug.LogError("[Equipment] No ResonanceDatabase at Resources/ResonanceDatabase."); return; }
 
         Design(resonance, _selected, _engraving, _requirement, _pool);
-        AssetDatabase.SaveAssets();
+        AssetDatabase.SaveAssetIfDirty(resonance);
+        if (_pool != null) AssetDatabase.SaveAssetIfDirty(_pool);
         Debug.Log($"[Equipment] {_selected.name} is now a designed item: {_engraving.DisplayName}, counts {ResonanceRequirements.Describe(_requirement)}" +
                   (_pool != null ? $", offered in {_pool.name}." : "."));
         _window.ShowItem(_selected.item.Id);
@@ -581,6 +582,23 @@ public class ArtPage
 
     private int PiecesToDesign => ToDesign().Count();
 
+    // Not ready to commit? Keep the thinking. The draft takes the set, every piece on the theme,
+    // and whatever engravings are chosen so far — and touches nothing in the game.
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(7), Button(ButtonSizes.Medium), LabelText("Save as draft instead")]
+    private void SaveAsDraft()
+    {
+        if (_selectedSet == null) return;
+        var pieces = new List<SetDrafts.Piece>();
+        foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("gloves", _glovesEngraving), ("boots", _bootsEngraving) })
+        {
+            var piece = Piece(part);
+            if (piece != null) pieces.Add(new SetDrafts.Piece { itemId = piece.item.Id, engraving = engraving });
+        }
+        foreach (var extra in _extras.Concat(_companions))
+            pieces.Add(new SetDrafts.Piece { itemId = extra.entry.item.Id, engraving = extra.engraving });
+        _window.NewDraft(_selectedSet.name, _selectedSet.key, pieces);
+    }
+
     [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(7)]
     [Button("@\"Make this a set  (\" + this.PiecesToDesign + \" piece\" + (this.PiecesToDesign == 1 ? \"\" : \"s\") + \")\"", ButtonSizes.Large), EnableIf("@this.PiecesToDesign > 0")]
     [InfoBox("Designs every piece with an engraving chosen above — one resonance entry each, the ids added to the " +
@@ -601,7 +619,8 @@ public class ArtPage
         }
         if (made.Count == 0) return;
 
-        AssetDatabase.SaveAssets();
+        AssetDatabase.SaveAssetIfDirty(resonance);
+        if (_setPool != null) AssetDatabase.SaveAssetIfDirty(_setPool);
         Debug.Log($"[Equipment] {_selectedSet.name} designed as a set: {string.Join(", ", made)}" +
                   (_setPool != null ? $"; offered in {_setPool.name}." : "."));
         SelectSet(_selectedSet);
