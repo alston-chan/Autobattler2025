@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: CombatFeelSettings
   m_EditorClassIdentifier: 
   enableHitstop: 0
+  enableKnockback: 0
+  disabledSpells:
+  - {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
   hitFeedback:
     enableFlash: 1
     flashColor: {r: 1, g: 1, b: 1, a: 1}
@@ -36,7 +39,7 @@ MonoBehaviour:
     fadeDuration: 0.45
     sinkDistance: 0.18
   damageNumbers:
-    enabled: 1
+    enabled: 0
     spawnOffset: {x: 0, y: 1.6, z: 0}
     spawnJitterX: 0.3
     fontSize: 3.5
