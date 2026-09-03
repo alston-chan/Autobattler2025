@@ -110,14 +110,14 @@ public class ItemPage
     private readonly EquipmentWindow _window;
     private readonly ResonanceDatabase _database;
     private readonly ResonanceDatabase.Entry _entry;
-    private readonly string _setKey;   // null unless the item is an armour part
+    private readonly string _setKey;   // null unless the item is an armour part, or a helmet or cape on a set's theme
 
     public ItemPage(EquipmentWindow window, ResonanceDatabase database, ResonanceDatabase.Entry entry)
     {
         _window = window;
         _database = database;
         _entry = entry;
-        Catalog.TryParseArmorPart(entry.itemId, out _setKey, out _);
+        _setKey = Catalog.SetKeyFor(entry.itemId);
         // Resolved once: the collection logs a warning for a missing icon, and a getter would
         // repeat it on every repaint.
         Icon = Catalog.Icon(entry.itemId);
@@ -176,18 +176,24 @@ public class ItemPage
         EditorGUILayout.BeginHorizontal();
         foreach (var part in Catalog.ArmorParts)
             DrawSibling(part, Catalog.PartId(_setKey, part));
-        var helmet = Catalog.MatchingHelmet(_setKey);
-        if (helmet != null) DrawSibling("helmet", helmet.Id);
+        EditorGUILayout.EndHorizontal();
+
+        // The helmets and capes on the theme — there can be several, each a fit.
+        var extras = Catalog.MatchingPieces(_setKey);
+        if (extras.Count == 0) return;
+        EditorGUILayout.BeginHorizontal();
+        foreach (var extra in extras)
+            DrawSibling(Catalog.DisplayName(extra.Id), extra.Id);
         EditorGUILayout.EndHorizontal();
     }
 
     // Each sibling is a button: a designed one opens its page, an undesigned one opens the Art
     // page on the set so it can be designed next to the others.
-    private void DrawSibling(string part, string id)
+    private void DrawSibling(string label, string id)
     {
         bool self = id == _entry.itemId;
         bool designed = _database.entries.Any(e => e.itemId == id);
-        string label = self ? $"{part} (this)" : designed ? $"{part} ●" : $"{part} — design";
+        label = self ? $"{label} (this)" : designed ? $"{label} ●" : $"{label} — design";
         using (new EditorGUI.DisabledScope(self))
         {
             if (GUILayout.Button(label, GUILayout.Height(24f)))

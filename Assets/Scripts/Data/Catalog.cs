@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
+using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -66,10 +67,112 @@ public static class Catalog
     // ---- sets
     //
     // Every armour id is Pack.Tier.Armor.<Set>.<part>, and the parts are exactly vest, gloves and
-    // boots — 297 sets of three, each on one sprite family. Helmets are their own family; a set's
-    // helmet is the one that happens to share its name, which only a handful do.
+    // boots — 297 sets of three, each on one sprite family. Helmets and capes are their own
+    // families, named by theme: AngelicDress goes with AngelicRibbon and AngelicCape,
+    // ArmorOfCorruption with HelmetOfCorruption and CapeOfCorruption. The theme is the name with
+    // its garment word taken off, matched within the same pack and tier. Measured on the
+    // collection: 165 of the 297 sets find a helmet this way and 35 a cape, where exact names
+    // found 7. Several can match (a TypeB, a Helm1/Helm2), and all of them are the set's.
 
     public static readonly string[] ArmorParts = { "vest", "gloves", "boots" };
+
+    private static readonly string[] GarmentWords =
+    {
+        "Armor", "Armour", "Dress", "Robe", "Outfit", "Costume", "Suit", "Mail", "Plate", "Garb", "Tunic",
+        "Coat", "Gown", "Uniform", "Attire", "Clothes", "Cloth", "Vest", "Leather", "Chainmail", "Loincloth",
+        "Helmet", "Helm", "Hat", "Hood", "Mask", "Crown", "Ribbon", "Headband", "Halo", "Earpiece", "Cap",
+        "Circlet", "Tiara", "Veil", "Bandana", "Turban", "Cowl", "Hair", "Wreath", "Horns", "Headdress",
+        "Visor", "Bonnet", "Beret", "Hairpin", "Ears", "Glasses", "Goggles", "Eyeguard",
+        "Cape", "Wings", "Cloak", "Mantle", "Scarf", "Backpack",
+    };
+
+    /// <summary>"Extensions.Epic" — the pack and tier an id belongs to, which is where its set lives.</summary>
+    public static string Family(string id)
+    {
+        var segments = id.Split('.');
+        return segments.Length >= 2 ? segments[0] + "." + segments[1] : id;
+    }
+
+    /// <summary>
+    /// What a name is about once its garment word is taken off: "AngelicDress" and "AngelicRibbon"
+    /// are both "Angelic"; "ArmorOfCorruption" and "HelmetOfCorruption" are both "OfCorruption".
+    /// Editions ("TypeB", "Helm2") and tags ("[FullHair]") are ignored.
+    /// </summary>
+    public static string Theme(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "";
+        int tag = name.IndexOf('[');
+        if (tag >= 0) name = name.Substring(0, tag);
+        name = name.Trim();
+        foreach (var edition in new[] { "TypeA", "TypeB", "TypeC" })
+            if (name.EndsWith(edition)) { name = name.Substring(0, name.Length - edition.Length); break; }
+        while (name.Length > 0 && char.IsDigit(name[name.Length - 1])) name = name.Substring(0, name.Length - 1);
+
+        // "ArmorOfCorruption", "HelmOfSunwalker", "CrownOfJerome": the theme is the "Of…" part.
+        int of = name.IndexOf("Of", System.StringComparison.Ordinal);
+        if (of > 0 && of + 2 < name.Length && char.IsUpper(name[of + 2]) &&
+            System.Array.IndexOf(GarmentWords, name.Substring(0, of)) >= 0)
+        {
+            string rest = name.Substring(of + 2);
+            if (rest.StartsWith("The")) rest = rest.Substring(3);
+            return "Of" + rest;
+        }
+
+        foreach (var word in GarmentWords.OrderByDescending(w => w.Length))
+            if (name.EndsWith(word) && name.Length - word.Length >= 3)
+                return name.Substring(0, name.Length - word.Length);
+        return name;
+    }
+
+    /// <summary>
+    /// The helmets and capes on the set's theme, in its pack — all of them, since a theme can have
+    /// a TypeB helmet or three numbered helms and every one is a fit.
+    /// </summary>
+    public static List<ItemParams> MatchingPieces(string setKey)
+    {
+        var found = new List<ItemParams>();
+        var collection = Items();
+        if (collection == null || collection.Items == null || string.IsNullOrEmpty(setKey)) return found;
+
+        string family = Family(setKey);
+        string theme = Theme(SetName(setKey));
+        foreach (var item in collection.Items)
+        {
+            if (item == null || string.IsNullOrEmpty(item.Id)) continue;
+            if (item.Type != ItemType.Helmet && item.Type != ItemType.Armor) continue;   // Armor here is the capes
+            if (Family(item.Id) != family) continue;
+            if (Theme(Tail(item.Id)) != theme) continue;
+            found.Add(item);
+        }
+        return found.OrderBy(i => i.Type).ThenBy(i => i.Id).ToList();
+    }
+
+    /// <summary>
+    /// The set an item belongs to: its own for an armour part; for a helmet or cape, the armour set
+    /// in the same pack on the same theme, if there is one. Null for anything else.
+    /// </summary>
+    public static string SetKeyFor(string id)
+    {
+        if (TryParseArmorPart(id, out var own, out _)) return own;
+        var item = Find(id);
+        if (item == null || (item.Type != ItemType.Helmet && item.Type != ItemType.Armor)) return null;
+
+        var collection = Items();
+        string family = Family(id);
+        string theme = Theme(Tail(id));
+        foreach (var other in collection.Items)
+        {
+            if (other == null || !TryParseArmorPart(other.Id, out var key, out var part) || part != "vest") continue;
+            if (Family(key) == family && Theme(SetName(key)) == theme) return key;
+        }
+        return null;
+    }
+
+    private static string Tail(string id)
+    {
+        int dot = id.LastIndexOf('.');
+        return dot >= 0 ? id.Substring(dot + 1) : id;
+    }
 
     /// <summary>
     /// True when the id is an armour part. <paramref name="setKey"/> is everything before the
@@ -98,15 +201,6 @@ public static class Catalog
 
     /// <summary>The id of one part of a set, whether or not the collection has it.</summary>
     public static string PartId(string setKey, string part) => setKey + "." + part;
-
-    /// <summary>The helmet that shares the set's name, or null — most sets have none.</summary>
-    public static ItemParams MatchingHelmet(string setKey)
-    {
-        var collection = Items();
-        if (collection == null || collection.Items == null) return null;
-        string suffix = ".Helmet." + SetName(setKey);
-        return collection.Items.FirstOrDefault(i => i != null && i.Id != null && i.Id.EndsWith(suffix));
-    }
 
     /// <summary>The item's inventory icon, or null. Looked up once per caller: the collection warns for a missing one.</summary>
     public static Sprite Icon(string id)
