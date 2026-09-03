@@ -95,7 +95,11 @@ public class DraftPage
     [ShowInInspector, PropertyOrder(3), LabelText("Pieces")]
     [TableList(AlwaysExpanded = true, DrawScrollView = false, ShowIndexLabels = false)]
     [OnValueChanged("Dirty", IncludeChildren = true)]
-    private List<SetDrafts.Piece> Pieces => _draft.pieces;
+    private List<SetDrafts.Piece> Pieces
+    {
+        get => _draft.pieces;
+        set { _draft.pieces = value; Dirty(); }   // a setter, so Odin treats the rows as editable
+    }
 
     [PropertyOrder(4), Button, HorizontalGroup("pieces"), ShowIf("HasSet"), LabelText("Add the theme's pieces")]
     [Tooltip("Adds the armour parts, the helmets and capes, and the weapons and shields on the set's theme that are not in the draft yet.")]

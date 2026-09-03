@@ -27,8 +27,8 @@ public class SetDrafts : ScriptableObject
         [ValueDropdown("ItemIds"), TableColumnWidth(240, Resizable = true)]
         public string itemId;
 
-        [AssetsOnly, TableColumnWidth(170)]
-        [Tooltip("What wearing it would grant. Empty while the idea is still words.")]
+        [ValueDropdown("EngravingOptions"), TableColumnWidth(170)]
+        [Tooltip("What wearing it would grant. None while the idea is still words.")]
         public Engraving engraving;
 
         [TextArea(1, 3), TableColumnWidth(260)]
@@ -36,6 +36,20 @@ public class SetDrafts : ScriptableObject
         public string idea;
 
         private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
+
+        // A dropdown, like every other engraving field in the designer — a bare object field wants a
+        // drag or the picker icon, which reads as not editable.
+        private static IEnumerable<ValueDropdownItem<Engraving>> EngravingOptions()
+        {
+            yield return new ValueDropdownItem<Engraving>("None", null);
+#if UNITY_EDITOR
+            foreach (var guid in UnityEditor.AssetDatabase.FindAssets("t:Engraving"))
+            {
+                var engraving = UnityEditor.AssetDatabase.LoadAssetAtPath<Engraving>(UnityEditor.AssetDatabase.GUIDToAssetPath(guid));
+                if (engraving != null) yield return new ValueDropdownItem<Engraving>(engraving.DisplayName, engraving);
+            }
+#endif
+        }
     }
 
     [System.Serializable]
