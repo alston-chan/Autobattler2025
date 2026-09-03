@@ -25,6 +25,31 @@ something alarming, restart play and re-probe *before* believing it or acting on
 everything you want to know into ONE script rather than a series of them — each extra script
 degrades the session further. This has produced several confident, completely wrong diagnoses.
 
+## Hot Reload: edit, re-probe, recompile only when you must
+
+Hot Reload (`Packages/com.singularitygroup.hotreload`) patches **method bodies** into the running
+play session, so the stop → recompile → replay → re-setup cycle (about a minute of waiting each
+time) is only needed for changes it cannot patch: a new or changed field, a new type, a changed
+signature, an attribute, a field initializer, an enum. For a method-body change: edit the file,
+wait for its patch to land, re-run the probe in the same play session.
+
+Its trap is the same one as the domain reload's, from the other direction: a patched method runs
+against whatever state the *old* code left. Statics are not reinitialised, a changed constructor
+or `Awake` does not re-run, a changed field initializer does not touch existing instances. So
+**when something looks wrong right after a hot reload, do a real recompile before believing it.**
+And a change that adds a field must be followed by a real recompile before any probe is trusted at
+all — Hot Reload may report it as applied while the inspector and serializer know nothing of it.
+The MCP's own `script-execute` still compiles an assembly and reloads the domain as before; Hot
+Reload changes nothing about that rule.
+
+Measured on install (2026-09-03): a one-line change to a method body was live in the running play
+session within 10 s of saving the file, with the frame counter, the game state and a static marker
+all intact, and the reverse edit landed the same way. Check its server is up before relying on it
+(`Window > Hot Reload`; the run tab says Started) — a patch that never lands looks exactly like a
+change that did nothing. In that same session a static set by one probe survived four later probes,
+which the domain-reload rule above says it should not have; whether that is Hot Reload suppressing
+auto-refresh or the old rule blaming the wrong thing is unmeasured, so the rule stays.
+
 ## Editing the scene
 
 - **Never `git checkout` or otherwise rewrite a scene file while Unity has it open.** It
