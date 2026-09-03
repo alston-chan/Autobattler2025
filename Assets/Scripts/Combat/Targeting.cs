@@ -59,7 +59,7 @@ public static class Targeting
     /// target; here bodies block and targets drift, and a unit chasing what it cannot reach while
     /// others hit it reads as broken.
     /// </summary>
-    public static float LeashSeconds = 1.5f;
+    public static float LeashSeconds = 5f;
 
     /// <summary>Whether the leash has run out: out of reach, and no progress for longer than it allows.</summary>
     public static bool LeashBroke(float secondsWithoutProgress, bool inReach) =>
