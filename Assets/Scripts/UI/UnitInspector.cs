@@ -412,9 +412,24 @@ public class UnitInspector : MonoBehaviour
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager != null)
         {
-            string deployed = BoardSnapshot.Capture(runManager.Formation, planned: false).Keywords(_selected);
+            var board = BoardSnapshot.Capture(runManager.Formation, planned: false);
+            string deployed = board.Keywords(_selected);
             if (!string.IsNullOrEmpty(deployed))
                 text.Append("<color=#BFC6D4>Deployed</color>  ").Append(deployed).Append('\n');
+
+            // Whom it charges. Before the bell, the prediction the opener line draws; during the
+            // charge, the real target — the same answer, so a player can check the promise.
+            var game = GameManager.Instance;
+            if (game != null && game.StateMachine.Current == GameState.Setup)
+            {
+                var opener = BoardSnapshot.PredictOpening(board, _selected);
+                if (opener != null)
+                    text.Append("<color=#BFC6D4>Opens on</color>  ").Append(DisplayName(opener)).Append('\n');
+            }
+            else if (_selected.OpeningPending && _selected.CombatAI != null && _selected.CombatAI.CurrentTarget != null)
+            {
+                text.Append("<color=#BFC6D4>Charging</color>  ").Append(DisplayName(_selected.CombatAI.CurrentTarget)).Append('\n');
+            }
         }
 
         foreach (var spell in _selected.CastableSpells())

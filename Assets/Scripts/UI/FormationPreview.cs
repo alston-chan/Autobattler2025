@@ -51,6 +51,9 @@ public class FormationPreview : MonoBehaviour
     private readonly List<SpriteRenderer> _threats = new List<SpriteRenderer>();
     private static Sprite _lineSprite;
     private static readonly Color ThreatColor = new Color(1f, 0.38f, 0.32f, 1f);
+    private SpriteRenderer _opener, _openerRing, _openerHead;
+    private static Sprite _arrowSprite;
+    private static readonly Color OpenerColor = new Color(1f, 0.85f, 0.3f, 1f);
     private Entity _lingering;
     private float _lingerUntil;
     private float _bellUntil;
@@ -119,11 +122,17 @@ public class FormationPreview : MonoBehaviour
             focus = _inspector.Selected;
         }
 
+        // The unit being looked at, either side. Badges are a hero's business (the branch above),
+        // but an opener belongs to anyone: the rule is symmetric, and clicking an enemy should say
+        // whom it will charge as plainly as clicking a hero does.
+        Entity looked = focus;
+        if (looked == null && _inspector != null && _inspector.Selected != null) looked = _inspector.Selected;
+
         bool held = _dragger != null && _dragger.Held != null;
-        if (held || now >= _nextThreatPoll)
+        if (held || looked != null || now >= _nextThreatPoll)
         {
             _nextThreatPoll = now + PollInterval;
-            DrawThreats(held ? _dragger.Held : null, held, focus);
+            DrawThreats(held ? _dragger.Held : null, held, looked, alpha);
         }
 
         if (focus == null) { HideMarkers(); return; }
@@ -307,9 +316,10 @@ public class FormationPreview : MonoBehaviour
     /// <summary>
     /// One line per enemy, from where it stands to the hero it will engage at the bell, computed by
     /// the same rule targeting uses — under the plan, so a hero in hand sees the lines move with it.
-    /// Lines that end on the hero being looked at are drawn brighter.
+    /// Lines that end on the unit being looked at are drawn brighter and the rest fall back; the
+    /// looked-at unit's own opener is drawn on top by <see cref="DrawOpener"/>.
     /// </summary>
-    private void DrawThreats(Entity planned, bool inHand, Entity focus)
+    private void DrawThreats(Entity planned, bool inHand, Entity focus, float alpha)
     {
         if (_runManager == null) { HideThreats(); return; }
 
@@ -324,6 +334,7 @@ public class FormationPreview : MonoBehaviour
         foreach (var enemy in board.Units)
         {
             if (enemy == null || enemy.isTeam) continue;
+            if (enemy == focus) continue;                 // its line is the opener, drawn below
 
             var target = BoardSnapshot.PredictOpening(board, enemy);
             if (target == null || !board.TryGet(target, out var to)) continue;
@@ -338,17 +349,121 @@ public class FormationPreview : MonoBehaviour
             Lay(line, from, at);
 
             bool onFocus = focus != null && target == focus;
-            line.color = new Color(ThreatColor.r, ThreatColor.g, ThreatColor.b, onFocus ? 0.85f : 0.3f);
+            float a = onFocus ? 0.85f : focus != null ? 0.18f : 0.3f;
+            line.color = new Color(ThreatColor.r, ThreatColor.g, ThreatColor.b, a);
             line.gameObject.SetActive(true);
         }
         for (int i = used; i < _threats.Count; i++)
             if (_threats[i] != null) _threats[i].gameObject.SetActive(false);
+
+        DrawOpener(board, focus, alpha);
+    }
+
+    /// <summary>
+    /// The looked-at unit's first target: one bold line from it to the enemy it will charge, and a
+    /// ring under that enemy. The one answer a click should give about the opening, for either side.
+    /// </summary>
+    private void DrawOpener(Board<Entity> board, Entity focus, float alpha)
+    {
+        if (focus == null || !board.TryGet(focus, out var fromCell)) { HideOpener(); return; }
+        var target = BoardSnapshot.PredictOpening(board, focus);
+        if (target == null || !board.TryGet(target, out var toCell)) { HideOpener(); return; }
+
+        if (_opener == null)
+        {
+            _opener = MakeThreat();
+            _threats.Remove(_opener);
+            _opener.name = "OpenerLine";
+            _opener.sortingOrder = -401;
+        }
+        if (_openerRing == null)
+        {
+            var go = new GameObject("OpenerRing");
+            go.transform.SetParent(transform, false);
+            _openerRing = go.AddComponent<SpriteRenderer>();
+            _openerRing.sprite = UnitInspector.RingSprite();
+            _openerRing.sortingLayerName = "Default";
+            _openerRing.sortingOrder = -400;
+            _openerRing.transform.localScale = new Vector3(1.6f, 0.52f, 1f);   // the badge rings' proportions: it lies on the floor
+        }
+
+        if (_openerHead == null)
+        {
+            var go = new GameObject("OpenerHead");
+            go.transform.SetParent(transform, false);
+            _openerHead = go.AddComponent<SpriteRenderer>();
+            _openerHead.sprite = ArrowSprite();
+            _openerHead.sortingLayerName = "Default";
+            _openerHead.sortingOrder = -401;
+            _openerHead.transform.localScale = new Vector3(0.42f, 0.42f, 1f);
+        }
+
+        // The line stops short of the target and an arrowhead finishes it: which end is the charger
+        // and which the charged must not depend on knowing that the company stands on the left.
+        // The head sits at the near edge of the target's ring — everything here draws under the
+        // characters, so a head at the target's feet is simply hidden by the sprite.
+        Vector3 from = Anchor(focus, fromCell) + Vector3.up * 0.35f;
+        Vector3 at = Anchor(target, toCell) + Vector3.up * 0.35f;
+        Vector3 dir = (at - from).normalized;
+        Lay(_opener, from, at - dir * 1.05f);
+        var scale = _opener.transform.localScale; scale.y = 0.11f; _opener.transform.localScale = scale;
+        _opener.color = new Color(OpenerColor.r, OpenerColor.g, OpenerColor.b, 0.95f * alpha);
+        _opener.gameObject.SetActive(true);
+
+        _openerHead.transform.position = at - dir * 0.9f;
+        _openerHead.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+        _openerHead.color = _opener.color;
+        _openerHead.gameObject.SetActive(true);
+
+        _openerRing.transform.position = Anchor(target, toCell) + Vector3.up * 0.05f;
+        _openerRing.color = new Color(OpenerColor.r, OpenerColor.g, OpenerColor.b, 0.9f * alpha);
+        _openerRing.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Where a unit is for drawing: a hero at its planned cell, so one in hand is drawn where it
+    /// will land; an enemy where it stands, since its cell is only the nearest approximation.
+    /// </summary>
+    private static Vector3 Anchor(Entity unit, Placement cell)
+    {
+        var grid = BattleGrid.Instance;
+        if (unit.isTeam && grid != null) return grid.CellToWorld(true, cell.column, cell.row);
+        return unit.transform.position;
+    }
+
+    private void HideOpener()
+    {
+        if (_opener != null && _opener.gameObject.activeSelf) _opener.gameObject.SetActive(false);
+        if (_openerRing != null && _openerRing.gameObject.activeSelf) _openerRing.gameObject.SetActive(false);
+        if (_openerHead != null && _openerHead.gameObject.activeSelf) _openerHead.gameObject.SetActive(false);
+    }
+
+    /// <summary>A solid triangle pointing along +x, one unit tall and wide at scale 1.</summary>
+    private static Sprite ArrowSprite()
+    {
+        if (_arrowSprite != null) return _arrowSprite;
+        const int size = 64;
+        var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        var pixels = new Color[size * size];
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                // Tip at the right edge, base along the left: inside when |y - mid| <= half-width at x.
+                float halfWidth = (size - 1 - x) * 0.5f;
+                bool inside = Mathf.Abs(y - (size - 1) * 0.5f) <= halfWidth;
+                pixels[y * size + x] = inside ? Color.white : Color.clear;
+            }
+        texture.SetPixels(pixels);
+        texture.Apply();
+        _arrowSprite = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+        return _arrowSprite;
     }
 
     private void HideThreats()
     {
         foreach (var line in _threats)
             if (line != null && line.gameObject.activeSelf) line.gameObject.SetActive(false);
+        HideOpener();
     }
 
     private static void Lay(SpriteRenderer line, Vector3 from, Vector3 to)
