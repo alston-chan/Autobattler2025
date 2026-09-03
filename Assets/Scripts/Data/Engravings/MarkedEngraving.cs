@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// "The enemy deployed directly across from the bearer starts the fight already wounded."
+/// "The first enemy in the bearer's lane starts the fight already wounded."
 ///
 /// The third positional engraving, and the first to read the <i>enemy's</i> half of the grid.
 /// Bulwark and Vanguard make where a hero stands matter relative to the company; this makes it
@@ -73,27 +73,8 @@ public class MarkedEngraving : Engraving
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager == null || owner == null || !owner.isTeam) return null;
 
-        Vector2Int cell;
-        bool placed = planned ? runManager.Formation.TryGetPlannedCell(owner, out cell)
-                              : runManager.Formation.TryGetCell(owner, out cell);
-        return placed ? EnemyStandingAt(cell) : null;
-    }
-
-    /// <summary>The enemy standing on the enemy-side cell with the same column and row, or null.</summary>
-    private static Entity EnemyStandingAt(Vector2Int cell)
-    {
-        var grid = BattleGrid.Instance;
-        if (grid == null) return null;
-
-        var all = EntityRegistry.All;
-        for (int i = 0; i < all.Count; i++)
-        {
-            var enemy = all[i];
-            if (enemy == null || enemy.isTeam || enemy.isDead) continue;
-
-            grid.ClosestCell(false, enemy.transform.position, out int column, out int row);
-            if (column == cell.x && row == cell.y) return enemy;
-        }
-        return null;
+        // Across is the first enemy in the bearer's lane, not the mirror cell: an enemy standing
+        // behind another is covered by it, on this side as on ours.
+        return BoardSnapshot.Capture(runManager.Formation, planned).Across(owner);
     }
 }

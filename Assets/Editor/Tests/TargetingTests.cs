@@ -67,6 +67,30 @@ public class TargetingTests
     }
 
     [Test]
+    public void ALaneMateCountsCloserByTheBonus()
+    {
+        float plain = Targeting.ScoreFor(TargetMode.Nearest, 5f, 1f, sameLane: false);
+        float lane = Targeting.ScoreFor(TargetMode.Nearest, 5f, 1f, sameLane: true);
+        Assert.That(plain - lane, Is.EqualTo(Targeting.LaneBonus).Within(0.0001f));
+    }
+
+    [Test]
+    public void TheLaneBonusNeverMakesAScoreNegative()
+    {
+        Assert.That(Targeting.ScoreFor(TargetMode.Nearest, 0.5f, 1f, sameLane: true), Is.GreaterThanOrEqualTo(0f));
+    }
+
+    [Test]
+    public void OnlyNearestHonoursTheLane()
+    {
+        // The other modes are a deliberate choice of whom to fight; a lane preference would second-guess it.
+        Assert.That(Targeting.ScoreFor(TargetMode.LowestHealth, 5f, 0.4f, true),
+                    Is.EqualTo(Targeting.ScoreFor(TargetMode.LowestHealth, 5f, 0.4f, false)));
+        Assert.That(Targeting.ScoreFor(TargetMode.Furthest, 5f, 1f, true),
+                    Is.EqualTo(Targeting.ScoreFor(TargetMode.Furthest, 5f, 1f, false)));
+    }
+
+    [Test]
     public void ZeroStickinessTakesAnyImprovement()
     {
         Assert.That(Targeting.BeatsIncumbent(4.99f, 5f, 0f), Is.True,

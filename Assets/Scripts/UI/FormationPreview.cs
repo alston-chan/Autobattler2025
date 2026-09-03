@@ -47,6 +47,10 @@ public class FormationPreview : MonoBehaviour
     private readonly List<int> _tiers = new List<int>();
 
     private float _nextPoll;
+    private float _nextThreatPoll;
+    private readonly List<SpriteRenderer> _threats = new List<SpriteRenderer>();
+    private static Sprite _lineSprite;
+    private static readonly Color ThreatColor = new Color(1f, 0.38f, 0.32f, 1f);
     private Entity _lingering;
     private float _lingerUntil;
     private float _bellUntil;
@@ -96,6 +100,10 @@ public class FormationPreview : MonoBehaviour
         bool inHand = false;
         float alpha = 1f;
 
+        // Threat lines — enemy to the hero it will engage at the bell — show whenever the company is
+        // being arranged, not only for a selected hero: they are the board's weather, and the reason
+        // a lane left open is a decision rather than a gap.
+
         if (_dragger != null && _dragger.Held != null)
         {
             focus = _dragger.Held;
@@ -111,7 +119,14 @@ public class FormationPreview : MonoBehaviour
             focus = _inspector.Selected;
         }
 
-        if (focus == null) { Hide(); return; }
+        bool held = _dragger != null && _dragger.Held != null;
+        if (held || now >= _nextThreatPoll)
+        {
+            _nextThreatPoll = now + PollInterval;
+            DrawThreats(held ? _dragger.Held : null, held, focus);
+        }
+
+        if (focus == null) { HideMarkers(); return; }
 
         // A unit in hand is recomputed every frame so the badges track the cursor; a still one is
         // polled, since only equipment changes could move its effects.
@@ -273,12 +288,98 @@ public class FormationPreview : MonoBehaviour
 
     private void Hide()
     {
+        HideMarkers();
+        HideThreats();
+    }
+
+    private void HideMarkers()
+    {
         _lines.Clear();
         foreach (var pair in _markers)
         {
             if (pair.Value.text != null && pair.Value.text.gameObject.activeSelf) pair.Value.text.gameObject.SetActive(false);
             if (pair.Value.ring != null && pair.Value.ring.gameObject.activeSelf) pair.Value.ring.gameObject.SetActive(false);
         }
+    }
+
+    /// <summary>
+    /// One line per enemy, from where it stands to the hero it will engage at the bell, computed by
+    /// the same rule targeting uses — under the plan, so a hero in hand sees the lines move with it.
+    /// Lines that end on the hero being looked at are drawn brighter.
+    /// </summary>
+    private void DrawThreats(Entity planned, bool inHand, Entity focus)
+    {
+        if (_runManager == null) { HideThreats(); return; }
+
+        var formation = _runManager.Formation;
+        if (inHand && _dragger != null && _dragger.TryGetPlannedCell(out var cell)) formation.Plan(planned, cell);
+        else formation.ClearPlan();
+        var board = BoardSnapshot.Capture(formation, planned: true);
+        formation.ClearPlan();
+
+        var grid = BattleGrid.Instance;
+        int used = 0;
+        foreach (var enemy in board.Units)
+        {
+            if (enemy == null || enemy.isTeam) continue;
+
+            var target = BoardSnapshot.PredictOpening(board, enemy);
+            if (target == null || !board.TryGet(target, out var to)) continue;
+
+            var line = used < _threats.Count ? _threats[used] : MakeThreat();
+            used++;
+
+            // The hero's planned cell rather than its transform: a hero in hand is under the cursor,
+            // and the line should point at where it will land.
+            Vector3 from = enemy.transform.position + Vector3.up * 0.35f;
+            Vector3 at = (grid != null ? grid.CellToWorld(true, to.column, to.row) : target.transform.position) + Vector3.up * 0.35f;
+            Lay(line, from, at);
+
+            bool onFocus = focus != null && target == focus;
+            line.color = new Color(ThreatColor.r, ThreatColor.g, ThreatColor.b, onFocus ? 0.85f : 0.3f);
+            line.gameObject.SetActive(true);
+        }
+        for (int i = used; i < _threats.Count; i++)
+            if (_threats[i] != null) _threats[i].gameObject.SetActive(false);
+    }
+
+    private void HideThreats()
+    {
+        foreach (var line in _threats)
+            if (line != null && line.gameObject.activeSelf) line.gameObject.SetActive(false);
+    }
+
+    private static void Lay(SpriteRenderer line, Vector3 from, Vector3 to)
+    {
+        var delta = to - from;
+        line.transform.position = (from + to) * 0.5f;
+        line.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg);
+        line.transform.localScale = new Vector3(delta.magnitude, 0.06f, 1f);
+    }
+
+    private SpriteRenderer MakeThreat()
+    {
+        var go = new GameObject("ThreatLine");
+        go.transform.SetParent(transform, false);
+        var renderer = go.AddComponent<SpriteRenderer>();
+        renderer.sprite = LineSprite();
+        renderer.sortingLayerName = "Default";
+        renderer.sortingOrder = -402;                // on the ground, under the rings
+        _threats.Add(renderer);
+        return renderer;
+    }
+
+    /// <summary>A one-unit white square, stretched into a line by scale.</summary>
+    private static Sprite LineSprite()
+    {
+        if (_lineSprite != null) return _lineSprite;
+        var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        var pixels = new Color[4];
+        for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.white;
+        texture.SetPixels(pixels);
+        texture.Apply();
+        _lineSprite = Sprite.Create(texture, new Rect(0f, 0f, 2f, 2f), new Vector2(0.5f, 0.5f), 2f);
+        return _lineSprite;
     }
 
     private Marker MakeMarker(Color color)

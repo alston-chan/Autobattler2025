@@ -28,6 +28,15 @@ public enum TargetMode
 public static class Targeting
 {
     /// <summary>
+    /// How much closer a unit in the same lane counts, in world units. Lanes are a preference, not
+    /// a leash: at the bell, when everyone stands in their cells, one cell's worth is enough to make
+    /// the lane's first unit the target every time — so the setup screen can draw the opening as a
+    /// threat line and be right — while mid-fight a clearly closer enemy still wins, so nobody ever
+    /// marches past the unit that is hitting them. Zero is plain Nearest.
+    /// </summary>
+    public static float LaneBonus = 1.9f;
+
+    /// <summary>
     /// Pick a target, preferring to keep the one already being fought.
     ///
     /// <paramref name="stickiness"/> is how much better a rival must be before the unit turns away:
@@ -115,13 +124,19 @@ public static class Targeting
     private static float Score(Entity chooser, Entity candidate, TargetMode mode) =>
         ScoreFor(mode,
                  Vector3.Distance(chooser.transform.position, candidate.transform.position),
-                 HealthFraction(candidate));
+                 HealthFraction(candidate),
+                 chooser.DeployedLane >= 0 && chooser.DeployedLane == candidate.DeployedLane);
+
+    public static float ScoreFor(TargetMode mode, float distance, float healthFraction) =>
+        ScoreFor(mode, distance, healthFraction, sameLane: false);
 
     /// <summary>
     /// Rank a candidate: lower is better, and always positive, so one relative margin fits every
-    /// mode. Kept free of Entity so the ranking can be tested without a battlefield.
+    /// mode. Kept free of Entity so the ranking can be tested without a battlefield. Only Nearest
+    /// honours the lane: the other modes are a deliberate choice of whom to fight, and a lane
+    /// preference would second-guess it.
     /// </summary>
-    public static float ScoreFor(TargetMode mode, float distance, float healthFraction)
+    public static float ScoreFor(TargetMode mode, float distance, float healthFraction, bool sameLane)
     {
         switch (mode)
         {
@@ -133,7 +148,7 @@ public static class Targeting
                 return 1f / (1f + Mathf.Max(0f, distance));
 
             default:
-                return Mathf.Max(0f, distance);
+                return Mathf.Max(0f, distance - (sameLane ? LaneBonus : 0f));
         }
     }
 

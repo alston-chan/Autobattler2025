@@ -209,6 +209,10 @@ public class GameManager : Singleton<GameManager>
             // No hero begins a fight dead. RestoreCompany already runs after a victory; this is the
             // guarantee at the bell itself, for whatever might have happened in between.
             if (runManager != null && runManager.IsRunning) runManager.RestoreCompany();
+
+            // Stamp every unit with where it was deployed. Targeting and the engravings read the
+            // stamp, never the live position, for the whole fight.
+            BoardSnapshot.Freeze(runManager != null ? runManager.Formation : null);
             NotifyResonance(true);
 
             var startingTelemetry = GetComponent<CombatTelemetry>();

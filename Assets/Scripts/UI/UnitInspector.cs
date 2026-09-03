@@ -407,6 +407,16 @@ public class UnitInspector : MonoBehaviour
     {
         var text = new StringBuilder();
 
+        // How the unit was deployed, in the player's words — the way to learn the words is to click
+        // a unit and read them. Past tense once the fight is on: the stamp, not the position.
+        var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
+        if (runManager != null)
+        {
+            string deployed = BoardSnapshot.Capture(runManager.Formation, planned: false).Keywords(_selected);
+            if (!string.IsNullOrEmpty(deployed))
+                text.Append("<color=#BFC6D4>Deployed</color>  ").Append(deployed).Append('\n');
+        }
+
         foreach (var spell in _selected.CastableSpells())
         {
             if (spell == null || !spell.IsAbility) continue;

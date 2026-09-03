@@ -77,6 +77,15 @@ public class Entity : MonoBehaviour
     [Range(0f, 0.9f)] public float targetStickiness = 0.25f;
 
     /// <summary>
+    /// The lane (row) and column this unit was deployed in, stamped at the bell by
+    /// BoardSnapshot.Freeze and read by targeting for the rest of the fight. -1 off the board.
+    /// Frozen on purpose: units scatter the instant combat starts, and a lane read live would hand
+    /// the preference out and take it back as the AI shuffled people (Docs/PositionalKeywords.md).
+    /// </summary>
+    [System.NonSerialized] public int DeployedLane = -1;
+    [System.NonSerialized] public int DeployedColumn = -1;
+
+    /// <summary>
     /// Until when this unit cannot be picked as a target.
     ///
     /// Not serialized and not a stat: it is a brief window, bought by doing something — vanishing
