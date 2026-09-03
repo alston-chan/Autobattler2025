@@ -30,9 +30,29 @@ public class EquipmentWindow : OdinMenuEditorWindow
     public MannequinPreview Mannequin => _mannequin ?? (_mannequin = new MannequinPreview());
     private MannequinPreview _mannequin;
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        // A domain reload drops the field without disposing the preview: its scene — and the doll's
+        // sprite mask in it — lived on and masked the next doll's helmet down to the horns. Clean up
+        // before the reload takes the reference away.
+        AssemblyReloadEvents.beforeAssemblyReload += DisposeMannequin;
+    }
+
+    protected override void OnDisable()
+    {
+        AssemblyReloadEvents.beforeAssemblyReload -= DisposeMannequin;
+        base.OnDisable();
+    }
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        DisposeMannequin();
+    }
+
+    private void DisposeMannequin()
+    {
         _mannequin?.Dispose();
         _mannequin = null;
     }
@@ -50,13 +70,26 @@ public class EquipmentWindow : OdinMenuEditorWindow
         tree.Add("Art", new ArtPage(this));
 
         // Items: the designed ones — anything with a resonance entry. Named by the item, so the
-        // menu reads as the company's wardrobe rather than as ids.
+        // menu reads as the company's wardrobe rather than as ids. A piece that belongs to a set
+        // (or goes with one) lives under the set's page instead, so a set is edited as one thing.
         if (resonance != null)
         {
+            var sets = new Dictionary<string, SetPage>();
             foreach (var entry in resonance.entries.OrderBy(e => Catalog.DisplayName(e.itemId)))
             {
                 var page = new ItemPage(this, resonance, entry);
-                tree.Add("Items/" + Catalog.DisplayName(entry.itemId), page, page.Icon);
+                string setKey = Catalog.SetKeyFor(entry.itemId);
+                if (setKey == null)
+                {
+                    tree.Add("Items/" + Catalog.DisplayName(entry.itemId), page, page.Icon);
+                    continue;
+                }
+                if (!sets.TryGetValue(setKey, out var setPage))
+                {
+                    setPage = sets[setKey] = new SetPage(this, resonance, setKey);
+                    tree.Add("Sets/" + Catalog.SetName(setKey), setPage, setPage.Icon);
+                }
+                tree.Add("Sets/" + Catalog.SetName(setKey) + "/" + Catalog.DisplayName(entry.itemId), page, page.Icon);
             }
         }
 
@@ -78,14 +111,22 @@ public class EquipmentWindow : OdinMenuEditorWindow
         return tree;
     }
 
-    /// <summary>Rebuild the menu and open the page of the item with this id.</summary>
+    /// <summary>Rebuild the menu and open the page of the item with this id, wherever it sits.</summary>
     public void ShowItem(string itemId)
     {
         ForceMenuTreeRebuild();
-        string path = "Items/" + Catalog.DisplayName(itemId);
-        var item = MenuTree.EnumerateTree().FirstOrDefault(i => i.GetFullPath() == path);
+        var item = MenuTree.EnumerateTree().FirstOrDefault(i => i.Value is ItemPage page && page.ItemId == itemId);
         if (item != null) item.Select();
         else Debug.LogWarning($"[Equipment] No page for {itemId} after rebuild.");
+    }
+
+    /// <summary>Rebuild the menu and open a designed set's page.</summary>
+    public void ShowDesignedSet(string setKey)
+    {
+        ForceMenuTreeRebuild();
+        var item = MenuTree.EnumerateTree().FirstOrDefault(i => i.Value is SetPage page && page.SetKey == setKey);
+        if (item != null) item.Select();
+        else ShowSet(setKey);
     }
 
     /// <summary>Open the Art page on one set, in its Sets view — to design a sibling piece.</summary>
@@ -122,6 +163,8 @@ public class ItemPage
     private readonly ResonanceDatabase _database;
     private readonly ResonanceDatabase.Entry _entry;
     private readonly string _setKey;   // null unless the item is an armour part, or a helmet or cape on a set's theme
+
+    public string ItemId => _entry.itemId;
 
     public ItemPage(EquipmentWindow window, ResonanceDatabase database, ResonanceDatabase.Entry entry)
     {
@@ -199,6 +242,9 @@ public class ItemPage
 
     [BoxGroup("Set"), ShowIf("InSet"), ShowInInspector, ReadOnly, LabelText("@this.IsCompanion ? \"Goes with\" : \"Set\""), PropertyOrder(-0.5f)]
     private string SetName => _setKey != null ? Catalog.SetName(_setKey) : "";
+
+    [BoxGroup("Set"), ShowIf("InSet"), Button("Edit the set together"), PropertyOrder(-0.45f)]
+    private void OpenSetPage() => _window.ShowDesignedSet(_setKey);
 
     [BoxGroup("Set"), ShowIf("InSet"), OnInspectorGUI, PropertyOrder(-0.4f)]
     private void DrawSiblings()

@@ -605,6 +605,6 @@ public class ArtPage
         Debug.Log($"[Equipment] {_selectedSet.name} designed as a set: {string.Join(", ", made)}" +
                   (_setPool != null ? $"; offered in {_setPool.name}." : "."));
         SelectSet(_selectedSet);
-        _window.ShowItem(first);
+        _window.ShowDesignedSet(_selectedSet.key);   // the set's own page, where the pieces are edited together
     }
 }
