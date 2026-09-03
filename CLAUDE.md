@@ -42,6 +42,15 @@ all — Hot Reload may report it as applied while the inspector and serializer k
 The MCP's own `script-execute` still compiles an assembly and reloads the domain as before; Hot
 Reload changes nothing about that rule.
 
+**A change Hot Reload cannot patch does not load until you make it.** Hot Reload turns Unity's
+auto-refresh off while its server runs and queues unsupported changes (a field initializer, a new
+field or type) for "later": `EditorApplication.isCompiling` stays true, `RequestScriptCompilation`,
+`RequestScriptReload` and an asset refresh all do nothing, and — the trap — `tests-run` reports
+Passed against the *old* assembly. Measured: after `LeashSeconds` went 1.5 → 5, the loaded value
+read 1.5 for half an hour and 91 tests passed on it. `Window > Hot Reload > Recompile` (or the
+menu item by that path from a script) is what makes it load. After any non-method-body change,
+read the value back from the running editor before trusting a test run or a probe.
+
 Measured on install (2026-09-03): a one-line change to a method body was live in the running play
 session within 10 s of saving the file, with the frame counter, the game state and a static marker
 all intact, and the reverse edit landed the same way. Check its server is up before relying on it
