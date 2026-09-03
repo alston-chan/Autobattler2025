@@ -63,6 +63,51 @@ public static class Catalog
         return collection.Items.FirstOrDefault(i => i != null && i.Id == id);
     }
 
+    // ---- sets
+    //
+    // Every armour id is Pack.Tier.Armor.<Set>.<part>, and the parts are exactly vest, gloves and
+    // boots — 297 sets of three, each on one sprite family. Helmets are their own family; a set's
+    // helmet is the one that happens to share its name, which only a handful do.
+
+    public static readonly string[] ArmorParts = { "vest", "gloves", "boots" };
+
+    /// <summary>
+    /// True when the id is an armour part. <paramref name="setKey"/> is everything before the
+    /// part ("Extensions.Epic.Armor.AngelicDress"), which is what the three pieces share.
+    /// </summary>
+    public static bool TryParseArmorPart(string id, out string setKey, out string part)
+    {
+        setKey = null; part = null;
+        if (string.IsNullOrEmpty(id)) return false;
+        int dot = id.LastIndexOf('.');
+        if (dot <= 0) return false;
+        string tail = id.Substring(dot + 1);
+        if (System.Array.IndexOf(ArmorParts, tail) < 0) return false;
+        string head = id.Substring(0, dot);
+        if (!head.Contains(".Armor.")) return false;
+        setKey = head; part = tail;
+        return true;
+    }
+
+    /// <summary>The set's own name: the last segment of its key.</summary>
+    public static string SetName(string setKey)
+    {
+        int dot = setKey.LastIndexOf('.');
+        return dot >= 0 ? setKey.Substring(dot + 1) : setKey;
+    }
+
+    /// <summary>The id of one part of a set, whether or not the collection has it.</summary>
+    public static string PartId(string setKey, string part) => setKey + "." + part;
+
+    /// <summary>The helmet that shares the set's name, or null — most sets have none.</summary>
+    public static ItemParams MatchingHelmet(string setKey)
+    {
+        var collection = Items();
+        if (collection == null || collection.Items == null) return null;
+        string suffix = ".Helmet." + SetName(setKey);
+        return collection.Items.FirstOrDefault(i => i != null && i.Id != null && i.Id.EndsWith(suffix));
+    }
+
     /// <summary>The item's inventory icon, or null. Looked up once per caller: the collection warns for a missing one.</summary>
     public static Sprite Icon(string id)
     {

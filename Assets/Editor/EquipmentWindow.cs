@@ -44,7 +44,7 @@ public class EquipmentWindow : OdinMenuEditorWindow
         {
             foreach (var entry in resonance.entries.OrderBy(e => Catalog.DisplayName(e.itemId)))
             {
-                var page = new ItemPage(resonance, entry);
+                var page = new ItemPage(this, resonance, entry);
                 tree.Add("Items/" + Catalog.DisplayName(entry.itemId), page, page.Icon);
             }
         }
@@ -77,6 +77,15 @@ public class EquipmentWindow : OdinMenuEditorWindow
         else Debug.LogWarning($"[Equipment] No page for {itemId} after rebuild.");
     }
 
+    /// <summary>Open the Art page on one set, in its Sets view — to design a sibling piece.</summary>
+    public void ShowSet(string setKey)
+    {
+        var art = MenuTree.EnumerateTree().FirstOrDefault(i => i.GetFullPath() == "Art");
+        if (art == null) return;
+        art.Select();
+        (art.Value as ArtPage)?.PickSet(setKey);
+    }
+
     protected override void OnBeginDrawEditors()
     {
         var selected = MenuTree?.Selection?.FirstOrDefault();
@@ -98,13 +107,17 @@ public class EquipmentWindow : OdinMenuEditorWindow
 /// </summary>
 public class ItemPage
 {
+    private readonly EquipmentWindow _window;
     private readonly ResonanceDatabase _database;
     private readonly ResonanceDatabase.Entry _entry;
+    private readonly string _setKey;   // null unless the item is an armour part
 
-    public ItemPage(ResonanceDatabase database, ResonanceDatabase.Entry entry)
+    public ItemPage(EquipmentWindow window, ResonanceDatabase database, ResonanceDatabase.Entry entry)
     {
+        _window = window;
         _database = database;
         _entry = entry;
+        Catalog.TryParseArmorPart(entry.itemId, out _setKey, out _);
         // Resolved once: the collection logs a warning for a missing icon, and a getter would
         // repeat it on every repaint.
         Icon = Catalog.Icon(entry.itemId);
@@ -146,6 +159,42 @@ public class ItemPage
             var item = Catalog.Find(_entry.itemId);
             if (item == null || item.Properties == null) return new List<string>();
             return item.Properties.Select(p => p.Id + "  " + p.Value).ToList();
+        }
+    }
+
+    // ---- the set it belongs to, with the siblings one click away
+
+    private bool InSet => _setKey != null;
+
+    [BoxGroup("Set"), ShowIf("InSet"), ShowInInspector, ReadOnly, LabelText("Set"), PropertyOrder(-0.5f)]
+    private string SetName => _setKey != null ? Catalog.SetName(_setKey) : "";
+
+    [BoxGroup("Set"), ShowIf("InSet"), OnInspectorGUI, PropertyOrder(-0.4f)]
+    private void DrawSiblings()
+    {
+        if (_setKey == null) return;
+        EditorGUILayout.BeginHorizontal();
+        foreach (var part in Catalog.ArmorParts)
+            DrawSibling(part, Catalog.PartId(_setKey, part));
+        var helmet = Catalog.MatchingHelmet(_setKey);
+        if (helmet != null) DrawSibling("helmet", helmet.Id);
+        EditorGUILayout.EndHorizontal();
+    }
+
+    // Each sibling is a button: a designed one opens its page, an undesigned one opens the Art
+    // page on the set so it can be designed next to the others.
+    private void DrawSibling(string part, string id)
+    {
+        bool self = id == _entry.itemId;
+        bool designed = _database.entries.Any(e => e.itemId == id);
+        string label = self ? $"{part} (this)" : designed ? $"{part} ●" : $"{part} — design";
+        using (new EditorGUI.DisabledScope(self))
+        {
+            if (GUILayout.Button(label, GUILayout.Height(24f)))
+            {
+                if (designed) _window.ShowItem(id);
+                else _window.ShowSet(_setKey);
+            }
         }
     }
 

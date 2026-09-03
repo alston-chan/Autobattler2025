@@ -13,12 +13,17 @@ using UnityEngine;
 /// box, a type filter and a grid of icons; click one to see what it is and, if it carries no
 /// engraving yet, make it a designed item in one step: a resonance entry with an engraving, and a
 /// place to find it.
+///
+/// Armour comes in sets — vest, gloves and boots on one sprite family, 297 of them — so the page
+/// also shows the collection as sets: one tile each, expanding to its parts and the helmet that
+/// shares its name if one does, and a button that designs the pieces together.
 /// </summary>
 public class ArtPage
 {
     private const int Tile = 56;
     private const int Gap = 6;
     private const int MaxShown = 400;
+    private const string ResonancePath = "Assets/Resources/ResonanceDatabase.asset";
 
     private class Entry
     {
@@ -28,13 +33,29 @@ public class ArtPage
         public string search;   // name + id, lower case
     }
 
+    private class SetEntry
+    {
+        public string key;
+        public string name;
+        public Entry vest, gloves, boots, helmet;
+        public string search;
+        public IEnumerable<Entry> Pieces => new[] { vest, gloves, boots, helmet }.Where(p => p != null);
+    }
+
+    public enum View { Items, Sets }
+
     private readonly EquipmentWindow _window;
     private readonly List<Entry> _all = new List<Entry>();
+    private readonly Dictionary<string, Entry> _byId = new Dictionary<string, Entry>();
+    private readonly List<SetEntry> _sets = new List<SetEntry>();
     private readonly List<string> _types = new List<string> { "All" };
     private List<Entry> _shown = new List<Entry>();
+    private List<SetEntry> _shownSets = new List<SetEntry>();
     private string _lastSearch = null, _lastType = null;
+    private View _lastView = View.Items;
     private Vector2 _scroll;
     private Entry _selected;
+    private SetEntry _selectedSet;
 
     public ArtPage(EquipmentWindow window)
     {
@@ -58,20 +79,48 @@ public class ArtPage
             if (item == null || string.IsNullOrEmpty(item.Id)) continue;
             string name = Catalog.DisplayName(item.Id);
             icons.TryGetValue(item.IconId ?? "", out var icon);
-            _all.Add(new Entry { item = item, icon = icon, name = name, search = (name + " " + item.Id).ToLowerInvariant() });
+            var entry = new Entry { item = item, icon = icon, name = name, search = (name + " " + item.Id).ToLowerInvariant() };
+            _all.Add(entry);
+            _byId[item.Id] = entry;
         }
         _types.AddRange(_all.Select(e => e.item.Type.ToString()).Distinct().OrderBy(t => t));
+
+        // Sets: group the armour parts by what they share, and find the helmet that shares the name.
+        var sets = new Dictionary<string, SetEntry>();
+        foreach (var entry in _all)
+        {
+            if (!Catalog.TryParseArmorPart(entry.item.Id, out var key, out var part)) continue;
+            if (!sets.TryGetValue(key, out var set))
+            {
+                set = sets[key] = new SetEntry { key = key, name = Catalog.SetName(key) };
+                var helmet = Catalog.MatchingHelmet(key);
+                if (helmet != null) _byId.TryGetValue(helmet.Id, out set.helmet);
+            }
+            if (part == "vest") set.vest = entry;
+            else if (part == "gloves") set.gloves = entry;
+            else if (part == "boots") set.boots = entry;
+        }
+        foreach (var set in sets.Values)
+        {
+            set.search = (set.name + " " + set.key).ToLowerInvariant();
+            _sets.Add(set);
+        }
+        _sets.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
     }
 
     // ---- filters
 
-    [HorizontalGroup("filters", 0.6f), ShowInInspector, LabelWidth(60), LabelText("Search")]
-    [Tooltip("Matches the item's name or id.")]
+    [HorizontalGroup("filters", 0.5f), ShowInInspector, LabelWidth(60), LabelText("Search")]
+    [Tooltip("Matches the item's name or id — or the set's, in the Sets view.")]
     private string Search { get; set; } = "";
 
-    [HorizontalGroup("filters"), ShowInInspector, LabelWidth(40), LabelText("Type"), ValueDropdown("Types")]
+    [HorizontalGroup("filters"), ShowInInspector, LabelWidth(40), LabelText("Type"), ValueDropdown("Types"), HideIf("IsSetsView")]
     private string Type { get; set; } = "All";
 
+    [HorizontalGroup("filters", 180), ShowInInspector, HideLabel, EnumToggleButtons]
+    private View Show { get; set; } = View.Items;
+
+    private bool IsSetsView => Show == View.Sets;
     private IEnumerable<string> Types => _types;
 
     [ShowInInspector, ReadOnly, HideLabel, DisplayAsString, PropertyOrder(1)]
@@ -80,19 +129,35 @@ public class ArtPage
         get
         {
             Refilter();
-            return _shown.Count > MaxShown
-                ? $"{_shown.Count} items match — showing the first {MaxShown}, narrow the search to see the rest"
-                : $"{_shown.Count} items";
+            int n = IsSetsView ? _shownSets.Count : _shown.Count;
+            string what = IsSetsView ? "sets" : "items";
+            return n > MaxShown
+                ? $"{n} {what} match — showing the first {MaxShown}, narrow the search to see the rest"
+                : $"{n} {what}";
         }
     }
 
     private void Refilter()
     {
-        if (_lastSearch == Search && _lastType == Type) return;
-        _lastSearch = Search; _lastType = Type;
+        if (_lastSearch == Search && _lastType == Type && _lastView == Show) return;
+        _lastSearch = Search; _lastType = Type; _lastView = Show;
         string needle = (Search ?? "").Trim().ToLowerInvariant();
-        _shown = _all.Where(e => (Type == "All" || e.item.Type.ToString() == Type) &&
-                                 (needle.Length == 0 || e.search.Contains(needle))).ToList();
+        if (IsSetsView)
+            _shownSets = _sets.Where(s => needle.Length == 0 || s.search.Contains(needle)).ToList();
+        else
+            _shown = _all.Where(e => (Type == "All" || e.item.Type.ToString() == Type) &&
+                                     (needle.Length == 0 || e.search.Contains(needle))).ToList();
+    }
+
+    /// <summary>Open the Sets view on one set — from an item page's "make it" button.</summary>
+    public void PickSet(string setKey)
+    {
+        Show = View.Sets;
+        Search = "";
+        Refilter();
+        _selectedSet = _sets.FirstOrDefault(s => s.key == setKey);
+        _selected = null;
+        ResetSetChoices();
     }
 
     // ---- the grid
@@ -101,41 +166,66 @@ public class ArtPage
     private void DrawGrid()
     {
         Refilter();
-        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>("Assets/Resources/ResonanceDatabase.asset");
-        var designed = resonance != null ? new HashSet<string>(resonance.entries.Select(e => e.itemId)) : new HashSet<string>();
+        var designed = Designed();
 
         float width = EditorGUIUtility.currentViewWidth - 40f;
         int columns = Mathf.Max(1, (int)(width / (Tile + Gap)));
-        int shown = Mathf.Min(_shown.Count, MaxShown);
+        int total = IsSetsView ? _shownSets.Count : _shown.Count;
+        int shown = Mathf.Min(total, MaxShown);
         int rows = (shown + columns - 1) / columns;
 
         _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.Height(Mathf.Min(rows, 6) * (Tile + Gap) + 10f));
         var area = GUILayoutUtility.GetRect(columns * (Tile + Gap), rows * (Tile + Gap));
         for (int i = 0; i < shown; i++)
         {
-            var entry = _shown[i];
             var rect = new Rect(area.x + (i % columns) * (Tile + Gap), area.y + (i / columns) * (Tile + Gap), Tile, Tile);
 
-            bool isSelected = entry == _selected;
+            Sprite icon; string tooltip; bool isSelected; int designedPieces = 0, pieces = 1;
+            Entry entry = null; SetEntry set = null;
+            if (IsSetsView)
+            {
+                set = _shownSets[i];
+                icon = set.vest?.icon ?? set.gloves?.icon ?? set.boots?.icon;
+                tooltip = set.name;
+                isSelected = set == _selectedSet;
+                pieces = set.Pieces.Count();
+                designedPieces = set.Pieces.Count(p => designed.Contains(p.item.Id));
+            }
+            else
+            {
+                entry = _shown[i];
+                icon = entry.icon;
+                tooltip = entry.name;
+                isSelected = entry == _selected;
+                designedPieces = designed.Contains(entry.item.Id) ? 1 : 0;
+            }
+
             EditorGUI.DrawRect(rect, isSelected ? new Color(1f, 0.85f, 0.3f, 0.35f) : new Color(1f, 1f, 1f, 0.06f));
-            if (entry.icon != null) DrawSprite(rect.Padding(4f), entry.icon);
+            if (icon != null) DrawSprite(rect.Padding(4f), icon);
             else GUI.Label(rect, "?", EditorStyles.centeredGreyMiniLabel);
 
             // A designed item wears a dot: the point of the page is to find the ones that are not.
-            if (designed.Contains(entry.item.Id))
-                EditorGUI.DrawRect(new Rect(rect.xMax - 10f, rect.y + 4f, 6f, 6f), new Color(1f, 0.85f, 0.3f, 1f));
+            // A set wears one per designed piece.
+            for (int d = 0; d < designedPieces; d++)
+                EditorGUI.DrawRect(new Rect(rect.xMax - 10f - d * 8f, rect.y + 4f, 6f, 6f), new Color(1f, 0.85f, 0.3f, 1f));
 
             if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
             {
-                _selected = entry;
-                _look = Catalog.Look(entry.item.Id);
+                if (IsSetsView) { _selectedSet = set; _selected = null; ResetSetChoices(); }
+                else { _selected = entry; _selectedSet = null; _look = Catalog.Look(entry.item.Id); }
                 Event.current.Use();
                 GUI.changed = true;
             }
             if (rect.Contains(Event.current.mousePosition))
-                GUI.Label(rect, new GUIContent("", entry.name));    // the tooltip
+                GUI.Label(rect, new GUIContent("", tooltip));    // the tooltip
         }
         EditorGUILayout.EndScrollView();
+    }
+
+    private static HashSet<string> Designed()
+    {
+        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>(ResonancePath);
+        return resonance != null ? new HashSet<string>(resonance.entries.Select(e => e.itemId)) : new HashSet<string>();
     }
 
     private static void DrawSprite(Rect rect, Sprite sprite)
@@ -165,9 +255,9 @@ public class ArtPage
 
     private Sprite _look;
 
-    private bool HasSelection => _selected != null;
-    private bool IsDesigned => _selected != null && ResonanceEntryFor(_selected.item.Id) != null;
-    private bool CanMake => _selected != null && !IsDesigned;
+    private bool HasSelection => _selected != null && !IsSetsView;
+    private bool IsDesigned => HasSelection && ResonanceEntryFor(_selected.item.Id) != null;
+    private bool CanMake => HasSelection && !IsDesigned;
 
     [BoxGroup("Picked"), ShowIf("HasSelection"), PropertyOrder(3)]
     [HorizontalGroup("Picked/art", 220), PreviewField(96, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel]
@@ -237,34 +327,138 @@ public class ArtPage
     private void MakeThisAnItem()
     {
         if (_selected == null || _engraving == null) return;
-
-        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>("Assets/Resources/ResonanceDatabase.asset");
+        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>(ResonancePath);
         if (resonance == null) { Debug.LogError("[Equipment] No ResonanceDatabase at Resources/ResonanceDatabase."); return; }
 
-        resonance.entries.Add(new ResonanceDatabase.Entry
-        {
-            itemId = _selected.item.Id,
-            engraving = _engraving,
-            requirement = _requirement,
-        });
-        EditorUtility.SetDirty(resonance);
-
-        if (_pool != null && !_pool.itemIds.Contains(_selected.item.Id))
-        {
-            _pool.itemIds.Add(_selected.item.Id);
-            EditorUtility.SetDirty(_pool);
-        }
-
+        Design(resonance, _selected, _engraving, _requirement, _pool);
         AssetDatabase.SaveAssets();
         Debug.Log($"[Equipment] {_selected.name} is now a designed item: {_engraving.DisplayName}, counts {ResonanceRequirements.Describe(_requirement)}" +
                   (_pool != null ? $", offered in {_pool.name}." : "."));
-
         _window.ShowItem(_selected.item.Id);
+    }
+
+    /// <summary>One designed item: the resonance entry, and the pool if one was picked. Not saved here.</summary>
+    private static void Design(ResonanceDatabase resonance, Entry entry, Engraving engraving, ResonanceRequirement requirement, RewardPool pool)
+    {
+        resonance.entries.Add(new ResonanceDatabase.Entry { itemId = entry.item.Id, engraving = engraving, requirement = requirement });
+        EditorUtility.SetDirty(resonance);
+        if (pool != null && !pool.itemIds.Contains(entry.item.Id))
+        {
+            pool.itemIds.Add(entry.item.Id);
+            EditorUtility.SetDirty(pool);
+        }
     }
 
     private static ResonanceDatabase.Entry ResonanceEntryFor(string id)
     {
-        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>("Assets/Resources/ResonanceDatabase.asset");
+        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>(ResonancePath);
         return resonance?.entries.FirstOrDefault(e => e.itemId == id);
+    }
+
+    // ---- the picked set
+
+    private bool HasSet => _selectedSet != null && IsSetsView;
+    private bool SetHasHelmet => HasSet && _selectedSet.helmet != null;
+
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(3), ShowInInspector, ReadOnly, LabelText("Set")]
+    private string SetName => _selectedSet?.name;
+
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(3), ShowInInspector, ReadOnly, LabelText("Family")]
+    private string SetKey => _selectedSet?.key;
+
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(4)]
+    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Vest")]
+    private Sprite VestIcon => _selectedSet?.vest?.icon;
+    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Gloves"), ShowIf("HasSet"), PropertyOrder(4)]
+    private Sprite GlovesIcon => _selectedSet?.gloves?.icon;
+    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Boots"), ShowIf("HasSet"), PropertyOrder(4)]
+    private Sprite BootsIcon => _selectedSet?.boots?.icon;
+    [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Helmet"), ShowIf("SetHasHelmet"), PropertyOrder(4)]
+    private Sprite HelmetIcon => _selectedSet?.helmet?.icon;
+    [HorizontalGroup("Set/art"), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, ShowIf("HasSet"), PropertyOrder(4)]
+    [Tooltip("The vest as worn; the three parts share the sprite family.")]
+    private Sprite SetLook => _selectedSet?.vest != null ? Catalog.Look(_selectedSet.vest.item.Id) : null;
+
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(5), ShowInInspector, ReadOnly, ListDrawerSettings(IsReadOnly = true, ShowFoldout = false), LabelText("Pieces")]
+    private List<string> SetPieces
+    {
+        get
+        {
+            var list = new List<string>();
+            if (_selectedSet == null) return list;
+            foreach (var piece in _selectedSet.Pieces)
+            {
+                var entry = ResonanceEntryFor(piece.item.Id);
+                string stats = piece.item.Properties != null ? string.Join(", ", piece.item.Properties.Select(p => p.Id + " " + p.Value)) : "";
+                list.Add($"{piece.item.Type}  {piece.name}  ·  {stats}" +
+                         (entry != null ? $"  ·  designed: {(entry.engraving != null ? entry.engraving.DisplayName : "no engraving")}" : ""));
+            }
+            return list;
+        }
+    }
+
+    // One engraving per piece. The doc's model: a set is pieces designed together, each with a
+    // different engraving that combos with the others — not one item with a bonus.
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Vest"), EnableIf("@this.CanDesign(\"vest\")")]
+    private Engraving _vestEngraving;
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Gloves"), EnableIf("@this.CanDesign(\"gloves\")")]
+    private Engraving _glovesEngraving;
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Boots"), EnableIf("@this.CanDesign(\"boots\")")]
+    private Engraving _bootsEngraving;
+    [BoxGroup("Set/Make this a set"), ShowIf("SetHasHelmet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Engravings"), LabelText("Helmet"), EnableIf("@this.CanDesign(\"helmet\")")]
+    private Engraving _helmetEngraving;
+
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, LabelText("Counts")]
+    [Tooltip("The same counting rule for every piece; change any one on its page afterwards.")]
+    private ResonanceRequirement _setRequirement = ResonanceRequirement.CombatsWorn;
+
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(6), ShowInInspector, AssetsOnly, ValueDropdown("Pools"), LabelText("Offer in")]
+    private RewardPool _setPool;
+
+    private Entry Piece(string part) => _selectedSet == null ? null
+        : part == "vest" ? _selectedSet.vest : part == "gloves" ? _selectedSet.gloves : part == "boots" ? _selectedSet.boots : _selectedSet.helmet;
+
+    private bool CanDesign(string part)
+    {
+        var piece = Piece(part);
+        return piece != null && ResonanceEntryFor(piece.item.Id) == null;
+    }
+
+    private int PiecesToDesign =>
+        new[] { ("vest", _vestEngraving), ("gloves", _glovesEngraving), ("boots", _bootsEngraving), ("helmet", _helmetEngraving) }
+            .Count(p => p.Item2 != null && CanDesign(p.Item1));
+
+    private void ResetSetChoices()
+    {
+        _vestEngraving = _glovesEngraving = _bootsEngraving = _helmetEngraving = null;
+    }
+
+    [BoxGroup("Set/Make this a set"), ShowIf("HasSet"), PropertyOrder(7)]
+    [Button("@\"Make this a set  (\" + this.PiecesToDesign + \" piece\" + (this.PiecesToDesign == 1 ? \"\" : \"s\") + \")\"", ButtonSizes.Large), EnableIf("@this.PiecesToDesign > 0")]
+    [InfoBox("Designs every piece with an engraving chosen above — one resonance entry each, the ids added to the " +
+             "chosen pool — saves, and opens the vest's page. Pieces already designed are left as they are.")]
+    private void MakeThisASet()
+    {
+        if (_selectedSet == null) return;
+        var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>(ResonancePath);
+        if (resonance == null) { Debug.LogError("[Equipment] No ResonanceDatabase at Resources/ResonanceDatabase."); return; }
+
+        var made = new List<string>();
+        string first = null;
+        foreach (var (part, engraving) in new[] { ("vest", _vestEngraving), ("gloves", _glovesEngraving), ("boots", _bootsEngraving), ("helmet", _helmetEngraving) })
+        {
+            if (engraving == null || !CanDesign(part)) continue;
+            var piece = Piece(part);
+            Design(resonance, piece, engraving, _setRequirement, _setPool);
+            made.Add($"{part} → {engraving.DisplayName}");
+            if (first == null) first = piece.item.Id;
+        }
+        if (made.Count == 0) return;
+
+        AssetDatabase.SaveAssets();
+        Debug.Log($"[Equipment] {_selectedSet.name} designed as a set: {string.Join(", ", made)}" +
+                  (_setPool != null ? $"; offered in {_setPool.name}." : "."));
+        ResetSetChoices();
+        _window.ShowItem(first);
     }
 }
