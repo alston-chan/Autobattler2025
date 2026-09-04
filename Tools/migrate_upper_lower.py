@@ -72,3 +72,19 @@ for p in ['Assets/Data/Run/StandardRewards.asset', 'Assets/Data/Run/Act1/EliteRe
 # ---- tests: the Marked gloves are the Marked upper now
 for p in ['Assets/Editor/Tests/BagStockTests.cs', 'Assets/Editor/Tests/MarkedEngravingTests.cs']:
     rw(p, lambda t: t.replace('FantasyHeroes.Basic.Armor.BanditArmor.gloves', 'FantasyHeroes.Basic.Armor.BanditArmor.vest'))
+
+# ---- the lower wears the belt icon: at icon size the belt reads as the set's colours, the boots as a blob
+def belt_icon(t):
+    nl = '
+' if '
+' in t else '
+'
+    lines = t.split(nl); head = lines[0].split(','); iType, iIcon = head.index('Type'), head.index('IconId')
+    out = [lines[0]]
+    for line in lines[1:]:
+        if not line.strip(): out.append(line); continue
+        cells = next(csv.reader([line]))
+        if cells[iType] == 'Boots' and '.Boots.' in cells[iIcon]: cells[iIcon] = cells[iIcon].replace('.Boots.', '.Belt.')
+        buf = io.StringIO(); csv.writer(buf, lineterminator='').writerow(cells); out.append(buf.getvalue())
+    return nl.join(out)
+rw('Assets/Data/Items.csv', belt_icon)

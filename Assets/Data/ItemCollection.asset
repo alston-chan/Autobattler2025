@@ -51,7 +51,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.AngelicDress
+    IconId: Extensions.Epic.Belt.AngelicDress
     SpriteId: Extensions.Epic.Armor.AngelicDress
     Meta: 
     Localization:
@@ -91,7 +91,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.AngelicDressTypeB
+    IconId: Extensions.Epic.Belt.AngelicDressTypeB
     SpriteId: Extensions.Epic.Armor.AngelicDressTypeB
     Meta: 
     Localization:
@@ -131,7 +131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ArcaneRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.ArcaneRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.ArcaneRobe
     Meta: 
     Localization:
@@ -171,7 +171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.ArielDress [Paint]
+    IconId: FantasyHeroes.Basic.Belt.ArielDress [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.ArielDress [Paint]
     Meta: 
     Localization:
@@ -211,7 +211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Furry.Boots.ArmoredLoincloth
+    IconId: UndeadHeroes.Furry.Belt.ArmoredLoincloth
     SpriteId: UndeadHeroes.Furry.Armor.ArmoredLoincloth
     Meta: 
     Localization:
@@ -251,7 +251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfAncestors
+    IconId: Extensions.Epic.Belt.ArmorOfAncestors
     SpriteId: Extensions.Epic.Armor.ArmorOfAncestors
     Meta: 
     Localization:
@@ -291,7 +291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfCorruption
+    IconId: Extensions.Epic.Belt.ArmorOfCorruption
     SpriteId: Extensions.Epic.Armor.ArmorOfCorruption
     Meta: 
     Localization:
@@ -331,7 +331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfCorruptionTypeB
+    IconId: Extensions.Epic.Belt.ArmorOfCorruptionTypeB
     SpriteId: Extensions.Epic.Armor.ArmorOfCorruptionTypeB
     Meta: 
     Localization:
@@ -371,7 +371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfCryingDemon
+    IconId: Extensions.Epic.Belt.ArmorOfCryingDemon
     SpriteId: Extensions.Epic.Armor.ArmorOfCryingDemon
     Meta: 
     Localization:
@@ -411,7 +411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfEndingLight
+    IconId: Extensions.Epic.Belt.ArmorOfEndingLight
     SpriteId: Extensions.Epic.Armor.ArmorOfEndingLight
     Meta: 
     Localization:
@@ -451,7 +451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfFadedHeavens
+    IconId: Extensions.Epic.Belt.ArmorOfFadedHeavens
     SpriteId: Extensions.Epic.Armor.ArmorOfFadedHeavens
     Meta: 
     Localization:
@@ -491,7 +491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfFortune
+    IconId: Extensions.Epic.Belt.ArmorOfFortune
     SpriteId: Extensions.Epic.Armor.ArmorOfFortune
     Meta: 
     Localization:
@@ -531,7 +531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfImmortality
+    IconId: Extensions.Epic.Belt.ArmorOfImmortality
     SpriteId: Extensions.Epic.Armor.ArmorOfImmortality
     Meta: 
     Localization:
@@ -571,7 +571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfJerome
+    IconId: Extensions.Epic.Belt.ArmorOfJerome
     SpriteId: Extensions.Epic.Armor.ArmorOfJerome
     Meta: 
     Localization:
@@ -611,7 +611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfLoneWolf
+    IconId: Extensions.Epic.Belt.ArmorOfLoneWolf
     SpriteId: Extensions.Epic.Armor.ArmorOfLoneWolf
     Meta: 
     Localization:
@@ -651,7 +651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfRagingCrux
+    IconId: Extensions.Epic.Belt.ArmorOfRagingCrux
     SpriteId: Extensions.Epic.Armor.ArmorOfRagingCrux
     Meta: 
     Localization:
@@ -691,7 +691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfRelentlessNightmares
+    IconId: Extensions.Epic.Belt.ArmorOfRelentlessNightmares
     SpriteId: Extensions.Epic.Armor.ArmorOfRelentlessNightmares
     Meta: 
     Localization:
@@ -731,7 +731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfSunwalker
+    IconId: Extensions.Epic.Belt.ArmorOfSunwalker
     SpriteId: Extensions.Epic.Armor.ArmorOfSunwalker
     Meta: 
     Localization:
@@ -771,7 +771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfTheForgottenFoe
+    IconId: Extensions.Epic.Belt.ArmorOfTheForgottenFoe
     SpriteId: Extensions.Epic.Armor.ArmorOfTheForgottenFoe
     Meta: 
     Localization:
@@ -811,7 +811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ArmorOfTorment
+    IconId: Extensions.Epic.Belt.ArmorOfTorment
     SpriteId: Extensions.Epic.Armor.ArmorOfTorment
     Meta: 
     Localization:
@@ -851,7 +851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.AssassinArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.AssassinArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.AssassinArmor [Paint]
     Meta: 
     Localization:
@@ -891,7 +891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.AsteraArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.AsteraArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.AsteraArmor
     Meta: 
     Localization:
@@ -931,7 +931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.BanditArmor
+    IconId: FantasyHeroes.Basic.Belt.BanditArmor
     SpriteId: FantasyHeroes.Basic.Armor.BanditArmor
     Meta: 
     Localization:
@@ -971,7 +971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.BanditLightArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.BanditLightArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.BanditLightArmor [Paint]
     Meta: 
     Localization:
@@ -1011,7 +1011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.BaseballOutfit
+    IconId: FantasyHeroes.Basic.Belt.BaseballOutfit
     SpriteId: FantasyHeroes.Basic.Armor.BaseballOutfit
     Meta: 
     Localization:
@@ -1051,7 +1051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.BattleguardArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.BattleguardArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.BattleguardArmor
     Meta: 
     Localization:
@@ -1091,7 +1091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.BennuRobe
+    IconId: Extensions.Epic.Belt.BennuRobe
     SpriteId: Extensions.Epic.Armor.BennuRobe
     Meta: 
     Localization:
@@ -1131,7 +1131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.BennuRobeTypeB
+    IconId: Extensions.Epic.Belt.BennuRobeTypeB
     SpriteId: Extensions.Epic.Armor.BennuRobeTypeB
     Meta: 
     Localization:
@@ -1171,7 +1171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.BerserkArmor
+    IconId: FantasyHeroes.Basic.Belt.BerserkArmor
     SpriteId: FantasyHeroes.Basic.Armor.BerserkArmor
     Meta: 
     Localization:
@@ -1211,7 +1211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.BishopArmor
+    IconId: FantasyHeroes.Basic.Belt.BishopArmor
     SpriteId: FantasyHeroes.Basic.Armor.BishopArmor
     Meta: 
     Localization:
@@ -1251,7 +1251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.BishopRobe
+    IconId: Extensions.Epic.Belt.BishopRobe
     SpriteId: Extensions.Epic.Armor.BishopRobe
     Meta: 
     Localization:
@@ -1291,7 +1291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.BlacksmithCostume
+    IconId: FantasyHeroes.Basic.Belt.BlacksmithCostume
     SpriteId: FantasyHeroes.Basic.Armor.BlacksmithCostume
     Meta: 
     Localization:
@@ -1331,7 +1331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.BlazewingArmor
+    IconId: Extensions.Epic.Belt.BlazewingArmor
     SpriteId: Extensions.Epic.Armor.BlazewingArmor
     Meta: 
     Localization:
@@ -1371,7 +1371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.BlessedOutfit
+    IconId: Extensions.Epic.Belt.BlessedOutfit
     SpriteId: Extensions.Epic.Armor.BlessedOutfit
     Meta: 
     Localization:
@@ -1411,7 +1411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.BloodiedSpiritArmor
+    IconId: Extensions.Epic.Belt.BloodiedSpiritArmor
     SpriteId: Extensions.Epic.Armor.BloodiedSpiritArmor
     Meta: 
     Localization:
@@ -1451,7 +1451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.CardinalArmor
+    IconId: FantasyHeroes.Basic.Belt.CardinalArmor
     SpriteId: FantasyHeroes.Basic.Armor.CardinalArmor
     Meta: 
     Localization:
@@ -1491,7 +1491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.CataclysmArmor
+    IconId: Extensions.Epic.Belt.CataclysmArmor
     SpriteId: Extensions.Epic.Armor.CataclysmArmor
     Meta: 
     Localization:
@@ -1531,7 +1531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.CataphractArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.CataphractArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.CataphractArmor [Paint]
     Meta: 
     Localization:
@@ -1571,7 +1571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.ChainmailLightArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.ChainmailLightArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint]
     Meta: 
     Localization:
@@ -1611,7 +1611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.ChampionArmor
+    IconId: FantasyHeroes.Basic.Belt.ChampionArmor
     SpriteId: FantasyHeroes.Basic.Armor.ChampionArmor
     Meta: 
     Localization:
@@ -1651,7 +1651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Christmas.Boots.ChristmasCostume
+    IconId: Common.Christmas.Belt.ChristmasCostume
     SpriteId: Common.Christmas.Armor.ChristmasCostume
     Meta: 
     Localization:
@@ -1691,7 +1691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Cleric [Paint]
+    IconId: FantasyHeroes.Basic.Belt.Cleric [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.Cleric [Paint]
     Meta: 
     Localization:
@@ -1731,7 +1731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Cossack
+    IconId: Extensions.Epic.Belt.Cossack
     SpriteId: Extensions.Epic.Armor.Cossack
     Meta: 
     Localization:
@@ -1771,7 +1771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Knights.Boots.CrusaderChainmail [Paint]
+    IconId: FantasyHeroes.Knights.Belt.CrusaderChainmail [Paint]
     SpriteId: FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint]
     Meta: 
     Localization:
@@ -1811,7 +1811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.DarkKnight
+    IconId: FantasyHeroes.Basic.Belt.DarkKnight
     SpriteId: FantasyHeroes.Basic.Armor.DarkKnight
     Meta: 
     Localization:
@@ -1851,7 +1851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.DarkLordArmor
+    IconId: Extensions.Epic.Belt.DarkLordArmor
     SpriteId: Extensions.Epic.Armor.DarkLordArmor
     Meta: 
     Localization:
@@ -1891,7 +1891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.DarkMountain
+    IconId: FantasyHeroes.Thrones.Belt.DarkMountain
     SpriteId: FantasyHeroes.Thrones.Armor.DarkMountain
     Meta: 
     Localization:
@@ -1931,7 +1931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Halloween.Boots.DeathCostume
+    IconId: Common.Halloween.Belt.DeathCostume
     SpriteId: Common.Halloween.Armor.DeathCostume
     Meta: 
     Localization:
@@ -1971,7 +1971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Halloween.Boots.DeerCostume
+    IconId: Common.Halloween.Belt.DeerCostume
     SpriteId: Common.Halloween.Armor.DeerCostume
     Meta: 
     Localization:
@@ -2011,7 +2011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Deserter
+    IconId: FantasyHeroes.Basic.Belt.Deserter
     SpriteId: FantasyHeroes.Basic.Armor.Deserter
     Meta: 
     Localization:
@@ -2051,7 +2051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.DestroyerArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.DestroyerArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.DestroyerArmor [Paint]
     Meta: 
     Localization:
@@ -2091,7 +2091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.DevotionOutfit
+    IconId: Extensions.Epic.Belt.DevotionOutfit
     SpriteId: Extensions.Epic.Armor.DevotionOutfit
     Meta: 
     Localization:
@@ -2131,7 +2131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.DraconicArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.DraconicArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.DraconicArmor
     Meta: 
     Localization:
@@ -2171,7 +2171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.DressOfInfinity
+    IconId: Extensions.Epic.Belt.DressOfInfinity
     SpriteId: Extensions.Epic.Armor.DressOfInfinity
     Meta: 
     Localization:
@@ -2211,7 +2211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.DrifterLightArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.DrifterLightArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.DrifterLightArmor
     Meta: 
     Localization:
@@ -2251,7 +2251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.DruidArmor
+    IconId: FantasyHeroes.Basic.Belt.DruidArmor
     SpriteId: FantasyHeroes.Basic.Armor.DruidArmor
     Meta: 
     Localization:
@@ -2291,7 +2291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.DwellerArmor
+    IconId: FantasyHeroes.Basic.Belt.DwellerArmor
     SpriteId: FantasyHeroes.Basic.Armor.DwellerArmor
     Meta: 
     Localization:
@@ -2331,7 +2331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ElegantArcherVest
+    IconId: Extensions.AbandonedWorkshop.Belt.ElegantArcherVest
     SpriteId: Extensions.AbandonedWorkshop.Armor.ElegantArcherVest
     Meta: 
     Localization:
@@ -2371,7 +2371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ElementalArcherArmor
+    IconId: Extensions.Epic.Belt.ElementalArcherArmor
     SpriteId: Extensions.Epic.Armor.ElementalArcherArmor
     Meta: 
     Localization:
@@ -2411,7 +2411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ElementalArmor
+    IconId: Extensions.Epic.Belt.ElementalArmor
     SpriteId: Extensions.Epic.Armor.ElementalArmor
     Meta: 
     Localization:
@@ -2451,7 +2451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ElementalMageArmor
+    IconId: Extensions.Epic.Belt.ElementalMageArmor
     SpriteId: Extensions.Epic.Armor.ElementalMageArmor
     Meta: 
     Localization:
@@ -2491,7 +2491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Knights.Boots.EliteGuardArmor [Paint]
+    IconId: FantasyHeroes.Knights.Belt.EliteGuardArmor [Paint]
     SpriteId: FantasyHeroes.Knights.Armor.EliteGuardArmor [Paint]
     Meta: 
     Localization:
@@ -2531,7 +2531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.EliteTowerKeeperArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.EliteTowerKeeperArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor
     Meta: 
     Localization:
@@ -2571,7 +2571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.EmbroidedVest
+    IconId: Extensions.AbandonedWorkshop.Belt.EmbroidedVest
     SpriteId: Extensions.AbandonedWorkshop.Armor.EmbroidedVest
     Meta: 
     Localization:
@@ -2611,7 +2611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.EnchantedScarletArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.EnchantedScarletArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.EnchantedScarletArmor
     Meta: 
     Localization:
@@ -2651,7 +2651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Knights.Boots.FalconLightArmor
+    IconId: FantasyHeroes.Knights.Belt.FalconLightArmor
     SpriteId: FantasyHeroes.Knights.Armor.FalconLightArmor
     Meta: 
     Localization:
@@ -2691,7 +2691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.FallenlordRobe
+    IconId: Extensions.Epic.Belt.FallenlordRobe
     SpriteId: Extensions.Epic.Armor.FallenlordRobe
     Meta: 
     Localization:
@@ -2731,7 +2731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.FarmerClothes
+    IconId: FantasyHeroes.Basic.Belt.FarmerClothes
     SpriteId: FantasyHeroes.Basic.Armor.FarmerClothes
     Meta: 
     Localization:
@@ -2771,7 +2771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female01
+    IconId: Extensions.FemaleCostumes.Belt.Female01
     SpriteId: Extensions.FemaleCostumes.Armor.Female01
     Meta: 
     Localization:
@@ -2811,7 +2811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female02
+    IconId: Extensions.FemaleCostumes.Belt.Female02
     SpriteId: Extensions.FemaleCostumes.Armor.Female02
     Meta: 
     Localization:
@@ -2851,7 +2851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female03
+    IconId: Extensions.FemaleCostumes.Belt.Female03
     SpriteId: Extensions.FemaleCostumes.Armor.Female03
     Meta: 
     Localization:
@@ -2891,7 +2891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female04
+    IconId: Extensions.FemaleCostumes.Belt.Female04
     SpriteId: Extensions.FemaleCostumes.Armor.Female04
     Meta: 
     Localization:
@@ -2931,7 +2931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female05
+    IconId: Extensions.FemaleCostumes.Belt.Female05
     SpriteId: Extensions.FemaleCostumes.Armor.Female05
     Meta: 
     Localization:
@@ -2971,7 +2971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female06
+    IconId: Extensions.FemaleCostumes.Belt.Female06
     SpriteId: Extensions.FemaleCostumes.Armor.Female06
     Meta: 
     Localization:
@@ -3011,7 +3011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female07
+    IconId: Extensions.FemaleCostumes.Belt.Female07
     SpriteId: Extensions.FemaleCostumes.Armor.Female07
     Meta: 
     Localization:
@@ -3051,7 +3051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.FemaleCostumes.Boots.Female08
+    IconId: Extensions.FemaleCostumes.Belt.Female08
     SpriteId: Extensions.FemaleCostumes.Armor.Female08
     Meta: 
     Localization:
@@ -3091,7 +3091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.FireAdept
+    IconId: FantasyHeroes.Basic.Belt.FireAdept
     SpriteId: FantasyHeroes.Basic.Armor.FireAdept
     Meta: 
     Localization:
@@ -3131,7 +3131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.FireBeastArmor
+    IconId: Extensions.Epic.Belt.FireBeastArmor
     SpriteId: Extensions.Epic.Armor.FireBeastArmor
     Meta: 
     Localization:
@@ -3171,7 +3171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.FireKnightArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.FireKnightArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.FireKnightArmor [Paint]
     Meta: 
     Localization:
@@ -3211,7 +3211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.FireWarriorArmor
+    IconId: FantasyHeroes.Basic.Belt.FireWarriorArmor
     SpriteId: FantasyHeroes.Basic.Armor.FireWarriorArmor
     Meta: 
     Localization:
@@ -3251,7 +3251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.FireWizardArmor
+    IconId: FantasyHeroes.Basic.Belt.FireWizardArmor
     SpriteId: FantasyHeroes.Basic.Armor.FireWizardArmor
     Meta: 
     Localization:
@@ -3291,7 +3291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.FlexureArmor
+    IconId: Extensions.Epic.Belt.FlexureArmor
     SpriteId: Extensions.Epic.Armor.FlexureArmor
     Meta: 
     Localization:
@@ -3331,7 +3331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.FlexureArmorTypeB
+    IconId: Extensions.Epic.Belt.FlexureArmorTypeB
     SpriteId: Extensions.Epic.Armor.FlexureArmorTypeB
     Meta: 
     Localization:
@@ -3371,7 +3371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ForesterTunic
+    IconId: Extensions.AbandonedWorkshop.Belt.ForesterTunic
     SpriteId: Extensions.AbandonedWorkshop.Armor.ForesterTunic
     Meta: 
     Localization:
@@ -3411,7 +3411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ForestKeeperVestment
+    IconId: Extensions.AbandonedWorkshop.Belt.ForestKeeperVestment
     SpriteId: Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment
     Meta: 
     Localization:
@@ -3451,7 +3451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ForestWhispererOutfit
+    IconId: Extensions.Epic.Belt.ForestWhispererOutfit
     SpriteId: Extensions.Epic.Armor.ForestWhispererOutfit
     Meta: 
     Localization:
@@ -3491,7 +3491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.FreeFolk [Paint]
+    IconId: FantasyHeroes.Thrones.Belt.FreeFolk [Paint]
     SpriteId: FantasyHeroes.Thrones.Armor.FreeFolk [Paint]
     Meta: 
     Localization:
@@ -3531,7 +3531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.FrostRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.FrostRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.FrostRobe
     Meta: 
     Localization:
@@ -3571,7 +3571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.FrozenMightRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.FrozenMightRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.FrozenMightRobe
     Meta: 
     Localization:
@@ -3611,7 +3611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Furry.Boots.GadiatorLoincloth
+    IconId: UndeadHeroes.Furry.Belt.GadiatorLoincloth
     SpriteId: UndeadHeroes.Furry.Armor.GadiatorLoincloth
     Meta: 
     Localization:
@@ -3651,7 +3651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.GenieVestment
+    IconId: Extensions.AbandonedWorkshop.Belt.GenieVestment
     SpriteId: Extensions.AbandonedWorkshop.Armor.GenieVestment
     Meta: 
     Localization:
@@ -3691,7 +3691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Knights.Boots.GguardsmenArmor [Paint]
+    IconId: FantasyHeroes.Knights.Belt.GguardsmenArmor [Paint]
     SpriteId: FantasyHeroes.Knights.Armor.GguardsmenArmor [Paint]
     Meta: 
     Localization:
@@ -3731,7 +3731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.GladiatorArmor
+    IconId: FantasyHeroes.Basic.Belt.GladiatorArmor
     SpriteId: FantasyHeroes.Basic.Armor.GladiatorArmor
     Meta: 
     Localization:
@@ -3771,7 +3771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.GoldLion
+    IconId: FantasyHeroes.Thrones.Belt.GoldLion
     SpriteId: FantasyHeroes.Thrones.Armor.GoldLion
     Meta: 
     Localization:
@@ -3811,7 +3811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.GreyKnight
+    IconId: FantasyHeroes.Basic.Belt.GreyKnight
     SpriteId: FantasyHeroes.Basic.Armor.GreyKnight
     Meta: 
     Localization:
@@ -3851,7 +3851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.GrimReaperRobe
+    IconId: Extensions.Epic.Belt.GrimReaperRobe
     SpriteId: Extensions.Epic.Armor.GrimReaperRobe
     Meta: 
     Localization:
@@ -3891,7 +3891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.GuardArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.GuardArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.GuardArmor [Paint]
     Meta: 
     Localization:
@@ -3931,7 +3931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.GuildArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.GuildArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.GuildArmor
     Meta: 
     Localization:
@@ -3971,7 +3971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.HalberdierArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.HalberdierArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.HalberdierArmor [Paint]
     Meta: 
     Localization:
@@ -4011,7 +4011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.HeavenlyArmor
+    IconId: Extensions.Epic.Belt.HeavenlyArmor
     SpriteId: Extensions.Epic.Armor.HeavenlyArmor
     Meta: 
     Localization:
@@ -4051,7 +4051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.HeavyArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.HeavyArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.HeavyArmor [Paint]
     Meta: 
     Localization:
@@ -4091,7 +4091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Hermit
+    IconId: FantasyHeroes.Basic.Belt.Hermit
     SpriteId: FantasyHeroes.Basic.Armor.Hermit
     Meta: 
     Localization:
@@ -4131,7 +4131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.HighCrusaderArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.HighCrusaderArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor
     Meta: 
     Localization:
@@ -4171,7 +4171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.HighKnightArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.HighKnightArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.HighKnightArmor
     Meta: 
     Localization:
@@ -4211,7 +4211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.HorseLord
+    IconId: FantasyHeroes.Thrones.Belt.HorseLord
     SpriteId: FantasyHeroes.Thrones.Armor.HorseLord
     Meta: 
     Localization:
@@ -4251,7 +4251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Hunter
+    IconId: FantasyHeroes.Basic.Belt.Hunter
     SpriteId: FantasyHeroes.Basic.Armor.Hunter
     Meta: 
     Localization:
@@ -4291,7 +4291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.HunterLightArmor
+    IconId: FantasyHeroes.Basic.Belt.HunterLightArmor
     SpriteId: FantasyHeroes.Basic.Armor.HunterLightArmor
     Meta: 
     Localization:
@@ -4331,7 +4331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.HunterTunic
+    IconId: FantasyHeroes.Basic.Belt.HunterTunic
     SpriteId: FantasyHeroes.Basic.Armor.HunterTunic
     Meta: 
     Localization:
@@ -4371,7 +4371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.IceWizardArmor
+    IconId: FantasyHeroes.Basic.Belt.IceWizardArmor
     SpriteId: FantasyHeroes.Basic.Armor.IceWizardArmor
     Meta: 
     Localization:
@@ -4411,7 +4411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.IllusionMantle
+    IconId: Extensions.AbandonedWorkshop.Belt.IllusionMantle
     SpriteId: Extensions.AbandonedWorkshop.Armor.IllusionMantle
     Meta: 
     Localization:
@@ -4451,7 +4451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Imperial TemplarArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.Imperial TemplarArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.Imperial TemplarArmor
     Meta: 
     Localization:
@@ -4491,7 +4491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ImperialKnight Cuirass
+    IconId: Extensions.AbandonedWorkshop.Belt.ImperialKnight Cuirass
     SpriteId: Extensions.AbandonedWorkshop.Armor.ImperialKnight Cuirass
     Meta: 
     Localization:
@@ -4531,7 +4531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.IncorruptibleArmor
+    IconId: Extensions.Epic.Belt.IncorruptibleArmor
     SpriteId: Extensions.Epic.Armor.IncorruptibleArmor
     Meta: 
     Localization:
@@ -4571,7 +4571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.InquisitorArmor
+    IconId: FantasyHeroes.Basic.Belt.InquisitorArmor
     SpriteId: FantasyHeroes.Basic.Armor.InquisitorArmor
     Meta: 
     Localization:
@@ -4611,7 +4611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.IronArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.IronArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.IronArmor [Paint]
     Meta: 
     Localization:
@@ -4651,7 +4651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.IronCuirass
+    IconId: Extensions.AbandonedWorkshop.Belt.IronCuirass
     SpriteId: Extensions.AbandonedWorkshop.Armor.IronCuirass
     Meta: 
     Localization:
@@ -4691,7 +4691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.IronHunterArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.IronHunterArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.IronHunterArmor
     Meta: 
     Localization:
@@ -4731,7 +4731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.IronIslands
+    IconId: FantasyHeroes.Thrones.Belt.IronIslands
     SpriteId: FantasyHeroes.Thrones.Armor.IronIslands
     Meta: 
     Localization:
@@ -4771,7 +4771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.IronPlateArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.IronPlateArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.IronPlateArmor [Paint]
     Meta: 
     Localization:
@@ -4811,7 +4811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Knights.Boots.KnightArmor
+    IconId: FantasyHeroes.Knights.Belt.KnightArmor
     SpriteId: FantasyHeroes.Knights.Armor.KnightArmor
     Meta: 
     Localization:
@@ -4851,7 +4851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.KnightArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.KnightArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.KnightArmor [Paint]
     Meta: 
     Localization:
@@ -4891,7 +4891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Knyaz
+    IconId: Extensions.Epic.Belt.Knyaz
     SpriteId: Extensions.Epic.Armor.Knyaz
     Meta: 
     Localization:
@@ -4931,7 +4931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Kopeynik
+    IconId: Extensions.Epic.Belt.Kopeynik
     SpriteId: Extensions.Epic.Armor.Kopeynik
     Meta: 
     Localization:
@@ -4971,7 +4971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.LandsknechtArmor
+    IconId: FantasyHeroes.Basic.Belt.LandsknechtArmor
     SpriteId: FantasyHeroes.Basic.Armor.LandsknechtArmor
     Meta: 
     Localization:
@@ -5011,7 +5011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.LeatherJacket
+    IconId: FantasyHeroes.Basic.Belt.LeatherJacket
     SpriteId: FantasyHeroes.Basic.Armor.LeatherJacket
     Meta: 
     Localization:
@@ -5051,7 +5051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.LeatherLightArmor
+    IconId: FantasyHeroes.Basic.Belt.LeatherLightArmor
     SpriteId: FantasyHeroes.Basic.Armor.LeatherLightArmor
     Meta: 
     Localization:
@@ -5091,7 +5091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.LeatherRivetedArmor
+    IconId: FantasyHeroes.Basic.Belt.LeatherRivetedArmor
     SpriteId: FantasyHeroes.Basic.Armor.LeatherRivetedArmor
     Meta: 
     Localization:
@@ -5131,7 +5131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.LittleLion
+    IconId: FantasyHeroes.Thrones.Belt.LittleLion
     SpriteId: FantasyHeroes.Thrones.Armor.LittleLion
     Meta: 
     Localization:
@@ -5171,7 +5171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Luchnik
+    IconId: Extensions.Epic.Belt.Luchnik
     SpriteId: Extensions.Epic.Armor.Luchnik
     Meta: 
     Localization:
@@ -5211,7 +5211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.LushKnight
+    IconId: Extensions.Epic.Belt.LushKnight
     SpriteId: Extensions.Epic.Armor.LushKnight
     Meta: 
     Localization:
@@ -5251,7 +5251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.MagnetismArmor
+    IconId: Extensions.Epic.Belt.MagnetismArmor
     SpriteId: Extensions.Epic.Armor.MagnetismArmor
     Meta: 
     Localization:
@@ -5291,7 +5291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.ManticoreArmor
+    IconId: FantasyHeroes.Basic.Belt.ManticoreArmor
     SpriteId: FantasyHeroes.Basic.Armor.ManticoreArmor
     Meta: 
     Localization:
@@ -5331,7 +5331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.MarauderArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.MarauderArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.MarauderArmor [Paint]
     Meta: 
     Localization:
@@ -5371,7 +5371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.MedievalBartender
+    IconId: FantasyHeroes.Basic.Belt.MedievalBartender
     SpriteId: FantasyHeroes.Basic.Armor.MedievalBartender
     Meta: 
     Localization:
@@ -5411,7 +5411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.MedievalCook
+    IconId: FantasyHeroes.Basic.Belt.MedievalCook
     SpriteId: FantasyHeroes.Basic.Armor.MedievalCook
     Meta: 
     Localization:
@@ -5451,7 +5451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.MercenaryArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.MercenaryArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.MercenaryArmor [Paint]
     Meta: 
     Localization:
@@ -5491,7 +5491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Militiaman
+    IconId: FantasyHeroes.Basic.Belt.Militiaman
     SpriteId: FantasyHeroes.Basic.Armor.Militiaman
     Meta: 
     Localization:
@@ -5531,7 +5531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.MinerCostume
+    IconId: FantasyHeroes.Basic.Belt.MinerCostume
     SpriteId: FantasyHeroes.Basic.Armor.MinerCostume
     Meta: 
     Localization:
@@ -5571,7 +5571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.MoonlightRobe
+    IconId: Extensions.Epic.Belt.MoonlightRobe
     SpriteId: Extensions.Epic.Armor.MoonlightRobe
     Meta: 
     Localization:
@@ -5611,7 +5611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.Mountain [Paint]
+    IconId: FantasyHeroes.Thrones.Belt.Mountain [Paint]
     SpriteId: FantasyHeroes.Thrones.Armor.Mountain [Paint]
     Meta: 
     Localization:
@@ -5651,7 +5651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Mummies.Boots.MummyClothes1
+    IconId: UndeadHeroes.Mummies.Belt.MummyClothes1
     SpriteId: UndeadHeroes.Mummies.Armor.MummyClothes1
     Meta: 
     Localization:
@@ -5691,7 +5691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Mummies.Boots.MummyClothes2
+    IconId: UndeadHeroes.Mummies.Belt.MummyClothes2
     SpriteId: UndeadHeroes.Mummies.Armor.MummyClothes2
     Meta: 
     Localization:
@@ -5731,7 +5731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Mummies.Boots.MummyClothes3
+    IconId: UndeadHeroes.Mummies.Belt.MummyClothes3
     SpriteId: UndeadHeroes.Mummies.Armor.MummyClothes3
     Meta: 
     Localization:
@@ -5771,7 +5771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Mummies.Boots.MummyClothes4
+    IconId: UndeadHeroes.Mummies.Belt.MummyClothes4
     SpriteId: UndeadHeroes.Mummies.Armor.MummyClothes4
     Meta: 
     Localization:
@@ -5811,7 +5811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.NativeVillager01
+    IconId: FantasyHeroes.Basic.Belt.NativeVillager01
     SpriteId: FantasyHeroes.Basic.Armor.NativeVillager01
     Meta: 
     Localization:
@@ -5851,7 +5851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.NativeVillager02
+    IconId: FantasyHeroes.Basic.Belt.NativeVillager02
     SpriteId: FantasyHeroes.Basic.Armor.NativeVillager02
     Meta: 
     Localization:
@@ -5891,7 +5891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.NecromancerArmor
+    IconId: FantasyHeroes.Basic.Belt.NecromancerArmor
     SpriteId: FantasyHeroes.Basic.Armor.NecromancerArmor
     Meta: 
     Localization:
@@ -5931,7 +5931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.NemeanArmorTypeA
+    IconId: Extensions.Epic.Belt.NemeanArmorTypeA
     SpriteId: Extensions.Epic.Armor.NemeanArmorTypeA
     Meta: 
     Localization:
@@ -5971,7 +5971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.NemeanArmorTypeB
+    IconId: Extensions.Epic.Belt.NemeanArmorTypeB
     SpriteId: Extensions.Epic.Armor.NemeanArmorTypeB
     Meta: 
     Localization:
@@ -6011,7 +6011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.NightsWatch [Paint]
+    IconId: FantasyHeroes.Thrones.Belt.NightsWatch [Paint]
     SpriteId: FantasyHeroes.Thrones.Armor.NightsWatch [Paint]
     Meta: 
     Localization:
@@ -6051,7 +6051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.Ninja1 [Paint]
+    IconId: FantasyHeroes.Samurai.Belt.Ninja1 [Paint]
     SpriteId: FantasyHeroes.Samurai.Armor.Ninja1 [Paint]
     Meta: 
     Localization:
@@ -6091,7 +6091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.Ninja2 [Paint]
+    IconId: FantasyHeroes.Samurai.Belt.Ninja2 [Paint]
     SpriteId: FantasyHeroes.Samurai.Armor.Ninja2 [Paint]
     Meta: 
     Localization:
@@ -6131,7 +6131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.Ninja3
+    IconId: FantasyHeroes.Samurai.Belt.Ninja3
     SpriteId: FantasyHeroes.Samurai.Armor.Ninja3
     Meta: 
     Localization:
@@ -6171,7 +6171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.NinjaOutfit
+    IconId: FantasyHeroes.Basic.Belt.NinjaOutfit
     SpriteId: FantasyHeroes.Basic.Armor.NinjaOutfit
     Meta: 
     Localization:
@@ -6211,7 +6211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.NobleKingArmor
+    IconId: Extensions.Epic.Belt.NobleKingArmor
     SpriteId: Extensions.Epic.Armor.NobleKingArmor
     Meta: 
     Localization:
@@ -6251,7 +6251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Nomad
+    IconId: FantasyHeroes.Basic.Belt.Nomad
     SpriteId: FantasyHeroes.Basic.Armor.Nomad
     Meta: 
     Localization:
@@ -6291,7 +6291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.NordicArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.NordicArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.NordicArmor
     Meta: 
     Localization:
@@ -6331,7 +6331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.NorthmanArmor
+    IconId: Extensions.Epic.Belt.NorthmanArmor
     SpriteId: Extensions.Epic.Armor.NorthmanArmor
     Meta: 
     Localization:
@@ -6371,7 +6371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.NorthWarden
+    IconId: FantasyHeroes.Thrones.Belt.NorthWarden
     SpriteId: FantasyHeroes.Thrones.Armor.NorthWarden
     Meta: 
     Localization:
@@ -6411,7 +6411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.NosrossArcherArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.NosrossArcherArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor
     Meta: 
     Localization:
@@ -6451,7 +6451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Christmas.Boots.NutcrackerOutfit
+    IconId: Common.Christmas.Belt.NutcrackerOutfit
     SpriteId: Common.Christmas.Armor.NutcrackerOutfit
     Meta: 
     Localization:
@@ -6491,7 +6491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.OminousArmor
+    IconId: Extensions.Epic.Belt.OminousArmor
     SpriteId: Extensions.Epic.Armor.OminousArmor
     Meta: 
     Localization:
@@ -6531,7 +6531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.OrcArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.OrcArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.OrcArmor
     Meta: 
     Localization:
@@ -6571,7 +6571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.OzeriasRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.OzeriasRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.OzeriasRobe
     Meta: 
     Localization:
@@ -6611,7 +6611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.PaladinArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.PaladinArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.PaladinArmor [Paint]
     Meta: 
     Localization:
@@ -6651,7 +6651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.PathfinderArmor
+    IconId: FantasyHeroes.Basic.Belt.PathfinderArmor
     SpriteId: FantasyHeroes.Basic.Armor.PathfinderArmor
     Meta: 
     Localization:
@@ -6691,7 +6691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.PeasantClothing
+    IconId: FantasyHeroes.Basic.Belt.PeasantClothing
     SpriteId: FantasyHeroes.Basic.Armor.PeasantClothing
     Meta: 
     Localization:
@@ -6731,7 +6731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.PersianArcher
+    IconId: Extensions.Epic.Belt.PersianArcher
     SpriteId: Extensions.Epic.Armor.PersianArcher
     Meta: 
     Localization:
@@ -6771,7 +6771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.PersianDuelist
+    IconId: Extensions.Epic.Belt.PersianDuelist
     SpriteId: Extensions.Epic.Armor.PersianDuelist
     Meta: 
     Localization:
@@ -6811,7 +6811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.PersianLancerArmor
+    IconId: Extensions.Epic.Belt.PersianLancerArmor
     SpriteId: Extensions.Epic.Armor.PersianLancerArmor
     Meta: 
     Localization:
@@ -6851,7 +6851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.PersianWarrior
+    IconId: Extensions.Epic.Belt.PersianWarrior
     SpriteId: Extensions.Epic.Armor.PersianWarrior
     Meta: 
     Localization:
@@ -6891,7 +6891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.PhobosHeavyArmor
+    IconId: Extensions.Epic.Belt.PhobosHeavyArmor
     SpriteId: Extensions.Epic.Armor.PhobosHeavyArmor
     Meta: 
     Localization:
@@ -6931,7 +6931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.PorcelainArmor
+    IconId: Extensions.Epic.Belt.PorcelainArmor
     SpriteId: Extensions.Epic.Armor.PorcelainArmor
     Meta: 
     Localization:
@@ -6971,7 +6971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Halloween.Boots.PumpkinCostume
+    IconId: Common.Halloween.Belt.PumpkinCostume
     SpriteId: Common.Halloween.Armor.PumpkinCostume
     Meta: 
     Localization:
@@ -7011,7 +7011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.PyromancerArmor
+    IconId: FantasyHeroes.Basic.Belt.PyromancerArmor
     SpriteId: FantasyHeroes.Basic.Armor.PyromancerArmor
     Meta: 
     Localization:
@@ -7051,7 +7051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Furry.Boots.RagLoincloth
+    IconId: UndeadHeroes.Furry.Belt.RagLoincloth
     SpriteId: UndeadHeroes.Furry.Armor.RagLoincloth
     Meta: 
     Localization:
@@ -7091,7 +7091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Rags1
+    IconId: FantasyHeroes.Basic.Belt.Rags1
     SpriteId: FantasyHeroes.Basic.Armor.Rags1
     Meta: 
     Localization:
@@ -7131,7 +7131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Rags2
+    IconId: FantasyHeroes.Basic.Belt.Rags2
     SpriteId: FantasyHeroes.Basic.Armor.Rags2
     Meta: 
     Localization:
@@ -7171,7 +7171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Rags3
+    IconId: FantasyHeroes.Basic.Belt.Rags3
     SpriteId: FantasyHeroes.Basic.Armor.Rags3
     Meta: 
     Localization:
@@ -7211,7 +7211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.RangerArmor
+    IconId: FantasyHeroes.Basic.Belt.RangerArmor
     SpriteId: FantasyHeroes.Basic.Armor.RangerArmor
     Meta: 
     Localization:
@@ -7251,7 +7251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Ratnik
+    IconId: Extensions.Epic.Belt.Ratnik
     SpriteId: Extensions.Epic.Armor.Ratnik
     Meta: 
     Localization:
@@ -7291,7 +7291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.RedGuardianArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.RedGuardianArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.RedGuardianArmor
     Meta: 
     Localization:
@@ -7331,7 +7331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.RedKittyRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.RedKittyRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.RedKittyRobe
     Meta: 
     Localization:
@@ -7371,7 +7371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.RedLion
+    IconId: FantasyHeroes.Thrones.Belt.RedLion
     SpriteId: FantasyHeroes.Thrones.Armor.RedLion
     Meta: 
     Localization:
@@ -7411,7 +7411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.RedLunarRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.RedLunarRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.RedLunarRobe
     Meta: 
     Localization:
@@ -7451,7 +7451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ReinforcedLeatherArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.ReinforcedLeatherArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherArmor
     Meta: 
     Localization:
@@ -7491,7 +7491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.ReinforcedLeatherTunic
+    IconId: Extensions.AbandonedWorkshop.Belt.ReinforcedLeatherTunic
     SpriteId: Extensions.AbandonedWorkshop.Armor.ReinforcedLeatherTunic
     Meta: 
     Localization:
@@ -7531,7 +7531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.RenovatedArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.RenovatedArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.RenovatedArmor
     Meta: 
     Localization:
@@ -7571,7 +7571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Robe
+    IconId: FantasyHeroes.Basic.Belt.Robe
     SpriteId: FantasyHeroes.Basic.Armor.Robe
     Meta: 
     Localization:
@@ -7611,7 +7611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.RoyalArcherArmor
+    IconId: FantasyHeroes.Basic.Belt.RoyalArcherArmor
     SpriteId: FantasyHeroes.Basic.Armor.RoyalArcherArmor
     Meta: 
     Localization:
@@ -7651,7 +7651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.RoyalGuard
+    IconId: FantasyHeroes.Basic.Belt.RoyalGuard
     SpriteId: FantasyHeroes.Basic.Armor.RoyalGuard
     Meta: 
     Localization:
@@ -7691,7 +7691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.RoyalTunic
+    IconId: Extensions.AbandonedWorkshop.Belt.RoyalTunic
     SpriteId: Extensions.AbandonedWorkshop.Armor.RoyalTunic
     Meta: 
     Localization:
@@ -7731,7 +7731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.SacredWolfyRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.SacredWolfyRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.SacredWolfyRobe
     Meta: 
     Localization:
@@ -7771,7 +7771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.SaintPatrickOutfit
+    IconId: Extensions.AbandonedWorkshop.Belt.SaintPatrickOutfit
     SpriteId: Extensions.AbandonedWorkshop.Armor.SaintPatrickOutfit
     Meta: 
     Localization:
@@ -7811,7 +7811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiElder
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiElder
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiElder
     Meta: 
     Localization:
@@ -7851,7 +7851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiHeavy1
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiHeavy1
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiHeavy1
     Meta: 
     Localization:
@@ -7891,7 +7891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiHeavy2
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiHeavy2
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiHeavy2
     Meta: 
     Localization:
@@ -7931,7 +7931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiHeavy3
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiHeavy3
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiHeavy3
     Meta: 
     Localization:
@@ -7971,7 +7971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiLight1
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiLight1
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiLight1
     Meta: 
     Localization:
@@ -8011,7 +8011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiLight2
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiLight2
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiLight2
     Meta: 
     Localization:
@@ -8051,7 +8051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Samurai.Boots.SamuraiLight3
+    IconId: FantasyHeroes.Samurai.Belt.SamuraiLight3
     SpriteId: FantasyHeroes.Samurai.Armor.SamuraiLight3
     Meta: 
     Localization:
@@ -8091,7 +8091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandElder
+    IconId: FantasyHeroes.SandLords.Belt.SandElder
     SpriteId: FantasyHeroes.SandLords.Armor.SandElder
     Meta: 
     Localization:
@@ -8131,7 +8131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandHealer1
+    IconId: FantasyHeroes.SandLords.Belt.SandHealer1
     SpriteId: FantasyHeroes.SandLords.Armor.SandHealer1
     Meta: 
     Localization:
@@ -8171,7 +8171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandHealer2
+    IconId: FantasyHeroes.SandLords.Belt.SandHealer2
     SpriteId: FantasyHeroes.SandLords.Armor.SandHealer2
     Meta: 
     Localization:
@@ -8211,7 +8211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandMage1
+    IconId: FantasyHeroes.SandLords.Belt.SandMage1
     SpriteId: FantasyHeroes.SandLords.Armor.SandMage1
     Meta: 
     Localization:
@@ -8251,7 +8251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandMage2
+    IconId: FantasyHeroes.SandLords.Belt.SandMage2
     SpriteId: FantasyHeroes.SandLords.Armor.SandMage2
     Meta: 
     Localization:
@@ -8291,7 +8291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandShooter1
+    IconId: FantasyHeroes.SandLords.Belt.SandShooter1
     SpriteId: FantasyHeroes.SandLords.Armor.SandShooter1
     Meta: 
     Localization:
@@ -8331,7 +8331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandShooter2
+    IconId: FantasyHeroes.SandLords.Belt.SandShooter2
     SpriteId: FantasyHeroes.SandLords.Armor.SandShooter2
     Meta: 
     Localization:
@@ -8371,7 +8371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.SandTunic
+    IconId: Extensions.AbandonedWorkshop.Belt.SandTunic
     SpriteId: Extensions.AbandonedWorkshop.Armor.SandTunic
     Meta: 
     Localization:
@@ -8411,7 +8411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Thrones.Boots.SandWarrior
+    IconId: FantasyHeroes.Thrones.Belt.SandWarrior
     SpriteId: FantasyHeroes.Thrones.Armor.SandWarrior
     Meta: 
     Localization:
@@ -8451,7 +8451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandWarrior1
+    IconId: FantasyHeroes.SandLords.Belt.SandWarrior1
     SpriteId: FantasyHeroes.SandLords.Armor.SandWarrior1
     Meta: 
     Localization:
@@ -8491,7 +8491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SandLords.Boots.SandWarrior2
+    IconId: FantasyHeroes.SandLords.Belt.SandWarrior2
     SpriteId: FantasyHeroes.SandLords.Armor.SandWarrior2
     Meta: 
     Localization:
@@ -8531,7 +8531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Christmas.Boots.Santa1
+    IconId: FantasyHeroes.Christmas.Belt.Santa1
     SpriteId: FantasyHeroes.Christmas.Armor.Santa1
     Meta: 
     Localization:
@@ -8571,7 +8571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Christmas.Boots.Santa1
+    IconId: UndeadHeroes.Christmas.Belt.Santa1
     SpriteId: UndeadHeroes.Christmas.Armor.Santa1
     Meta: 
     Localization:
@@ -8611,7 +8611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Christmas.Boots.Santa2
+    IconId: FantasyHeroes.Christmas.Belt.Santa2
     SpriteId: FantasyHeroes.Christmas.Armor.Santa2
     Meta: 
     Localization:
@@ -8651,7 +8651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Christmas.Boots.Santa2
+    IconId: UndeadHeroes.Christmas.Belt.Santa2
     SpriteId: UndeadHeroes.Christmas.Armor.Santa2
     Meta: 
     Localization:
@@ -8691,7 +8691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Christmas.Boots.SantaHelper
+    IconId: FantasyHeroes.Christmas.Belt.SantaHelper
     SpriteId: FantasyHeroes.Christmas.Armor.SantaHelper
     Meta: 
     Localization:
@@ -8731,7 +8731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Christmas.Boots.SantaHelper
+    IconId: UndeadHeroes.Christmas.Belt.SantaHelper
     SpriteId: UndeadHeroes.Christmas.Armor.SantaHelper
     Meta: 
     Localization:
@@ -8771,7 +8771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ScintillateOutfit
+    IconId: Extensions.Epic.Belt.ScintillateOutfit
     SpriteId: Extensions.Epic.Armor.ScintillateOutfit
     Meta: 
     Localization:
@@ -8811,7 +8811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Scout [Paint]
+    IconId: FantasyHeroes.Basic.Belt.Scout [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.Scout [Paint]
     Meta: 
     Localization:
@@ -8851,7 +8851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.ShamanArmor
+    IconId: FantasyHeroes.Basic.Belt.ShamanArmor
     SpriteId: FantasyHeroes.Basic.Armor.ShamanArmor
     Meta: 
     Localization:
@@ -8891,7 +8891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.SiegeArcherArmor
+    IconId: FantasyHeroes.Basic.Belt.SiegeArcherArmor
     SpriteId: FantasyHeroes.Basic.Armor.SiegeArcherArmor
     Meta: 
     Localization:
@@ -8931,7 +8931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SilkKingOutfit
+    IconId: Extensions.Epic.Belt.SilkKingOutfit
     SpriteId: Extensions.Epic.Armor.SilkKingOutfit
     Meta: 
     Localization:
@@ -8971,7 +8971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonArmor1
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonArmor1
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonArmor1
     Meta: 
     Localization:
@@ -9011,7 +9011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonArmor2
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonArmor2
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonArmor2
     Meta: 
     Localization:
@@ -9051,7 +9051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonArmor3
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonArmor3
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonArmor3
     Meta: 
     Localization:
@@ -9091,7 +9091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonArmor4
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonArmor4
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonArmor4
     Meta: 
     Localization:
@@ -9131,7 +9131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonArmor5
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonArmor5
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonArmor5
     Meta: 
     Localization:
@@ -9171,7 +9171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonArmor6
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonArmor6
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonArmor6
     Meta: 
     Localization:
@@ -9211,7 +9211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Skeletons.Boots.SkeletonKing
+    IconId: UndeadHeroes.Skeletons.Belt.SkeletonKing
     SpriteId: UndeadHeroes.Skeletons.Armor.SkeletonKing
     Meta: 
     Localization:
@@ -9251,7 +9251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Slave
+    IconId: FantasyHeroes.Basic.Belt.Slave
     SpriteId: FantasyHeroes.Basic.Armor.Slave
     Meta: 
     Localization:
@@ -9291,7 +9291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.SniperArmor
+    IconId: FantasyHeroes.Basic.Belt.SniperArmor
     SpriteId: FantasyHeroes.Basic.Armor.SniperArmor
     Meta: 
     Localization:
@@ -9331,7 +9331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Christmas.Boots.SnowMaidenCostume
+    IconId: Common.Christmas.Belt.SnowMaidenCostume
     SpriteId: Common.Christmas.Armor.SnowMaidenCostume
     Meta: 
     Localization:
@@ -9371,7 +9371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SoulHeavyArmor
+    IconId: Extensions.Epic.Belt.SoulHeavyArmor
     SpriteId: Extensions.Epic.Armor.SoulHeavyArmor
     Meta: 
     Localization:
@@ -9411,7 +9411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SpartanArmor
+    IconId: Extensions.Epic.Belt.SpartanArmor
     SpriteId: Extensions.Epic.Armor.SpartanArmor
     Meta: 
     Localization:
@@ -9451,7 +9451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.SpearmanArmor
+    IconId: FantasyHeroes.Basic.Belt.SpearmanArmor
     SpriteId: FantasyHeroes.Basic.Armor.SpearmanArmor
     Meta: 
     Localization:
@@ -9491,7 +9491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.SpikedArmor
+    IconId: FantasyHeroes.Basic.Belt.SpikedArmor
     SpriteId: FantasyHeroes.Basic.Armor.SpikedArmor
     Meta: 
     Localization:
@@ -9531,7 +9531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.StormBringerArmor
+    IconId: FantasyHeroes.Basic.Belt.StormBringerArmor
     SpriteId: FantasyHeroes.Basic.Armor.StormBringerArmor
     Meta: 
     Localization:
@@ -9571,7 +9571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.StormcallerArmor
+    IconId: Extensions.Epic.Belt.StormcallerArmor
     SpriteId: Extensions.Epic.Armor.StormcallerArmor
     Meta: 
     Localization:
@@ -9611,7 +9611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Strelets
+    IconId: Extensions.Epic.Belt.Strelets
     SpriteId: Extensions.Epic.Armor.Strelets
     Meta: 
     Localization:
@@ -9651,7 +9651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SunlightRobe
+    IconId: Extensions.Epic.Belt.SunlightRobe
     SpriteId: Extensions.Epic.Armor.SunlightRobe
     Meta: 
     Localization:
@@ -9691,7 +9691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampElder
+    IconId: FantasyHeroes.SwampLords.Belt.SwampElder
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampElder
     Meta: 
     Localization:
@@ -9731,7 +9731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampHealer1
+    IconId: FantasyHeroes.SwampLords.Belt.SwampHealer1
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampHealer1
     Meta: 
     Localization:
@@ -9771,7 +9771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampHealer2
+    IconId: FantasyHeroes.SwampLords.Belt.SwampHealer2
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampHealer2
     Meta: 
     Localization:
@@ -9811,7 +9811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampMage1
+    IconId: FantasyHeroes.SwampLords.Belt.SwampMage1
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampMage1
     Meta: 
     Localization:
@@ -9851,7 +9851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampMage2
+    IconId: FantasyHeroes.SwampLords.Belt.SwampMage2
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampMage2
     Meta: 
     Localization:
@@ -9891,7 +9891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampShooter1
+    IconId: FantasyHeroes.SwampLords.Belt.SwampShooter1
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampShooter1
     Meta: 
     Localization:
@@ -9931,7 +9931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampShooter2
+    IconId: FantasyHeroes.SwampLords.Belt.SwampShooter2
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampShooter2
     Meta: 
     Localization:
@@ -9971,7 +9971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampWarrior1
+    IconId: FantasyHeroes.SwampLords.Belt.SwampWarrior1
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampWarrior1
     Meta: 
     Localization:
@@ -10011,7 +10011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.SwampLords.Boots.SwampWarrior2
+    IconId: FantasyHeroes.SwampLords.Belt.SwampWarrior2
     SpriteId: FantasyHeroes.SwampLords.Armor.SwampWarrior2
     Meta: 
     Localization:
@@ -10051,7 +10051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SweetnessDress
+    IconId: Extensions.Epic.Belt.SweetnessDress
     SpriteId: Extensions.Epic.Armor.SweetnessDress
     Meta: 
     Localization:
@@ -10091,7 +10091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SweetnessDressTypeB
+    IconId: Extensions.Epic.Belt.SweetnessDressTypeB
     SpriteId: Extensions.Epic.Armor.SweetnessDressTypeB
     Meta: 
     Localization:
@@ -10131,7 +10131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.SweetnessDressTypeC
+    IconId: Extensions.Epic.Belt.SweetnessDressTypeC
     SpriteId: Extensions.Epic.Armor.SweetnessDressTypeC
     Meta: 
     Localization:
@@ -10171,7 +10171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.TechnomancerArmor
+    IconId: Extensions.Epic.Belt.TechnomancerArmor
     SpriteId: Extensions.Epic.Armor.TechnomancerArmor
     Meta: 
     Localization:
@@ -10211,7 +10211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.TennoHeavyArmor
+    IconId: Extensions.Epic.Belt.TennoHeavyArmor
     SpriteId: Extensions.Epic.Armor.TennoHeavyArmor
     Meta: 
     Localization:
@@ -10251,7 +10251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.TerraArmor
+    IconId: Extensions.Epic.Belt.TerraArmor
     SpriteId: Extensions.Epic.Armor.TerraArmor
     Meta: 
     Localization:
@@ -10291,7 +10291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.ThiefArmor
+    IconId: FantasyHeroes.Basic.Belt.ThiefArmor
     SpriteId: FantasyHeroes.Basic.Armor.ThiefArmor
     Meta: 
     Localization:
@@ -10331,7 +10331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ThunderguardArmor
+    IconId: Extensions.Epic.Belt.ThunderguardArmor
     SpriteId: Extensions.Epic.Armor.ThunderguardArmor
     Meta: 
     Localization:
@@ -10371,7 +10371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Furry.Boots.TribalLoincloth
+    IconId: UndeadHeroes.Furry.Belt.TribalLoincloth
     SpriteId: UndeadHeroes.Furry.Armor.TribalLoincloth
     Meta: 
     Localization:
@@ -10411,7 +10411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.UncleSamOutfit
+    IconId: Extensions.Epic.Belt.UncleSamOutfit
     SpriteId: Extensions.Epic.Armor.UncleSamOutfit
     Meta: 
     Localization:
@@ -10451,7 +10451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants1
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants1
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants1
     Meta: 
     Localization:
@@ -10491,7 +10491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants10
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants10
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants10
     Meta: 
     Localization:
@@ -10531,7 +10531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants2
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants2
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants2
     Meta: 
     Localization:
@@ -10571,7 +10571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants3
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants3
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants3
     Meta: 
     Localization:
@@ -10611,7 +10611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants4
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants4
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants4
     Meta: 
     Localization:
@@ -10651,7 +10651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants5
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants5
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants5
     Meta: 
     Localization:
@@ -10691,7 +10691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants6
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants6
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants6
     Meta: 
     Localization:
@@ -10731,7 +10731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants7
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants7
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants7
     Meta: 
     Localization:
@@ -10771,7 +10771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants8
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants8
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants8
     Meta: 
     Localization:
@@ -10811,7 +10811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.Underpants9
+    IconId: Extensions.AbandonedWorkshop.Belt.Underpants9
     SpriteId: Extensions.AbandonedWorkshop.Armor.Underpants9
     Meta: 
     Localization:
@@ -10851,7 +10851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.ViciousArmor
+    IconId: Extensions.Epic.Belt.ViciousArmor
     SpriteId: Extensions.Epic.Armor.ViciousArmor
     Meta: 
     Localization:
@@ -10891,7 +10891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingFurArmor
+    IconId: FantasyHeroes.Vikings.Belt.VikingFurArmor
     SpriteId: FantasyHeroes.Vikings.Armor.VikingFurArmor
     Meta: 
     Localization:
@@ -10931,7 +10931,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingLightArmor1
+    IconId: FantasyHeroes.Vikings.Belt.VikingLightArmor1
     SpriteId: FantasyHeroes.Vikings.Armor.VikingLightArmor1
     Meta: 
     Localization:
@@ -10971,7 +10971,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingLightArmor2
+    IconId: FantasyHeroes.Vikings.Belt.VikingLightArmor2
     SpriteId: FantasyHeroes.Vikings.Armor.VikingLightArmor2
     Meta: 
     Localization:
@@ -11011,7 +11011,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingLightArmor3
+    IconId: FantasyHeroes.Vikings.Belt.VikingLightArmor3
     SpriteId: FantasyHeroes.Vikings.Armor.VikingLightArmor3
     Meta: 
     Localization:
@@ -11051,7 +11051,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingRoughArmor1
+    IconId: FantasyHeroes.Vikings.Belt.VikingRoughArmor1
     SpriteId: FantasyHeroes.Vikings.Armor.VikingRoughArmor1
     Meta: 
     Localization:
@@ -11091,7 +11091,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingRoughArmor2
+    IconId: FantasyHeroes.Vikings.Belt.VikingRoughArmor2
     SpriteId: FantasyHeroes.Vikings.Armor.VikingRoughArmor2
     Meta: 
     Localization:
@@ -11131,7 +11131,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Vikings.Boots.VikingRoughArmor3 [Paint]
+    IconId: FantasyHeroes.Vikings.Belt.VikingRoughArmor3 [Paint]
     SpriteId: FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint]
     Meta: 
     Localization:
@@ -11171,7 +11171,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Vityaz
+    IconId: Extensions.Epic.Belt.Vityaz
     SpriteId: Extensions.Epic.Armor.Vityaz
     Meta: 
     Localization:
@@ -11211,7 +11211,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.Voivode
+    IconId: Extensions.Epic.Belt.Voivode
     SpriteId: Extensions.Epic.Armor.Voivode
     Meta: 
     Localization:
@@ -11251,7 +11251,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.WallKeeperArmor
+    IconId: Extensions.AbandonedWorkshop.Belt.WallKeeperArmor
     SpriteId: Extensions.AbandonedWorkshop.Armor.WallKeeperArmor
     Meta: 
     Localization:
@@ -11291,7 +11291,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.Wanderer
+    IconId: FantasyHeroes.Basic.Belt.Wanderer
     SpriteId: FantasyHeroes.Basic.Armor.Wanderer
     Meta: 
     Localization:
@@ -11331,7 +11331,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.WarlockArmor
+    IconId: FantasyHeroes.Basic.Belt.WarlockArmor
     SpriteId: FantasyHeroes.Basic.Armor.WarlockArmor
     Meta: 
     Localization:
@@ -11371,7 +11371,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Furry.Boots.WarriorLoincloth
+    IconId: UndeadHeroes.Furry.Belt.WarriorLoincloth
     SpriteId: UndeadHeroes.Furry.Armor.WarriorLoincloth
     Meta: 
     Localization:
@@ -11411,7 +11411,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.WaterAdept
+    IconId: FantasyHeroes.Basic.Belt.WaterAdept
     SpriteId: FantasyHeroes.Basic.Armor.WaterAdept
     Meta: 
     Localization:
@@ -11451,7 +11451,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.Epic.Boots.WaterElementalArmor
+    IconId: Extensions.Epic.Belt.WaterElementalArmor
     SpriteId: Extensions.Epic.Armor.WaterElementalArmor
     Meta: 
     Localization:
@@ -11491,7 +11491,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.WaterWizardArmor
+    IconId: FantasyHeroes.Basic.Belt.WaterWizardArmor
     SpriteId: FantasyHeroes.Basic.Armor.WaterWizardArmor
     Meta: 
     Localization:
@@ -11531,7 +11531,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.WhiteGuardian
+    IconId: Extensions.AbandonedWorkshop.Belt.WhiteGuardian
     SpriteId: Extensions.AbandonedWorkshop.Armor.WhiteGuardian
     Meta: 
     Localization:
@@ -11571,7 +11571,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Extensions.AbandonedWorkshop.Boots.WhiteKittyRobe
+    IconId: Extensions.AbandonedWorkshop.Belt.WhiteKittyRobe
     SpriteId: Extensions.AbandonedWorkshop.Armor.WhiteKittyRobe
     Meta: 
     Localization:
@@ -11611,7 +11611,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.WitchArmor
+    IconId: FantasyHeroes.Basic.Belt.WitchArmor
     SpriteId: FantasyHeroes.Basic.Armor.WitchArmor
     Meta: 
     Localization:
@@ -11651,7 +11651,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: Common.Halloween.Boots.WitchCostume
+    IconId: Common.Halloween.Belt.WitchCostume
     SpriteId: Common.Halloween.Armor.WitchCostume
     Meta: 
     Localization:
@@ -11691,7 +11691,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: FantasyHeroes.Basic.Boots.WitchHunterArmor [Paint]
+    IconId: FantasyHeroes.Basic.Belt.WitchHunterArmor [Paint]
     SpriteId: FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint]
     Meta: 
     Localization:
@@ -11731,7 +11731,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Zombies.Boots.ZombieClothes1
+    IconId: UndeadHeroes.Zombies.Belt.ZombieClothes1
     SpriteId: UndeadHeroes.Zombies.Armor.ZombieClothes1
     Meta: 
     Localization:
@@ -11771,7 +11771,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Zombies.Boots.ZombieClothes2
+    IconId: UndeadHeroes.Zombies.Belt.ZombieClothes2
     SpriteId: UndeadHeroes.Zombies.Armor.ZombieClothes2
     Meta: 
     Localization:
@@ -11811,7 +11811,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Zombies.Boots.ZombieClothes3
+    IconId: UndeadHeroes.Zombies.Belt.ZombieClothes3
     SpriteId: UndeadHeroes.Zombies.Armor.ZombieClothes3
     Meta: 
     Localization:
@@ -11851,7 +11851,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Zombies.Boots.ZombieClothes4
+    IconId: UndeadHeroes.Zombies.Belt.ZombieClothes4
     SpriteId: UndeadHeroes.Zombies.Armor.ZombieClothes4
     Meta: 
     Localization:
@@ -11891,7 +11891,7 @@ MonoBehaviour:
       Value: 1
     Price: 0
     Weight: 0
-    IconId: UndeadHeroes.Zombies.Boots.ZombieClothes5
+    IconId: UndeadHeroes.Zombies.Belt.ZombieClothes5
     SpriteId: UndeadHeroes.Zombies.Armor.ZombieClothes5
     Meta: 
     Localization:
