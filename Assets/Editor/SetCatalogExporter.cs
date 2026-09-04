@@ -142,7 +142,6 @@ public static class SetCatalogExporter
     {
         string label = Catalog.TypeLabel(item.Type);
         string display = Catalog.DisplayName(item.Id);
-        string stats = item.Properties != null ? string.Join(", ", item.Properties.Select(p => p.Id + " " + p.Value)) : "";
         var entry = resonance != null ? resonance.entries.FirstOrDefault(e => e.itemId == item.Id) : null;
         string designed = entry != null ? $"<span class=\"designed\">● {(entry.engraving != null ? Esc(entry.engraving.DisplayName) : "designed")}</span>" : "";
         search.Append(display).Append(' ').Append(label).Append(' ');
@@ -151,7 +150,7 @@ public static class SetCatalogExporter
         string icon = IconData(item, iconCache);
         return $"<div class=\"piece{(goesWith ? " goes" : "")}\">" +
                (icon != null ? $"<img src=\"data:image/png;base64,{icon}\" alt=\"\">" : "<span class=\"noicon\"></span>") +
-               $"<div><div class=\"pname\">{Esc(display)} {designed}</div><div class=\"ptype\">{(goesWith ? "goes with · " : "")}{Esc(label)} · {Esc(stats)}</div></div></div>";
+               $"<div><div class=\"pname\">{Esc(display)} {designed}</div><div class=\"ptype\">{(goesWith ? "goes with · " : "")}{Esc(label)}</div></div></div>";
     }
 
     // ---- icons: read a sprite's pixels through a render texture, since atlases are not readable
