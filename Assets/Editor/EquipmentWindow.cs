@@ -260,7 +260,7 @@ public class ItemPage
         get
         {
             var item = Catalog.Find(_entry.itemId);
-            return item == null ? "not in ItemCollection" : $"{item.Type} · {item.Class} · {item.Rarity} · {item.Price}g";
+            return item == null ? "not in ItemCollection" : $"{Catalog.TypeLabel(item.Type)} · {item.Class} · {item.Rarity} · {item.Price}g";
         }
     }
 

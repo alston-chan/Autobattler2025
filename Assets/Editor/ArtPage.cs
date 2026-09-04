@@ -55,7 +55,7 @@ public class ArtPage
         public Sprite Icon => entry.icon;
 
         [TableColumnWidth(260), ShowInInspector, ReadOnly, DisplayAsString, HideLabel]
-        public string Piece => $"{entry.item.Type}  {entry.name}";
+        public string Piece => $"{Catalog.TypeLabel(entry.item.Type)}  {entry.name}";
 
         [TableColumnWidth(180), ShowInInspector, ReadOnly, DisplayAsString, HideLabel]
         public string Stats => entry.item.Properties != null ? string.Join(", ", entry.item.Properties.Select(p => p.Id + " " + p.Value)) : "";
@@ -354,7 +354,7 @@ public class ArtPage
     private string Id => _selected?.item.Id;
 
     [BoxGroup("Picked"), ShowInInspector, ReadOnly, ShowIf("HasSelection"), PropertyOrder(4)]
-    private string Kind => _selected == null ? "" : $"{_selected.item.Type} · {_selected.item.Class} · {_selected.item.Rarity} · {_selected.item.Price}g";
+    private string Kind => _selected == null ? "" : $"{Catalog.TypeLabel(_selected.item.Type)} · {_selected.item.Class} · {_selected.item.Rarity} · {_selected.item.Price}g";
 
     [BoxGroup("Picked"), ShowInInspector, ReadOnly, ShowIf("HasSelection"), PropertyOrder(4), ListDrawerSettings(IsReadOnly = true, ShowFoldout = false)]
     private List<string> Properties => _selected?.item.Properties?.Select(p => p.Id + "  " + p.Value).ToList() ?? new List<string>();
@@ -525,7 +525,7 @@ public class ArtPage
                 if (piece == null) continue;
                 var entry = ResonanceEntryFor(piece.item.Id);
                 string stats = piece.item.Properties != null ? string.Join(", ", piece.item.Properties.Select(p => p.Id + " " + p.Value)) : "";
-                list.Add($"{piece.item.Type}  {piece.name}  ·  {stats}" +
+                list.Add($"{Catalog.TypeLabel(piece.item.Type)}  {piece.name}  ·  {stats}" +
                          (entry != null ? $"  ·  designed: {(entry.engraving != null ? entry.engraving.DisplayName : "no engraving")}" : ""));
             }
             return list;

@@ -81,6 +81,23 @@ public static class Catalog
     /// <summary>What a part is called on a card: the vest id is the Upper, the boots id the Lower.</summary>
     public static string PartLabel(string part) => part == "vest" ? "Upper" : part == "boots" ? "Lower" : part;
 
+    /// <summary>
+    /// What an item type is called anywhere a player or designer reads it. The vendor's enum names
+    /// are its own: VestBeltPauldron is the upper armour now (vest, pauldrons, gloves) and Boots the
+    /// lower (boots, belt); a Gloves item only exists in saves from before the split.
+    /// </summary>
+    public static string TypeLabel(ItemType type)
+    {
+        switch (type)
+        {
+            case ItemType.VestBeltPauldron: return "Upper armor";
+            case ItemType.Boots: return "Lower armor";
+            case ItemType.Gloves: return "Gloves (old)";
+            case ItemType.Armor: return "Cape";
+            default: return type.ToString();
+        }
+    }
+
     private static readonly string[] GarmentWords =
     {
         "Armor", "Armour", "Dress", "Robe", "Outfit", "Costume", "Suit", "Mail", "Plate", "Garb", "Tunic",

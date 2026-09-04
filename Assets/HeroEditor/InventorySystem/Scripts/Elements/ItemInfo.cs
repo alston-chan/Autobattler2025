@@ -68,7 +68,9 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             Background.sprite = ItemCollection.Active.GetBackground(item);
             UpdatePrice(item, price, trader);
 
-            var main = new List<object> { item.Params.Type };
+            // PROJECT EDIT (Autobattler2025): the type as the player should read it — "Upper armor",
+            // not the enum's VestBeltPauldron, since the split at the waist (see Catalog.TypeLabel).
+            var main = new List<object> { Catalog.TypeLabel(item.Params.Type) };
 
             if (item.Params.Class != ItemClass.Unknown) main.Add(item.Params.Class);
 

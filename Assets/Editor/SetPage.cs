@@ -126,7 +126,7 @@ public class SetPage
     private bool HasUndesigned => Undesigned.Count > 0;
 
     [PropertyOrder(5), ShowInInspector, ReadOnly, ShowIf("HasUndesigned"), ListDrawerSettings(IsReadOnly = true, ShowFoldout = false), LabelText("Not designed yet")]
-    private List<string> UndesignedNames => Undesigned.Select(id => $"{Catalog.Find(id)?.Type}  {Catalog.DisplayName(id)}").ToList();
+    private List<string> UndesignedNames => Undesigned.Select(id => $"{Catalog.TypeLabel(Catalog.Find(id)?.Type ?? ItemType.Undefined)}  {Catalog.DisplayName(id)}").ToList();
 
     [PropertyOrder(6), Button(ButtonSizes.Medium), ShowIf("HasUndesigned"), LabelText("Design the rest in the Sets view")]
     private void DesignTheRest() => _window.ShowSet(_setKey);
@@ -180,7 +180,7 @@ public class SetPage
         public Sprite Icon { get; }
 
         [TableColumnWidth(200), ShowInInspector, ReadOnly, DisplayAsString, HideLabel]
-        public string Piece => $"{Catalog.Find(_entry.itemId)?.Type}  {Catalog.DisplayName(_entry.itemId)}";
+        public string Piece => $"{Catalog.TypeLabel(Catalog.Find(_entry.itemId)?.Type ?? ItemType.Undefined)}  {Catalog.DisplayName(_entry.itemId)}";
 
         [TableColumnWidth(190), ShowInInspector, AssetsOnly, ValueDropdown("@ArtPage.EngravingOptions()"), HideLabel]
         public Engraving Engraving
