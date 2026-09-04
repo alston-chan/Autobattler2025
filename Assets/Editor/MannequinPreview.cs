@@ -65,6 +65,16 @@ public class MannequinPreview : System.IDisposable
         GUI.DrawTexture(rect, texture, ScaleMode.ScaleToFit, true);
     }
 
+    /// <summary>The body as last dressed, rendered off-screen at this size, as a base64 PNG. For exports.</summary>
+    public string RenderPng(int width, int height)
+    {
+        if (!Ensure()) return "";
+        _preview.BeginStaticPreview(new Rect(0, 0, width, height));
+        _preview.Render();
+        var texture = _preview.EndStaticPreview();
+        return System.Convert.ToBase64String(texture.EncodeToPNG());
+    }
+
     private bool Ensure()
     {
         if (_preview == null)

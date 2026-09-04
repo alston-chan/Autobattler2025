@@ -4,8 +4,22 @@
     {
       "name": "equipment-designer",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["Tools/serve.js"],
+      "runtimeArgs": [
+        "Tools/serve.js"
+      ],
       "port": 8642
+    },
+    {
+      "name": "set-catalog",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "Docs/SetCatalog"
+      ],
+      "port": 8765
     }
   ]
 }
