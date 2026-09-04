@@ -20,7 +20,7 @@ using UnityEngine;
 public static class SetCatalogExporter
 {
     private const string OutDir = "Docs/SetCatalog";
-    private const int BodyWidth = 220, BodyHeight = 320;
+    private const int BodyWidth = 180, BodyHeight = 260;   // small enough that the whole page stays under a hosted-page limit
 
     [MenuItem("Tools/Equipment/Export set catalogue")]
     public static void Export()
@@ -44,7 +44,6 @@ public static class SetCatalogExporter
 
         var html = new StringBuilder();
         var notes = new StringBuilder();
-        var iconCache = new Dictionary<string, string>();
         var mannequin = new MannequinPreview();
         int done = 0;
         try
@@ -65,7 +64,7 @@ public static class SetCatalogExporter
                 }
 
                 EditorUtility.DisplayProgressBar("Set catalogue", Catalog.SetName(key), (float)done / setKeys.Count);
-                html.Append(Card(key, collection, resonance, drafts, mannequin, iconCache));
+                html.Append(Card(key, collection, resonance, drafts, mannequin));
                 notes.Append($"\n### {Catalog.SetName(key)}\n<!-- {key} -->\n\n");
                 done++;
             }
@@ -81,15 +80,14 @@ public static class SetCatalogExporter
         File.WriteAllText(Path.Combine(OutDir, "index.html"), html.ToString(), Encoding.UTF8);
         File.WriteAllText(Path.Combine(OutDir, "notes.md"), notes.ToString(), Encoding.UTF8);
         long bytes = new FileInfo(Path.Combine(OutDir, "index.html")).Length;
-        Debug.Log($"[SetCatalog] {done} sets → {OutDir}/index.html ({bytes / 1024 / 1024} MB), notes.md, img/ ({iconCache.Count} icons).");
+        Debug.Log($"[SetCatalog] {done} sets → {OutDir}/index.html ({bytes / 1024 / 1024} MB), notes.md, img/.");
         EditorUtility.RevealInFinder(Path.Combine(OutDir, "index.html"));
     }
 
     // ---- one set
 
     private static string Card(string key, Assets.HeroEditor.InventorySystem.Scripts.ItemCollection collection,
-                               ResonanceDatabase resonance, SetDrafts drafts, MannequinPreview mannequin,
-                               Dictionary<string, string> iconCache)
+                               ResonanceDatabase resonance, SetDrafts drafts, MannequinPreview mannequin)
     {
         string name = Catalog.SetName(key);
         var pieces = new List<ItemParams>();
@@ -115,8 +113,8 @@ public static class SetCatalogExporter
         sb.Append($"<h3>{Esc(name)}</h3><div class=\"key\">{Esc(key)}</div>");
 
         sb.Append("<div class=\"pieces\">");
-        foreach (var p in pieces.Concat(extras)) sb.Append(Piece(p, resonance, iconCache, search, false));
-        foreach (var c in companions) sb.Append(Piece(c, resonance, iconCache, search, true));
+        foreach (var p in pieces.Concat(extras)) sb.Append(Piece(p, resonance, search, false));
+        foreach (var c in companions) sb.Append(Piece(c, resonance, search, true));
         sb.Append("</div>");
 
         if (drafts != null)
@@ -138,7 +136,7 @@ public static class SetCatalogExporter
         return sb.ToString();
     }
 
-    private static string Piece(ItemParams item, ResonanceDatabase resonance, Dictionary<string, string> iconCache, StringBuilder search, bool goesWith)
+    private static string Piece(ItemParams item, ResonanceDatabase resonance, StringBuilder search, bool goesWith)
     {
         string label = Catalog.TypeLabel(item.Type);
         string display = Catalog.DisplayName(item.Id);
@@ -147,76 +145,39 @@ public static class SetCatalogExporter
         search.Append(display).Append(' ').Append(label).Append(' ');
         if (entry != null && entry.engraving != null) search.Append(entry.engraving.DisplayName).Append(' ');
 
-        string icon = IconData(item, iconCache);
         return $"<div class=\"piece{(goesWith ? " goes" : "")}\">" +
-               (icon != null ? $"<img src=\"data:image/png;base64,{icon}\" alt=\"\">" : "<span class=\"noicon\"></span>") +
                $"<div><div class=\"pname\">{Esc(display)} {designed}</div><div class=\"ptype\">{(goesWith ? "goes with · " : "")}{Esc(label)}</div></div></div>";
-    }
-
-    // ---- icons: read a sprite's pixels through a render texture, since atlases are not readable
-
-    private static string IconData(ItemParams item, Dictionary<string, string> cache)
-    {
-        if (string.IsNullOrEmpty(item.IconId)) return null;
-        if (cache.TryGetValue(item.IconId, out var cached)) return cached;
-        var sprite = Catalog.Icon(item.Id);
-        string data = sprite != null ? SpritePng(sprite, 56) : null;
-        cache[item.IconId] = data;
-        return data;
-    }
-
-    public static string SpritePng(Sprite sprite, int size)
-    {
-        var texture = sprite.texture;
-        Rect tr;
-        try { tr = sprite.textureRect; } catch (Exception) { return null; }
-
-        var full = RenderTexture.GetTemporary(texture.width, texture.height, 0, RenderTextureFormat.ARGB32);
-        var previous = RenderTexture.active;
-        Graphics.Blit(texture, full);
-        RenderTexture.active = full;
-        var crop = new Texture2D((int)tr.width, (int)tr.height, TextureFormat.RGBA32, false);
-        crop.ReadPixels(new Rect(tr.x, tr.y, tr.width, tr.height), 0, 0);
-        crop.Apply();
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(full);
-
-        // Fit into a square of `size`, keeping proportions.
-        float scale = Mathf.Min((float)size / crop.width, (float)size / crop.height);
-        int w = Mathf.Max(1, Mathf.RoundToInt(crop.width * scale)), h = Mathf.Max(1, Mathf.RoundToInt(crop.height * scale));
-        var small = RenderTexture.GetTemporary(w, h, 0, RenderTextureFormat.ARGB32);
-        Graphics.Blit(crop, small);
-        RenderTexture.active = small;
-        var result = new Texture2D(w, h, TextureFormat.RGBA32, false);
-        result.ReadPixels(new Rect(0, 0, w, h), 0, 0);
-        result.Apply();
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(small);
-
-        string png = Convert.ToBase64String(result.EncodeToPNG());
-        UnityEngine.Object.DestroyImmediate(crop);
-        UnityEngine.Object.DestroyImmediate(result);
-        return png;
     }
 
     // ---- the page
 
     private static string Head() =>
         "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" +
-        "<title>Set catalogue</title><style>" +
-        "body{margin:0;font:14px system-ui,sans-serif;background:#1b1d22;color:#e6e6e6}" +
-        "header{position:sticky;top:0;background:#23262d;padding:10px 14px;display:flex;gap:10px;align-items:center;z-index:2;border-bottom:1px solid #333}" +
-        "header input,header select{font:inherit;padding:8px;border-radius:6px;border:1px solid #444;background:#15171b;color:#eee}" +
-        "header input{flex:1}h2{margin:18px 14px 8px;font-size:16px;color:#aab}" +
-        ".grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px;padding:0 10px}" +
-        ".set{display:flex;gap:10px;background:#262930;border:1px solid #363a44;border-radius:10px;padding:10px}" +
-        ".set img.body{width:130px;height:190px;object-fit:contain;background:#111;border-radius:8px;flex:none}" +
-        ".info{min-width:0;flex:1}h3{margin:0 0 2px;font-size:15px}.key{font-size:11px;color:#889;word-break:break-all;margin-bottom:6px}" +
-        ".piece{display:flex;gap:6px;align-items:center;margin:3px 0}.piece img{width:28px;height:28px;object-fit:contain;flex:none}.noicon{width:28px;height:28px;flex:none;background:#333;border-radius:4px}" +
-        ".pname{font-size:13px}.ptype{font-size:11px;color:#99a}.goes .pname{color:#cbd}.designed{color:#f2c94c;font-size:11px;margin-left:4px}" +
-        ".draft{margin-top:6px;padding:6px;background:#1f2a1f;border-radius:6px;font-size:12px}.notes{white-space:pre-wrap;color:#cdc}.dp{color:#bcb}" +
-        ".hidden{display:none}#count{color:#889;font-size:12px}" +
-        "</style></head><body><header><input id=\"q\" placeholder=\"Search sets, pieces, engravings…\"><select id=\"pack\"><option value=\"\">All packs</option></select><span id=\"count\"></span></header>\n";
+        "<title>Autobattler Wardrobe</title>" +
+        "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap\">" +
+        "<style>" +
+        // Tokens: the light palette on :root, dark under the system preference and the explicit stamp.
+        ":root{--bg:#EEF0F3;--surface:#FFFFFF;--surface-2:#E4E7EC;--ink:#1F2430;--muted:#667085;--line:#D5D9E0;--accent:#B8860B;--draft:#E8F0E6;--draft-ink:#2F4F2F;--body-bg:#0F1114}" +
+        "@media (prefers-color-scheme: dark){:root:not([data-theme=\"light\"]){--bg:#1B1D22;--surface:#262930;--surface-2:#2E323A;--ink:#E8E8EA;--muted:#9AA0AC;--line:#363A44;--accent:#F2C94C;--draft:#1F2A1F;--draft-ink:#CFE3CF;--body-bg:#0B0C0E}}" +
+        ":root[data-theme=\"dark\"]{--bg:#1B1D22;--surface:#262930;--surface-2:#2E323A;--ink:#E8E8EA;--muted:#9AA0AC;--line:#363A44;--accent:#F2C94C;--draft:#1F2A1F;--draft-ink:#CFE3CF;--body-bg:#0B0C0E}" +
+        "body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 'IBM Plex Sans',system-ui,sans-serif}" +
+        "header{position:sticky;top:0;z-index:2;display:flex;gap:10px;align-items:center;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}" +
+        "header input,header select{font:inherit;padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}" +
+        "header input{flex:1;min-width:0}header input:focus,header select:focus{outline:2px solid var(--accent);outline-offset:1px}" +
+        "#count{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}" +
+        "h2{margin:22px 14px 8px;font:600 15px 'Fraunces',Georgia,serif;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}" +
+        ".grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px;padding:0 10px}" +
+        ".set{display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}" +
+        ".set img.body{width:120px;height:174px;object-fit:contain;background:var(--body-bg);border-radius:8px;flex:none}" +
+        ".info{min-width:0;flex:1}h3{margin:0 0 2px;font:600 17px/1.2 'Fraunces',Georgia,serif;text-wrap:balance}" +
+        ".key{font-size:11px;color:var(--muted);word-break:break-all;margin-bottom:8px}" +
+        ".piece{display:flex;gap:8px;align-items:center;margin:4px 0}.piece img{width:26px;height:26px;object-fit:contain;flex:none}" +
+        ".noicon{width:26px;height:26px;flex:none;background:var(--surface-2);border-radius:4px}" +
+        ".pname{font-size:13px;font-weight:500}.ptype{font-size:11px;color:var(--muted);letter-spacing:.02em}" +
+        ".goes .pname{font-weight:400}.designed{color:var(--accent);font-size:11px;font-weight:600;margin-left:6px}" +
+        ".draft{margin-top:8px;padding:8px;background:var(--draft);color:var(--draft-ink);border-radius:6px;font-size:12px}.notes{white-space:pre-wrap}.dp{opacity:.9}" +
+        ".hidden{display:none}" +
+        "</style></head><body><header><input id=\"q\" placeholder=\"Search sets, pieces, engravings\" aria-label=\"Search\"><select id=\"pack\" aria-label=\"Pack\"><option value=\"\">All packs</option></select><span id=\"count\"></span></header>\n";
 
     private static string Tail(int sets) =>
         "<script>const q=document.getElementById('q'),pack=document.getElementById('pack'),count=document.getElementById('count');" +
