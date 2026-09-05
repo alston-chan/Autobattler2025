@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Assets.FantasyMonsters.Common.Scripts;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using UnityEngine;
@@ -116,11 +116,26 @@ public class DeathFeedback : MonoBehaviour
         // The killing blow froze the animator (hitstop); a revive that arrives inside that freeze
         // would otherwise leave the body standing at speed zero, in whatever frame it died on.
         var animator = _entity != null ? GetAnimator() : null;
-        if (animator != null) animator.speed = 1f;
+        if (animator != null)
+        {
+            animator.speed = 1f;
+            // The death states have no way out in the controller, so take the machine back to its
+            // entry state by hand and let it settle now, before the parameters below are set: a body
+            // revived after it was deactivated has an animator that would otherwise reset them
+            // on its first update, after this method had set them.
+            animator.Rebind();
+            animator.Update(0f);
+        }
 
         if (_entity != null)
         {
-            if (_entity.character != null) _entity.character.SetState(CharacterState.Idle);
+            if (_entity.character != null)
+            {
+                _entity.character.ResetAnimation();      // Idle, and the weapon-type parameters again
+                // The face. "Dead" goes on when the death state is entered and comes off when it is
+                // exited, which a deactivated body never does: it kept the X eyes after the revive.
+                _entity.character.SetExpression("Default");
+            }
             else if (_entity.monster != null) _entity.monster.SetState(MonsterState.Idle);
         }
     }
