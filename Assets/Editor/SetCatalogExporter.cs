@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,13 +43,11 @@ public static class SetCatalogExporter
             .ToList();
 
         var html = new StringBuilder();
-        var notes = new StringBuilder();
         var mannequin = new MannequinPreview();
         int done = 0;
         try
         {
             html.Append(Head());
-            notes.Append("# Set notes\n\nWrite under a set's heading. Lines like `upper: Bulwark`, `lower: idea: slows what it passes`,\n`helmet: Swift` are understood by the importer; anything else is kept as notes.\n\n");
 
             string currentPack = null;
             foreach (var key in setKeys)
@@ -60,12 +58,10 @@ public static class SetCatalogExporter
                     if (currentPack != null) html.Append("</div></section>\n");
                     currentPack = pack;
                     html.Append($"<section class=\"pack\" data-pack=\"{Esc(pack)}\"><h2>{Esc(pack)}</h2><div class=\"grid\">\n");
-                    notes.Append($"\n## {pack}\n");
                 }
 
                 EditorUtility.DisplayProgressBar("Set catalogue", Catalog.SetName(key), (float)done / setKeys.Count);
                 html.Append(Card(key, collection, resonance, drafts, mannequin));
-                notes.Append($"\n### {Catalog.SetName(key)}\n<!-- {key} -->\n\n");
                 done++;
             }
             if (currentPack != null) html.Append("</div></section>\n");
@@ -78,7 +74,7 @@ public static class SetCatalogExporter
         }
 
         File.WriteAllText(Path.Combine(OutDir, "index.html"), html.ToString(), Encoding.UTF8);
-        File.WriteAllText(Path.Combine(OutDir, "notes.md"), notes.ToString(), Encoding.UTF8);
+        SetNotes.Write(setKeys);   // the notes file: a heading and a theme line per set, your text kept
         long bytes = new FileInfo(Path.Combine(OutDir, "index.html")).Length;
         Debug.Log($"[SetCatalog] {done} sets → {OutDir}/index.html ({bytes / 1024 / 1024} MB), notes.md, img/.");
         EditorUtility.RevealInFinder(Path.Combine(OutDir, "index.html"));

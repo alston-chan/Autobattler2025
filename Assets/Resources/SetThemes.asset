@@ -1,0 +1,339 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090ddc72dcb0e4b4598056692e91c28c, type: 3}
+  m_Name: SetThemes
+  m_EditorClassIdentifier: 
+  themes:
+  - Vitality
+  - Aegis
+  - Shadow
+  - Surge
+  - Fury
+  - Elements
+  - Reaper
+  - Grace
+  - Ember
+  - Arcane
+  - Hunt
+  - Blade
+  - Far
+  - Orc
+  - Bone
+  - Frost
+  - Storm
+  - Nature
+  - Holy
+  - Phoenix
+  - Beast
+  - Curse
+  - Illusion
+  - Fortune
+  - Phalanx
+  - Clockwork
+  - LoneWolf
+  entries:
+  - setKey: FantasyHeroes.Basic.Armor.NinjaOutfit
+    theme: Shadow
+  - setKey: FantasyHeroes.Samurai.Armor.Ninja1 [Paint]
+    theme: Shadow
+  - setKey: FantasyHeroes.Samurai.Armor.Ninja2 [Paint]
+    theme: Shadow
+  - setKey: FantasyHeroes.Samurai.Armor.Ninja3
+    theme: Shadow
+  - setKey: FantasyHeroes.Basic.Armor.AssassinArmor [Paint]
+    theme: Shadow
+  - setKey: FantasyHeroes.Basic.Armor.ThiefArmor
+    theme: Shadow
+  - setKey: FantasyHeroes.Basic.Armor.BerserkArmor
+    theme: Fury
+  - setKey: FantasyHeroes.Vikings.Armor.VikingFurArmor
+    theme: Fury
+  - setKey: FantasyHeroes.Vikings.Armor.VikingRoughArmor1
+    theme: Fury
+  - setKey: FantasyHeroes.Vikings.Armor.VikingRoughArmor2
+    theme: Fury
+  - setKey: FantasyHeroes.Vikings.Armor.VikingRoughArmor3 [Paint]
+    theme: Fury
+  - setKey: Extensions.Epic.Armor.ElementalArcherArmor
+    theme: Elements
+  - setKey: Extensions.Epic.Armor.ElementalArmor
+    theme: Elements
+  - setKey: Extensions.Epic.Armor.ElementalMageArmor
+    theme: Elements
+  - setKey: Extensions.Epic.Armor.GrimReaperRobe
+    theme: Reaper
+  - setKey: Common.Halloween.Armor.DeathCostume
+    theme: Reaper
+  - setKey: Extensions.AbandonedWorkshop.Armor.WallKeeperArmor
+    theme: Aegis
+  - setKey: FantasyHeroes.Basic.Armor.SpikedArmor
+    theme: Aegis
+  - setKey: FantasyHeroes.Basic.Armor.IronPlateArmor [Paint]
+    theme: Aegis
+  - setKey: FantasyHeroes.Basic.Armor.HeavyArmor [Paint]
+    theme: Aegis
+  - setKey: Extensions.AbandonedWorkshop.Armor.EliteTowerKeeperArmor
+    theme: Aegis
+  - setKey: FantasyHeroes.Basic.Armor.GuardArmor [Paint]
+    theme: Aegis
+  - setKey: Extensions.Epic.Armor.BishopRobe
+    theme: Grace
+  - setKey: FantasyHeroes.Basic.Armor.BishopArmor
+    theme: Grace
+  - setKey: FantasyHeroes.Basic.Armor.Cleric [Paint]
+    theme: Grace
+  - setKey: FantasyHeroes.SandLords.Armor.SandHealer1
+    theme: Grace
+  - setKey: FantasyHeroes.SandLords.Armor.SandHealer2
+    theme: Grace
+  - setKey: FantasyHeroes.SwampLords.Armor.SwampHealer1
+    theme: Grace
+  - setKey: FantasyHeroes.SwampLords.Armor.SwampHealer2
+    theme: Grace
+  - setKey: FantasyHeroes.Basic.Armor.PyromancerArmor
+    theme: Ember
+  - setKey: FantasyHeroes.Basic.Armor.FireWizardArmor
+    theme: Ember
+  - setKey: FantasyHeroes.Basic.Armor.FireAdept
+    theme: Ember
+  - setKey: FantasyHeroes.Basic.Armor.FireWarriorArmor
+    theme: Ember
+  - setKey: FantasyHeroes.Basic.Armor.FireKnightArmor [Paint]
+    theme: Ember
+  - setKey: Extensions.AbandonedWorkshop.Armor.ArcaneRobe
+    theme: Arcane
+  - setKey: Extensions.Epic.Armor.MagnetismArmor
+    theme: Arcane
+  - setKey: Extensions.Epic.Armor.DressOfInfinity
+    theme: Arcane
+  - setKey: FantasyHeroes.Basic.Armor.WitchHunterArmor [Paint]
+    theme: Hunt
+  - setKey: FantasyHeroes.Basic.Armor.InquisitorArmor
+    theme: Hunt
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiHeavy1
+    theme: Blade
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiHeavy2
+    theme: Blade
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiHeavy3
+    theme: Blade
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiLight1
+    theme: Blade
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiLight2
+    theme: Blade
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiLight3
+    theme: Blade
+  - setKey: FantasyHeroes.Samurai.Armor.SamuraiElder
+    theme: Blade
+  - setKey: Extensions.Epic.Armor.PersianDuelist
+    theme: Blade
+  - setKey: FantasyHeroes.Basic.Armor.ChampionArmor
+    theme: Blade
+  - setKey: FantasyHeroes.Basic.Armor.SniperArmor
+    theme: Far
+  - setKey: FantasyHeroes.Basic.Armor.RangerArmor
+    theme: Far
+  - setKey: FantasyHeroes.Basic.Armor.Scout [Paint]
+    theme: Far
+  - setKey: FantasyHeroes.Basic.Armor.SiegeArcherArmor
+    theme: Far
+  - setKey: FantasyHeroes.Basic.Armor.RoyalArcherArmor
+    theme: Far
+  - setKey: Extensions.AbandonedWorkshop.Armor.ElegantArcherVest
+    theme: Far
+  - setKey: Extensions.AbandonedWorkshop.Armor.NosrossArcherArmor
+    theme: Far
+  - setKey: Extensions.Epic.Armor.PersianArcher
+    theme: Far
+  - setKey: Extensions.AbandonedWorkshop.Armor.OrcArmor
+    theme: Orc
+  - setKey: FantasyHeroes.Basic.Armor.NecromancerArmor
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonArmor1
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonArmor2
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonArmor3
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonArmor4
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonArmor5
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonArmor6
+    theme: Bone
+  - setKey: UndeadHeroes.Skeletons.Armor.SkeletonKing
+    theme: Bone
+  - setKey: UndeadHeroes.Zombies.Armor.ZombieClothes1
+    theme: Bone
+  - setKey: UndeadHeroes.Zombies.Armor.ZombieClothes2
+    theme: Bone
+  - setKey: UndeadHeroes.Zombies.Armor.ZombieClothes3
+    theme: Bone
+  - setKey: UndeadHeroes.Zombies.Armor.ZombieClothes4
+    theme: Bone
+  - setKey: UndeadHeroes.Zombies.Armor.ZombieClothes5
+    theme: Bone
+  - setKey: UndeadHeroes.Mummies.Armor.MummyClothes1
+    theme: Bone
+  - setKey: UndeadHeroes.Mummies.Armor.MummyClothes2
+    theme: Bone
+  - setKey: UndeadHeroes.Mummies.Armor.MummyClothes3
+    theme: Bone
+  - setKey: UndeadHeroes.Mummies.Armor.MummyClothes4
+    theme: Bone
+  - setKey: FantasyHeroes.Basic.Armor.IceWizardArmor
+    theme: Frost
+  - setKey: Extensions.AbandonedWorkshop.Armor.FrostRobe
+    theme: Frost
+  - setKey: Extensions.AbandonedWorkshop.Armor.FrozenMightRobe
+    theme: Frost
+  - setKey: FantasyHeroes.Basic.Armor.WaterWizardArmor
+    theme: Frost
+  - setKey: Extensions.Epic.Armor.WaterElementalArmor
+    theme: Frost
+  - setKey: FantasyHeroes.Basic.Armor.WaterAdept
+    theme: Frost
+  - setKey: Extensions.Epic.Armor.StormcallerArmor
+    theme: Storm
+  - setKey: Extensions.Epic.Armor.ThunderguardArmor
+    theme: Storm
+  - setKey: FantasyHeroes.Basic.Armor.StormBringerArmor
+    theme: Storm
+  - setKey: FantasyHeroes.Basic.Armor.DruidArmor
+    theme: Nature
+  - setKey: Extensions.AbandonedWorkshop.Armor.ForestKeeperVestment
+    theme: Nature
+  - setKey: Extensions.Epic.Armor.ForestWhispererOutfit
+    theme: Nature
+  - setKey: Extensions.AbandonedWorkshop.Armor.ForesterTunic
+    theme: Nature
+  - setKey: FantasyHeroes.SwampLords.Armor.SwampMage1
+    theme: Nature
+  - setKey: FantasyHeroes.SwampLords.Armor.SwampMage2
+    theme: Nature
+  - setKey: FantasyHeroes.SwampLords.Armor.SwampElder
+    theme: Nature
+  - setKey: FantasyHeroes.Basic.Armor.ShamanArmor
+    theme: Nature
+  - setKey: Extensions.Epic.Armor.TerraArmor
+    theme: Nature
+  - setKey: Extensions.Epic.Armor.AngelicDress
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.AngelicDressTypeB
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.BlessedOutfit
+    theme: Holy
+  - setKey: FantasyHeroes.Basic.Armor.PaladinArmor [Paint]
+    theme: Holy
+  - setKey: FantasyHeroes.Knights.Armor.CrusaderChainmail [Paint]
+    theme: Holy
+  - setKey: Extensions.AbandonedWorkshop.Armor.HighCrusaderArmor
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.HeavenlyArmor
+    theme: Holy
+  - setKey: FantasyHeroes.Basic.Armor.CardinalArmor
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.DevotionOutfit
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.SunlightRobe
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.ArmorOfSunwalker
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.ArmorOfEndingLight
+    theme: Holy
+  - setKey: Extensions.Epic.Armor.BennuRobe
+    theme: Phoenix
+  - setKey: Extensions.Epic.Armor.BennuRobeTypeB
+    theme: Phoenix
+  - setKey: Extensions.Epic.Armor.BlazewingArmor
+    theme: Phoenix
+  - setKey: FantasyHeroes.Basic.Armor.ManticoreArmor
+    theme: Beast
+  - setKey: Extensions.AbandonedWorkshop.Armor.DraconicArmor
+    theme: Beast
+  - setKey: Extensions.Epic.Armor.NemeanArmorTypeA
+    theme: Beast
+  - setKey: Extensions.Epic.Armor.NemeanArmorTypeB
+    theme: Beast
+  - setKey: Extensions.Epic.Armor.FireBeastArmor
+    theme: Beast
+  - setKey: FantasyHeroes.Basic.Armor.Hunter
+    theme: Beast
+  - setKey: FantasyHeroes.Basic.Armor.HunterLightArmor
+    theme: Beast
+  - setKey: FantasyHeroes.Basic.Armor.HunterTunic
+    theme: Beast
+  - setKey: FantasyHeroes.Knights.Armor.FalconLightArmor
+    theme: Beast
+  - setKey: FantasyHeroes.Basic.Armor.WarlockArmor
+    theme: Curse
+  - setKey: FantasyHeroes.Basic.Armor.WitchArmor
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.ArmorOfCorruption
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.ArmorOfCorruptionTypeB
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.ArmorOfTorment
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.DarkLordArmor
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.ArmorOfCryingDemon
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.ArmorOfRelentlessNightmares
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.OminousArmor
+    theme: Curse
+  - setKey: Extensions.Epic.Armor.FallenlordRobe
+    theme: Curse
+  - setKey: Extensions.AbandonedWorkshop.Armor.IllusionMantle
+    theme: Illusion
+  - setKey: Extensions.Epic.Armor.MoonlightRobe
+    theme: Illusion
+  - setKey: Extensions.AbandonedWorkshop.Armor.RedLunarRobe
+    theme: Illusion
+  - setKey: Extensions.Epic.Armor.ArmorOfFortune
+    theme: Fortune
+  - setKey: FantasyHeroes.Basic.Armor.BanditArmor
+    theme: Fortune
+  - setKey: FantasyHeroes.Basic.Armor.BanditLightArmor [Paint]
+    theme: Fortune
+  - setKey: FantasyHeroes.Basic.Armor.MarauderArmor [Paint]
+    theme: Fortune
+  - setKey: FantasyHeroes.Basic.Armor.Deserter
+    theme: Fortune
+  - setKey: Extensions.Epic.Armor.SpartanArmor
+    theme: Phalanx
+  - setKey: FantasyHeroes.Basic.Armor.LandsknechtArmor
+    theme: Phalanx
+  - setKey: FantasyHeroes.Basic.Armor.HalberdierArmor [Paint]
+    theme: Phalanx
+  - setKey: Extensions.Epic.Armor.PersianLancerArmor
+    theme: Phalanx
+  - setKey: FantasyHeroes.Basic.Armor.SpearmanArmor
+    theme: Phalanx
+  - setKey: FantasyHeroes.Basic.Armor.RoyalGuard
+    theme: Phalanx
+  - setKey: Extensions.Epic.Armor.TechnomancerArmor
+    theme: Clockwork
+  - setKey: Extensions.Epic.Armor.ArmorOfLoneWolf
+    theme: LoneWolf
+  - setKey: FantasyHeroes.Basic.Armor.Hermit
+    theme: LoneWolf
+  - setKey: FantasyHeroes.Basic.Armor.Wanderer
+    theme: LoneWolf
+  - setKey: Extensions.Epic.Armor.ArmorOfImmortality
+    theme: Vitality
+  - setKey: FantasyHeroes.Thrones.Armor.Mountain [Paint]
+    theme: Vitality
+  - setKey: FantasyHeroes.Thrones.Armor.DarkMountain
+    theme: Vitality
+  - setKey: FantasyHeroes.Thrones.Armor.NorthWarden
+    theme: Vitality

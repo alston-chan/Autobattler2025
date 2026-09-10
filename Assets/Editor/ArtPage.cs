@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Sirenix.OdinInspector;
@@ -447,8 +447,15 @@ public class ArtPage
     [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(3), ShowInInspector, ReadOnly, LabelText("Set")]
     private string SetName => _selectedSet?.name;
 
-    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(3), ShowInInspector, ReadOnly, LabelText("Family · theme")]
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(3), ShowInInspector, ReadOnly, LabelText("Family · look")]
     private string SetKey => _selectedSet == null ? "" : $"{_selectedSet.key}   ·   {Catalog.Theme(_selectedSet.name)}";
+
+    [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(3.2f), ShowInInspector, LabelText("Theme"), ValueDropdown("@SetThemes.ThemeOptions()")]
+    private string SetTheme
+    {
+        get => _selectedSet != null && SetThemes.Active != null ? SetThemes.Active.ThemeOf(_selectedSet.key) : "";
+        set { if (_selectedSet != null) EquipmentWindow.SetTheme(_selectedSet.key, value); }
+    }
 
     [BoxGroup("Set"), ShowIf("HasSet"), PropertyOrder(4)]
     [HorizontalGroup("Set/art", 110), PreviewField(80, ObjectFieldAlignment.Left), ShowInInspector, ReadOnly, HideLabel, Tooltip("Upper")]

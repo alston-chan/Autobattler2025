@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using Sirenix.OdinInspector;
@@ -60,8 +60,18 @@ public class SetPage
     [ShowInInspector, ReadOnly, LabelText("Set"), PropertyOrder(0)]
     private string Name => Catalog.SetName(_setKey);
 
-    [ShowInInspector, ReadOnly, LabelText("Family · theme"), PropertyOrder(0)]
+    [ShowInInspector, ReadOnly, LabelText("Family · look"), PropertyOrder(0)]
     private string Family => $"{_setKey}   ·   {Catalog.Theme(Catalog.SetName(_setKey))}";
+
+    // The ladder the set is authored on. Written straight to the SetThemes asset; the notes file's
+    // theme: line says the same thing from a phone.
+    [ShowInInspector, LabelText("Theme"), PropertyOrder(0.5f), ValueDropdown("@SetThemes.ThemeOptions()")]
+    [InfoBox("No SetThemes asset in Resources yet — pick a theme to create it.", InfoMessageType.Info, VisibleIf = "@SetThemes.Active == null")]
+    private string Theme
+    {
+        get => SetThemes.Active != null ? SetThemes.Active.ThemeOf(_setKey) : "";
+        set => EquipmentWindow.SetTheme(_setKey, value);
+    }
 
     // ---- the set on a body, with toggles
 

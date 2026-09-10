@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
@@ -123,6 +123,23 @@ public class EquipmentWindow : OdinMenuEditorWindow
     // ---- drafts
 
     private const string DraftsPath = "Assets/Data/SetDrafts.asset";
+
+    /// <summary>
+    /// Give a set its theme, creating the SetThemes asset in Resources the first time. One place
+    /// writes it so the pages, the notes importer and the drafts all agree.
+    /// </summary>
+    public static void SetTheme(string setKey, string theme)
+    {
+        var asset = SetThemes.Active;
+        if (asset == null)
+        {
+            asset = ScriptableObject.CreateInstance<SetThemes>();
+            AssetDatabase.CreateAsset(asset, SetThemes.AssetPath);
+        }
+        asset.Set(setKey, theme);
+        EditorUtility.SetDirty(asset);
+        AssetDatabase.SaveAssetIfDirty(asset);
+    }
 
     /// <summary>The one drafts asset, created on first use.</summary>
     public SetDrafts Drafts
@@ -292,6 +309,9 @@ public class ItemPage
 
     [BoxGroup("Set"), ShowIf("InSet"), ShowInInspector, ReadOnly, LabelText("@this.IsCompanion ? \"Goes with\" : \"Set\""), PropertyOrder(-0.5f)]
     private string SetName => _setKey != null ? Catalog.SetName(_setKey) : "";
+
+    [BoxGroup("Set"), ShowIf("InSet"), ShowInInspector, ReadOnly, LabelText("Theme"), PropertyOrder(-0.49f)]
+    private string SetTheme => _setKey != null && SetThemes.Active != null ? (SetThemes.Active.ThemeOf(_setKey) is var t && t != "" ? t : "(none)") : "(none)";
 
     [BoxGroup("Set"), ShowIf("InSet"), Button("Edit the set together"), PropertyOrder(-0.45f)]
     private void OpenSetPage() => _window.ShowDesignedSet(_setKey);
