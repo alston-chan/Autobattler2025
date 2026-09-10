@@ -99,7 +99,7 @@ public static class SetNotes
                     if (section.theme == "") cleared++; else set++;
                 }
             }
-            pieceLines += section.body.Count(l => System.Text.RegularExpressions.Regex.IsMatch(l, @"^(upper|lower|helmet|weapon|shield)\s*:", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+            pieceLines += section.body.Count(l => System.Text.RegularExpressions.Regex.IsMatch(l, @"^(upper|lower|helmet|weapon|shield|with)\s*:", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
         }
 
         if (set + cleared > 0)
