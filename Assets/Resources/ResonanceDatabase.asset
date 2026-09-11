@@ -49,3 +49,39 @@ MonoBehaviour:
     tierIICost: 3
     tierIIICost: 6
     engraveCost: 3
+  - itemId: FantasyHeroes.Samurai.Helmet.NinjaHelm1 [Paint]
+    engraving: {fileID: 11400000, guid: f5f83002b9dc07142b4dd4678b770d39, type: 2}
+    requirement: 0
+    tierIICost: 2
+    tierIIICost: 5
+    engraveCost: 2
+  - itemId: FantasyHeroes.Basic.Armor.NinjaOutfit.vest
+    engraving: {fileID: 11400000, guid: 21820c8910c61d2499d08ebab48eacf6, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
+  - itemId: FantasyHeroes.Basic.Armor.NinjaOutfit.boots
+    engraving: {fileID: 11400000, guid: 6edc570fe25527e4fb7a470ba348823a, type: 2}
+    requirement: 5
+    tierIICost: 20
+    tierIIICost: 50
+    engraveCost: 20
+  - itemId: FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
+    engraving: {fileID: 11400000, guid: 9e728e19141d17e46b61badc0a074af2, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemId: FantasyHeroes.Basic.MeleeWeapon1H.ShortDagger [Paint]
+    engraving: {fileID: 11400000, guid: e4e51f3e48c33d048b6ab252e6c46dc5, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemId: FantasyHeroes.Samurai.Shield.NinjaShield
+    engraving: {fileID: 11400000, guid: fdaa7f123d7e62b46bbd75b593e973ab, type: 2}
+    requirement: 4
+    tierIICost: 5
+    tierIIICost: 12
+    engraveCost: 5

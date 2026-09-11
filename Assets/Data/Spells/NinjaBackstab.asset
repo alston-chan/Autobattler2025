@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b105ccda30400ac4abf2b097b166c7fb, type: 3}
+  m_Name: NinjaBackstab
+  m_EditorClassIdentifier: 
+  spellName: Backstab
+  description: "Blink behind the Marked enemy \u2014 or the weakest \u2014 and crit.
+    A kill resets the cooldown."
+  cooldown: 6
+  range: 20
+  alwaysOn: 0
+  manaCost: 40
+  weaponRequirement: 0
+  selector:
+    who: 5
+    status: {fileID: 11400000, guid: 12b0a237dfb6fc140b0034ff3ad4c591, type: 2}
+    radius: 3
+    count: 0
+  motion: 1
+  characterEvent: Hit
+  monsterEvent: Attack
+  contactFallback: 0.2
+  contactTimeout: 1
+  scalesWithAttackSpeed: 0
+  baseDamage: 0
+  effects:
+  - rid: 2861304459242242048
+  - rid: 2861304459242242049
+  - rid: 2861304459242242050
+  - rid: 2861304459242242051
+  references:
+    version: 2
+    RefIds:
+    - rid: 2861304459242242048
+      type: {class: BlinkEffect, ns: , asm: Assembly-CSharp}
+      data:
+        destination: 0
+        offset: 0.9
+        settle: 0.12
+    - rid: 2861304459242242049
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        scope: 0
+        useCasterDamage: 1
+        damageScale: 2.5
+        amount: 20
+        critChance: 0.1
+        alwaysCrit: 1
+        hitstop: 0.1
+    - rid: 2861304459242242050
+      type: {class: RefundCooldownOnKillEffect, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2861304459242242051
+      type: {class: DropAggroEffect, ns: , asm: Assembly-CSharp}
+      data:
+        scope: 2
+        seconds: 2
