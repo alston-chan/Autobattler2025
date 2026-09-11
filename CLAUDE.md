@@ -72,7 +72,10 @@ auto-refresh or the old rule blaming the wrong thing is unmeasured, so the rule 
   without touching anything (`AutomationElement.RootElement.FindAll` filtered by Unity's process
   id; a native dialog has class `#32770`). Measured 2026-09-03: a 60 s-timeout "freeze" that
   looked like a modal was a long stall — one window, no dialog, `Responding=True` a few minutes
-  later. Do not restart the editor on the timeout alone.
+  later. Do not restart the editor on the timeout alone. Measured 2026-09-11: a domain reload after
+  `Window > Hot Reload > Recompile` hung for good — `Editor.log` frozen at "Loading mode Default",
+  0.1 CPU-seconds in ten minutes, the MCP plugin answering 503, no window but the main one. That one
+  needed a restart (`Stop-Process`, then `Unity.exe -projectPath`); nothing on disk was lost.
 - **Never `Object.Instantiate` a scene prefab instance to duplicate a unit.** It unpacks the
   prefab and writes the entire rig into the scene: measured at 85,530 inserted lines versus
   333 for the correct route. Use
@@ -137,6 +140,14 @@ to the asset. Gloves rows are disabled there on purpose (armour is upper + lower
 - Windows `python3` cannot see Git Bash's `/tmp`. Stage payloads in the scratchpad directory.
 - The MCP layer may run a script twice. Make probes idempotent, and never write an unbounded
   `while` loop — one hung Unity's main thread and needed a force-kill.
+- No `using` directives of any kind in a method body — fully qualify (`UnityEditor.AssetDatabase`,
+  `System.Linq.Enumerable.FirstOrDefault(...)`), and no local generic functions. `System.Tuple` is
+  ambiguous with `ExCSS.Unity` — use `object[]`.
+- HeroEditor's `ItemWorkspace.SelectedItem` has a protected setter; a probe that equips through the
+  inventory's own path sets it by reflection (`GetProperty(...).GetSetMethod(true).Invoke`) and then
+  calls `Equip()`. Equipping the same item id twice in one play session trips a `SingleOrDefault`
+  in the inventory — restart play between equip probes. `console-clear-logs` isolates a run's logs.
+- Daggers are paired (`DualWield.IsPaired`), so a dagger and a shield cannot be worn together.
 
 ## Odin
 
