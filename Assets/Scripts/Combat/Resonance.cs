@@ -401,16 +401,78 @@ public class Resonance : MonoBehaviour
         {
             Refresh();                       // settle what is worn and banked, without fighting yet
             _inCombat = true;
+            Listen(true);
             foreach (var pair in _active) Fight(pair.Key, pair.Value, true);
         }
         else
         {
             foreach (var pair in _active) Fight(pair.Key, pair.Value, false);
+            Listen(false);
             _inCombat = false;
         }
     }
 
     private bool _inCombat;
+    private bool _listening;
+    private readonly List<KeyValuePair<string, Grant>> _routing = new List<KeyValuePair<string, Grant>>();
+
+    // ---- the bus, routed to what this hero holds. One subscription per hero per fight; the
+    // engravings just override a hook.
+
+    private void Listen(bool on)
+    {
+        if (on == _listening) return;
+        _listening = on;
+        if (on)
+        {
+            CombatEvents.Hit += RouteHit;
+            CombatEvents.Kill += RouteKill;
+            CombatEvents.Cast += RouteCast;
+            CombatEvents.Moved += RouteMoved;
+        }
+        else
+        {
+            CombatEvents.Hit -= RouteHit;
+            CombatEvents.Kill -= RouteKill;
+            CombatEvents.Cast -= RouteCast;
+            CombatEvents.Moved -= RouteMoved;
+        }
+    }
+
+    private void OnDisable() => Listen(false);
+
+    private void Route(System.Action<Engraving, int> call)
+    {
+        // A hook may change what is held (a bank mid-fight), so route over a copy.
+        _routing.Clear();
+        foreach (var pair in _active) _routing.Add(pair);
+        foreach (var pair in _routing)
+        {
+            var engraving = InstanceFor(pair.Key, pair.Value.asset);
+            if (engraving != null) call(engraving, pair.Value.tier);
+        }
+    }
+
+    private void RouteHit(HitInfo hit)
+    {
+        if (hit.source == _entity) Route((e, t) => e.OnHit(_entity, hit, t));
+        if (hit.target == _entity) Route((e, t) => e.OnDamaged(_entity, hit, t));
+    }
+
+    private void RouteKill(Entity killer, Entity victim)
+    {
+        if (killer == _entity) Route((e, t) => e.OnKill(_entity, victim, t));
+    }
+
+    private void RouteCast(Entity caster, Spell spell)
+    {
+        if (caster == _entity) Route((e, t) => e.OnCast(_entity, spell, t));
+    }
+
+    private void RouteMoved(Entity entity, float distance)
+    {
+        if (entity == _entity) Route((e, t) => e.OnMoved(_entity, distance, t));
+    }
 
     /// <summary>A grant coming or going. Mid-fight, that includes its combat hook.</summary>
     private void Invoke(string sourceKey, Grant grant, bool granting)
@@ -428,6 +490,18 @@ public class Resonance : MonoBehaviour
             if (_inCombat) engraving.OnCombatEnd(_entity, grant.tier);
             engraving.OnRevoked(_entity, grant.tier);
         }
+    }
+
+    /// <summary>The verbs the held weapons and banked weapon-marks teach (<see cref="GrantSpellEngraving"/>), in grant order.</summary>
+    public List<Spell> GrantedVerbs()
+    {
+        var verbs = new List<Spell>();
+        foreach (var pair in _active)
+        {
+            var grant = InstanceFor(pair.Key, pair.Value.asset) as GrantSpellEngraving;
+            if (grant != null && grant.spell != null && !verbs.Contains(grant.spell)) verbs.Add(grant.spell);
+        }
+        return verbs;
     }
 
     /// <summary>What every held engraving would do if the fight began now (<see cref="Engraving.Preview"/>).</summary>

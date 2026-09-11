@@ -44,6 +44,21 @@ public abstract class Engraving : ScriptableObject
     /// <summary>Called as a fight ends. Undo anything granted for the fight.</summary>
     public virtual void OnCombatEnd(Entity owner, int tier) { }
 
+    // ---- Mid-fight hooks. Resonance listens to the CombatEvents bus once per hero and calls these
+    // for the engravings that hero holds, so an engraving never subscribes by hand (and can never
+    // forget to unsubscribe). All are no-ops unless overridden.
+
+    /// <summary>The owner landed a hit.</summary>
+    public virtual void OnHit(Entity owner, HitInfo hit, int tier) { }
+    /// <summary>The owner was hit.</summary>
+    public virtual void OnDamaged(Entity owner, HitInfo hit, int tier) { }
+    /// <summary>The owner killed something.</summary>
+    public virtual void OnKill(Entity owner, Entity victim, int tier) { }
+    /// <summary>The owner began a cast (any spell, the weapon attack included).</summary>
+    public virtual void OnCast(Entity owner, Spell spell, int tier) { }
+    /// <summary>The owner moved this far under its own power this frame.</summary>
+    public virtual void OnMoved(Entity owner, float distance, int tier) { }
+
     /// <summary>One thing an engraving will do at the bell: whom it will touch, from which engraving, at what tier.</summary>
     public struct Badge
     {

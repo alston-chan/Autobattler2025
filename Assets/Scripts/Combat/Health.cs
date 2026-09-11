@@ -124,6 +124,11 @@ public class Health : MonoBehaviour
         float incoming = amount;
         amount = ApplyBlocking(amount);
 
+        // Statuses are the one other thing that scales a hit — a Mark on the victim, a curse on the
+        // attacker — and they apply here so every spell, old or new, respects them.
+        if (_entity.Statuses != null) amount *= _entity.Statuses.DamageTakenMultiplier;
+        if (source != null && source.Statuses != null) amount *= source.Statuses.DamageDealtMultiplier;
+
         // Resonance counters tick on the blow itself, not at the end of the fight, so a shield that
         // attunes by blocking advances exactly when it blocks.
         if (_entity.Resonance != null)
@@ -143,6 +148,7 @@ public class Health : MonoBehaviour
         if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
 
         OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit, incoming - amount));
+        CombatEvents.RaiseHit(new HitInfo(source, _entity, amount, isCrit, currentHealth <= 0f));
 
         if (!IsDead && currentHealth <= 0)
         {
@@ -178,6 +184,7 @@ public class Health : MonoBehaviour
 
         // Die is the one place that knows who struck last, so it is where a kill can be credited.
         CombatTelemetry.RecordKill(killer);
+        CombatEvents.RaiseKill(killer, _entity);
 
         IsDead = true;
         currentHealth = 0f;

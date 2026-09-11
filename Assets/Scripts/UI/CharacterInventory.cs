@@ -456,6 +456,11 @@ public class CharacterInventory : ItemWorkspace
             if (spells.Count >= Entity.MaxSpellSlots) break;
         }
 
+        // A weapon's verb sits beside the books: what the hero holds teaches it (Docs/Spells.md).
+        if (CharacterEntity.Resonance != null)
+            foreach (var verb in CharacterEntity.Resonance.GrantedVerbs())
+                if (!spells.Contains(verb) && spells.Count < Entity.MaxSpellSlots) spells.Add(verb);
+
         CharacterEntity.spellSlots = spells;
         if (CharacterEntity.activeSpellSlot >= spells.Count)
             CharacterEntity.activeSpellSlot = Mathf.Max(0, spells.Count - 1);

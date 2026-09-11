@@ -122,7 +122,8 @@ public static class Targeting
         if (!candidate.gameObject.activeInHierarchy) return false;
         if (candidate.isTeam == chooser.isTeam) return false;
 
-        return !candidate.IsAggroDropped;
+        // Out of sight by a dive, or by a status (Smoke): either way not a pick.
+        return !candidate.IsAggroDropped && !(candidate.Statuses != null && candidate.Statuses.Untargetable);
     }
 
     /// <summary>

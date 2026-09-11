@@ -15,9 +15,13 @@ public class ThrownStar : MonoBehaviour
     private float _speed, _damage, _hitRadius, _spin, _critChance;
     private bool _spent;
 
-    public void Launch(Entity thrower, Vector3 end, float speed, float damage, float hitRadius, float spin, float critChance)
+    private System.Action<Entity> _onHit;
+
+    public void Launch(Entity thrower, Vector3 end, float speed, float damage, float hitRadius, float spin, float critChance,
+                       System.Action<Entity> onHit = null)
     {
         _thrower = thrower;
+        _onHit = onHit;
         _end = end;
         _speed = Mathf.Max(0.1f, speed);
         _damage = damage;
@@ -48,6 +52,7 @@ public class ThrownStar : MonoBehaviour
             if (Vector3.Distance(transform.position, entity.transform.position) > _hitRadius) continue;
 
             entity.TakeDamage(_damage, _thrower, AttackRoll.IsCrit(_critChance));
+            _onHit?.Invoke(entity);
             _spent = true;
             Destroy(gameObject);
             return;

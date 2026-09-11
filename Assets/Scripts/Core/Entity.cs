@@ -29,6 +29,8 @@ public class Entity : MonoBehaviour
     public HitFeedback HitFeedback { get; private set; }
     public DeathFeedback DeathFeedback { get; private set; }
     public Resonance Resonance { get; private set; }
+    /// <summary>The states on this unit — Marked, Exposed… — with their glyphs. See <see cref="Status"/>.</summary>
+    public StatusController Statuses { get; private set; }
     #endregion
 
     #region Bow Aiming
@@ -65,7 +67,12 @@ public class Entity : MonoBehaviour
     public bool IsFighting => _fighting;
 
     /// <summary>Told to us when a fight starts or ends. See <see cref="IsFighting"/>.</summary>
-    public void SetFighting(bool fighting) => _fighting = fighting;
+    public void SetFighting(bool fighting)
+    {
+        _fighting = fighting;
+        // A fight's states end with it: nothing is Marked on the map screen.
+        if (!fighting && Statuses != null) Statuses.ClearAll();
+    }
 
     [Header("Targeting")]
     [Tooltip("How this unit chooses whom to fight. Nearest is the ordinary front-line answer; " +
@@ -295,6 +302,9 @@ public class Entity : MonoBehaviour
         Resonance = GetComponent<Resonance>();
         if (Resonance == null) Resonance = gameObject.AddComponent<Resonance>();
 
+        Statuses = GetComponent<StatusController>();
+        if (Statuses == null) Statuses = gameObject.AddComponent<StatusController>();
+
         // Apply UnitData if assigned, otherwise use serialized fields
         if (unitData != null)
         {
@@ -324,6 +334,7 @@ public class Entity : MonoBehaviour
         HitFeedback.Initialize(this);
         DeathFeedback.Initialize(this);
         Resonance.Initialize(this);
+        Statuses.Initialize(this);
     }
 
     private void OnEnable()
@@ -372,6 +383,7 @@ public class Entity : MonoBehaviour
         if (Hitstop != null && Hitstop.IsActive) return;
 
         Knockback.Tick();
+        if (Statuses != null) Statuses.Tick();
         CombatAI.Tick();
 
         // Keep the entity on-screen. Movement and knockback both write transform.position directly

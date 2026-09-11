@@ -200,10 +200,13 @@ public class CombatAI : MonoBehaviour
             SetAnimState(false);
         }
 
-        if (!_entity.Knockback.IsActive && !_entity.Knockback.IsStunned)
+        bool rooted = _entity.Statuses != null && _entity.Statuses.Rooted;
+        if (!_entity.Knockback.IsActive && !_entity.Knockback.IsStunned && !rooted)
         {
             Vector3 finalMove = (move + separation * separationStrength) * Time.deltaTime;
             transform.position += finalMove;
+            float stepped = finalMove.magnitude;
+            if (stepped > 0f) CombatEvents.RaiseMoved(_entity, stepped);
         }
     }
 
@@ -363,13 +366,24 @@ public class CombatAI : MonoBehaviour
                 : ResonanceRequirement.AbilitiesCast, 1f);
         }
 
+        CombatEvents.RaiseCast(_entity, spell);
+        _refundRequested = false;
         yield return StartCoroutine(spell.Cast(_entity, target));
+
+        // A spell that earned its cooldown back (a Backstab that killed) is ready again at once.
+        if (_refundRequested && spellIndex < _spellCooldowns.Length) _spellCooldowns[spellIndex] = 0f;
+        _refundRequested = false;
 
         // Basic weapon attacks are the primary mana source — so Attack Speed accelerates ults too.
         if (spell.ScalesWithAttackSpeed && _entity.Mana != null) _entity.Mana.OnBasicAttack();
 
         _isAttacking = false;
     }
+
+    private bool _refundRequested;
+
+    /// <summary>Called by a spell mid-cast: when it finishes, its cooldown is cleared.</summary>
+    public void RefundCooldown() => _refundRequested = true;
 
     private void UpdateSpellCooldowns()
     {
