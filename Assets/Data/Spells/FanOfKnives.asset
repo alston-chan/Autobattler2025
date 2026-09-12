@@ -32,11 +32,11 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
-  - rid: 2861304459242242063
+  - rid: 2861304482225979396
   references:
     version: 2
     RefIds:
-    - rid: 2861304459242242063
+    - rid: 2861304482225979396
       type: {class: ThrowStarEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 1

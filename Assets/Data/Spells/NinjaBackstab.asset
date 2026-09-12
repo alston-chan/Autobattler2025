@@ -33,20 +33,20 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
-  - rid: 2861304459242242059
-  - rid: 2861304459242242060
-  - rid: 2861304459242242061
-  - rid: 2861304459242242062
+  - rid: 2861304482225979392
+  - rid: 2861304482225979393
+  - rid: 2861304482225979394
+  - rid: 2861304482225979395
   references:
     version: 2
     RefIds:
-    - rid: 2861304459242242059
+    - rid: 2861304482225979392
       type: {class: BlinkEffect, ns: , asm: Assembly-CSharp}
       data:
         destination: 0
         offset: 0.9
         settle: 0.12
-    - rid: 2861304459242242060
+    - rid: 2861304482225979393
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 0
@@ -59,10 +59,10 @@ MonoBehaviour:
         critChance: 0.1
         alwaysCrit: 1
         hitstop: 0.1
-    - rid: 2861304459242242061
+    - rid: 2861304482225979394
       type: {class: RefundCooldownOnKillEffect, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 2861304459242242062
+    - rid: 2861304482225979395
       type: {class: DropAggroEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 2

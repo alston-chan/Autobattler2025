@@ -33,17 +33,17 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
-  - rid: 2861304459242242064
-  - rid: 2861304459242242065
+  - rid: 2861304482225979397
+  - rid: 2861304482225979398
   references:
     version: 2
     RefIds:
-    - rid: 2861304459242242064
+    - rid: 2861304482225979397
       type: {class: DropAggroEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 1
         seconds: 2
-    - rid: 2861304459242242065
+    - rid: 2861304482225979398
       type: {class: ApplyStatusInRadiusEffect, ns: , asm: Assembly-CSharp}
       data:
         radius: 2.5
