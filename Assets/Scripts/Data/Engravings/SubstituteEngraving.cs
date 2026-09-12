@@ -14,7 +14,9 @@ public class SubstituteEngraving : Engraving
     public float hideSeconds = 3f;
     [Tooltip("How far toward the rear the ninja lands when there is no board to name a back line.")]
     public float blinkDistance = 3f;
-    [Tooltip("The supply sprite that stands in. Blank: a plain sign.")]
+    [Tooltip("The scarecrow that stands in — a body with a spring when hit. Assets/Prefabs/Scarecrow.")]
+    public GameObject scarecrowPrefab;
+    [Tooltip("The supply sprite that stands in when there is no prefab.")]
     public string scarecrowSprite = "";
 
     [System.NonSerialized] private bool _used;
@@ -32,8 +34,8 @@ public class SubstituteEngraving : Engraving
 
         // The scarecrow: a decoy with a little health where the ninja stood. Everyone who was on the
         // ninja is taunted onto it, so the lock turns, and it is swept away when the vanish ends.
-        var sprite = Supplies.FindSprite(owner, string.IsNullOrEmpty(scarecrowSprite) ? "ThrowingStar" : scarecrowSprite);
-        Decoy.Spawn(owner, from, Mathf.Max(1f, owner.Health.maxHealth * 0.15f), seconds, sprite, "Scarecrow");
+        var sprite = scarecrowPrefab == null ? Supplies.FindSprite(owner, string.IsNullOrEmpty(scarecrowSprite) ? "ThrowingStar" : scarecrowSprite) : null;
+        Decoy.Spawn(owner, from, Mathf.Max(1f, owner.Health.maxHealth * 0.15f), seconds, scarecrowPrefab, sprite, "Scarecrow");
         AbilityFeedback.Announce(owner, "Substitute");
 
         owner.DropAggro(seconds);

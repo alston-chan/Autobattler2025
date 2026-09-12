@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   engravingName: Substitute
   description: Once per combat at half health, leave a scarecrow and blink to the
-    rear, out of sight for 3 s.
+    back line, out of sight for 3 s.
   healthThreshold: 0.5
   hideSeconds: 3
   blinkDistance: 3
+  scarecrowPrefab: {fileID: 1423470163212545534, guid: c915fa807149b53478fc49e0aeebb4db, type: 3}
   scarecrowSprite: 
