@@ -511,6 +511,18 @@ public class Resonance : MonoBehaviour
         return verbs;
     }
 
+    /// <summary>The tier this verb is held at — the highest, if two grants teach it — else 1.</summary>
+    public int TierOfVerb(Spell spell)
+    {
+        int best = 0;
+        foreach (var pair in _active)
+        {
+            var grant = InstanceFor(pair.Key, pair.Value.asset) as GrantSpellEngraving;
+            if (grant != null && grant.spell == spell) best = Mathf.Max(best, pair.Value.tier);
+        }
+        return best > 0 ? best : 1;
+    }
+
     /// <summary>What every held engraving would do if the fight began now (<see cref="Engraving.Preview"/>).</summary>
     public void CollectPreviews(List<Engraving.Badge> into)
     {

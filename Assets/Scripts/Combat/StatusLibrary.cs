@@ -15,6 +15,7 @@ public class StatusLibrary : ScriptableObject
     public Status taunted;
     public Status burn;
     public Status poison;
+    public Status rooted;
 
     private static StatusLibrary _active;
     public static StatusLibrary Active
@@ -32,4 +33,5 @@ public class StatusLibrary : ScriptableObject
     public static Status Taunted => Active != null ? Active.taunted : null;
     public static Status Burn => Active != null ? Active.burn : null;
     public static Status Poison => Active != null ? Active.poison : null;
+    public static Status Rooted => Active != null ? Active.rooted : null;
 }

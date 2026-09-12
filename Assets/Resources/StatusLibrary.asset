@@ -18,3 +18,4 @@ MonoBehaviour:
   taunted: {fileID: 11400000, guid: a93c3080249ecae46b52213590787d9a, type: 2}
   burn: {fileID: 11400000, guid: 609b76e1828d44247b8bd50c38b49987, type: 2}
   poison: {fileID: 11400000, guid: c2a16bfaaf534d2409bd0847e9d42be7, type: 2}
+  rooted: {fileID: 11400000, guid: 8bc461dbcc52803488a25fbdacdc7d4b, type: 2}

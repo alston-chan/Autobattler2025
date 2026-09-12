@@ -33,33 +33,36 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
-  - rid: 2861304459242242048
-  - rid: 2861304459242242049
-  - rid: 2861304459242242050
-  - rid: 2861304459242242051
+  - rid: 2861304459242242059
+  - rid: 2861304459242242060
+  - rid: 2861304459242242061
+  - rid: 2861304459242242062
   references:
     version: 2
     RefIds:
-    - rid: 2861304459242242048
+    - rid: 2861304459242242059
       type: {class: BlinkEffect, ns: , asm: Assembly-CSharp}
       data:
         destination: 0
         offset: 0.9
         settle: 0.12
-    - rid: 2861304459242242049
+    - rid: 2861304459242242060
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 0
-        useCasterDamage: 1
-        damageScale: 2.5
-        amount: 20
+        damage:
+          baseValue: 0
+          ofWeaponDamage: 2.5
+          ofSubjectMaxHealth: 0
+          ofCasterMaxHealth: 0
+          perTier: 0.25
         critChance: 0.1
         alwaysCrit: 1
         hitstop: 0.1
-    - rid: 2861304459242242050
+    - rid: 2861304459242242061
       type: {class: RefundCooldownOnKillEffect, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 2861304459242242051
+    - rid: 2861304459242242062
       type: {class: DropAggroEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 2

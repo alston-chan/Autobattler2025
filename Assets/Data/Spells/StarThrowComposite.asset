@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b105ccda30400ac4abf2b097b166c7fb, type: 3}
-  m_Name: FanOfKnives
+  m_Name: StarThrowComposite
   m_EditorClassIdentifier: 
-  spellName: Fan of Knives
-  description: A shuriken at every enemy in range. Each one Marks.
-  cooldown: 7
-  range: 6
+  spellName: Star Throw
+  description: Throw a star at the current target for 18. Quick and cheap, for 50
+    mana.
+  cooldown: 3
+  range: 7
   alwaysOn: 0
-  manaCost: 30
+  manaCost: 50
   weaponRequirement: 0
   selector:
-    who: 6
+    who: 0
     status: {fileID: 0}
-    radius: 6
+    radius: 3
     count: 0
   motion: 3
   characterEvent: ThrowSupply
@@ -32,26 +33,26 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
-  - rid: 2861304459242242063
+  - rid: 2861304459242242072
   references:
     version: 2
     RefIds:
-    - rid: 2861304459242242063
+    - rid: 2861304459242242072
       type: {class: ThrowStarEffect, ns: , asm: Assembly-CSharp}
       data:
-        scope: 1
+        scope: 0
         spriteName: ThrowingStar
-        scale: 0.5
+        scale: 1
         damage:
-          baseValue: 0
-          ofWeaponDamage: 0.5
+          baseValue: 18
+          ofWeaponDamage: 0
           ofSubjectMaxHealth: 0
           ofCasterMaxHealth: 0
           perTier: 0.25
         speed: 16
         hitRadius: 0.6
         spin: 540
-        critChance: 0.1
+        critChance: 0.15
         secondsBetween: 0.05
-        applyOnHit: {fileID: 11400000, guid: 12b0a237dfb6fc140b0034ff3ad4c591, type: 2}
-        statusDuration: 6
+        applyOnHit: {fileID: 0}
+        statusDuration: -1

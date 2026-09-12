@@ -30,13 +30,10 @@ public class SubstituteEngraving : Engraving
         float seconds = hideSeconds * (1f + 0.5f * (Mathf.Max(1, tier) - 1));
         Vector3 from = owner.transform.position;
 
-        // The scarecrow: a sprite that stays where the ninja was and is swept away when the vanish ends.
-        var scarecrow = Supplies.Build(owner, string.IsNullOrEmpty(scarecrowSprite) ? "ThrowingStar" : scarecrowSprite, 1.2f, "Scarecrow");
-        if (scarecrow != null)
-        {
-            scarecrow.transform.position = from;
-            Object.Destroy(scarecrow, seconds);
-        }
+        // The scarecrow: a decoy with a little health where the ninja stood. Everyone who was on the
+        // ninja is taunted onto it, so the lock turns, and it is swept away when the vanish ends.
+        var sprite = Supplies.FindSprite(owner, string.IsNullOrEmpty(scarecrowSprite) ? "ThrowingStar" : scarecrowSprite);
+        Decoy.Spawn(owner, from, Mathf.Max(1f, owner.Health.maxHealth * 0.15f), seconds, sprite, "Scarecrow");
         AbilityFeedback.Announce(owner, "Substitute");
 
         owner.DropAggro(seconds);

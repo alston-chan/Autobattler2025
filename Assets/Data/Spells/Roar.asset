@@ -33,28 +33,32 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
-  - rid: 2861304459242242055
-  - rid: 2861304459242242056
-  - rid: 2861304459242242057
+  - rid: 2861304459242242066
+  - rid: 2861304459242242067
+  - rid: 2861304459242242068
   references:
     version: 2
     RefIds:
-    - rid: 2861304459242242055
+    - rid: 2861304459242242066
       type: {class: ApplyStatusEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 1
         status: {fileID: 11400000, guid: a93c3080249ecae46b52213590787d9a, type: 2}
         duration: 3
         stacks: 1
-    - rid: 2861304459242242056
+    - rid: 2861304459242242067
       type: {class: ShieldEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 2
-        amount: 0
-        percentMaxHealth: 0.05
+        amount:
+          baseValue: 0
+          ofWeaponDamage: 0
+          ofSubjectMaxHealth: 0.05
+          ofCasterMaxHealth: 0
+          perTier: 0.25
         perTargetFound: 1
         duration: 6
-    - rid: 2861304459242242057
+    - rid: 2861304459242242068
       type: {class: HitstopEffect, ns: , asm: Assembly-CSharp}
       data:
         duration: 0.06

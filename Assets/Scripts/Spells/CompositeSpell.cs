@@ -6,8 +6,55 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
-/// What one cast knows: who is casting, whom it chose, and the spell itself. Effects read and
-/// write this in order — a Blink moves the caster, the Damage after it lands from the new spot.
+/// The number primitive (Docs/AbilityGrammar.md): no effect takes a raw number. A base, a share
+/// of the caster's weapon damage, a share of a max health (the caster's, the target's, or the unit
+/// the effect lands on), and a step per tier above the first — so a verb's tier and the hero's
+/// stats both move every number without a second progression system.
+/// </summary>
+[Serializable]
+public class ScaledValue
+{
+    [Tooltip("The flat part.")]
+    public float baseValue = 0f;
+    [Tooltip("Plus this share of the caster's Damage stat. 1 = the weapon's full damage.")]
+    public float ofWeaponDamage = 0f;
+    [Tooltip("Plus this share of the max health of whoever the effect lands on. 0.2 = 20%.")]
+    public float ofSubjectMaxHealth = 0f;
+    [Tooltip("Plus this share of the caster's max health.")]
+    public float ofCasterMaxHealth = 0f;
+    [Tooltip("The whole is multiplied by 1 + this per tier above the first. 0.25 = +25% at tier II, +50% at tier III.")]
+    public float perTier = 0.25f;
+
+    public ScaledValue() { }
+    public ScaledValue(float baseValue, float ofWeaponDamage = 0f, float ofSubjectMaxHealth = 0f, float perTier = 0.25f)
+    {
+        this.baseValue = baseValue; this.ofWeaponDamage = ofWeaponDamage; this.ofSubjectMaxHealth = ofSubjectMaxHealth; this.perTier = perTier;
+    }
+
+    public float Evaluate(Entity caster, Entity subject, int tier)
+    {
+        float v = baseValue;
+        if (ofWeaponDamage != 0f && caster != null) v += AttackRoll.DamageOf(caster, 0f) * ofWeaponDamage;
+        if (ofSubjectMaxHealth != 0f && subject != null && subject.Health != null) v += subject.Health.maxHealth * ofSubjectMaxHealth;
+        if (ofCasterMaxHealth != 0f && caster != null && caster.Health != null) v += caster.Health.maxHealth * ofCasterMaxHealth;
+        return v * (1f + perTier * Mathf.Max(0, tier - 1));
+    }
+
+    public string Describe()
+    {
+        var parts = new List<string>();
+        if (baseValue != 0f) parts.Add($"{baseValue:0}");
+        if (ofWeaponDamage != 0f) parts.Add($"{ofWeaponDamage:0.##}× weapon");
+        if (ofSubjectMaxHealth != 0f) parts.Add($"{ofSubjectMaxHealth:P0} max health");
+        if (ofCasterMaxHealth != 0f) parts.Add($"{ofCasterMaxHealth:P0} your max health");
+        return parts.Count > 0 ? string.Join(" + ", parts) : "0";
+    }
+}
+
+/// <summary>
+/// What one cast knows: who is casting, whom it chose, the spell itself, and the tier the verb is
+/// held at. Effects read and write this in order — a Blink moves the caster, the Damage after it
+/// lands from the new spot.
 /// </summary>
 public class SpellContext
 {
@@ -15,6 +62,7 @@ public class SpellContext
     public Entity target;                 // the primary target (the first the selector found)
     public List<Entity> targets = new List<Entity>();
     public CompositeSpell spell;
+    public int tier = 1;                  // the verb's attunement tier; 1 when it is not a verb
     public bool targetDied;               // set by DealDamage when its target fell
 }
 
@@ -168,6 +216,10 @@ public class CompositeSpell : Spell
 {
     public enum Motion { None, Slash, Jab, ThrowSupply }
 
+    /// <summary>The spell as one sentence: whom, then what, in order. Shown first so an asset reads before it is opened.</summary>
+    [ShowInInspector, ReadOnly, MultiLineProperty(2), PropertyOrder(-1), LabelText("Reads")]
+    public string Reads => $"{selector.Describe()} → {DescribeEffects()}";
+
     [BoxGroup("Whom")] public Selector selector = new Selector();
 
     [BoxGroup("How it plays")]
@@ -200,6 +252,7 @@ public class CompositeSpell : Spell
     public override IEnumerator Cast(Entity caster, Entity target)
     {
         var ctx = new SpellContext { caster = caster, spell = this };
+        ctx.tier = caster.Resonance != null ? caster.Resonance.TierOfVerb(this) : 1;
         ctx.targets = selector.Resolve(caster, target);
         if (ctx.targets.Count == 0) yield break;
         ctx.target = ctx.targets[0];
@@ -291,11 +344,7 @@ public enum EffectScope { PrimaryTarget, EveryTarget, Caster }
 public class DealDamageEffect : SpellEffect
 {
     public EffectScope scope = EffectScope.PrimaryTarget;
-    [Tooltip("Use the caster's Damage stat (a weapon-style hit) rather than the flat amount.")]
-    public bool useCasterDamage = true;
-    [ShowIf("useCasterDamage"), Tooltip("Multiplier on the caster's Damage stat.")]
-    public float damageScale = 1f;
-    [HideIf("useCasterDamage")] public float amount = 20f;
+    public ScaledValue damage = new ScaledValue(0f, ofWeaponDamage: 1f);
     [Range(0f, 1f)] public float critChance = 0.1f;
     public bool alwaysCrit = false;
     [Tooltip("Freeze the victim this long on impact. Zero for none.")]
@@ -306,7 +355,7 @@ public class DealDamageEffect : SpellEffect
         foreach (var victim in Targets(ctx))
         {
             if (victim == null || victim.isDead) continue;
-            float dmg = useCasterDamage ? AttackRoll.DamageOf(ctx.caster, amount) * damageScale : amount;
+            float dmg = damage.Evaluate(ctx.caster, victim, ctx.tier);
             bool crit = alwaysCrit || AttackRoll.IsCrit(critChance);
             victim.TakeDamage(dmg, ctx.caster, crit);
             if (hitstop > 0f) victim.ApplyHitstop(hitstop);
@@ -325,7 +374,7 @@ public class DealDamageEffect : SpellEffect
         }
     }
 
-    public override string Describe() => (useCasterDamage ? $"{damageScale:0.##}× weapon damage" : $"{amount:0} damage") + (alwaysCrit ? ", a crit" : "") + (scope == EffectScope.EveryTarget ? " to each" : "");
+    public override string Describe() => $"{damage.Describe()} damage" + (alwaysCrit ? ", a crit" : "") + (scope == EffectScope.EveryTarget ? " to each" : "");
 }
 
 [Serializable]
@@ -334,7 +383,7 @@ public class ThrowStarEffect : SpellEffect
     public EffectScope scope = EffectScope.PrimaryTarget;
     public string spriteName = "ThrowingStar";
     public float scale = 0.5f;
-    public float damage = 18f;
+    public ScaledValue damage = new ScaledValue(0f, ofWeaponDamage: 0.6f);
     public float speed = 16f;
     public float hitRadius = 0.6f;
     public float spin = 540f;
@@ -350,7 +399,7 @@ public class ThrowStarEffect : SpellEffect
         foreach (var victim in targets)
         {
             if (victim == null || victim.isDead) continue;
-            Supplies.ThrowStar(ctx.caster, victim, damage, speed, hitRadius, spin, critChance, applyOnHit, statusDuration, spriteName, scale);
+            Supplies.ThrowStar(ctx.caster, victim, damage.Evaluate(ctx.caster, victim, ctx.tier), speed, hitRadius, spin, critChance, applyOnHit, statusDuration, spriteName, scale);
             if (secondsBetween > 0f && targets.Count > 1) yield return new WaitForSeconds(secondsBetween);
         }
     }
@@ -477,8 +526,7 @@ public class WaitEffect : SpellEffect
 public class ShieldEffect : SpellEffect
 {
     public EffectScope scope = EffectScope.Caster;
-    [Tooltip("Flat shield.")] public float amount = 0f;
-    [Tooltip("Plus this fraction of the shielded unit's max health. 0.2 = 20%.")] public float percentMaxHealth = 0.2f;
+    public ScaledValue amount = new ScaledValue(0f, ofSubjectMaxHealth: 0.2f);
     [Tooltip("Multiply by how many targets the selector found — a Roar that shields per enemy taunted.")]
     public bool perTargetFound = false;
     [Tooltip("Seconds. Zero: until broken or the fight ends.")] public float duration = 0f;
@@ -490,30 +538,29 @@ public class ShieldEffect : SpellEffect
         foreach (var t in targets)
         {
             if (t == null || t.isDead || t.Health == null) continue;
-            t.Health.AddShield((amount + percentMaxHealth * t.Health.maxHealth) * mult, duration);
+            t.Health.AddShield(amount.Evaluate(ctx.caster, t, ctx.tier) * mult, duration);
         }
         yield break;
     }
 
-    public override string Describe() => $"shield {(percentMaxHealth > 0 ? $"{percentMaxHealth:P0} max health" : $"{amount:0}")}{(perTargetFound ? " per target" : "")}{(scope == EffectScope.EveryTarget ? " on each" : scope == EffectScope.Caster ? " on self" : "")}";
+    public override string Describe() => $"shield {amount.Describe()}{(perTargetFound ? " per target" : "")}{(scope == EffectScope.EveryTarget ? " on each" : scope == EffectScope.Caster ? " on self" : "")}";
 }
 
 [Serializable]
 public class HealEffect : SpellEffect
 {
     public EffectScope scope = EffectScope.PrimaryTarget;
-    public float amount = 0f;
-    [Tooltip("Plus this fraction of the healed unit's max health.")] public float percentMaxHealth = 0.15f;
+    public ScaledValue amount = new ScaledValue(0f, ofSubjectMaxHealth: 0.15f);
 
     public override IEnumerator Run(SpellContext ctx)
     {
         IEnumerable<Entity> targets = scope == EffectScope.EveryTarget ? ctx.targets : scope == EffectScope.Caster ? new[] { ctx.caster } : new[] { ctx.target };
         foreach (var t in targets)
-            if (t != null && !t.isDead && t.Health != null) t.Health.Heal(amount + percentMaxHealth * t.Health.maxHealth, ctx.caster);
+            if (t != null && !t.isDead && t.Health != null) t.Health.Heal(amount.Evaluate(ctx.caster, t, ctx.tier), ctx.caster);
         yield break;
     }
 
-    public override string Describe() => $"heal {(percentMaxHealth > 0 ? $"{percentMaxHealth:P0}" : $"{amount:0}")}{(scope == EffectScope.EveryTarget ? " each" : "")}";
+    public override string Describe() => $"heal {amount.Describe()}{(scope == EffectScope.EveryTarget ? " each" : "")}";
 }
 
 [Serializable]
@@ -545,9 +592,7 @@ public class RadiusDamageEffect : SpellEffect
 {
     [Min(0f)] public float radius = 3f;
     public bool enemies = true;
-    public bool useCasterDamage = false;
-    [ShowIf("useCasterDamage")] public float damageScale = 1f;
-    [HideIf("useCasterDamage")] public float amount = 10f;
+    public ScaledValue damage = new ScaledValue(10f, ofWeaponDamage: 0.5f);
     [Range(0f, 1f)] public float critChance = 0f;
     [Tooltip("Knock each victim away from the caster with this force. Zero for none.")] public float knockback = 0f;
     public float hitstop = 0f;
@@ -561,7 +606,7 @@ public class RadiusDamageEffect : SpellEffect
             if (e != null && !e.isDead && e.gameObject.activeInHierarchy && (e.isTeam != caster.isTeam) == enemies && e != caster && (e.transform.position - origin).magnitude <= radius) victims.Add(e);
         foreach (var v in victims)
         {
-            float dmg = useCasterDamage ? AttackRoll.DamageOf(caster, amount) * damageScale : amount;
+            float dmg = damage.Evaluate(caster, v, ctx.tier);
             v.TakeDamage(dmg, caster, AttackRoll.IsCrit(critChance));
             if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback); }
             if (hitstop > 0f) v.ApplyHitstop(hitstop);
@@ -570,7 +615,7 @@ public class RadiusDamageEffect : SpellEffect
         if (victims.Count > 0) ctx.target = victims[0];
     }
 
-    public override string Describe() => $"{(useCasterDamage ? $"{damageScale:0.##}× weapon damage" : $"{amount:0} damage")} to {(enemies ? "enemies" : "allies")} within {radius:0.#}{(knockback > 0 ? ", knocked back" : "")}";
+    public override string Describe() => $"{damage.Describe()} damage to {(enemies ? "enemies" : "allies")} within {radius:0.#}{(knockback > 0 ? ", knocked back" : "")}";
 }
 
 /// <summary>Put a status on everyone of one side within a radius of the caster — a cloud, a shout, a ring.</summary>

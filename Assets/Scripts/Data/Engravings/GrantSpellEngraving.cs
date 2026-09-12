@@ -12,6 +12,10 @@ public class GrantSpellEngraving : Engraving
     [Tooltip("The verb this item teaches.")]
     public Spell spell;
 
+    /// <summary>The verb as a sentence, for the designer: whom, then what, in order.</summary>
+    [Sirenix.OdinInspector.ShowInInspector, Sirenix.OdinInspector.ReadOnly, Sirenix.OdinInspector.MultiLineProperty(2), Sirenix.OdinInspector.LabelText("Does")]
+    private string Does => spell is CompositeSpell c ? c.Reads : (spell != null ? spell.description : "(no verb)");
+
     public override void OnGranted(Entity owner, int tier)
     {
         if (owner == null || spell == null) return;
