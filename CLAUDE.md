@@ -205,5 +205,8 @@ Writing them:
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
   project (`Projectile`'s 3D bullet, `CharacterInventorySetup`'s unimplemented firearm equip and its
-  cape handling — a cape is typed Armor and used to wipe the armour equipped before it).
+  cape handling — a cape is typed Armor and used to wipe the armour equipped before it — and
+  `Equipment.FindItem`, which mirrors a paired dagger into the off-hand slot as it already did for
+  two-handers). Vendor files are CRLF: a text edit must match `
+`.
   Each such edit says in a comment what it replaced and why.

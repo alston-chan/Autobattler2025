@@ -144,7 +144,11 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
         {
             if (slot.Types.Contains(ItemType.Shield))
             {
-                var copy = Items.SingleOrDefault(i => i.Params.Type == ItemType.Weapon && (i.IsTwoHanded || i.IsFirearm));
+                // PROJECT EDIT (Autobattler2025): a paired weapon fills the off hand too. Daggers are
+                // wielded as a pair (DualWield.IsPaired) — the rig already shows the second blade — but
+                // this grid only mirrored two-handed weapons and firearms into the shield slot, so a
+                // dagger user's off-hand slot sat empty while the character held two daggers.
+                var copy = Items.SingleOrDefault(i => i.Params.Type == ItemType.Weapon && (i.IsTwoHanded || i.IsFirearm || DualWield.IsPaired(i)));
 
                 if (copy != null)
                 {
