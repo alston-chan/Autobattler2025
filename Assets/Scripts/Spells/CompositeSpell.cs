@@ -49,6 +49,14 @@ public class Selector
         AllEnemiesInRadius,
         AlliesInRadius,
         Self,
+        /// <summary>Allies orthogonally next to the caster at the bell (Docs/PositionalKeywords.md).</summary>
+        AlliesBeside,
+        /// <summary>Allies in the caster's column at the bell.</summary>
+        AlliesInRank,
+        /// <summary>Allies the caster stands in front of: same lane, further back.</summary>
+        AlliesCovered,
+        /// <summary>The first enemy in the caster's lane at the bell, else the nearest.</summary>
+        EnemyAcross,
     }
 
     public Who who = Who.CurrentTarget;
@@ -110,6 +118,22 @@ public class Selector
             case Who.Self:
                 result.Add(caster);
                 break;
+            case Who.AlliesBeside:
+                foreach (var a in BoardSnapshot.Beside(caster)) if (a != null && !a.isDead) result.Add(a);
+                break;
+            case Who.AlliesInRank:
+                foreach (var a in BoardSnapshot.Rank(caster)) if (a != null && !a.isDead) result.Add(a);
+                break;
+            case Who.AlliesCovered:
+                foreach (var a in BoardSnapshot.Covered(caster)) if (a != null && !a.isDead) result.Add(a);
+                break;
+            case Who.EnemyAcross:
+            {
+                var across = BoardSnapshot.Across(caster);
+                if (across != null && !across.isDead && !across.IsAggroDropped) result.Add(across);
+                else Add(result, enemies.OrderBy(e => (e.transform.position - origin).sqrMagnitude).FirstOrDefault());
+                break;
+            }
         }
         return result;
     }
@@ -124,6 +148,10 @@ public class Selector
             case Who.WithStatusElseLowestHealth: return $"the {(status != null ? status.DisplayName : "?")} enemy, else the weakest";
             case Who.AllEnemiesInRadius: return $"enemies within {radius:0.#}";
             case Who.AlliesInRadius: return $"allies within {radius:0.#}";
+            case Who.AlliesBeside: return "allies Beside you";
+            case Who.AlliesInRank: return "allies in your Rank";
+            case Who.AlliesCovered: return "allies you Cover";
+            case Who.EnemyAcross: return "the enemy Across";
             default: return who.ToString();
         }
     }

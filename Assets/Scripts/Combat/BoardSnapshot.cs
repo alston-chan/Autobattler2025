@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -50,6 +51,31 @@ public static class BoardSnapshot
     /// Stamp every unit with the lane and column it was deployed in. Called at the bell; nothing
     /// re-reads position after this until the next fight.
     /// </summary>
+    /// <summary>The board as frozen at the last bell; null before any fight. What the positional words read from.</summary>
+    public static Board<Entity> Last { get; private set; }
+
+    private static readonly List<Entity> None = new List<Entity>();
+
+    /// <summary>Allies orthogonally next to this unit at the bell. Empty when there is no board.</summary>
+    public static List<Entity> Beside(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Beside(unit) : None;
+    /// <summary>Allies in this unit's column at the bell.</summary>
+    public static List<Entity> Rank(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Rank(unit) : None;
+    /// <summary>Allies in this unit's row at the bell.</summary>
+    public static List<Entity> Lane(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Lane(unit) : None;
+    /// <summary>The first enemy in this unit's lane at the bell, or null.</summary>
+    public static Entity Across(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Across(unit) : null;
+    /// <summary>Allies this unit stands in front of: same lane, further from the enemy.</summary>
+    public static List<Entity> Covered(Entity unit)
+    {
+        if (Last == null || unit == null || !Last.TryGet(unit, out var mine)) return None;
+        var result = new List<Entity>();
+        foreach (var other in Last.Lane(unit))
+            if (other != null && Last.TryGet(other, out var p) && p.column > mine.column) result.Add(other);
+        return result;
+    }
+    public static bool IsAlone(Entity unit) => Last != null && unit != null && Last.IsAlone(unit);
+    public static bool IsExposed(Entity unit) => Last != null && unit != null && Last.IsExposed(unit);
+
     public static void Freeze(GridFormation formation)
     {
         var all = EntityRegistry.All;
@@ -57,6 +83,7 @@ public static class BoardSnapshot
             if (all[i] != null) { all[i].DeployedLane = all[i].DeployedColumn = -1; all[i].OpeningPending = false; }
 
         var board = Capture(formation, planned: false);
+        Last = board;
         foreach (var unit in board.Units)
         {
             if (unit == null || !board.TryGet(unit, out var placement)) continue;

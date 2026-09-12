@@ -104,6 +104,15 @@ public class Entity : MonoBehaviour
     [System.NonSerialized] public bool OpeningPending;
 
     /// <summary>
+    /// A hunt (Docs/SetDesigns.md): a preference applied every time this unit picks a target — the
+    /// bell, a kill, a leash break, a taunt's end. Candidates that pass are preferred; when none do,
+    /// the ordinary pick stands. Set by a helmet's engraving at the bell, cleared when the fight ends.
+    /// </summary>
+    [System.NonSerialized] public System.Func<Entity, bool> Hunt;
+    /// <summary>An opener: like a hunt, but consulted only for the bell pick.</summary>
+    [System.NonSerialized] public System.Func<Entity, bool> Opener;
+
+    /// <summary>
     /// Until when this unit cannot be picked as a target.
     ///
     /// Not serialized and not a stat: it is a brief window, bought by doing something — vanishing

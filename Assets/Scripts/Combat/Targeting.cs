@@ -84,7 +84,14 @@ public static class Targeting
         float bestScore = float.MaxValue;
         bool anyTargetable = false;
 
+        // A hunt or an opener narrows the field to what it wants, when anything qualifies.
+        var filter = chooser.OpeningPending && chooser.Opener != null ? chooser.Opener : chooser.Hunt;
+        bool anyPass = false;
         var all = EntityRegistry.All;
+        if (filter != null)
+            for (int i = 0; i < all.Count; i++)
+                if (IsEnemyOf(chooser, all[i]) && all[i] != avoid && filter(all[i])) { anyPass = true; break; }
+
         for (int i = 0; i < all.Count; i++)
         {
             var candidate = all[i];
@@ -92,6 +99,7 @@ public static class Targeting
             if (candidate == avoid) continue;
 
             anyTargetable = true;
+            if (anyPass && !filter(candidate)) continue;
 
             float score = Score(chooser, candidate, mode);
             if (score >= bestScore) continue;

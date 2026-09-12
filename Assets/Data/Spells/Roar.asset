@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b105ccda30400ac4abf2b097b166c7fb, type: 3}
+  m_Name: Roar
+  m_EditorClassIdentifier: 
+  spellName: Roar
+  description: Taunt every enemy nearby for 3 s, and gain 5% max health as Shield
+    per enemy taunted.
+  cooldown: 8
+  range: 20
+  alwaysOn: 0
+  manaCost: 35
+  weaponRequirement: 0
+  selector:
+    who: 6
+    status: {fileID: 0}
+    radius: 3.5
+    count: 0
+  motion: 0
+  characterEvent: Hit
+  monsterEvent: Attack
+  contactFallback: 0.1
+  contactTimeout: 1
+  scalesWithAttackSpeed: 0
+  baseDamage: 0
+  effects:
+  - rid: 2861304459242242055
+  - rid: 2861304459242242056
+  - rid: 2861304459242242057
+  references:
+    version: 2
+    RefIds:
+    - rid: 2861304459242242055
+      type: {class: ApplyStatusEffect, ns: , asm: Assembly-CSharp}
+      data:
+        scope: 1
+        status: {fileID: 11400000, guid: a93c3080249ecae46b52213590787d9a, type: 2}
+        duration: 3
+        stacks: 1
+    - rid: 2861304459242242056
+      type: {class: ShieldEffect, ns: , asm: Assembly-CSharp}
+      data:
+        scope: 2
+        amount: 0
+        percentMaxHealth: 0.05
+        perTargetFound: 1
+        duration: 6
+    - rid: 2861304459242242057
+      type: {class: HitstopEffect, ns: , asm: Assembly-CSharp}
+      data:
+        duration: 0.06
+        wholeBattlefield: 0

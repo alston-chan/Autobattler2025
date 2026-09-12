@@ -85,3 +85,33 @@ MonoBehaviour:
     tierIICost: 5
     tierIIICost: 12
     engraveCost: 5
+  - itemId: Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
+    engraving: {fileID: 11400000, guid: 9e53c421befc6ec469ff7e0da768a2fe, type: 2}
+    requirement: 3
+    tierIICost: 300
+    tierIIICost: 800
+    engraveCost: 300
+  - itemId: Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest
+    engraving: {fileID: 11400000, guid: 7da5082e255020b49af96873d5bed910, type: 2}
+    requirement: 3
+    tierIICost: 400
+    tierIIICost: 1000
+    engraveCost: 400
+  - itemId: Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots
+    engraving: {fileID: 11400000, guid: bf843fba000c2e64485b496e542aa27a, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
+  - itemId: Extensions.AbandonedWorkshop.Shield.WallKeeperShield
+    engraving: {fileID: 11400000, guid: 22a962a98c239b94bbe79959f8480a24, type: 2}
+    requirement: 4
+    tierIICost: 5
+    tierIIICost: 12
+    engraveCost: 5
+  - itemId: FantasyHeroes.Basic.Shield.TowerShield
+    engraving: {fileID: 11400000, guid: 9e472ea1b2a8b674e8e73c900c78d776, type: 2}
+    requirement: 4
+    tierIICost: 5
+    tierIIICost: 12
+    engraveCost: 5
