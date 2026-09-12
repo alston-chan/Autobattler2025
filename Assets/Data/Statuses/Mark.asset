@@ -25,3 +25,7 @@ MonoBehaviour:
   damageDealtPerStack: 1
   untargetable: 0
   rooted: 0
+  tauntsToSource: 0
+  tickInterval: 0
+  tickDamagePerStack: 0
+  tickPercentMaxHealthPerStack: 0
