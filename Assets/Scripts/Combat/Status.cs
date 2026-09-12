@@ -49,6 +49,18 @@ public class Status : ScriptableObject
     public bool untargetable;
     [Tooltip("While on, the unit cannot move.")]
     public bool rooted;
+    [Tooltip("While on, the unit's target is whoever applied this (a taunt). Overrides the lock.")]
+    public bool tauntsToSource;
+
+    [Header("Over time")]
+    [Tooltip("Seconds between ticks. Zero: no ticks.")]
+    public float tickInterval = 0f;
+    [Tooltip("Flat damage per tick, per stack.")]
+    public float tickDamagePerStack = 0f;
+    [Tooltip("Damage per tick as a fraction of max health, per stack. 0.015 = 1.5%.")]
+    public float tickPercentMaxHealthPerStack = 0f;
+
+    public bool Ticks => tickInterval > 0f && (tickDamagePerStack > 0f || tickPercentMaxHealthPerStack > 0f);
 
     public string DisplayName => string.IsNullOrEmpty(displayName) ? name : displayName;
 }
@@ -65,6 +77,7 @@ public class StatusSet
         public int stacks;
         public float expiresAt;      // float.PositiveInfinity = until cleared
         public Entity source;
+        public float nextTickAt;     // for statuses that tick
     }
 
     private readonly List<Active> _active = new List<Active>();
@@ -105,6 +118,7 @@ public class StatusSet
             stacks = Mathf.Clamp(stacks, 1, status.maxStacks),
             expiresAt = expiresAt,
             source = source,
+            nextTickAt = status.Ticks ? now + status.tickInterval : float.PositiveInfinity,
         };
         _active.Add(record);
         OnApplied?.Invoke(record);
@@ -129,6 +143,33 @@ public class StatusSet
         for (int i = 0; i < _active.Count; i++)
             if (_active[i].status == status) return _active[i];
         return null;
+    }
+
+    /// <summary>
+    /// The statuses whose tick is due, each advanced to its next one. A tick that was due before the
+    /// expiry still fires; the expiry is applied by <see cref="Tick"/>.
+    /// </summary>
+    public void CollectDue(float now, List<Active> into)
+    {
+        into.Clear();
+        for (int i = 0; i < _active.Count; i++)
+        {
+            var a = _active[i];
+            if (!a.status.Ticks || now < a.nextTickAt) continue;
+            into.Add(a);
+            a.nextTickAt += a.status.tickInterval;
+        }
+    }
+
+    /// <summary>Who this unit is taunted by: the live source of a taunting status, else null.</summary>
+    public Entity TauntedBy
+    {
+        get
+        {
+            for (int i = 0; i < _active.Count; i++)
+                if (_active[i].status.tauntsToSource && _active[i].source != null && !_active[i].source.isDead) return _active[i].source;
+            return null;
+        }
     }
 
     /// <summary>Let time pass: anything past its expiry comes off.</summary>
@@ -214,8 +255,23 @@ public class StatusController : MonoBehaviour
     public bool Untargetable => _set.Untargetable;
     public bool Rooted => _set.Rooted;
 
-    public void Tick() => _set.Tick(Time.time);
+    private readonly List<StatusSet.Active> _due = new List<StatusSet.Active>();
+
+    public void Tick()
+    {
+        float now = Time.time;
+        _set.CollectDue(now, _due);
+        foreach (var a in _due)
+        {
+            if (_entity == null || _entity.isDead || _entity.Health == null) break;
+            float dmg = (a.status.tickDamagePerStack + a.status.tickPercentMaxHealthPerStack * _entity.Health.maxHealth) * a.stacks;
+            if (dmg > 0f) _entity.Health.TakeDamage(dmg, a.source);
+        }
+        _set.Tick(now);
+    }
+
     public void ClearAll() => _set.Clear();
+    public Entity TauntedBy => _set.TauntedBy;
 
     private void OnDisable() => _set.Clear();
 

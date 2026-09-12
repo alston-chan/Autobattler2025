@@ -35,15 +35,18 @@ public static class CombatEvents
     public static event Action<Entity, Spell> Cast;
     /// <summary>A unit moved this far this frame under its own power.</summary>
     public static event Action<Entity, float> Moved;
+    /// <summary>A unit's shield ended: broken by a hit (true) or lapsed by time or the bell (false).</summary>
+    public static event Action<Entity, bool> ShieldEnded;
 
     public static void RaiseHit(HitInfo hit) => Hit?.Invoke(hit);
     public static void RaiseKill(Entity killer, Entity victim) => Kill?.Invoke(killer, victim);
     public static void RaiseCast(Entity caster, Spell spell) => Cast?.Invoke(caster, spell);
     public static void RaiseMoved(Entity entity, float distance) => Moved?.Invoke(entity, distance);
+    public static void RaiseShieldEnded(Entity entity, bool broken) => ShieldEnded?.Invoke(entity, broken);
 
     /// <summary>Drop every listener. For tests, and for a domain that is starting over.</summary>
     public static void Clear()
     {
-        Hit = null; Kill = null; Cast = null; Moved = null;
+        Hit = null; Kill = null; Cast = null; Moved = null; ShieldEnded = null;
     }
 }

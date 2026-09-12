@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5571ec7c1945ce54091096f950e0be91, type: 3}
+  m_Name: StatusLibrary
+  m_EditorClassIdentifier: 
+  mark: {fileID: 11400000, guid: 12b0a237dfb6fc140b0034ff3ad4c591, type: 2}
+  exposed: {fileID: 11400000, guid: 44776104b28e2ce40b7fce1b1d776da6, type: 2}
+  shielded: {fileID: 11400000, guid: a05a69ec95d393a4d85c111d6c1ba38a, type: 2}
+  taunted: {fileID: 11400000, guid: a93c3080249ecae46b52213590787d9a, type: 2}
+  burn: {fileID: 11400000, guid: 609b76e1828d44247b8bd50c38b49987, type: 2}
+  poison: {fileID: 11400000, guid: c2a16bfaaf534d2409bd0847e9d42be7, type: 2}

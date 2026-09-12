@@ -86,6 +86,38 @@ public class StatusTests
     }
 
     [Test]
+    public void ABurnTicksOnItsIntervalAndEveryStackCounts()
+    {
+        var burn = Make("Burn", Status.Stacking.Stack, maxStacks: 3, duration: 4f);
+        burn.tickInterval = 1f; burn.tickPercentMaxHealthPerStack = 0.01f;
+        var set = new StatusSet();
+        set.Apply(burn, 0f); set.Apply(burn, 0f);
+        var due = new System.Collections.Generic.List<StatusSet.Active>();
+        set.CollectDue(0.5f, due);
+        Assert.That(due, Is.Empty, "not yet");
+        set.CollectDue(1f, due);
+        Assert.That(due.Count, Is.EqualTo(1));
+        Assert.That(due[0].stacks, Is.EqualTo(2));
+        set.CollectDue(1.5f, due);
+        Assert.That(due, Is.Empty, "the next tick is at 2");
+        set.CollectDue(2f, due);
+        Assert.That(due.Count, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void ATauntNamesItsSourceOnlyWhileItLasts()
+    {
+        var taunt = Make("Taunted", duration: 3f);
+        taunt.tauntsToSource = true;
+        var set = new StatusSet();
+        Assert.That(set.TauntedBy, Is.Null);
+        set.Apply(taunt, 0f, source: null);
+        Assert.That(set.TauntedBy, Is.Null, "a taunt with no living source taunts nobody");
+        set.Tick(3f);
+        Assert.That(set.Has(taunt), Is.False);
+    }
+
+    [Test]
     public void RemovalIsAnnouncedOnceWhetherByTimeOrByHand()
     {
         var mark = Make("Mark", duration: 1f);

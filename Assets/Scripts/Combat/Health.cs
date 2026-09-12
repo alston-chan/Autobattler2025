@@ -17,6 +17,48 @@ public class Health : MonoBehaviour
 
     public ResourceBar healthBar;
 
+    [Header("Shield")]
+    [Tooltip("An absorb pool that takes hits before health. Granted by effects; expires or breaks.")]
+    public float shield;
+    private float _shieldExpiresAt = float.PositiveInfinity;
+
+    /// <summary>Put shield on. Zero or negative duration lasts until broken or the fight ends.</summary>
+    public void AddShield(float amount, float duration = 0f)
+    {
+        if (IsDead || amount <= 0f) return;
+        bool had = shield > 0f;
+        shield += amount;
+        float until = duration > 0f ? Time.time + duration : float.PositiveInfinity;
+        _shieldExpiresAt = had ? Mathf.Max(_shieldExpiresAt, until) : until;
+        var word = StatusLibrary.Shielded;
+        if (word != null && _entity != null && _entity.Statuses != null) _entity.Statuses.Apply(word, 0f);
+    }
+
+    /// <summary>Take the shield off. <paramref name="broken"/> says a hit did it rather than time or the bell.</summary>
+    public void ClearShield(bool broken)
+    {
+        if (shield <= 0f) return;
+        shield = 0f;
+        _shieldExpiresAt = float.PositiveInfinity;
+        var word = StatusLibrary.Shielded;
+        if (word != null && _entity != null && _entity.Statuses != null) _entity.Statuses.Remove(word);
+        CombatEvents.RaiseShieldEnded(_entity, broken);
+    }
+
+    /// <summary>Called each fight frame: a timed shield lapses.</summary>
+    public void TickShield()
+    {
+        if (shield > 0f && Time.time >= _shieldExpiresAt) ClearShield(broken: false);
+    }
+
+    /// <summary>Restore health, never above the maximum. Heals do nothing to the dead.</summary>
+    public void Heal(float amount, Entity source = null)
+    {
+        if (IsDead || amount <= 0f) return;
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        RefreshBar();
+    }
+
     /// <summary>Fired when this entity takes damage. See <see cref="DamageInfo"/> for the payload.</summary>
     public event Action<DamageInfo> OnDamaged;
 
@@ -90,6 +132,7 @@ public class Health : MonoBehaviour
     {
         IsDead = false;
         currentHealth = maxHealth;
+        shield = 0f; _shieldExpiresAt = float.PositiveInfinity;
         RefreshBar();
         OnRevived?.Invoke();
     }
@@ -128,6 +171,16 @@ public class Health : MonoBehaviour
         // attacker — and they apply here so every spell, old or new, respects them.
         if (_entity.Statuses != null) amount *= _entity.Statuses.DamageTakenMultiplier;
         if (source != null && source.Statuses != null) amount *= source.Statuses.DamageDealtMultiplier;
+
+        // A shield takes the hit first. What it absorbs counts as blocked for attunement, so a piece
+        // that attunes by blocking advances when its shield does the work.
+        if (shield > 0f)
+        {
+            float absorbed = Mathf.Min(shield, amount);
+            shield -= absorbed;
+            amount -= absorbed;
+            if (shield <= 0f) ClearShield(broken: true);
+        }
 
         // Resonance counters tick on the blow itself, not at the end of the fight, so a shield that
         // attunes by blocking advances exactly when it blocks.

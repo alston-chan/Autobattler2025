@@ -72,6 +72,7 @@ public class Entity : MonoBehaviour
         _fighting = fighting;
         // A fight's states end with it: nothing is Marked on the map screen.
         if (!fighting && Statuses != null) Statuses.ClearAll();
+        if (!fighting && Health != null) Health.ClearShield(broken: false);
     }
 
     [Header("Targeting")]
@@ -384,6 +385,7 @@ public class Entity : MonoBehaviour
 
         Knockback.Tick();
         if (Statuses != null) Statuses.Tick();
+        if (Health != null) Health.TickShield();
         CombatAI.Tick();
 
         // Keep the entity on-screen. Movement and knockback both write transform.position directly

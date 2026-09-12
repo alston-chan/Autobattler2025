@@ -58,6 +58,8 @@ public abstract class Engraving : ScriptableObject
     public virtual void OnCast(Entity owner, Spell spell, int tier) { }
     /// <summary>The owner moved this far under its own power this frame.</summary>
     public virtual void OnMoved(Entity owner, float distance, int tier) { }
+    /// <summary>The owner's shield ended — broken by a hit, or lapsed.</summary>
+    public virtual void OnShieldEnded(Entity owner, bool broken, int tier) { }
 
     /// <summary>One thing an engraving will do at the bell: whom it will touch, from which engraving, at what tier.</summary>
     public struct Badge

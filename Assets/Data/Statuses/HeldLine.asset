@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8007cad88ffcf104f9ed783d67bf184a, type: 3}
+  m_Name: HeldLine
+  m_EditorClassIdentifier: 
+  displayName: Held Line
+  description: 'Covered by a wall that has not moved: takes 5% less per stack.'
+  glyph: "\u25AE"
+  glyphColor: {r: 0.75, g: 0.8, b: 0.9, a: 1}
+  isDebuff: 0
+  defaultDuration: 0
+  stacking: 1
+  maxStacks: 3
+  damageTakenPerStack: 0.95
+  damageDealtPerStack: 1
+  untargetable: 0
+  rooted: 0
+  tauntsToSource: 0
+  tickInterval: 0
+  tickDamagePerStack: 0
+  tickPercentMaxHealthPerStack: 0

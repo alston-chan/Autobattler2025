@@ -429,6 +429,7 @@ public class Resonance : MonoBehaviour
             CombatEvents.Kill += RouteKill;
             CombatEvents.Cast += RouteCast;
             CombatEvents.Moved += RouteMoved;
+            CombatEvents.ShieldEnded += RouteShieldEnded;
         }
         else
         {
@@ -436,6 +437,7 @@ public class Resonance : MonoBehaviour
             CombatEvents.Kill -= RouteKill;
             CombatEvents.Cast -= RouteCast;
             CombatEvents.Moved -= RouteMoved;
+            CombatEvents.ShieldEnded -= RouteShieldEnded;
         }
     }
 
@@ -472,6 +474,11 @@ public class Resonance : MonoBehaviour
     private void RouteMoved(Entity entity, float distance)
     {
         if (entity == _entity) Route((e, t) => e.OnMoved(_entity, distance, t));
+    }
+
+    private void RouteShieldEnded(Entity entity, bool broken)
+    {
+        if (entity == _entity) Route((e, t) => e.OnShieldEnded(_entity, broken, t));
     }
 
     /// <summary>A grant coming or going. Mid-fight, that includes its combat hook.</summary>

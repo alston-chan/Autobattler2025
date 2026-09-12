@@ -73,6 +73,10 @@ public static class Targeting
     {
         if (chooser == null) return null;
 
+        // A taunt is the one thing that turns a locked unit: whoever taunted you is your target while it lasts.
+        var taunter = chooser.Statuses != null ? chooser.Statuses.TauntedBy : null;
+        if (taunter != null && IsEnemyOf(chooser, taunter)) return taunter;
+
         // Locked on: the current target stands until it dies or vanishes.
         if (LockOn && current != null && current != avoid && IsEnemyOf(chooser, current)) return current;
 

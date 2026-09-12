@@ -445,6 +445,106 @@ public class WaitEffect : SpellEffect
     public override string Describe() => $"wait {seconds:0.##} s";
 }
 
+[Serializable]
+public class ShieldEffect : SpellEffect
+{
+    public EffectScope scope = EffectScope.Caster;
+    [Tooltip("Flat shield.")] public float amount = 0f;
+    [Tooltip("Plus this fraction of the shielded unit's max health. 0.2 = 20%.")] public float percentMaxHealth = 0.2f;
+    [Tooltip("Multiply by how many targets the selector found — a Roar that shields per enemy taunted.")]
+    public bool perTargetFound = false;
+    [Tooltip("Seconds. Zero: until broken or the fight ends.")] public float duration = 0f;
+
+    public override IEnumerator Run(SpellContext ctx)
+    {
+        IEnumerable<Entity> targets = scope == EffectScope.EveryTarget ? ctx.targets : scope == EffectScope.Caster ? new[] { ctx.caster } : new[] { ctx.target };
+        float mult = perTargetFound ? Mathf.Max(1, ctx.targets.Count) : 1f;
+        foreach (var t in targets)
+        {
+            if (t == null || t.isDead || t.Health == null) continue;
+            t.Health.AddShield((amount + percentMaxHealth * t.Health.maxHealth) * mult, duration);
+        }
+        yield break;
+    }
+
+    public override string Describe() => $"shield {(percentMaxHealth > 0 ? $"{percentMaxHealth:P0} max health" : $"{amount:0}")}{(perTargetFound ? " per target" : "")}{(scope == EffectScope.EveryTarget ? " on each" : scope == EffectScope.Caster ? " on self" : "")}";
+}
+
+[Serializable]
+public class HealEffect : SpellEffect
+{
+    public EffectScope scope = EffectScope.PrimaryTarget;
+    public float amount = 0f;
+    [Tooltip("Plus this fraction of the healed unit's max health.")] public float percentMaxHealth = 0.15f;
+
+    public override IEnumerator Run(SpellContext ctx)
+    {
+        IEnumerable<Entity> targets = scope == EffectScope.EveryTarget ? ctx.targets : scope == EffectScope.Caster ? new[] { ctx.caster } : new[] { ctx.target };
+        foreach (var t in targets)
+            if (t != null && !t.isDead && t.Health != null) t.Health.Heal(amount + percentMaxHealth * t.Health.maxHealth, ctx.caster);
+        yield break;
+    }
+
+    public override string Describe() => $"heal {(percentMaxHealth > 0 ? $"{percentMaxHealth:P0}" : $"{amount:0}")}{(scope == EffectScope.EveryTarget ? " each" : "")}";
+}
+
+[Serializable]
+public class KnockbackEffect : SpellEffect
+{
+    public EffectScope scope = EffectScope.PrimaryTarget;
+    public float force = 8f;
+    [Tooltip("Away from the caster (default) or toward it (a pull).")] public bool pull = false;
+
+    public override IEnumerator Run(SpellContext ctx)
+    {
+        IEnumerable<Entity> targets = scope == EffectScope.EveryTarget ? ctx.targets : new[] { ctx.target };
+        foreach (var t in targets)
+        {
+            if (t == null || t.isDead || ctx.caster == null) continue;
+            Vector3 dir = (t.transform.position - ctx.caster.transform.position);
+            dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right;
+            t.ApplyKnockback(pull ? -dir : dir, force);
+        }
+        yield break;
+    }
+
+    public override string Describe() => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target");
+}
+
+/// <summary>Damage everything of one side within a radius of the caster — Shockwave's heart.</summary>
+[Serializable]
+public class RadiusDamageEffect : SpellEffect
+{
+    [Min(0f)] public float radius = 3f;
+    public bool enemies = true;
+    public bool useCasterDamage = false;
+    [ShowIf("useCasterDamage")] public float damageScale = 1f;
+    [HideIf("useCasterDamage")] public float amount = 10f;
+    [Range(0f, 1f)] public float critChance = 0f;
+    [Tooltip("Knock each victim away from the caster with this force. Zero for none.")] public float knockback = 0f;
+    public float hitstop = 0f;
+
+    public override IEnumerator Run(SpellContext ctx)
+    {
+        var caster = ctx.caster; if (caster == null) yield break;
+        Vector3 origin = caster.transform.position;
+        var victims = new List<Entity>();
+        foreach (var e in EntityRegistry.All)
+            if (e != null && !e.isDead && e.gameObject.activeInHierarchy && (e.isTeam != caster.isTeam) == enemies && e != caster && (e.transform.position - origin).magnitude <= radius) victims.Add(e);
+        foreach (var v in victims)
+        {
+            float dmg = useCasterDamage ? AttackRoll.DamageOf(caster, amount) * damageScale : amount;
+            v.TakeDamage(dmg, caster, AttackRoll.IsCrit(critChance));
+            if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback); }
+            if (hitstop > 0f) v.ApplyHitstop(hitstop);
+        }
+        ctx.targets = victims;
+        if (victims.Count > 0) ctx.target = victims[0];
+    }
+
+    public override string Describe() => $"{(useCasterDamage ? $"{damageScale:0.##}× weapon damage" : $"{amount:0} damage")} to {(enemies ? "enemies" : "allies")} within {radius:0.#}{(knockback > 0 ? ", knocked back" : "")}";
+}
+
 /// <summary>Put a status on everyone of one side within a radius of the caster — a cloud, a shout, a ring.</summary>
 [Serializable]
 public class ApplyStatusInRadiusEffect : SpellEffect
