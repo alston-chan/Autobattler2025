@@ -124,6 +124,19 @@ public class Entity : MonoBehaviour
 
     public bool IsAggroDropped => Time.time < _hiddenUntil;
 
+    /// <summary>
+    /// Move in one step — a blink, a substitute, a throw — clamped to the arena. Counts as movement:
+    /// the distance reaches everything listening for steps (Shadowstep throws on it, Hold the Line
+    /// breaks on it), the same as walking there would.
+    /// </summary>
+    public void Relocate(Vector3 to)
+    {
+        Vector3 from = transform.position;
+        transform.position = ArenaBounds.ClampToArena(to);
+        float moved = Vector3.Distance(from, transform.position);
+        if (moved > 0f) CombatEvents.RaiseMoved(this, moved);
+    }
+
     /// <summary>Slip out of sight for a moment. Extends an existing window, never shortens it.</summary>
     public void DropAggro(float seconds)
     {

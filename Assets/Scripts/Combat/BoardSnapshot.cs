@@ -74,6 +74,19 @@ public static class BoardSnapshot
         return result;
     }
     public static bool IsAlone(Entity unit) => Last != null && unit != null && Last.IsAlone(unit);
+
+    /// <summary>
+    /// The back line for this unit: the rear cell of its own side in the lane it was deployed in
+    /// (its nearest lane now, if it was not deployed). Where a Substitute or a retreat lands.
+    /// </summary>
+    public static Vector3 RearOf(Entity unit, Vector3 fallback)
+    {
+        var grid = BattleGrid.Instance;
+        if (grid == null || unit == null) return fallback;
+        int row = unit.DeployedLane;
+        if (row < 0) grid.ClosestCell(unit.isTeam, unit.transform.position, out _, out row);
+        return grid.CellToWorld(unit.isTeam, grid.columns - 1, row);
+    }
     public static bool IsExposed(Entity unit) => Last != null && unit != null && Last.IsExposed(unit);
 
     public static void Freeze(GridFormation formation)

@@ -414,7 +414,6 @@ public class Resonance : MonoBehaviour
 
     private bool _inCombat;
     private bool _listening;
-    private readonly List<KeyValuePair<string, Grant>> _routing = new List<KeyValuePair<string, Grant>>();
 
     // ---- the bus, routed to what this hero holds. One subscription per hero per fight; the
     // engravings just override a hook.
@@ -445,10 +444,11 @@ public class Resonance : MonoBehaviour
 
     private void Route(System.Action<Engraving, int> call)
     {
-        // A hook may change what is held (a bank mid-fight), so route over a copy.
-        _routing.Clear();
-        foreach (var pair in _active) _routing.Add(pair);
-        foreach (var pair in _routing)
+        // A hook may change what is held (a bank mid-fight), and a hook may raise another event
+        // (a Substitute's blink is a Moved inside a Damaged), so route over a copy of its own — a
+        // shared scratch list was cleared under the outer loop by the nested one.
+        var routing = new List<KeyValuePair<string, Grant>>(_active);
+        foreach (var pair in routing)
         {
             var engraving = InstanceFor(pair.Key, pair.Value.asset);
             if (engraving != null) call(engraving, pair.Value.tier);

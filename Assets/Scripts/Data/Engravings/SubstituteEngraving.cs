@@ -12,7 +12,7 @@ public class SubstituteEngraving : Engraving
     [Range(0.05f, 0.95f)] public float healthThreshold = 0.5f;
     [Tooltip("Seconds out of sight at tier I; each tier adds half again.")]
     public float hideSeconds = 3f;
-    [Tooltip("How far toward the rear the ninja lands.")]
+    [Tooltip("How far toward the rear the ninja lands when there is no board to name a back line.")]
     public float blinkDistance = 3f;
     [Tooltip("The supply sprite that stands in. Blank: a plain sign.")]
     public string scarecrowSprite = "";
@@ -37,9 +37,11 @@ public class SubstituteEngraving : Engraving
         AbilityFeedback.Announce(owner, "Substitute");
 
         owner.DropAggro(seconds);
+        // To the back line — the rear cell of the ninja's own lane — and it counts as movement, so a
+        // Shadowstep lower throws on the way. With no board, simply away from the nearest enemy.
         var nearest = Nearest(owner);
         Vector3 away = nearest != null ? (from - nearest.transform.position).normalized : (owner.isTeam ? Vector3.left : Vector3.right);
-        owner.transform.position = ArenaBounds.ClampToArena(from + away * blinkDistance);
+        owner.Relocate(BoardSnapshot.RearOf(owner, from + away * blinkDistance));
     }
 
     private static Entity Nearest(Entity owner)

@@ -434,14 +434,14 @@ public class BlinkEffect : SpellEffect
                 to = caster.transform.position + (caster.transform.position - target.transform.position).normalized * offset;
                 break;
             case Destination.ToRear:
-                // The rear is the side the caster's company deploys on: away from the nearest enemy, by the offset.
+                // The back line: the rear cell of the caster's lane. With no board, away from the nearest enemy.
                 var nearest = EntityRegistry.All.Where(e => e != null && !e.isDead && e.isTeam != caster.isTeam)
                     .OrderBy(e => (e.transform.position - caster.transform.position).sqrMagnitude).FirstOrDefault();
                 Vector3 away = nearest != null ? (caster.transform.position - nearest.transform.position).normalized : (caster.isTeam ? Vector3.left : Vector3.right);
-                to = caster.transform.position + away * offset;
+                to = BoardSnapshot.RearOf(caster, caster.transform.position + away * offset);
                 break;
         }
-        caster.transform.position = ArenaBounds.ClampToArena(to);
+        caster.Relocate(to);   // a blink is movement: it counts for everything that listens for steps
         if (target != null && target != caster) caster.SetFacing(target.transform.position.x > caster.transform.position.x);
         if (settle > 0f) yield return new WaitForSeconds(settle);
     }
