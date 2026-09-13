@@ -83,6 +83,15 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Helpers
                                     {
                                         character.WeaponType = item.Params.Tags.Contains(ItemTag.TwoHanded) ? WeaponType.Melee2H : WeaponType.Melee1H;
                                         character.PrimaryMeleeWeapon = (character.WeaponType == WeaponType.Melee1H ? character.SpriteCollection.MeleeWeapon1H : character.SpriteCollection.MeleeWeapon2H).FindSpriteById(item.Params.SpriteId);
+                                        // PROJECT EDIT (Autobattler2025): daggers are wielded as a pair (DualWield). The
+                                        // fight applies that through DualWield.Apply after equipping; every preview — the
+                                        // inventory doll, the avatar card, the designer's mannequin — dresses through here
+                                        // and showed one blade. The off hand mirrors the main one, as in the fight.
+                                        if (DualWield.IsPaired(item))
+                                        {
+                                            character.WeaponType = WeaponType.MeleePaired;
+                                            character.SecondaryMeleeWeapon = character.PrimaryMeleeWeapon;
+                                        }
                                     }
                                     break;
                             }
