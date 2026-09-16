@@ -47,6 +47,7 @@ public class EncounterSpawner : MonoBehaviour
         int count = 0;
         var pending = new List<Entity>();
         var loadouts = new List<EnemyLoadout>();
+        var authored = new List<EncounterData.Spawn>();
         foreach (var spawn in encounter.spawns)
         {
             if (spawn == null || spawn.prefab == null) continue;
@@ -58,6 +59,7 @@ public class EncounterSpawner : MonoBehaviour
 
             var entity = go.GetComponent<Entity>();
             if (entity == null) continue;
+            authored.Add(spawn);
 
             entity.isTeam = false;
             if (spawn.unitData != null) entity.unitData = spawn.unitData;
@@ -70,6 +72,10 @@ public class EncounterSpawner : MonoBehaviour
             pending.Add(entity);
             loadouts.Add(loadout);
         }
+
+        // Now that each knows how it fights, muster: archers to the rear of their lane, brawlers to
+        // the front (EnemyMuster). The authored cell is the starting point, not the answer.
+        Muster(pending, authored);
 
         // Release them into the scene — this is where Awake finally runs, with the data already set.
         foreach (var go in _spawned)
@@ -88,6 +94,21 @@ public class EncounterSpawner : MonoBehaviour
         }
 
         return count;
+    }
+
+    /// <summary>Stand each spawn in the cell its way of fighting earns it. See <see cref="EnemyMuster"/>.</summary>
+    private void Muster(List<Entity> entities, List<EncounterData.Spawn> authored)
+    {
+        var grid = BattleGrid.Instance;
+        if (grid == null || entities.Count != authored.Count) return;
+
+        var units = new List<EnemyMuster.Unit>(entities.Count);
+        for (int i = 0; i < entities.Count; i++)
+            units.Add(new EnemyMuster.Unit(entities[i].IsRanged, authored[i].column, authored[i].row));
+
+        var cells = EnemyMuster.Assign(units, grid.columns, grid.rows);
+        for (int i = 0; i < entities.Count; i++)
+            entities[i].transform.position = grid.CellToWorld(false, cells[i].column, cells[i].row);
     }
 
     /// <summary>
