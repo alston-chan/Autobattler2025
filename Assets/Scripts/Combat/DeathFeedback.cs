@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using System.Collections;
 using Assets.FantasyMonsters.Common.Scripts;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using UnityEngine;
@@ -75,9 +76,38 @@ public class DeathFeedback : MonoBehaviour
         // restore working from the older list would then never put it back, leaving that one piece
         // invisible for the rest of the run. What the fade changes, the fade records.
         _restoreScale = transform.localScale;
+        SnapshotPose();
     }
 
     private Vector3 _restoreScale;
+
+    /// <summary>
+    /// The rig's pose as the death sequence began: every bone under the animator, local position,
+    /// rotation and scale. The death clips rotate and drop the Body bone, and the idle clips never
+    /// key it, so a revived unit stood at Idle by every parameter while its body still lay on the
+    /// ground — and a rebind taken then made lying down the default. Restored on revive, first.
+    /// </summary>
+    private readonly List<(Transform bone, Vector3 position, Quaternion rotation, Vector3 scale)> _pose =
+        new List<(Transform, Vector3, Quaternion, Vector3)>();
+
+    private void SnapshotPose()
+    {
+        _pose.Clear();
+        var animator = _entity != null ? GetAnimator() : null;
+        if (animator == null) return;
+        foreach (var bone in animator.GetComponentsInChildren<Transform>(true))
+            if (bone != animator.transform) _pose.Add((bone, bone.localPosition, bone.localRotation, bone.localScale));
+    }
+
+    private void RestorePose(bool keep = false)
+    {
+        foreach (var (bone, position, rotation, scale) in _pose)
+        {
+            if (bone == null) continue;
+            bone.localPosition = position; bone.localRotation = rotation; bone.localScale = scale;
+        }
+        if (!keep) _pose.Clear();
+    }
 
     /// <summary>
     /// Exactly which renderers the fade dimmed, and what they were before it did — captured as it
@@ -123,6 +153,7 @@ public class DeathFeedback : MonoBehaviour
             // entry state by hand and let it settle now, before the parameters below are set: a body
             // revived after it was deactivated has an animator that would otherwise reset them
             // on its first update, after this method had set them.
+            RestorePose(keep: true);   // before the rebind, so the defaults it takes are a standing body
             animator.Rebind();
             animator.Update(0f);
         }
@@ -138,6 +169,19 @@ public class DeathFeedback : MonoBehaviour
             }
             else if (_entity.monster != null) _entity.monster.SetState(MonsterState.Idle);
         }
+
+        // The pose last: the rebind's update still evaluates the death state for a frame and writes
+        // the fallen Body bone back, so restoring first was undone. Idle never keys that bone, so
+        // once it is set after the state change it stays — set it now, and once more next frame in
+        // case the transition's first frame still blends from the death pose.
+        RestorePose(keep: true);
+        if (gameObject.activeInHierarchy) StartCoroutine(RestorePoseNextFrame());
+    }
+
+    private IEnumerator RestorePoseNextFrame()
+    {
+        yield return null;
+        RestorePose(keep: true);
     }
 
     /// <summary>
@@ -148,6 +192,7 @@ public class DeathFeedback : MonoBehaviour
     {
         if (_running) return;
         _running = true;
+        if (_pose.Count == 0) SnapshotPose();
         StartCoroutine(Sequence(killer));
     }
 
@@ -201,6 +246,10 @@ public class DeathFeedback : MonoBehaviour
         // the whole company falls, so the fallen are revived before the next encounter
         // (Docs/RunLoop.md). Deactivating leaves the GameObject — and everything hung off it, like
         // its inventory, equipment and spell slots — intact for RunManager to bring back.
+        // Stand the rig back up before it is put away. It is faded out, so nothing shows, and the
+        // animator that re-enables on the revive then binds to a healthy body: an animator enabled
+        // over a fallen one took the fallen pose as its default and wrote it back every frame.
+        RestorePose(keep: true);
         if (persistOnDeath) gameObject.SetActive(false);
         else Destroy(gameObject);
     }
