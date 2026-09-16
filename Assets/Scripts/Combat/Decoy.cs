@@ -19,7 +19,7 @@ public static class Decoy
     /// As above, from a prefab — the scarecrow — with a sprite as the fallback when there is none.
     /// A prefab body that carries the test-room Monster springs when it is hit.
     /// </summary>
-    public static Entity Spawn(Entity owner, Vector3 at, float health, float seconds, GameObject prefab, Sprite sprite, string name = "Decoy")
+    public static Entity Spawn(Entity owner, Vector3 at, float health, float seconds, GameObject prefab, Sprite sprite, string name = "Decoy", float scale = 0.35f)
     {
         if (owner == null) return null;
         GameObject go;
@@ -27,10 +27,8 @@ public static class Decoy
         {
             go = Object.Instantiate(prefab, at, Quaternion.identity);
             go.name = name;
-            // Face the way the owner did, so it stands in for them.
-            var s = go.transform.localScale;
-            s.x = Mathf.Abs(s.x) * (owner.transform.localScale.x >= 0f ? 1f : -1f);
-            go.transform.localScale = s;
+            // A body's size, facing the way the owner did, so it stands in for them.
+            go.transform.localScale = new Vector3(scale * (owner.transform.localScale.x >= 0f ? 1f : -1f), scale, 1f);
             go.AddComponent<DecoyBody>();
         }
         else
@@ -44,8 +42,8 @@ public static class Decoy
             {
                 // A supply icon is small; stand it up to roughly a body's height.
                 float h = sprite.bounds.size.y;
-                float scale = h > 0.01f ? Mathf.Clamp(1.6f / h, 0.3f, 6f) : 1f;
-                go.transform.localScale = Vector3.one * scale;
+                float fit = h > 0.01f ? Mathf.Clamp(1.6f / h, 0.3f, 6f) : 1f;
+                go.transform.localScale = Vector3.one * fit;
             }
         }
 
@@ -64,11 +62,15 @@ public static class Decoy
         var rooted = StatusLibrary.Rooted;
         if (rooted != null && entity.Statuses != null) entity.Statuses.Apply(rooted, 0f);
 
+        // Everyone who was on the owner is on the decoy now: taunted for its whole span, so the
+        // pick keeps choosing it, and turned this very frame, so the switch shows at once.
         var taunt = StatusLibrary.Taunted;
-        if (taunt != null)
-            foreach (var e in EntityRegistry.All)
-                if (e != null && !e.isDead && e.isTeam != owner.isTeam && e.Statuses != null && e.CombatAI != null && e.CombatAI.CurrentTarget == owner)
-                    e.Statuses.Apply(taunt, seconds, entity);
+        foreach (var e in EntityRegistry.All)
+        {
+            if (e == null || e.isDead || e.isTeam == owner.isTeam || e.CombatAI == null || e.CombatAI.CurrentTarget != owner) continue;
+            if (taunt != null && e.Statuses != null) e.Statuses.Apply(taunt, seconds, entity);
+            e.CombatAI.Retarget(entity);
+        }
 
         Object.Destroy(go, seconds);
         return entity;

@@ -382,6 +382,18 @@ public class CombatAI : MonoBehaviour
 
     private bool _refundRequested;
 
+    /// <summary>
+    /// Turn onto this target now. A taunt already wins the next pick; this makes the turn visible
+    /// this frame and drops any leash held against the old target.
+    /// </summary>
+    public void Retarget(Entity target)
+    {
+        if (target == null || target.isDead) return;
+        CurrentTarget = target;
+        _leashed = null; _leashedUntil = 0f; _lastProgressTime = Time.time;
+        _entity.OpeningPending = false;
+    }
+
     /// <summary>Called by a spell mid-cast: when it finishes, its cooldown is cleared.</summary>
     public void RefundCooldown() => _refundRequested = true;
 
