@@ -117,6 +117,14 @@ failed `RunSaveTests.AFlatRunResumesAtItsIndex` with a null encounter and nothin
 say why. Prefer `AssetDatabase.SaveAssetIfDirty(asset)` for the asset you changed, and check
 `git status` after any save from tooling: an unexpected `M` on a data asset is this.
 
+**A new serialized field's C# default never reaches a loaded asset.** A ScriptableObject already in
+memory survives the domain reload by serialization, so a changed field initializer — even inside a
+nested `[Serializable]` settings block the YAML does not carry yet — reads as the *old* value after
+a recompile, while a fresh `CreateInstance` would read the new one. Measured 2026-09-16: physics
+damage defaults changed in code, tests passed, the editor still read the old numbers. Set the value on
+the live asset from a script and `SaveAssetIfDirty` it (which also writes the block to disk), or edit
+the `.asset` block by hand; then read it back.
+
 ## The item collection is generated
 
 `Assets/Data/ItemCollection.asset` is rebuilt from `Assets/Data/Items.csv` + `Properties.csv` by
@@ -148,6 +156,13 @@ to the asset. Gloves rows are disabled there on purpose (armour is upper + lower
   calls `Equip()`. Equipping the same item id twice in one play session trips a `SingleOrDefault`
   in the inventory — restart play between equip probes. `console-clear-logs` isolates a run's logs.
 - Daggers are paired (`DualWield.IsPaired`), so a dagger and a shield cannot be worn together.
+- `console-get-logs` lists oldest-first and keeps lines from earlier runs even after
+  `console-clear-logs` in play mode. Tag each probe's result line with something unique to that run
+  and take the *newest* match (`tail -1`), never the first — a stale line from the previous run reads
+  exactly like a fresh result.
+- The MCP running a script twice is real: a play probe that adds spells and subscribes handlers ran
+  twice in one call and doubled every count. Guard with a marker object (`GameObject.Find("X_ARMED")`)
+  created on arming and destroyed when the probe ends.
 
 ## Odin
 

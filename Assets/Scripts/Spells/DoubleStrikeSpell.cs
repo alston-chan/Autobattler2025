@@ -70,7 +70,7 @@ public class DoubleStrikeSpell : Spell
                 if (knockbackForce > 0f && !target.isDead)
                 {
                     Vector3 dir = (target.transform.position - caster.transform.position).normalized;
-                    target.ApplyKnockback(dir, knockbackForce);
+                    target.ApplyKnockback(dir, knockbackForce, caster);
                 }
             }
 

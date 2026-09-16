@@ -48,6 +48,10 @@ public class CombatFeelSettings : ScriptableObject
     [Header("Damage numbers")]
     public DamageNumbersManager.Settings damageNumbers = new DamageNumbersManager.Settings();
 
+    [Header("Physics")]
+    [Tooltip("Bodies, impacts, wall slams and stances. See CombatPhysics.")]
+    public CombatPhysics.Settings physics = new CombatPhysics.Settings();
+
     [Header("Ability feedback")]
     public AbilityFeedback.Settings abilityFeedback = new AbilityFeedback.Settings();
 

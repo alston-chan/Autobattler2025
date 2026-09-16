@@ -56,7 +56,7 @@ public class ShockwaveSpell : Spell
                     entity.TakeDamage(AttackRoll.DamageOf(caster, damage), caster,
                                       AttackRoll.IsCrit(critChance));
                     Vector3 dir = (entity.transform.position - caster.transform.position).normalized;
-                    entity.ApplyKnockback(dir, knockbackForce);
+                    entity.ApplyKnockback(dir, knockbackForce, caster);
                     if (!freezeEntireBattlefield) entity.ApplyHitstop(hitstopDuration);
                 }
             }

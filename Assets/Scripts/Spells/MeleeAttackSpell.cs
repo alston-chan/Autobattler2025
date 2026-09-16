@@ -89,7 +89,7 @@ public class MeleeAttackSpell : Spell
         if (knockbackForce > 0f)
         {
             Vector3 knockbackDir = (target.transform.position - caster.transform.position).normalized;
-            target.ApplyKnockback(knockbackDir, knockbackForce);
+            target.ApplyKnockback(knockbackDir, knockbackForce, caster);
         }
     }
 }

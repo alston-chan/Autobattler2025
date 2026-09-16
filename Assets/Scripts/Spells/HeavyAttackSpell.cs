@@ -83,7 +83,7 @@ public class HeavyAttackSpell : Spell
         if (force > 0f)
         {
             Vector3 direction = (target.transform.position - caster.transform.position).normalized;
-            target.ApplyKnockback(direction, force);
+            target.ApplyKnockback(direction, force, caster);
         }
     }
 }

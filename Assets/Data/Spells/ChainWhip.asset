@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b105ccda30400ac4abf2b097b166c7fb, type: 3}
+  m_Name: ChainWhip
+  m_EditorClassIdentifier: 
+  spellName: Chain Whip
+  description: Yank the farthest enemy to your feet.
+  cooldown: 9
+  range: 12
+  alwaysOn: 0
+  manaCost: 35
+  weaponRequirement: 0
+  selector:
+    who: 3
+    status: {fileID: 0}
+    radius: 3
+    count: 0
+  motion: 2
+  characterEvent: Hit
+  monsterEvent: Attack
+  contactFallback: 0.2
+  contactTimeout: 1
+  scalesWithAttackSpeed: 0
+  baseDamage: 0
+  effects:
+  - rid: 2861304566214819845
+  - rid: 2861304566214819846
+  references:
+    version: 2
+    RefIds:
+    - rid: 2861304566214819845
+      type: {class: KnockbackEffect, ns: , asm: Assembly-CSharp}
+      data:
+        scope: 0
+        force: 18
+        pull: 1
+    - rid: 2861304566214819846
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        scope: 0
+        damage:
+          baseValue: 0
+          ofWeaponDamage: 0.8
+          ofSubjectMaxHealth: 0
+          ofCasterMaxHealth: 0
+          perTier: 0.25
+        critChance: 0.1
+        alwaysCrit: 0
+        hitstop: 0

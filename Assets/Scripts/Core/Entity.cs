@@ -70,10 +70,22 @@ public class Entity : MonoBehaviour
     public void SetFighting(bool fighting)
     {
         _fighting = fighting;
+        if (fighting && CombatAI != null) CombatAI.OnFightStart();
         // A fight's states end with it: nothing is Marked on the map screen.
         if (!fighting && Statuses != null) Statuses.ClearAll();
         if (!fighting && Health != null) Health.ClearShield(broken: false);
     }
+
+    [Header("Stance")]
+    [Tooltip("How this unit uses the space between it and the enemy (Docs/Combat.md). Auto: ranged " +
+             "units Kite, everyone else Advances.")]
+    public Stance stance = Stance.Auto;
+
+    /// <summary>The stance in force: Auto resolved by whether the unit is ranged.</summary>
+    public Stance EffectiveStance => stance == Stance.Auto ? (IsRanged ? Stance.Kite : Stance.Advance) : stance;
+
+    /// <summary>This unit's body for collisions (<see cref="CombatPhysics"/>): its UnitData's radius, else the global one.</summary>
+    public float BodyRadius => unitData != null && unitData.bodyRadius > 0f ? unitData.bodyRadius : CombatPhysics.Active.bodyRadius;
 
     [Header("Targeting")]
     [Tooltip("How this unit chooses whom to fight. Nearest is the ordinary front-line answer; " +
@@ -335,11 +347,15 @@ public class Entity : MonoBehaviour
             maxHealth = unitData.maxHealth;
             attackSpeed = unitData.attackSpeed;
             healthBarOffset = unitData.healthBarOffset;
+            if (unitData.stance != Stance.Auto) stance = unitData.stance;
             if (unitData.spells != null && unitData.spells.Count > 0)
                 spells = new List<Spell>(unitData.spells);
         }
 
         if (spells == null) spells = new List<Spell>();
+
+        // Bodies need the resolver; the first unit awake makes it.
+        CombatPhysics.Ensure();
 
         // Initialize components
         Health.maxHealth = maxHealth;
@@ -511,10 +527,17 @@ public class Entity : MonoBehaviour
             character.Hit();
     }
 
-    public void ApplyKnockback(Vector3 direction, float force)
+    public void ApplyKnockback(Vector3 direction, float force) => ApplyKnockback(direction, force, null, false);
+
+    /// <summary>
+    /// Throw this body. <paramref name="source"/> is credited for whatever it hits on the way
+    /// (<see cref="CombatPhysics"/>); <paramref name="charging"/> means it threw itself and is the
+    /// weapon, so it is neither stunned nor hurt by the impact.
+    /// </summary>
+    public void ApplyKnockback(Vector3 direction, float force, Entity source, bool charging = false)
     {
         if (!CombatFeelSettings.Active.enableKnockback) return;
-        Knockback.Apply(direction, force);
+        Knockback.Apply(direction, force, source, charging);
     }
 
     /// <summary>Trigger a brief hitstop freeze-frame on this entity.</summary>

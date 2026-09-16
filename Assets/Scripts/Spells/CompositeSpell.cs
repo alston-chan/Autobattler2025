@@ -578,12 +578,35 @@ public class KnockbackEffect : SpellEffect
             if (t == null || t.isDead || ctx.caster == null) continue;
             Vector3 dir = (t.transform.position - ctx.caster.transform.position);
             dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right;
-            t.ApplyKnockback(pull ? -dir : dir, force);
+            t.ApplyKnockback(pull ? -dir : dir, force, ctx.caster);
         }
         yield break;
     }
 
     public override string Describe() => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target");
+}
+
+/// <summary>
+/// Throw the caster at the target: a charge. The caster is the weapon — it is not stunned or hurt
+/// by what it hits, and it plows through with most of its speed (<see cref="CombatPhysics"/>). The
+/// damage is the collision's, so there is nothing to set here but how hard.
+/// </summary>
+[Serializable]
+public class DashEffect : SpellEffect
+{
+    [Tooltip("Launch speed. The charge travels about force / damping units.")] public float force = 14f;
+
+    public override IEnumerator Run(SpellContext ctx)
+    {
+        var caster = ctx.caster; var target = ctx.target;
+        if (caster == null || target == null) yield break;
+        Vector3 dir = target.transform.position - caster.transform.position; dir.z = 0f;
+        dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : (caster.isTeam ? Vector3.right : Vector3.left);
+        caster.ApplyKnockback(dir, force, caster, charging: true);
+        yield break;
+    }
+
+    public override string Describe() => "charge at the target, knocking aside everything hit";
 }
 
 /// <summary>Damage everything of one side within a radius of the caster — Shockwave's heart.</summary>
@@ -608,7 +631,7 @@ public class RadiusDamageEffect : SpellEffect
         {
             float dmg = damage.Evaluate(caster, v, ctx.tier);
             v.TakeDamage(dmg, caster, AttackRoll.IsCrit(critChance));
-            if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback); }
+            if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback, caster); }
             if (hitstop > 0f) v.ApplyHitstop(hitstop);
         }
         ctx.targets = victims;

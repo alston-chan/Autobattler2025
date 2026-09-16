@@ -93,6 +93,6 @@ public class DualWieldAttackSpell : Spell
         if (knockbackForce <= 0f || target == null || target.isDead) yield break;
 
         Vector3 direction = (target.transform.position - caster.transform.position).normalized;
-        target.ApplyKnockback(direction, knockbackForce);
+        target.ApplyKnockback(direction, knockbackForce, caster);
     }
 }

@@ -30,7 +30,7 @@ public class ThirdWallEngraving : Engraving
         if (hit.source != null && !hit.source.isDead)
         {
             Vector3 dir = hit.source.transform.position - owner.transform.position;
-            hit.source.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback);
+            hit.source.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback, owner);
         }
     }
 

@@ -27,6 +27,18 @@ public class CombatAI : MonoBehaviour
 
     /// <summary>How many times any unit's leash has broken this session — for measuring the rule.</summary>
     public static int LeashBreaks;
+
+    // The stance's memory: when the bell rang and how hurt the unit was then, so Hold knows when
+    // its wait is over and whether it has been hurt since.
+    private float _fightStart;
+    private float _healthAtBell;
+
+    /// <summary>The bell. Stances that wait or hold measure from here.</summary>
+    public void OnFightStart()
+    {
+        _fightStart = Time.time;
+        _healthAtBell = _entity != null && _entity.Health != null ? _entity.Health.currentHealth : 0f;
+    }
     private float[] _spellCooldowns;
 
     // The spells this unit actually casts this combat: its innate spells (weapon basic + always-on)
@@ -117,7 +129,9 @@ public class CombatAI : MonoBehaviour
         // about not flip-flopping between two enemies a hair apart. A target the leash just broke
         // on is kept out of the running for a moment, or it would be chosen straight back.
         Entity avoid = Time.time < _leashedUntil ? _leashed : null;
-        Entity closestEnemy = Targeting.Choose(_entity, _entity.targetMode, CurrentTarget,
+        // A diver goes for the back line: the farthest enemy, whatever the unit's own mode says.
+        var mode = _entity.EffectiveStance == Stance.Dive ? TargetMode.Furthest : _entity.targetMode;
+        Entity closestEnemy = Targeting.Choose(_entity, mode, CurrentTarget,
                                                _entity.targetStickiness, avoid);
 
         // Keeping clear of the neighbours is a separate concern and stays here.
@@ -179,15 +193,10 @@ public class CombatAI : MonoBehaviour
             }
 
 
-            if (!acted && !_isAttacking && distToTarget > _attackRange)
+            if (!acted && !_isAttacking)
             {
-                Vector3 dir = (CurrentTarget.transform.position - transform.position).normalized;
-                float fade = Mathf.Clamp01((distToTarget - _attackRange) / _attackRange);
-                Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
-                float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
-                Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
-                move = (dir + lateralOffset).normalized * moveSpeed;
-                SetAnimState(true);
+                move = StanceMove(distToTarget);
+                SetAnimState(move.sqrMagnitude > 0.0001f);
             }
             else
             {
@@ -208,6 +217,63 @@ public class CombatAI : MonoBehaviour
             float stepped = finalMove.magnitude;
             if (stepped > 0f) CombatEvents.RaiseMoved(_entity, stepped);
         }
+    }
+
+    /// <summary>
+    /// Where the stance says to go this frame, or nowhere. Advance closes on the target; Kite backs
+    /// away from whatever is nearest when it comes inside the unit's reach, and otherwise closes
+    /// like anyone else; Hold stands its ground until hurt or until the wait runs out; Dive is
+    /// Advance with a different target. Docs/Combat.md, "Stances".
+    /// </summary>
+    private Vector3 StanceMove(float distToTarget)
+    {
+        var s = CombatPhysics.Active;
+        switch (_entity.EffectiveStance)
+        {
+            case Stance.Kite:
+            {
+                var nearest = NearestEnemy(out float nearestDist);
+                if (nearest != null && nearestDist < _attackRange * s.kiteFraction)
+                {
+                    Vector3 away = transform.position - nearest.transform.position; away.z = 0f;
+                    Vector3 dir = away.sqrMagnitude > 0.0001f ? away.normalized : (_entity.isTeam ? Vector3.left : Vector3.right);
+                    return dir * moveSpeed * s.kiteSpeed;
+                }
+                break;
+            }
+            case Stance.Hold:
+            {
+                bool hurt = _entity.Health != null && _entity.Health.currentHealth < _healthAtBell - 0.5f;
+                if (distToTarget > _attackRange && !hurt && Time.time - _fightStart < s.holdSeconds) return Vector3.zero;
+                break;
+            }
+        }
+        return distToTarget > _attackRange ? Approach(distToTarget) : Vector3.zero;
+    }
+
+    /// <summary>Close on the target, drifting a little to the side so a column does not walk single file.</summary>
+    private Vector3 Approach(float distToTarget)
+    {
+        Vector3 dir = (CurrentTarget.transform.position - transform.position).normalized;
+        float fade = Mathf.Clamp01((distToTarget - _attackRange) / _attackRange);
+        Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
+        float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
+        Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
+        return (dir + lateralOffset).normalized * moveSpeed;
+    }
+
+    private Entity NearestEnemy(out float distance)
+    {
+        Entity best = null; distance = float.MaxValue;
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            var e = all[i];
+            if (e == null || e.isDead || e.isTeam == _entity.isTeam || !e.gameObject.activeInHierarchy) continue;
+            float d = Vector3.Distance(transform.position, e.transform.position);
+            if (d < distance) { distance = d; best = e; }
+        }
+        return best;
     }
 
     /// <summary>

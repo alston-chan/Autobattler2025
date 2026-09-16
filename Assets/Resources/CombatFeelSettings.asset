@@ -56,6 +56,25 @@ MonoBehaviour:
     driftX: 0.4
     fadeStart: 0.5
     poolSize: 32
+  physics:
+    enableBodies: 1
+    enableImpacts: 1
+    bodyRadius: 0.45
+    allyPush: 0.35
+    damping: 4
+    impactSpeed: 3
+    impactPercentPerSpeed: 0.01
+    wallPercentPerSpeed: 0.015
+    maxImpactPercent: 0.25
+    momentumTransfer: 0.6
+    chargeRetain: 0.7
+    bounce: 0.35
+    impactStun: 0.25
+    impactHitstop: 0.06
+    impactCooldown: 0.15
+    kiteFraction: 0.6
+    kiteSpeed: 0.85
+    holdSeconds: 4
   abilityFeedback:
     enableCallout: 1
     calloutColor: {r: 1, g: 0.88, b: 0.3, a: 1}

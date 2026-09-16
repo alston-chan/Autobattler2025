@@ -310,6 +310,7 @@ public class GameManager : Singleton<GameManager>
 
     private void BroadcastFighting(bool fighting)
     {
+        if (fighting) CombatPhysics.OnFightStart();
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
         {

@@ -74,7 +74,7 @@ public class ThrownBomb : MonoBehaviour
             {
                 // Blown away FROM the blast, so a bomb landing in a crowd scatters it outward.
                 Vector3 direction = (entity.transform.position - transform.position).normalized;
-                entity.ApplyKnockback(direction, _knockback);
+                entity.ApplyKnockback(direction, _knockback, _thrower);
             }
 
             if (_hitstop > 0f) entity.ApplyHitstop(_hitstop);
