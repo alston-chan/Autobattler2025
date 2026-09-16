@@ -42,6 +42,18 @@ public class Hitstop : MonoBehaviour
         if (_animator != null) _animator.speed = 0f;
     }
 
+    /// <summary>
+    /// End the freeze now. A unit killed inside a hitstop is deactivated with the timer still
+    /// running; Update never ticks it down on an inactive object, so the revived unit came back
+    /// frozen — Entity.Update returns early while a hitstop is active — and never attacked again.
+    /// </summary>
+    public void Clear()
+    {
+        if (_timer <= 0f) return;
+        _timer = 0f;
+        if (_animator != null && Mathf.Approximately(_animator.speed, 0f)) _animator.speed = _restoreSpeed > 0f ? _restoreSpeed : 1f;
+    }
+
     private void Update()
     {
         if (_timer <= 0f) return;

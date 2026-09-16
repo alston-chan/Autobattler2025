@@ -126,6 +126,17 @@ public class DeathFeedback : MonoBehaviour
         _running = false;
         StopAllCoroutines();
 
+        // Whatever the fight left on the body ends here: a cast in flight, a hitstop that never
+        // ticked down on the inactive object, states, a shield. The next fight starts from nothing.
+        if (_entity != null)
+        {
+            if (_entity.CombatAI != null) _entity.CombatAI.StopCombat();
+            if (_entity.Hitstop != null) _entity.Hitstop.Clear();
+            if (_entity.Statuses != null) _entity.Statuses.ClearAll();
+            if (_entity.Health != null) _entity.Health.ClearShield(broken: false);
+            _entity.Hunt = null; _entity.Opener = null;
+        }
+
         transform.localScale = _restoreScale;
 
         if (_fadedRenderers != null)
@@ -203,7 +214,10 @@ public class DeathFeedback : MonoBehaviour
         // ── Leave combat immediately ────────────────────────────────────────────────
         // A dying unit must stop dealing damage. Its attack coroutines live on CombatAI and would
         // otherwise finish their wind-up and land a hit from beyond the grave.
-        if (_entity.CombatAI != null) _entity.CombatAI.StopAllCoroutines();
+        // StopCombat rather than a bare StopAllCoroutines: killing the cast coroutine from outside
+        // left CombatAI's "attacking" flag set, and a hero killed mid-swing revived unable to attack
+        // or move — Attack() refused while the flag was up, and the AI counted itself in reach.
+        if (_entity.CombatAI != null) _entity.CombatAI.StopCombat();
 
         // Corpses must stop intercepting arrows (Projectile collides with Entity colliders).
         foreach (var col in GetComponentsInChildren<Collider2D>(true)) col.enabled = false;

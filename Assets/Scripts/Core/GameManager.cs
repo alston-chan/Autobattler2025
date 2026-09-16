@@ -315,6 +315,11 @@ public class GameManager : Singleton<GameManager>
         {
             if (all[i] != null) all[i].SetFighting(fighting);
         }
+        // The fallen have left the registry (they are deactivated), but they are still the company:
+        // a hero that died mid-fight must hear the fight end too, or it carries the fight's states
+        // and its "fighting" flag into the map screen and the next round.
+        foreach (var hero in allyCharacters)
+            if (hero != null && !hero.gameObject.activeInHierarchy) hero.SetFighting(fighting);
     }
 
     /// <summary>
@@ -332,6 +337,10 @@ public class GameManager : Singleton<GameManager>
             if (entity == null || entity.Resonance == null) continue;
             entity.Resonance.ApplyForCombat(starting);
         }
+        // And the fallen, who are off the registry: their engravings' combat-end hooks must run, or
+        // a hunt, a stat granted for the fight, or a bus subscription outlives the fight.
+        foreach (var hero in allyCharacters)
+            if (hero != null && !hero.gameObject.activeInHierarchy && hero.Resonance != null) hero.Resonance.ApplyForCombat(starting);
     }
 
     /// <summary>

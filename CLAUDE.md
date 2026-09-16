@@ -201,6 +201,11 @@ Writing them:
   that is the mechanism, not corruption. An inactive hero never runs `Awake`, so probes show
   `Health == null` and no animator — indistinguishable from a broken unit at a glance. A
   *dead* hero is also inactive; tell them apart by whether `Health` was ever initialised.
+  **The fallen leave `EntityRegistry`** (it is filled from `OnEnable`), so any end-of-fight loop over
+  the registry skips them — the stand-down and combat-end hooks must also walk `allyCharacters`, and
+  a revive must reset everything the fight left on the body (`DeathFeedback.RestoreAfterRevive`).
+  A hero killed mid-swing once revived unable to attack or move because nothing had cleared
+  `CombatAI`'s attacking flag, and one killed inside a hitstop revived frozen.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
