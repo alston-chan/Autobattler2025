@@ -57,6 +57,31 @@ public abstract class Spell : ScriptableObject
     /// </summary>
     public string DisplayName => string.IsNullOrEmpty(spellName) ? name : spellName;
 
+    /// <summary>
+    /// Everything a player wants to know before the bell: the authored description — or, for a
+    /// spell nobody has written up, what it mechanically does, said from its parts — then its cost,
+    /// reach and cooldown. One text for the card and the spellbook, so they never disagree.
+    /// </summary>
+    public virtual string FullDescription
+    {
+        get
+        {
+            var text = new System.Text.StringBuilder();
+            if (!string.IsNullOrEmpty(description)) text.Append(description.Trim());
+            else if (!string.IsNullOrEmpty(Mechanics)) text.Append(Mechanics);
+            var stats = new System.Collections.Generic.List<string>();
+            if (manaCost > 0f) stats.Add($"{Mathf.RoundToInt(manaCost)} mana");
+            if (cooldown > 0f) stats.Add($"{cooldown:0.#} s cooldown");
+            if (range > 0f) stats.Add($"range {range:0.#}");
+            if (weaponRequirement != WeaponClass.Any) stats.Add($"needs {weaponRequirement}");
+            if (stats.Count > 0) { if (text.Length > 0) text.Append('\n'); text.Append(string.Join(" · ", stats)); }
+            return text.ToString();
+        }
+    }
+
+    /// <summary>What the spell does in numbers, from its parts. Empty for a spell that cannot say.</summary>
+    public virtual string Mechanics => "";
+
     [Tooltip("Which weapon the caster must have equipped. A spellbook can teach Multi Shot, but it " +
              "only works while a bow is held. 'Any' skips the check (e.g. a self-buff).")]
     public WeaponClass weaponRequirement = WeaponClass.Any;

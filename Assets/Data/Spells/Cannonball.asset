@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Cannonball
   m_EditorClassIdentifier: 
   spellName: Cannonball
-  description: Knock the target back hard. It hits whatever it is thrown into, and
-    the wall.
+  description: 'Strike your target for 1x weapon damage and hurl it away at force
+    20. A body thrown that hard hits whatever is in its path: each body it strikes
+    is hurt for 1% of its max health per unit of speed above 3 (up to 25%), staggers
+    for a quarter second, and is thrown on in turn, so a line of enemies falls like
+    dominoes. Into the arena wall it slams for 1.5% per unit of speed and bounces
+    back. Your own side is never hurt by your throws.'
   cooldown: 8
   range: 2
   alwaysOn: 0

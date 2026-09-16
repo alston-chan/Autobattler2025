@@ -314,7 +314,11 @@ public class GameManager : Singleton<GameManager>
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
         {
-            if (all[i] != null) all[i].SetFighting(fighting);
+            if (all[i] == null) continue;
+            all[i].SetFighting(fighting);
+            // At the bell everyone looks across the centre line, whatever the setup screen left them
+            // looking at; CombatAI turns them onto their targets from the first tick after this.
+            if (fighting) all[i].SetFacing(all[i].isTeam);
         }
         // The fallen have left the registry (they are deactivated), but they are still the company:
         // a hero that died mid-fight must hear the fight end too, or it carries the fight's states

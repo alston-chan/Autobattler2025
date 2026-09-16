@@ -157,7 +157,7 @@ public class CharacterInventory : ItemWorkspace
     {
         var spell = SelectedItem != null && SpellbookDatabase.Active != null
             ? SpellbookDatabase.Active.GetSpell(SelectedItem.Id) : null;
-        bool show = spell != null && !string.IsNullOrEmpty(spell.description);
+        bool show = spell != null && !string.IsNullOrEmpty(spell.FullDescription);
 
         if (spellDescriptionLabel == null)
         {
@@ -185,7 +185,7 @@ public class CharacterInventory : ItemWorkspace
 
         spellDescriptionLabel.gameObject.SetActive(show);
         if (show)
-            spellDescriptionLabel.text = $"<b>{spell.DisplayName}</b>\n{spell.description}";
+            spellDescriptionLabel.text = $"<b>{spell.DisplayName}</b>\n{spell.FullDescription}";
     }
 
     /// <summary>(B) Spawn the "Active Spell: …" label under the equipment grid.</summary>

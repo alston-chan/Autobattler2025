@@ -333,9 +333,6 @@ public class RunManager : MonoBehaviour
 
             if (!unit.gameObject.activeSelf) unit.gameObject.SetActive(true);
 
-            // A unit that died mid-fight was left facing whatever killed it.
-            unit.SetFacing(true);
-
             if (unit.Health != null)
             {
                 bool wasDead = unit.Health.IsDead;
@@ -353,6 +350,11 @@ public class RunManager : MonoBehaviour
             // Mana starts each fight empty, so ultimates are earned within the fight rather than
             // carried over from the last one.
             if (unit.Mana != null) unit.Mana.currentMana = 0f;
+
+            // Toward the enemy — after the revive, which restores the body's size and must not be
+            // allowed the last word on which way it looks. A unit that died mid-fight was left
+            // facing whatever killed it.
+            unit.SetFacing(true);
         }
 
         // Back to the formation the player arranged — units end a fight wherever the chase left them.

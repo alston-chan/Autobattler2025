@@ -137,7 +137,11 @@ public class DeathFeedback : MonoBehaviour
             _entity.Hunt = null; _entity.Opener = null;
         }
 
-        transform.localScale = _restoreScale;
+        // The size the unit woke with, facing the way it faces now: the caller has already turned it
+        // toward the enemy, and the snapshot was taken at Awake, wherever the prefab happened to look.
+        var restored = _restoreScale;
+        restored.x = Mathf.Abs(restored.x) * (transform.localScale.x < 0f ? -1f : 1f);
+        transform.localScale = restored;
 
         if (_fadedRenderers != null)
         {

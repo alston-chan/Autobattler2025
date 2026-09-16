@@ -48,7 +48,7 @@ public class UnitInspector : MonoBehaviour
     public float doubleClickSeconds = 0.35f;
 
     [Header("Card")]
-    public Vector2 cardSize = new Vector2(330f, 348f);
+    public Vector2 cardSize = new Vector2(330f, 500f);
     [Tooltip("Inset from the bottom-right corner of the canvas. Bottom-LEFT is taken by the avatar " +
              "strip and the centre by the equipment windows, so the card lives on the right.")]
     public Vector2 cardMargin = new Vector2(-24f, 24f);
@@ -528,6 +528,12 @@ public class UnitInspector : MonoBehaviour
                 text.Append("  <color=#C86A6A>needs ").Append(spell.weaponRequirement)
                     .Append("</color>");
             text.Append('\n');
+
+            // What it does, in numbers, under its name — the ability is the one line on the card the
+            // player can act on before the bell, and a name alone says nothing about damage or reach.
+            string details = spell.FullDescription;
+            if (!string.IsNullOrEmpty(details))
+                text.Append("<size=12><color=#BFC6D4>").Append(details.Replace("\n", "  ·  ")).Append("</color></size>\n");
         }
 
         AppendEngravings(text);
@@ -634,7 +640,7 @@ public class UnitInspector : MonoBehaviour
 
         _kit = NewText("Kit", _card.transform, 15f, Color.white, TextAlignmentOptions.TopLeft);
         _kit.enableWordWrapping = true;
-        Stack(_kit.rectTransform, 90f, 0f);
+        Stack(_kit.rectTransform, 242f, 0f);
     }
 
     /// <summary>

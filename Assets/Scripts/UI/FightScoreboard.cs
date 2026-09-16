@@ -39,6 +39,20 @@ public class FightScoreboard : MonoBehaviour
     private readonly Dictionary<Stat, Image> _statButtons = new Dictionary<Stat, Image>();
     private Image _fightButton, _runButton;
 
+    // Hidden by the player, and staying hidden: a panel that comes back every fight after being
+    // dismissed is a panel the player fights with. Remembered across sessions.
+    private const string HiddenKey = "FightScoreboard.Hidden";
+    private bool _hidden;
+    private GameObject _peek;
+
+    /// <summary>Hide the scoreboard, leaving a small "Stats" tab to bring it back, or show it again.</summary>
+    public void SetHidden(bool hidden)
+    {
+        _hidden = hidden;
+        PlayerPrefs.SetInt(HiddenKey, hidden ? 1 : 0);
+        Redraw();
+    }
+
     private Stat _stat = Stat.Dealt;
     private bool _wholeRun;
 
@@ -48,6 +62,7 @@ public class FightScoreboard : MonoBehaviour
     public void Initialize(Transform canvas)
     {
         if (canvas == null || GameManager.Instance == null) return;
+        _hidden = PlayerPrefs.GetInt(HiddenKey, 0) == 1;
         Build(canvas);
         GameManager.Instance.StateMachine.OnStateChanged += HandleState;
         Redraw();
@@ -104,8 +119,10 @@ public class FightScoreboard : MonoBehaviour
         if (_root == null) return;
 
         var game = GameManager.Instance;
-        bool show = game != null && game.StateMachine.Current == GameState.Setup && CombatTelemetry.FightsRecorded > 0;
+        bool available = game != null && game.StateMachine.Current == GameState.Setup && CombatTelemetry.FightsRecorded > 0;
+        bool show = available && !_hidden;
         _root.SetActive(show);
+        if (_peek != null) _peek.SetActive(available && _hidden);
         if (!show) return;
 
         _title.text = (_wholeRun ? "Whole run  ·  " : "Last fight  ·  ") + Label(_stat);
@@ -209,6 +226,16 @@ public class FightScoreboard : MonoBehaviour
         scopeLayout.childForceExpandHeight = true;
         _fightButton = SmallButton(scopeRow.transform, "Last fight", () => ShowWholeRun(false));
         _runButton = SmallButton(scopeRow.transform, "Whole run", () => ShowWholeRun(true));
+        SmallButton(scopeRow.transform, "Hide", () => SetHidden(true));
+
+        // The tab that stands in for the hidden panel: same corner, one word.
+        _peek = NewChild("ScoreboardPeek", canvas, new Vector2(1f, 0.5f), new Vector2(84f, 26f), new Vector2(-16f, 60f));
+        _peek.GetComponent<RectTransform>().pivot = new Vector2(1f, 0.5f);
+        var peekLayout = _peek.AddComponent<HorizontalLayoutGroup>();
+        peekLayout.childForceExpandWidth = true;
+        peekLayout.childForceExpandHeight = true;
+        SmallButton(_peek.transform, "Stats", () => SetHidden(false));
+        _peek.SetActive(false);
 
         var rows = NewChild("Rows", _root.transform, new Vector2(0.5f, 1f), new Vector2(Width - 20f, 200f), new Vector2(0f, -100f));
         _rows = rows.GetComponent<RectTransform>();

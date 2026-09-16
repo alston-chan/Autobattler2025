@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: BullRush
   m_EditorClassIdentifier: 
   spellName: Bull Rush
-  description: Charge the target, knocking aside everything in the way.
+  description: 'Charge your target at force 14 from up to 8 units away. You are the
+    weapon: every body in the path is knocked aside and hurt by the impact (1% of
+    max health per unit of closing speed above 3, up to 25%) and staggered, while
+    you are neither hurt nor slowed, plowing on with most of your speed. Charging
+    into the wall still hurts you.'
   cooldown: 8
   range: 8
   alwaysOn: 0

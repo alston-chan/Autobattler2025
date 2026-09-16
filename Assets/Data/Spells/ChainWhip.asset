@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: ChainWhip
   m_EditorClassIdentifier: 
   spellName: Chain Whip
-  description: Yank the farthest enemy to your feet.
+  description: Yank the farthest enemy to your feet from up to 12 units away at force
+    18, for 0.8x weapon damage. It is hurt again by anything it is dragged through,
+    and lands at your side of the field with the whole company in reach of it. The
+    archer that hides at the back is the archer this is for.
   cooldown: 9
   range: 12
   alwaysOn: 0

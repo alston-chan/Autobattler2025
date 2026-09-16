@@ -241,6 +241,7 @@ public class CompositeSpell : Spell
 
     public override bool ScalesWithAttackSpeed => scalesWithAttackSpeed;
     public override float BaseDamage => baseDamage;
+    public override string Mechanics => Reads;
 
     public override bool CanCast(Entity caster, Entity target)
     {
@@ -374,7 +375,7 @@ public class DealDamageEffect : SpellEffect
         }
     }
 
-    public override string Describe() => $"{damage.Describe()} damage" + (alwaysCrit ? ", a crit" : "") + (scope == EffectScope.EveryTarget ? " to each" : "");
+    public override string Describe() => $"{damage.Describe()} damage" + (alwaysCrit ? ", always a crit" : critChance > 0f ? $" ({critChance:P0} crit)" : "") + (scope == EffectScope.EveryTarget ? " to each" : "");
 }
 
 [Serializable]
@@ -583,7 +584,7 @@ public class KnockbackEffect : SpellEffect
         yield break;
     }
 
-    public override string Describe() => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target");
+    public override string Describe() => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target") + $" (force {force:0}; a body thrown into a body or the wall is hurt by the speed)";
 }
 
 /// <summary>
@@ -606,7 +607,7 @@ public class DashEffect : SpellEffect
         yield break;
     }
 
-    public override string Describe() => "charge at the target, knocking aside everything hit";
+    public override string Describe() => $"charge at the target (force {force:0}), knocking aside and hurting everything hit; you are not";
 }
 
 /// <summary>Damage everything of one side within a radius of the caster — Shockwave's heart.</summary>
@@ -638,7 +639,7 @@ public class RadiusDamageEffect : SpellEffect
         if (victims.Count > 0) ctx.target = victims[0];
     }
 
-    public override string Describe() => $"{damage.Describe()} damage to {(enemies ? "enemies" : "allies")} within {radius:0.#}{(knockback > 0 ? ", knocked back" : "")}";
+    public override string Describe() => $"{damage.Describe()} damage to {(enemies ? "enemies" : "allies")} within {radius:0.#}{(critChance > 0f ? $" ({critChance:P0} crit)" : "")}{(knockback > 0 ? $", flung outward (force {knockback:0})" : "")}";
 }
 
 /// <summary>Put a status on everyone of one side within a radius of the caster — a cloud, a shout, a ring.</summary>
