@@ -62,6 +62,7 @@ MonoBehaviour:
     bodyRadius: 0.45
     allyPush: 0.35
     damping: 4
+    restSpeed: 0.6
     impactSpeed: 3
     impactPercentPerSpeed: 0.01
     wallPercentPerSpeed: 0.015

@@ -33,6 +33,8 @@ public class CombatPhysics : MonoBehaviour
         public float allyPush = 0.35f;
         [Tooltip("How fast a knockback dies out. A throw travels about force / damping units.")]
         public float damping = 4f;
+        [Tooltip("A throw is over once the body is slower than this (units/s) and the unit may walk again. The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
+        public float restSpeed = 0.6f;
 
         [Header("Impacts")]
         [Tooltip("Closing speed (units/s) below which a collision is a shove, not a hit.")]

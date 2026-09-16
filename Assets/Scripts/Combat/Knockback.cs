@@ -102,7 +102,11 @@ public class Knockback : MonoBehaviour
             var s = CombatPhysics.Active;
             float d = s != null && s.damping > 0f ? s.damping : damping;
             _velocity = Vector3.Lerp(_velocity, Vector3.zero, 1 - Mathf.Exp(-d * dt));
-            if (_velocity.magnitude <= 0.01f) { _velocity = Vector3.zero; Launcher = null; Charging = false; }
+            // At rest once the drift is too slow to see. The exponential tail never reaches zero on
+            // its own, and a unit that may not walk until it does stands idle for most of a second
+            // after the throw has visibly ended.
+            float rest = s != null ? s.restSpeed : 0.6f;
+            if (_velocity.magnitude <= Mathf.Max(0.01f, rest)) { _velocity = Vector3.zero; Launcher = null; Charging = false; }
         }
     }
 }
