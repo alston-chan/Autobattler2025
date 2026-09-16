@@ -551,7 +551,7 @@ public class Resonance : MonoBehaviour
         // attuning, granting, or offering to be engraved a second time — one check, every path.
         if (HollowItems.IsHollow(item)) return null;
 
-        return ResonanceDatabase.Active.Find(item.Id);
+        return ResonanceDatabase.Active.FindFor(item);
     }
 
     #region Save / load

@@ -447,19 +447,20 @@ public class CharacterInventory : ItemWorkspace
 
         ApplyWeaponLoadout();
 
+        // The weapon's verb comes first: weapons are verbs (Docs/Spells.md), so what the hero holds
+        // is what it casts unless the player picks a book in Setup. Books follow, in the order worn.
         var spells = new List<Spell>();
-        foreach (var item in Equipment.Items)
-        {
-            if (item.Params.Type != ItemType.Spellbook) continue;
-            var spell = SpellbookDatabase.Active != null ? SpellbookDatabase.Active.GetSpell(item.Id) : null;
-            if (spell != null) spells.Add(spell);
-            if (spells.Count >= Entity.MaxSpellSlots) break;
-        }
-
-        // A weapon's verb sits beside the books: what the hero holds teaches it (Docs/Spells.md).
         if (CharacterEntity.Resonance != null)
             foreach (var verb in CharacterEntity.Resonance.GrantedVerbs())
                 if (!spells.Contains(verb) && spells.Count < Entity.MaxSpellSlots) spells.Add(verb);
+
+        foreach (var item in Equipment.Items)
+        {
+            if (spells.Count >= Entity.MaxSpellSlots) break;
+            if (item.Params.Type != ItemType.Spellbook) continue;
+            var spell = SpellbookDatabase.Active != null ? SpellbookDatabase.Active.GetSpell(item.Id) : null;
+            if (spell != null && !spells.Contains(spell)) spells.Add(spell);
+        }
 
         CharacterEntity.spellSlots = spells;
         if (CharacterEntity.activeSpellSlot >= spells.Count)

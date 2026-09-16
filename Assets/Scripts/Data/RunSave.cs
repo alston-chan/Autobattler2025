@@ -35,6 +35,8 @@ public class SavedHero
     public string name;
     public int column;
     public int row;
+    /// <summary>The hero's <see cref="Stance"/>, as its enum value. Auto when absent, as it always was.</summary>
+    public int stance;
     public List<SavedItem> equipped = new List<SavedItem>();
     public Resonance.State resonance = new Resonance.State();
 }

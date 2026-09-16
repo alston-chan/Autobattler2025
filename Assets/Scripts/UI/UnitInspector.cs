@@ -48,7 +48,7 @@ public class UnitInspector : MonoBehaviour
     public float doubleClickSeconds = 0.35f;
 
     [Header("Card")]
-    public Vector2 cardSize = new Vector2(330f, 316f);
+    public Vector2 cardSize = new Vector2(330f, 348f);
     [Tooltip("Inset from the bottom-right corner of the canvas. Bottom-LEFT is taken by the avatar " +
              "strip and the centre by the equipment windows, so the card lives on the right.")]
     public Vector2 cardMargin = new Vector2(-24f, 24f);
@@ -80,6 +80,14 @@ public class UnitInspector : MonoBehaviour
     private RectTransform _healthFill;
     private TextMeshProUGUI _healthText;
     private GameObject _manaRow;
+
+    // The one control on an otherwise read-only card: how a hero uses the space. Four words, one
+    // lit; pressable only in Setup, since a stance is a decision made before the bell.
+    private GameObject _stanceRow;
+    private readonly Image[] _stanceBacks = new Image[4];
+    private readonly TextMeshProUGUI[] _stanceLabels = new TextMeshProUGUI[4];
+    private readonly Button[] _stanceButtons = new Button[4];
+    private static readonly Stance[] StanceOrder = { Stance.Advance, Stance.Hold, Stance.Kite, Stance.Dive };
     private RectTransform _manaFill;
     private TextMeshProUGUI _statKeys;
     private TextMeshProUGUI _statValues;
@@ -393,8 +401,40 @@ public class UnitInspector : MonoBehaviour
 
         _manaRow.SetActive(_selected.Mana != null);
 
+        PaintStance();
         PaintStats();
         PaintKit();
+    }
+
+    /// <summary>
+    /// The stance row: shown for the company only, the word in force lit. Auto lights the stance it
+    /// resolves to, so a ranged hero reads Kite without anyone having chosen it.
+    /// </summary>
+    private void PaintStance()
+    {
+        bool mine = _selected.isTeam && _selected.isCharacter;
+        _stanceRow.SetActive(mine);
+        if (!mine) return;
+
+        var game = GameManager.Instance;
+        bool setup = game == null || game.StateMachine.Current == GameState.Setup;
+        var inForce = _selected.EffectiveStance;
+        for (int i = 0; i < StanceOrder.Length; i++)
+        {
+            bool lit = StanceOrder[i] == inForce;
+            _stanceBacks[i].color = lit ? new Color(Ally.r, Ally.g, Ally.b, 0.85f) : Trough;
+            _stanceLabels[i].color = lit ? Backing : Muted;
+            _stanceButtons[i].interactable = setup;
+        }
+    }
+
+    private void SetStance(Stance stance)
+    {
+        if (_selected == null || !_selected.isTeam) return;
+        var game = GameManager.Instance;
+        if (game != null && game.StateMachine.Current != GameState.Setup) return;
+        _selected.stance = stance;
+        PaintStance();
     }
 
     private void PaintStats()
@@ -579,6 +619,7 @@ public class UnitInspector : MonoBehaviour
 
         _healthFill = BuildBar("Health", out _healthText, HealthAlly, 18f, 4f);
         _manaRow = BuildManaRow();
+        _stanceRow = BuildStanceRow();
 
         // Keys and values are two full-width blocks sharing one row, left- and right-aligned, so the
         // numbers line up on the right edge without a layout group.
@@ -637,6 +678,38 @@ public class UnitInspector : MonoBehaviour
         labelRect.offsetMin = labelRect.offsetMax = Vector2.zero;
 
         return fillRect;
+    }
+
+    /// <summary>Four buttons in one row, the width of the card, each a stance.</summary>
+    private GameObject BuildStanceRow()
+    {
+        const float height = 22f, gap = 4f;
+        var row = NewRect("Stance", _card.transform, new Vector2(0.5f, 1f), new Vector2(cardSize.x - 28f, height), Vector2.zero);
+        var rect = row.GetComponent<RectTransform>();
+        Stack(rect, height, 10f);
+
+        float width = (cardSize.x - 28f - gap * (StanceOrder.Length - 1)) / StanceOrder.Length;
+        for (int i = 0; i < StanceOrder.Length; i++)
+        {
+            var stance = StanceOrder[i];
+            float x = -(cardSize.x - 28f) * 0.5f + width * 0.5f + i * (width + gap);
+            var cell = NewRect(stance.ToString(), row.transform, new Vector2(0.5f, 0.5f), new Vector2(width, height), new Vector2(x, 0f));
+            var back = cell.AddComponent<Image>();
+            back.color = Trough;
+            var button = cell.AddComponent<Button>();
+            button.targetGraphic = back;
+            button.transition = Selectable.Transition.None;
+            button.onClick.AddListener(() => SetStance(stance));
+
+            var label = NewText("Label", cell.transform, 13f, Muted, TextAlignmentOptions.Center);
+            label.text = stance.ToString();
+            Anchor(label.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(width, height), Vector2.zero);
+
+            _stanceBacks[i] = back;
+            _stanceLabels[i] = label;
+            _stanceButtons[i] = button;
+        }
+        return row;
     }
 
     private GameObject BuildManaRow()

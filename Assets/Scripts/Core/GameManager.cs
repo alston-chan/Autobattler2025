@@ -659,6 +659,11 @@ public class GameManager : Singleton<GameManager>
             // clicked in the first Setup showed nothing on its neighbours, and the bell made
             // the badges appear out of nowhere.
             if (characterEntity.Resonance != null) characterEntity.Resonance.Refresh();
+
+            // That refresh is what grants the weapon's verb, and the verb belongs in the slots from
+            // the first Setup — the sync above ran before anything was held. Once more, now that it is.
+            if (characterEntity.Resonance != null && characterEntity.Resonance.GrantedVerbs().Count > 0)
+                characterInventory.SyncSpellSlots();
         }
     }
 

@@ -115,3 +115,46 @@ MonoBehaviour:
     tierIICost: 5
     tierIIICost: 12
     engraveCost: 5
+  classDefaults:
+  - itemClass: 2
+    engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemClass: 4
+    engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemClass: 3
+    engraving: {fileID: 11400000, guid: 2539d24eb5841504ab6dc978b374dcf7, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemClass: 5
+    engraving: {fileID: 11400000, guid: 93793686c3f28ea43b5ef49e60a04c9c, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemClass: 1
+    engraving: {fileID: 11400000, guid: 93793686c3f28ea43b5ef49e60a04c9c, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemClass: 6
+    engraving: {fileID: 11400000, guid: 1f8253fa5ef2e844588586ea7b351e7e, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemClass: 7
+    engraving: {fileID: 11400000, guid: 3b19c089ee3ae044a854973fd655c9e2, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6

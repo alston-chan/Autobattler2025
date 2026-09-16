@@ -125,6 +125,53 @@ public class ResonanceDatabase : ScriptableObject
     [TableList(AlwaysExpanded = true, DrawScrollView = false)]
     public List<Entry> entries = new List<Entry>();
 
+    /// <summary>
+    /// A verb for a whole weapon class. Weapons are verbs (Docs/Spells.md), and the sandbox rolls
+    /// weapons at random, so every weapon must teach something: a class default is what a weapon
+    /// teaches when no entry names it. An entry for the item itself always wins, which is how the
+    /// assassin dagger keeps Backstab while every other dagger lunges.
+    /// </summary>
+    [System.Serializable]
+    public class ClassDefault
+    {
+        public Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass itemClass;
+        [Required, AssetsOnly] public Engraving engraving;
+        public ResonanceRequirement requirement = ResonanceRequirement.AbilitiesCast;
+        public int tierIICost = 6;
+        public int tierIIICost = 14;
+        public int engraveCost = 6;
+    }
+
+    [Tooltip("What a weapon class teaches when no entry names the item. An item's own entry wins.")]
+    [TableList(AlwaysExpanded = true, DrawScrollView = false)]
+    public List<ClassDefault> classDefaults = new List<ClassDefault>();
+
+    // One Entry per item id for class defaults, so attunement and tiers read the same object each time.
+    private readonly Dictionary<string, Entry> _classEntries = new Dictionary<string, Entry>();
+
+    /// <summary>The entry for an item: its own, else its weapon class's default, else null.</summary>
+    public Entry FindFor(Assets.HeroEditor.InventorySystem.Scripts.Data.Item item)
+    {
+        if (item == null) return null;
+        var own = Find(item.Id);
+        if (own != null) return own;
+        if (item.Params == null || classDefaults == null) return null;
+
+        if (_classEntries.TryGetValue(item.Id, out var cached)) return cached;
+        foreach (var d in classDefaults)
+        {
+            if (d == null || d.engraving == null || d.itemClass != item.Params.Class) continue;
+            var entry = new Entry
+            {
+                itemId = item.Id, engraving = d.engraving, requirement = d.requirement,
+                tierIICost = d.tierIICost, tierIIICost = d.tierIIICost, engraveCost = d.engraveCost
+            };
+            _classEntries[item.Id] = entry;
+            return entry;
+        }
+        return null;
+    }
+
     private static ResonanceDatabase _active;
 
     public static ResonanceDatabase Active
@@ -156,6 +203,12 @@ public class ResonanceDatabase : ScriptableObject
             var engraving = entries[i] != null ? entries[i].engraving : null;
             if (engraving != null && engraving.name == engravingName) return engraving;
         }
+        if (classDefaults != null)
+            for (int i = 0; i < classDefaults.Count; i++)
+            {
+                var engraving = classDefaults[i] != null ? classDefaults[i].engraving : null;
+                if (engraving != null && engraving.name == engravingName) return engraving;
+            }
         return null;
     }
 

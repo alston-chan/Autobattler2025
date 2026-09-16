@@ -160,6 +160,12 @@ to the asset. Gloves rows are disabled there on purpose (armour is upper + lower
   `console-clear-logs` in play mode. Tag each probe's result line with something unique to that run
   and take the *newest* match (`tail -1`), never the first — a stale line from the previous run reads
   exactly like a fresh result.
+- **`console-get-logs` stops receiving once the session has degraded.** The plugin's log capture is a
+  C# subscription, and a domain reload takes it with everything else: after a few `script-execute`
+  calls in one play session the tool keeps answering with the same last hundred lines (ending at
+  "PLAY requested") while the game logs on, and `console-clear-logs` errors. Measured 2026-09-16:
+  three probe runs produced no visible line at all. Have a probe write its report to a file in the
+  scratchpad (`File.AppendAllText`) and poll the file; `scratchpad/file_run.sh` is that runner.
 - The MCP running a script twice is real: a play probe that adds spells and subscribes handlers ran
   twice in one call and doubled every count. Guard with a marker object (`GameObject.Find("X_ARMED")`)
   created on arming and destroyed when the probe ends.
