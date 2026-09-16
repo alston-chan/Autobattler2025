@@ -17,10 +17,10 @@ MonoBehaviour:
     18, for 0.8x weapon damage. It is hurt again by anything it is dragged through,
     and lands at your side of the field with the whole company in reach of it. The
     archer that hides at the back is the archer this is for.
-  cooldown: 9
+  cooldown: 0
   range: 12
   alwaysOn: 0
-  manaCost: 35
+  manaCost: 50
   weaponRequirement: 0
   selector:
     who: 3

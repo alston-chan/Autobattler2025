@@ -18,10 +18,10 @@ MonoBehaviour:
     max health per unit of closing speed above 3, up to 25%) and staggered, while
     you are neither hurt nor slowed, plowing on with most of your speed. Charging
     into the wall still hurts you.'
-  cooldown: 8
+  cooldown: 0
   range: 8
   alwaysOn: 0
-  manaCost: 30
+  manaCost: 45
   weaponRequirement: 0
   selector:
     who: 0

@@ -19,10 +19,10 @@ MonoBehaviour:
     for a quarter second, and is thrown on in turn, so a line of enemies falls like
     dominoes. Into the arena wall it slams for 1.5% per unit of speed and bounces
     back. Your own side is never hurt by your throws.'
-  cooldown: 8
+  cooldown: 0
   range: 2
   alwaysOn: 0
-  manaCost: 35
+  manaCost: 50
   weaponRequirement: 0
   selector:
     who: 0

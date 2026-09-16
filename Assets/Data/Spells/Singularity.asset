@@ -17,10 +17,10 @@ MonoBehaviour:
     0.4x weapon damage. They arrive clumped at your feet, staggered by whatever they
     collided with on the way, and your own line is braced against them. Follow with
     anything that hits an area.
-  cooldown: 9
+  cooldown: 0
   range: 6
   alwaysOn: 0
-  manaCost: 40
+  manaCost: 60
   weaponRequirement: 0
   selector:
     who: 6
