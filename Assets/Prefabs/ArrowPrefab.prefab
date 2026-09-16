@@ -328,7 +328,7 @@ MonoBehaviour:
   Impact: {fileID: 1291128175795340}
   Rigidbody: {fileID: 5851161164549202227}
   damage: 10
-  knockbackForce: 3.5
+  knockbackForce: 0
   homingSpeed: 18.75
   shooter: {fileID: 0}
   target: {fileID: 0}

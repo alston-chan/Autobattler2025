@@ -22,7 +22,7 @@ MonoBehaviour:
   swingSpeedScale: 0.85
   damage: 14
   critChance: 0.35
-  critKnockbackForce: 4.5
+  critKnockbackForce: 0
   normalKnockbackForce: 0
   hitDelayFallback: 0.2
   maxHitWait: 1
