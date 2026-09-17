@@ -153,6 +153,7 @@ public class RunManager : MonoBehaviour
             var inventory = hero.characterInventory;
             if (inventory != null && inventory.Equipment != null)
                 saved.equipped = RunSave.FromItems(inventory.Equipment.Items);
+            saved.carried = RunSave.FromItems(hero.carriedWeapons);
             if (hero.Resonance != null) saved.resonance = hero.Resonance.CaptureState();
 
             snapshot.heroes.Add(saved);

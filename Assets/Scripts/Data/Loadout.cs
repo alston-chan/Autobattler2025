@@ -106,6 +106,7 @@ public static class Loadout
         // the only record of the difference.
         entity.SetWeaponClass(weapon != null && weapon.Params != null
             ? weapon.Params.Class : ItemClass.Unknown);
+        entity.HandWeapon = weapon;
 
         if (weapon != null) WeaponAttacks.Apply(entity, weapon);
 

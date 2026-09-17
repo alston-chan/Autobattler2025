@@ -155,8 +155,13 @@ public class CharacterInventory : ItemWorkspace
     /// </summary>
     private void UpdateSpellDescription()
     {
-        var spell = SelectedItem != null && SpellbookDatabase.Active != null
-            ? SpellbookDatabase.Active.GetSpell(SelectedItem.Id) : null;
+        // A weapon's verb, from the database: what this weapon would teach if worn.
+        Spell spell = null;
+        if (SelectedItem != null && SelectedItem.IsWeapon && ResonanceDatabase.Active != null)
+        {
+            var entry = ResonanceDatabase.Active.FindFor(SelectedItem);
+            if (entry != null && entry.engraving is GrantSpellEngraving grant) spell = grant.spell;
+        }
         bool show = spell != null && !string.IsNullOrEmpty(spell.FullDescription);
 
         if (spellDescriptionLabel == null)
@@ -270,12 +275,7 @@ public class CharacterInventory : ItemWorkspace
 
         if (Equipment.Items.Contains(item))
         {
-            // An equipped spellbook: double-click makes it the ACTIVE slot (the one cast in combat)
-            // instead of unequipping — the 1-active / 2-reserve model. Remove via the Remove button.
-            if (item.Params.Type == ItemType.Spellbook)
-                SetActiveSpellbook(item);
-            else
-                Remove();
+            Remove();
         }
         else if (CanEquipSelectedItem())
         {
@@ -310,31 +310,20 @@ public class CharacterInventory : ItemWorkspace
     private void HighlightActiveSpellSlot()
     {
         if (CharacterEntity == null) return;
-
-        var books = Equipment.Items.Where(i => i.Params.Type == ItemType.Spellbook).ToList();
-        int active = CharacterEntity.activeSpellSlot;
-        Item activeBook = active >= 0 && active < books.Count ? books[active] : null;
-
-        foreach (var ii in Equipment.InventoryItems)
-        {
-            if (ii == null || ii.Item == null || ii.Icon == null) continue;
-            if (ii.Item.Params.Type != ItemType.Spellbook) continue;
-            ii.Icon.color = ii.Item == activeBook ? Color.white : ReserveBookDim;
-        }
-
-        UpdateActiveSpellLabel(activeBook);
+        UpdateActiveSpellLabel();
     }
 
-    /// <summary>(B) Show the active spell's name so it's unambiguous which of the three is cast.</summary>
-    private void UpdateActiveSpellLabel(Item activeBook)
+    /// <summary>The active verb and the weapon it comes from, and what else is on the rack.</summary>
+    private void UpdateActiveSpellLabel()
     {
         if (activeSpellLabel == null) return;
 
-        var spell = activeBook != null && SpellbookDatabase.Active != null
-            ? SpellbookDatabase.Active.GetSpell(activeBook.Id) : null;
-        activeSpellLabel.text = spell != null
-            ? "Active Spell: " + spell.DisplayName
-            : "Active Spell: —";
+        var spell = CharacterEntity.ActiveSpell;
+        var from = spell != null && CharacterEntity.Resonance != null ? CharacterEntity.Resonance.WeaponTeaching(spell) : null;
+        string rack = "";
+        foreach (var w in CharacterEntity.carriedWeapons) if (w != null) rack += (rack.Length > 0 ? ", " : "") + Catalog.ShortName(w.Id);
+        activeSpellLabel.text = (spell != null ? "Active: " + spell.DisplayName + (from != null ? " (" + Catalog.ShortName(from.Id) + ")" : "") : "Active: —")
+                              + (rack.Length > 0 ? "\nRack: " + rack : "");
     }
 
     public void Equip()
@@ -344,6 +333,20 @@ public class CharacterInventory : ItemWorkspace
         var equipped = SelectedItem.IsFirearm
             ? Equipment.Items.Where(i => i.IsFirearm).ToList()
             : Equipment.Items.Where(i => i.Params.Type == SelectedItem.Params.Type && !i.IsFirearm).ToList();
+
+        // A new weapon goes to the hand and the old one to the rack, so a hero keeps every verb it
+        // has picked up until the rack is full; then the oldest racked weapon goes back to the bag.
+        if (SelectedItem.IsWeapon && !SelectedItem.IsFirearm && CharacterEntity != null)
+        {
+            foreach (var old in equipped)
+            {
+                if (!old.IsWeapon) continue;
+                Equipment.Items.Remove(old);
+                var evicted = WeaponRack.Push(CharacterEntity.carriedWeapons, old, Entity.RackSize - 1);
+                if (evicted != null) PlayerInventory.Items.Add(evicted);
+            }
+            equipped.RemoveAll(i => i.IsWeapon);
+        }
 
         if (equipped.Any())
         {
@@ -406,11 +409,25 @@ public class CharacterInventory : ItemWorkspace
 
     public void Remove()
     {
+        var removed = SelectedItem;
         MoveItem(SelectedItem, Equipment, PlayerInventory);
         SelectItem(SelectedItem);
         AudioSource.PlayOneShot(EquipSound, SfxVolume);
 
         UnequipStats();
+
+        // The hand emptied: the first racked weapon steps into it, so a hero is never left swinging
+        // nothing while it still carries something.
+        if (removed != null && removed.IsWeapon && CharacterEntity != null && CharacterEntity.carriedWeapons.Count > 0)
+        {
+            var next = CharacterEntity.carriedWeapons[0];
+            CharacterEntity.carriedWeapons.RemoveAt(0);
+            PlayerInventory.Items.Add(next);
+            SelectItem(next);
+            Equip();
+            return;
+        }
+
         SyncSpellSlots();
     }
 
@@ -447,21 +464,14 @@ public class CharacterInventory : ItemWorkspace
 
         ApplyWeaponLoadout();
 
-        // Books first, in the order worn, so a hero's authored ability stays the one it casts; the
-        // weapon's verb follows as a slot the player switches to in Setup (Docs/Spells.md). Verb-first
-        // was tried and made every weapon swap silently change the hero's active ability.
+        // The slots are verbs: the hand weapon's first, then the rack's, then any banked. Weapons are
+        // verbs (Docs/Spells.md); there is no other ability system.
         var spells = new List<Spell>();
-        foreach (var item in Equipment.Items)
-        {
-            if (spells.Count >= Entity.MaxSpellSlots) break;
-            if (item.Params.Type != ItemType.Spellbook) continue;
-            var spell = SpellbookDatabase.Active != null ? SpellbookDatabase.Active.GetSpell(item.Id) : null;
-            if (spell != null && !spells.Contains(spell)) spells.Add(spell);
-        }
-
         if (CharacterEntity.Resonance != null)
             foreach (var verb in CharacterEntity.Resonance.GrantedVerbs())
                 if (!spells.Contains(verb) && spells.Count < Entity.MaxSpellSlots) spells.Add(verb);
+
+        CharacterEntity.HandShield = Equipment.Items.FirstOrDefault(i => i != null && i.IsShield);
 
         CharacterEntity.spellSlots = spells;
         if (CharacterEntity.activeSpellSlot >= spells.Count)

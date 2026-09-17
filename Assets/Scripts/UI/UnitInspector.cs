@@ -432,7 +432,10 @@ public class UnitInspector : MonoBehaviour
             _slotButtons[i].gameObject.SetActive(filled);
             if (!filled) continue;
             bool lit = i == _selected.activeSpellSlot;
-            _slotLabels[i].text = slots[i].DisplayName;
+            // The hand weapon's verb is marked; a racked weapon's is drawn for the cast.
+            var from = _selected.Resonance != null ? _selected.Resonance.WeaponTeaching(slots[i]) : null;
+            bool inHand = from != null && _selected.HandWeapon != null && from.Id == _selected.HandWeapon.Id;
+            _slotLabels[i].text = (inHand ? "⚔ " : "") + slots[i].DisplayName;
             _slotBacks[i].color = lit ? new Color(Ally.r, Ally.g, Ally.b, 0.85f) : Trough;
             _slotLabels[i].color = lit ? Backing : Muted;
             _slotButtons[i].interactable = setup;

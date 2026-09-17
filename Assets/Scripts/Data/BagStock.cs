@@ -42,10 +42,6 @@ public static class BagStock
             foreach (var entry in ResonanceDatabase.Active.entries)
                 if (entry != null && entry.engraving != null) Add(ids, entry.itemId, "ResonanceDatabase");
 
-        if (SpellbookDatabase.Active != null)
-            foreach (var entry in SpellbookDatabase.Active.entries)
-                if (entry != null && entry.spell != null) Add(ids, entry.itemId, "SpellbookDatabase");
-
         return ids;
     }
 

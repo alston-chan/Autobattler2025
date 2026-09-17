@@ -50,6 +50,15 @@ public static class Catalog
     }
 
     /// <summary>True when the id is in the collection — or when there is no collection to ask.</summary>
+    /// <summary>The last segment of an item id, without a paint tag: what a label calls it.</summary>
+    public static string ShortName(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return "";
+        string tail = id.Substring(id.LastIndexOf('.') + 1);
+        int tag = tail.IndexOf(" [");
+        return tag > 0 ? tail.Substring(0, tag) : tail;
+    }
+
     public static bool IsKnown(string id)
     {
         var collection = Items();

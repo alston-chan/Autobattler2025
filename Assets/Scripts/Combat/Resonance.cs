@@ -683,11 +683,29 @@ public class Resonance : MonoBehaviour
     /// </summary>
     public void SetWorn(List<Item> items) => _wornOverride = items;
 
-    /// <summary>What the unit wears: its inventory's items, else the list handed to it, else nothing.</summary>
+    /// <summary>
+    /// What the unit wears: its inventory's items, else the list handed to it, else nothing — and
+    /// the weapons on its rack either way, since a racked weapon teaches its verb like the one in hand.
+    /// </summary>
     private IEnumerable<Item> WornItems()
     {
         var inventory = _entity != null ? _entity.characterInventory : null;
-        if (inventory != null && inventory.Equipment != null) return inventory.Equipment.Items;
-        return _wornOverride ?? (IEnumerable<Item>)System.Array.Empty<Item>();
+        IEnumerable<Item> worn = inventory != null && inventory.Equipment != null ? inventory.Equipment.Items
+                               : _wornOverride ?? (IEnumerable<Item>)System.Array.Empty<Item>();
+        var rack = _entity != null ? _entity.carriedWeapons : null;
+        return rack != null && rack.Count > 0 ? System.Linq.Enumerable.Concat(worn, rack) : worn;
+    }
+
+    /// <summary>The worn or racked weapon that teaches this verb, or null (a banked verb, or not a verb).</summary>
+    public Item WeaponTeaching(Spell spell)
+    {
+        if (spell == null) return null;
+        foreach (var item in WornItems())
+        {
+            if (item == null || !item.IsWeapon) continue;
+            var entry = EntryFor(item);
+            if (entry != null && entry.engraving is GrantSpellEngraving grant && grant.spell == spell) return item;
+        }
+        return null;
     }
 }

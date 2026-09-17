@@ -271,6 +271,27 @@ public class Entity : MonoBehaviour
 
     private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
 
+    #region The weapon rack
+    /// <summary>How many weapons a hero can hold: the one in hand and the rest on the rack.</summary>
+    public const int RackSize = 3;
+
+    /// <summary>The weapon in hand: what the unit swings, and whose animations it wears. Set by <see cref="Loadout.ApplyTo"/>.</summary>
+    public Assets.HeroEditor.InventorySystem.Scripts.Data.Item HandWeapon { get; set; }
+
+    /// <summary>The shield in hand, if any, so a two-handed draw can put it away and bring it back.</summary>
+    public Assets.HeroEditor.InventorySystem.Scripts.Data.Item HandShield { get; set; }
+
+    /// <summary>
+    /// The rack: weapons carried but not in hand, at most <see cref="RackSize"/> - 1. Each teaches its
+    /// verb like the hand weapon does, and is drawn for the cast when its verb is the active one.
+    /// Saved with the run for heroes; handed to enemies by their kit.
+    /// </summary>
+    [System.NonSerialized] public List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> carriedWeapons = new List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item>();
+
+    /// <summary>The racked weapon currently drawn for a cast, or null while the hand weapon is out.</summary>
+    public Assets.HeroEditor.InventorySystem.Scripts.Data.Item DrawnWeapon { get; set; }
+    #endregion
+
     [Header("Innate spells")]
     [Tooltip("Always-available spells: the weapon basic attack and any always-on spells. NOT the " +
              "learnable ability loadout — those live in spellSlots.")]

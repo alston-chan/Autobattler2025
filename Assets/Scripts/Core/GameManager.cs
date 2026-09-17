@@ -641,14 +641,10 @@ public class GameManager : Singleton<GameManager>
             var saved = SavedHeroFor(characterEntity);
             var equippedItems = saved != null ? RunSave.ToItems(saved.equipped) : StartingGearFor(characterEntity);
 
-            // Materialize the character's editor-authored spell loadout (Entity.spellSlots) as equipped
-            // spellbooks, so the starting spells show in the spell row and drive combat through the
-            // SAME equipped-books path as runtime equipping. Equipment.Initialize slots them; the
-            // SyncSpellSlots below rebuilds spellSlots from those books (matching what was authored).
             var kit = Playtest.Scenario != null ? Playtest.Scenario.KitFor(characterEntity.name) : null;
-            int addedBooks = saved != null ? CountSpellbooks(equippedItems)
-                           : kit != null && kit.noAuthoredSpellbooks ? 0
-                           : EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
+
+            // The rack: a saved hero carries what it carried; a fresh one carries nothing yet.
+            characterEntity.carriedWeapons = saved != null ? RunSave.ToItems(saved.carried) : new List<Item>();
 
             // The hero's signature item — where their identity comes from. Added before the random
             // roll is committed so it can't be crowded out of its slot. A playtest kit is the whole
@@ -675,12 +671,7 @@ public class GameManager : Singleton<GameManager>
             // fight whether or not they also carry a spellbook.
             characterInventory.ApplyWeaponLoadout();
 
-            // Only rebuild spell slots from equipment when we actually materialized authored spells as
-            // books. SyncSpellSlots drives spellSlots purely from equipped books, so calling it when a
-            // character has none would WIPE ults still sitting in innate 'spells' — leave those alone
-            // (CombatAI already picked them up in Awake).
-            if (addedBooks > 0)
-                characterInventory.SyncSpellSlots();
+            characterInventory.SyncSpellSlots();
 
             // Last, once the hero is wearing what it wore: resonance keys by item, and its refresh
             // reads what is equipped, so restoring it earlier would grant against an empty rig.

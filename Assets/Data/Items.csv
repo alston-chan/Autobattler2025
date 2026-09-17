@@ -1867,10 +1867,10 @@ TRUE,FantasyHeroes.Basic.Back.ExplorerBackpack,Armor,Light,Common,1,0,0,FantasyH
 TRUE,FantasyHeroes.Basic.Back.SmallBackpack,Armor,Light,Common,1,0,0,FantasyHeroes.Basic.Back.SmallBackpack,FantasyHeroes.Basic.Back.SmallBackpack,,,SmallBackpack
 TRUE,FantasyHeroes.Basic.Back.TraderBackpack,Armor,Light,Common,1,0,0,FantasyHeroes.Basic.Back.TraderBackpack,FantasyHeroes.Basic.Back.TraderBackpack,,,TraderBackpack
 TRUE,FantasyHeroes.Basic.Back.TravallerBackpack,Armor,Light,Common,1,0,0,FantasyHeroes.Basic.Back.TravallerBackpack,FantasyHeroes.Basic.Back.TravallerBackpack,,,TravallerBackpack
-TRUE,Spellbook.DoubleStrike,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Double Strike
-TRUE,Spellbook.MultiShot,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Multi Shot
-TRUE,Spellbook.Shockwave,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Shockwave
-TRUE,Spellbook.Backstab,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Backstab
-TRUE,Spellbook.Bomb,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Bomb
-TRUE,Spellbook.Star,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Throwing Star
-TRUE,Spellbook.Boomerang,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Boomerang
+FALSE,Spellbook.DoubleStrike,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Double Strike
+FALSE,Spellbook.MultiShot,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Multi Shot
+FALSE,Spellbook.Shockwave,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Shockwave
+FALSE,Spellbook.Backstab,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Backstab
+FALSE,Spellbook.Bomb,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Bomb
+FALSE,Spellbook.Star,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Throwing Star
+FALSE,Spellbook.Boomerang,Spellbook,Light,Common,1,0,0,,FantasyHeroes.Basic.Shield.CardinalBook,,,Boomerang

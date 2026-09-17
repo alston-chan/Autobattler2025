@@ -129,9 +129,10 @@ the `.asset` block by hand; then read it back.
 
 `Assets/Data/ItemCollection.asset` is rebuilt from `Assets/Data/Items.csv` + `Properties.csv` by
 `Tools > Item Database > Import CSV into ItemCollection`, and the import **replaces** the list.
-Anything added to the collection by hand — the four newer spellbooks were — is gone after the
-next import, and the first sign is a test about the workshop bag failing. Add rows to the CSV, never
-to the asset. Gloves rows are disabled there on purpose (armour is upper + lower now).
+Anything added to the collection by hand is gone after the next import, and the first sign is a
+test about the workshop bag failing. Add rows to the CSV, never to the asset. Gloves rows are
+disabled there on purpose (armour is upper + lower now), and so are the `Spellbook.*` rows since
+2026-09-17: abilities come from weapons (the rack), and `SpellbookDatabase` is a leftover nothing reads.
 
 ## Building test rigs
 

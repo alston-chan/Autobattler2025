@@ -43,10 +43,6 @@ public class BagStockTests
         foreach (var entry in ResonanceDatabase.Active.entries)
             if (entry != null && entry.engraving != null)
                 Assert.That(ids, Has.Member(entry.itemId), "engraved item missing from the workshop");
-
-        foreach (var entry in SpellbookDatabase.Active.entries)
-            if (entry != null && entry.spell != null)
-                Assert.That(ids, Has.Member(entry.itemId), "spellbook missing from the workshop");
     }
 
     [Test]
