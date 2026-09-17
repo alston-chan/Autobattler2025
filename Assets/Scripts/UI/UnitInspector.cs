@@ -80,6 +80,7 @@ public class UnitInspector : MonoBehaviour
     private RectTransform _healthFill;
     private TextMeshProUGUI _healthText;
     private GameObject _manaRow;
+    private TextMeshProUGUI _manaText;
 
     // The one control on an otherwise read-only card: how a hero uses the space. Four words, one
     // lit; pressable only in Setup, since a stance is a decision made before the bell.
@@ -377,7 +378,11 @@ public class UnitInspector : MonoBehaviour
 
         var mana = _selected.Mana;
         if (mana != null && _manaFill != null)
+        {
             _manaFill.anchorMax = new Vector2(Mathf.Clamp01(mana.Normalized), 1f);
+            if (_manaText != null)
+                _manaText.text = $"{Mathf.FloorToInt(mana.currentMana)} / {Mathf.CeilToInt(mana.maxMana)}";
+        }
 
         if (_ring != null)
             _ring.transform.position = _selected.transform.position + Vector3.up * 0.06f;
@@ -802,8 +807,10 @@ public class UnitInspector : MonoBehaviour
 
     private GameObject BuildManaRow()
     {
-        var fill = BuildBar("Mana", out var unused, ManaFill, 10f, 12f);
-        unused.gameObject.SetActive(false);   // mana reads fine as a bar; the number is noise
+        // The number matters now that the pool is the active verb's cost: "38 / 60" says how far
+        // the next cast is, and which verb it is charging is on the ability line below.
+        var fill = BuildBar("Mana", out _manaText, ManaFill, 12f, 12f);
+        _manaText.fontSize = 10f;
         _manaFill = fill;
         return fill.parent.gameObject;
     }
