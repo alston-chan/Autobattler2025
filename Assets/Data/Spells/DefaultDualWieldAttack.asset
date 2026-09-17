@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DefaultDualWieldAttack
   m_EditorClassIdentifier: 
   spellName: Twin Blades
+  description: 
   cooldown: 1.1
   range: 1.5
   alwaysOn: 0
@@ -20,6 +21,6 @@ MonoBehaviour:
   weaponRequirement: 1
   damage: 12
   critChance: 0.15
-  knockbackForce: 0
+  knockbackForce: 1.2
   hitDelayFallback: 0.3
   maxHitWait: 1

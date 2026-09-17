@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AxeAttack
   m_EditorClassIdentifier: 
   spellName: 
+  description: 
   cooldown: 1.35
   range: 1.5
   alwaysOn: 0
@@ -22,7 +23,7 @@ MonoBehaviour:
   swingSpeedScale: 0.85
   damage: 14
   critChance: 0.35
-  critKnockbackForce: 0
-  normalKnockbackForce: 0
+  critKnockbackForce: 4
+  normalKnockbackForce: 2.5
   hitDelayFallback: 0.2
   maxHitWait: 1

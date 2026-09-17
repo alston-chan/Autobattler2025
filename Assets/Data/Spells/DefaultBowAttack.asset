@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: DefaultBowAttack
   m_EditorClassIdentifier: 
   spellName: 
+  description: 
   cooldown: 1
   range: 15
   alwaysOn: 0
   manaCost: 0
   weaponRequirement: 0
   arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
+  critChance: 0.15
   damage: 10
-  knockbackForce: 0
+  knockbackForce: 1.5
   chargeTime: 0.5
   clipCharge: {fileID: 7400000, guid: 20538db717b94efeaa004e68d9284e3f, type: 2}

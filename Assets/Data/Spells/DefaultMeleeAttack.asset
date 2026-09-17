@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DefaultMeleeAttack
   m_EditorClassIdentifier: 
   spellName: 
+  description: 
   cooldown: 1
   range: 1.5
   alwaysOn: 0
@@ -22,7 +23,7 @@ MonoBehaviour:
   swingSpeedScale: 1
   damage: 10
   critChance: 0.2
-  critKnockbackForce: 0
-  normalKnockbackForce: 0
+  critKnockbackForce: 3.5
+  normalKnockbackForce: 2
   hitDelayFallback: 0.2
   maxHitWait: 1

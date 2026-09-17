@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DefaultHeavyAttack
   m_EditorClassIdentifier: 
   spellName: Heavy Swing
+  description: 
   cooldown: 1.5
   range: 1.8
   alwaysOn: 0
@@ -20,7 +21,7 @@ MonoBehaviour:
   weaponRequirement: 1
   damage: 20
   critChance: 0.2
-  knockbackForce: 0
-  critKnockbackForce: 0
+  knockbackForce: 2.5
+  critKnockbackForce: 4
   hitDelayFallback: 0.45
   maxHitWait: 1.5
