@@ -87,6 +87,17 @@ public class CombatAI : MonoBehaviour
         if (_spells.Count > 0 && _spells[0] != null)
             _attackRange = _spells[0].range;
 
+        // The bar is sized to the ability it charges: the active verb's cost, else the first cost
+        // ability the unit carries (an enemy's rolled ult), else the authored pool.
+        if (_entity.Mana != null)
+        {
+            float cost = 0f;
+            var active = _entity.ActiveSpell;
+            if (active != null && active.IsUltimate) cost = active.manaCost;
+            else foreach (var s in _spells) if (s != null && s.IsUltimate && !s.alwaysOn) { cost = s.manaCost; break; }
+            _entity.Mana.SetMax(cost);
+        }
+
         // Ready to go. Starting each spell on a full cooldown meant nothing could open a fight:
         // an ability with a nine second cooldown was unusable for the first nine seconds however
         // full the mana bar was, so a player who saw a charged bar and no ability was watching a

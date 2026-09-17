@@ -32,6 +32,24 @@ public class Mana : MonoBehaviour
     public bool IsFull => currentMana >= maxMana;
     public float Normalized => maxMana <= 0f ? 0f : currentMana / maxMana;
 
+    /// <summary>The pool as authored, for a unit with no cost ability to size the bar by.</summary>
+    public float BaseMax { get; private set; } = -1f;
+
+    /// <summary>
+    /// Size the pool to the active ability's cost, the way TFT sizes every champion's bar to its
+    /// spell: a full bar then always means a cast. With no cost ability the authored pool stands.
+    /// Current mana is kept, capped to the new pool, so a swap never hands out a free cast.
+    /// </summary>
+    public void SetMax(float max)
+    {
+        if (BaseMax < 0f) BaseMax = maxMana;
+        float target = max > 0f ? max : BaseMax;
+        if (Mathf.Approximately(target, maxMana)) return;
+        maxMana = target;
+        currentMana = Mathf.Min(currentMana, maxMana);
+        Push();
+    }
+
     public void Initialize(Entity entity, float startingPercent = 0f)
     {
         currentMana = Mathf.Clamp(maxMana * startingPercent, 0f, maxMana);
