@@ -42,6 +42,34 @@ MonoBehaviour:
     noAuthoredSpellbooks: 1
   encounter: {fileID: 11400000, guid: 850b00b2763e4314484da904438bb7a6, type: 2}
   loadout: {fileID: 0}
-  notes: 'A gladiator trio: a ninja whose Substitute blink fires a Cannonball (Shadow
-    Cannon hood), a Wall Keeper knight with a mace (Cannonball), a mage with Singularity.
-    Against three foes of three kinds.'
+  enemyKits:
+  - heroName: Rival ninja
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
+    - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
+    stance: 4
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  - heroName: Rival knight
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.BlacksmithHammer
+    - Extensions.AbandonedWorkshop.Shield.WallKeeperShield
+    - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest
+    - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots
+    - Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
+    stance: 2
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  - heroName: Rival mage
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.BishopWand
+    - Extensions.Epic.Shield.BlazeShield
+    - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
+    stance: 3
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  notes: 'A gladiator trio against its mirror: a ninja whose Substitute blink fires
+    a Cannonball (Shadow Cannon hood), a Wall Keeper knight with a mace (Cannonball),
+    a mage with Singularity, on both sides. Enemy health matched to the company.'

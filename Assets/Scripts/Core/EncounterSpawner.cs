@@ -68,7 +68,9 @@ public class EncounterSpawner : MonoBehaviour
             var loadout = spawn.loadout != null ? spawn.loadout
                         : loadoutOverride != null ? loadoutOverride
                         : encounter.defaultLoadout;
-            var kind = loadout != null ? ArmBeforeWake(entity, loadout) : EnemyKind.Melee;
+            // A playtest kit decides the kind (from its weapon) and brings no rolled ability.
+            var kit = Playtest.Scenario != null ? Playtest.Scenario.EnemyKitFor(pending.Count) : null;
+            var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null, kit == null) : EnemyKind.Melee;
 
             pending.Add(entity);
             loadouts.Add(loadout);
@@ -92,7 +94,7 @@ public class EncounterSpawner : MonoBehaviour
             // deciding, when a unit staring off-screen reads as broken.
             pending[i].SetFacing(false);
 
-            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i], kinds[i]);
+            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i], kinds[i], i);
         }
 
         return count;
@@ -134,10 +136,29 @@ public class EncounterSpawner : MonoBehaviour
     /// unit's Damage stat, and CombatAI takes its attack range from the same spell, so a unit armed
     /// afterwards would wake up doing zero damage from the wrong distance.
     /// </summary>
-    private EnemyKind ArmBeforeWake(Entity entity, EnemyLoadout loadout)
+    /// <summary>The kind a kit's weapon makes its wearer: what musters it and what it kites with.</summary>
+    private static EnemyKind KindOfKit(PlaytestScenario.HeroKit kit)
+    {
+        if (kit == null || kit.itemIds == null || ItemCollection.Active == null) return EnemyKind.Melee;
+        foreach (var id in kit.itemIds)
+        {
+            var p = ItemCollection.Active.Items.Find(i => i.Id == id);
+            if (p == null || p.Type != Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemType.Weapon) continue;
+            switch (p.Class)
+            {
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Bow: return EnemyKind.Bow;
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Wand: return EnemyKind.Wand;
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Dagger: return EnemyKind.Dagger;
+                default: return EnemyKind.Melee;
+            }
+        }
+        return EnemyKind.Melee;
+    }
+
+    private EnemyKind ArmBeforeWake(Entity entity, EnemyLoadout loadout, EnemyKind? kindOverride = null, bool rollAbility = true)
     {
         // Monsters have no equipment rig and no bow, so they always brawl.
-        var kind = entity.isCharacter ? loadout.RollKind() : EnemyKind.Melee;
+        var kind = !entity.isCharacter ? EnemyKind.Melee : kindOverride ?? loadout.RollKind();
         bool ranged = kind == EnemyKind.Bow;   // the flag also aims a bow arm, which only a bow has
         entity.SetRanged(ranged);
 
@@ -154,7 +175,7 @@ public class EncounterSpawner : MonoBehaviour
         else Debug.LogWarning($"[EncounterSpawner] {loadout.name} has no " +
                               (ranged ? "bow" : "melee") + " basic attack — that unit can't fight.");
 
-        var ability = loadout.RollAbility(kind);
+        var ability = rollAbility ? loadout.RollAbility(kind) : null;
         if (ability != null) spells.Add(ability);
 
         entity.spells = spells;
@@ -166,11 +187,30 @@ public class EncounterSpawner : MonoBehaviour
     /// item pool the player's units use, so enemies read as part of the same world — and their stat
     /// modifiers land on the same <see cref="EntityStats"/> pipeline.
     /// </summary>
-    private void DressAfterWake(Entity entity, EnemyLoadout loadout, EnemyKind kind)
+    private void DressAfterWake(Entity entity, EnemyLoadout loadout, EnemyKind kind, int spawnIndex)
     {
         if (!entity.isCharacter || entity.Appearance == null) return;
 
         if (loadout.randomizeAppearance) entity.Appearance.SetRandomAppearance();
+
+        // A playtest kit: worn like a hero's, resonating like a hero's, standing as the kit says.
+        var kit = Playtest.Scenario != null ? Playtest.Scenario.EnemyKitFor(spawnIndex) : null;
+        if (kit != null && entity.EquipmentManagement != null)
+        {
+            var worn = entity.EquipmentManagement.EquipKit(kit.itemIds);
+            if (entity.Stats != null && ItemCollection.Active != null)
+                foreach (var item in worn)
+                {
+                    var itemParams = ItemCollection.Active.GetItemParams(item);
+                    if (itemParams != null) entity.Stats.ApplyItemModifiers(itemParams, item.Id);
+                }
+            if (entity.Resonance != null) { entity.Resonance.SetWorn(worn); entity.Resonance.Refresh(); }
+            entity.stance = kit.stance;
+            if (entity.spellSlots != null && entity.spellSlots.Count > 0)
+                entity.activeSpellSlot = Mathf.Clamp(kit.activeSlot, 0, entity.spellSlots.Count - 1);
+            if (entity.CombatAI != null) entity.CombatAI.RefreshSpells();
+            return;
+        }
 
         if (loadout.randomizeEquipment && entity.EquipmentManagement != null)
         {

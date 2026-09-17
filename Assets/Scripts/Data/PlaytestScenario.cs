@@ -37,6 +37,15 @@ public class PlaytestScenario : ScriptableObject
     [Tooltip("The enemy loadout for that encounter. Empty keeps the encounter's own.")]
     public EnemyLoadout loadout;
 
+    [Tooltip("Kits for the encounter's spawns, in spawn order: the first spawn wears the first kit. A " +
+             "kitted enemy resonates like a hero (its weapon's verb, its set's engravings) and keeps the " +
+             "kit's stance. Spawns past the list roll gear as usual. The hero name is a label here.")]
+    public List<HeroKit> enemyKits = new List<HeroKit>();
+
+    /// <summary>The kit for the n-th spawn, or null when it rolls its own.</summary>
+    public HeroKit EnemyKitFor(int spawnIndex) =>
+        enemyKits != null && spawnIndex >= 0 && spawnIndex < enemyKits.Count ? enemyKits[spawnIndex] : null;
+
     [TextArea(2, 6), Tooltip("What this scenario is for, so the list reads.")]
     public string notes;
 

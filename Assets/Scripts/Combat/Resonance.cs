@@ -87,10 +87,7 @@ public class Resonance : MonoBehaviour
         {
             var worst = ResonanceNotice.None;
 
-            var inventory = _entity != null ? _entity.characterInventory : null;
-            if (inventory == null || inventory.Equipment == null) return worst;
-
-            foreach (var item in inventory.Equipment.Items)
+            foreach (var item in WornItems())
             {
                 if (item == null) continue;
                 if (_notices.TryGetValue(Descriptor(item), out var notice) && notice > worst)
@@ -252,6 +249,7 @@ public class Resonance : MonoBehaviour
 
         int tier = entry.TierAt(attunement);
 
+        // Banking hollows the item through the inventory window, so it is a hero-only act.
         var inventory = _entity != null ? _entity.characterInventory : null;
         if (inventory == null || !inventory.Equipment.Items.Contains(item)) return false;
 
@@ -669,13 +667,27 @@ public class Resonance : MonoBehaviour
     /// <summary>Worn items that appear in the resonance database.</summary>
     private IEnumerable<Item> EquippedResonantItems()
     {
-        var inventory = _entity != null ? _entity.characterInventory : null;
-        if (inventory == null) yield break;
-
-        foreach (var item in inventory.Equipment.Items)
+        foreach (var item in WornItems())
         {
             if (item == null) continue;
             if (EntryFor(item) != null) yield return item;
         }
+    }
+
+    // Enemies have no inventory window, so what they wear is handed to them here instead.
+    private List<Item> _wornOverride;
+
+    /// <summary>
+    /// Tell a unit with no inventory what it wears, so its items resonate like a hero's: an enemy in
+    /// the Ninja set substitutes, and one holding a mace throws Cannonballs. Refresh afterwards.
+    /// </summary>
+    public void SetWorn(List<Item> items) => _wornOverride = items;
+
+    /// <summary>What the unit wears: its inventory's items, else the list handed to it, else nothing.</summary>
+    private IEnumerable<Item> WornItems()
+    {
+        var inventory = _entity != null ? _entity.characterInventory : null;
+        if (inventory != null && inventory.Equipment != null) return inventory.Equipment.Items;
+        return _wornOverride ?? (IEnumerable<Item>)System.Array.Empty<Item>();
     }
 }

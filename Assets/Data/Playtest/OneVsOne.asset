@@ -24,5 +24,15 @@ MonoBehaviour:
     noAuthoredSpellbooks: 1
   encounter: {fileID: 11400000, guid: edc09320553d3cf4180e610b4ebc2c03, type: 2}
   loadout: {fileID: 0}
-  notes: The ninja alone against one tough duelist. Backstab, Substitute, Shadow
-    Cannon.
+  enemyKits:
+  - heroName: Rival ninja
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
+    - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
+    stance: 1
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  notes: 'The ninja against its mirror: the same kit, the same health. Backstab,
+    Substitute, Shadow Cannon on both sides.'

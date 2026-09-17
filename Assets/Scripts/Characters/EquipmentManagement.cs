@@ -43,6 +43,38 @@ public class EquipmentManagement : MonoBehaviour
     public List<Item> EquipRandomFromCollection(bool isRanged = false) => EquipRandomFromCollection(isRanged, null);
 
     /// <summary>
+    /// Dress the unit in a named kit: every known id equipped in order, the weapon choosing the
+    /// attack as a random roll would. Unknown ids are skipped with a warning. For units with no
+    /// inventory window (enemies) that a playtest wants in a hero's outfit.
+    /// </summary>
+    public List<Item> EquipKit(IEnumerable<string> itemIds)
+    {
+        var equipped = new List<Item>();
+        if (itemIds == null || ItemCollection.Active == null) return equipped;
+
+        Item weapon = null;
+        foreach (var id in itemIds)
+        {
+            if (string.IsNullOrEmpty(id)) continue;
+            if (!ItemCollection.Active.Items.Any(i => i.Id == id))
+            {
+                Debug.LogWarning($"[EquipmentManagement] Kit item '{id}' is not a known item — skipped.");
+                continue;
+            }
+            var item = new Item(id);
+            Character.Equip(item);
+            equipped.Add(item);
+            if (item.IsWeapon) weapon = item;
+        }
+
+        var entity = GetComponent<Entity>();
+        if (entity != null && weapon != null) Loadout.ApplyTo(entity, weapon);
+
+        Appearance.Refresh();
+        return equipped;
+    }
+
+    /// <summary>
     /// As above, with the weapon drawn from the given classes when any are named: how an enemy is
     /// made a dagger user or a wand user rather than "melee" or "bow".
     /// </summary>
