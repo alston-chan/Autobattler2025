@@ -333,7 +333,7 @@ public class CharacterInventory : ItemWorkspace
             var rect = row.GetComponent<RectTransform>();
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
             rect.pivot = new Vector2(0.5f, 1f);
-            rect.sizeDelta = new Vector2(340f, 26f);
+            rect.sizeDelta = new Vector2(400f, 26f);
             rect.anchoredPosition = new Vector2(0f, -66f - i * 30f);
 
             string verb = "";
@@ -342,10 +342,10 @@ public class CharacterInventory : ItemWorkspace
                 var entry = ResonanceDatabase.Active.FindFor(weapon);
                 if (entry != null && entry.engraving is GrantSpellEngraving grant && grant.spell != null) verb = grant.spell.DisplayName;
             }
-            RackText(row.transform, "Rack: " + Catalog.ShortName(weapon.Id) + (verb != "" ? "  (" + verb + ")" : ""), new Vector2(-70f, 0f), new Vector2(200f, 26f), TextAlignmentOptions.Left);
+            RackText(row.transform, Catalog.ShortName(weapon.Id) + (verb != "" ? "  ·  " + verb : ""), new Vector2(-80f, 0f), new Vector2(236f, 26f), TextAlignmentOptions.Left);
             var captured = weapon;
-            RackButton(row.transform, "Hand", new Vector2(60f, 0f), () => DrawToHand(captured));
-            RackButton(row.transform, "Bag", new Vector2(122f, 0f), () => DropFromRack(captured));
+            RackButton(row.transform, "Hand", new Vector2(78f, 0f), () => DrawToHand(captured));
+            RackButton(row.transform, "Bag", new Vector2(140f, 0f), () => DropFromRack(captured));
             _rackRows.Add(row);
         }
     }
