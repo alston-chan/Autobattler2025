@@ -191,13 +191,14 @@ public class FightScoreboard : MonoBehaviour
         _root = new GameObject("FightScoreboard", typeof(RectTransform));
         _root.transform.SetParent(canvas, false);
 
-        // A column on the right edge, clear of the spoils in the middle and the map behind them.
+        // The top-right corner, clear of the spoils in the middle, the map behind them, and the unit
+        // card that stands in the bottom-right and reaches past the middle of the screen when open.
         var rootRect = _root.GetComponent<RectTransform>();
-        rootRect.anchorMin = new Vector2(1f, 0.5f);
-        rootRect.anchorMax = new Vector2(1f, 0.5f);
-        rootRect.pivot = new Vector2(1f, 0.5f);
+        rootRect.anchorMin = new Vector2(1f, 1f);
+        rootRect.anchorMax = new Vector2(1f, 1f);
+        rootRect.pivot = new Vector2(1f, 1f);
         rootRect.sizeDelta = new Vector2(Width, 420f);
-        rootRect.anchoredPosition = new Vector2(-16f, 60f);
+        rootRect.anchoredPosition = new Vector2(-16f, -16f);
 
         var face = _root.AddComponent<Image>();
         face.color = Panel;
@@ -229,8 +230,8 @@ public class FightScoreboard : MonoBehaviour
         SmallButton(scopeRow.transform, "Hide", () => SetHidden(true));
 
         // The tab that stands in for the hidden panel: same corner, one word.
-        _peek = NewChild("ScoreboardPeek", canvas, new Vector2(1f, 0.5f), new Vector2(84f, 26f), new Vector2(-16f, 60f));
-        _peek.GetComponent<RectTransform>().pivot = new Vector2(1f, 0.5f);
+        _peek = NewChild("ScoreboardPeek", canvas, new Vector2(1f, 1f), new Vector2(84f, 26f), new Vector2(-16f, -16f));
+        _peek.GetComponent<RectTransform>().pivot = new Vector2(1f, 1f);
         var peekLayout = _peek.AddComponent<HorizontalLayoutGroup>();
         peekLayout.childForceExpandWidth = true;
         peekLayout.childForceExpandHeight = true;
