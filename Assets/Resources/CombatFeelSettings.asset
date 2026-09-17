@@ -80,6 +80,10 @@ MonoBehaviour:
     kiteSpeed: 0.85
     kiteWallMargin: 1
     holdSeconds: 4
+  fightClock:
+    showClock: 1
+    speedUpAfter: 40
+    speedUpScale: 2
   abilityFeedback:
     enableCallout: 1
     calloutColor: {r: 1, g: 0.88, b: 0.3, a: 1}

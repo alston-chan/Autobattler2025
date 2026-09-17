@@ -190,6 +190,10 @@ public class GameManager : Singleton<GameManager>
         var scoreboard = gameObject.AddComponent<FightScoreboard>();
         scoreboard.Initialize(canvas != null ? canvas.transform : null);
 
+        // The clock over the fight, and the faster pace a long one runs at.
+        var clock = gameObject.AddComponent<FightClock>();
+        clock.Initialize(canvas != null ? canvas.transform : null);
+
         // The map, for runs that have one. It shows itself only while a path is waiting to be chosen.
         var map = gameObject.AddComponent<MapPanel>();
         map.Initialize(runManager, canvas != null ? canvas.transform : null);

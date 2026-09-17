@@ -52,6 +52,10 @@ public class CombatFeelSettings : ScriptableObject
     [Tooltip("Bodies, impacts, wall slams and stances. See CombatPhysics.")]
     public CombatPhysics.Settings physics = new CombatPhysics.Settings();
 
+    [Header("Fight clock")]
+    [Tooltip("The clock over the fight, and the speed a long fight runs at.")]
+    public FightClock.Settings fightClock = new FightClock.Settings();
+
     [Header("Ability feedback")]
     public AbilityFeedback.Settings abilityFeedback = new AbilityFeedback.Settings();
 
