@@ -10,9 +10,80 @@ using UnityEngine;
 /// per combination, and it means enemies draw from the same item pool the player does, so an
 /// armoured silhouette telegraphs a tougher fight (Docs/Enemies.md).
 /// </summary>
+/// <summary>
+/// What an enemy fights with. More than melee-or-bow: a dagger user lunges and a wand user stands
+/// off at six units, and a company that only ever meets swords and bows never has to answer either.
+/// </summary>
+public enum EnemyKind { Melee = 0, Bow = 1, Dagger = 2, Wand = 3 }
+
 [CreateAssetMenu(menuName = "Data/Enemy Loadout", fileName = "EnemyLoadout")]
 public class EnemyLoadout : ScriptableObject
 {
+    [System.Serializable]
+    public class KindWeight
+    {
+        public EnemyKind kind;
+        [Min(0f)] public float weight = 1f;
+    }
+
+    [Header("Kinds")]
+    [Tooltip("What the units of this pool fight with, drawn by weight. Empty falls back to the ranged " +
+             "chance below: melee or bow. Monsters are always melee whatever this says.")]
+    public List<KindWeight> kinds = new List<KindWeight>();
+
+    /// <summary>Draw a kind by weight, or by the old ranged chance when no kinds are listed.</summary>
+    public EnemyKind RollKind()
+    {
+        float total = 0f;
+        if (kinds != null) foreach (var k in kinds) if (k != null) total += Mathf.Max(0f, k.weight);
+        if (total <= 0f) return Random.value < rangedChance ? EnemyKind.Bow : EnemyKind.Melee;
+        float r = Random.value * total;
+        foreach (var k in kinds)
+        {
+            if (k == null) continue;
+            r -= Mathf.Max(0f, k.weight);
+            if (r <= 0f) return k.kind;
+        }
+        return kinds[kinds.Count - 1].kind;
+    }
+
+    /// <summary>Whether a kind fights from range: a bow or a wand. Where it musters and whether it kites.</summary>
+    public static bool IsRangedKind(EnemyKind kind) => kind == EnemyKind.Bow || kind == EnemyKind.Wand;
+
+    /// <summary>The weapon classes a kind draws its weapon from.</summary>
+    public static Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass[] WeaponClassesFor(EnemyKind kind)
+    {
+        switch (kind)
+        {
+            case EnemyKind.Bow: return new[] { Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Bow };
+            case EnemyKind.Dagger: return new[] { Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Dagger };
+            case EnemyKind.Wand: return new[] { Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Wand };
+            default: return new[] { Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Sword, Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Axe,
+                                    Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Blunt, Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass.Lance };
+        }
+    }
+
+    /// <summary>The pre-wake basic attack for a kind: the bow's for a bow, the melee one for the rest (the weapon rewrites it after wake).</summary>
+    public Spell BasicAttackFor(EnemyKind kind) => BasicAttackFor(kind == EnemyKind.Bow);
+
+    /// <summary>An ability the kind can use: bows take Bow ones, wands Wand ones, blades Melee ones, everyone Any.</summary>
+    public Spell RollAbility(EnemyKind kind)
+    {
+        if (abilities == null || abilities.Count == 0) return null;
+        if (Random.value > abilityChance) return null;
+        var usable = new List<Spell>();
+        foreach (var spell in abilities)
+        {
+            if (spell == null) continue;
+            bool fits = spell.weaponRequirement == WeaponClass.Any
+                        || (kind == EnemyKind.Bow && spell.weaponRequirement == WeaponClass.Bow)
+                        || (kind == EnemyKind.Wand && spell.weaponRequirement == WeaponClass.Wand)
+                        || ((kind == EnemyKind.Melee || kind == EnemyKind.Dagger) && spell.weaponRequirement == WeaponClass.Melee);
+            if (fits) usable.Add(spell);
+        }
+        return usable.Count > 0 ? usable[Random.Range(0, usable.Count)] : null;
+    }
+
     [Header("Basic attacks")]
     [Tooltip("Weapon basic attack given to melee units. This is also what sets their base damage " +
              "and reach, so it must be present or the unit can't fight.")]

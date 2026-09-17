@@ -40,7 +40,13 @@ public class EquipmentManagement : MonoBehaviour
     /// Equip random items from ItemCollection for all equipment slots.
     /// Returns the list of equipped items.
     /// </summary>
-    public List<Item> EquipRandomFromCollection(bool isRanged = false)
+    public List<Item> EquipRandomFromCollection(bool isRanged = false) => EquipRandomFromCollection(isRanged, null);
+
+    /// <summary>
+    /// As above, with the weapon drawn from the given classes when any are named: how an enemy is
+    /// made a dagger user or a wand user rather than "melee" or "bow".
+    /// </summary>
+    public List<Item> EquipRandomFromCollection(bool isRanged, ItemClass[] weaponClasses)
     {
         var equipped = new List<Item>();
 
@@ -61,7 +67,17 @@ public class EquipmentManagement : MonoBehaviour
         // checked — the shield simply sat hidden behind the weapon until the weapon came off.
         Item weapon = null;
 
-        if (isRanged)
+        if (weaponClasses != null && weaponClasses.Length > 0)
+        {
+            var pool = ItemCollection.Active?.Items?
+                .Where(i => i.Type == ItemType.Weapon && System.Array.IndexOf(weaponClasses, i.Class) >= 0).ToList();
+            if (pool != null && pool.Count > 0)
+            {
+                var picked = pool[Random.Range(0, pool.Count)];
+                weapon = new Item(picked.Id);
+            }
+        }
+        else if (isRanged)
         {
             // For ranged, look for Bow class weapons
             var bows = ItemCollection.Active?.Items?

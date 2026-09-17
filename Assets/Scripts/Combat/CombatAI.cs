@@ -17,6 +17,13 @@ public class CombatAI : MonoBehaviour
     private float _attackRange = 1.5f;
     private bool _isAttacking;
 
+    /// <summary>The reach of this unit's weapon attack.</summary>
+    public float AttackRange => _attackRange;
+
+    // Whether a kiting unit is mid-retreat: it starts backing at one distance and stops at a
+    // longer one, so it does not shuffle on the line between the two.
+    private bool _kiting;
+
     // The leash (see Targeting.LeashSeconds): when progress toward the target was last made, and
     // the target a broken leash keeps off the table for a moment.
     private float _lastProgressTime;
@@ -232,13 +239,20 @@ public class CombatAI : MonoBehaviour
         {
             case Stance.Kite:
             {
-                var nearest = NearestEnemy(out float nearestDist);
-                if (nearest != null && nearestDist < _attackRange * s.kiteFraction)
+                // Kiting the way a player micros an archer: back off from the brawler coming for you,
+                // not from every enemy on the field; keep going once you have started, until it is
+                // clearly out of reach; fall back toward your own line; and when the wall is at
+                // your back, stop running and shoot.
+                var threat = NearestThreat(s, out float threatDist);
+                float start = _attackRange * s.kiteFraction;
+                float stop = start + s.kiteHysteresis;
+                bool retreat = threat != null && (threatDist < start || (_kiting && threatDist < stop));
+                if (retreat)
                 {
-                    Vector3 away = transform.position - nearest.transform.position; away.z = 0f;
-                    Vector3 dir = away.sqrMagnitude > 0.0001f ? away.normalized : (_entity.isTeam ? Vector3.left : Vector3.right);
-                    return dir * moveSpeed * s.kiteSpeed;
+                    Vector3 dir = KiteDirection(threat, s);
+                    if (dir.sqrMagnitude > 0.0001f) { _kiting = true; return dir * moveSpeed * s.kiteSpeed; }
                 }
+                _kiting = false;
                 break;
             }
             case Stance.Hold:
@@ -260,6 +274,66 @@ public class CombatAI : MonoBehaviour
         float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
         Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
         return (dir + lateralOffset).normalized * moveSpeed;
+    }
+
+    /// <summary>
+    /// The nearest enemy worth running from: one that is fighting this unit and cannot shoot back
+    /// from where it stands (its reach is shorter than ours). Another archer is not a reason to run;
+    /// nor is a brawler busy with someone else. With the setting off, simply the nearest enemy.
+    /// </summary>
+    private Entity NearestThreat(CombatPhysics.Settings s, out float distance)
+    {
+        if (!s.kiteOnlyWhenTargeted) return NearestEnemy(out distance);
+        Entity best = null; distance = float.MaxValue;
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            var e = all[i];
+            if (e == null || e.isDead || e.isTeam == _entity.isTeam || !e.gameObject.activeInHierarchy || e.CombatAI == null) continue;
+            if (e.CombatAI.CurrentTarget != _entity) continue;
+            if (e.CombatAI.AttackRange >= _attackRange) continue;
+            float d = Vector3.Distance(transform.position, e.transform.position);
+            if (d < distance) { distance = d; best = e; }
+        }
+        return best;
+    }
+
+    /// <summary>
+    /// Which way to back off: away from the threat, leaning toward our own back line. If that step
+    /// would run into the arena's edge, slide along it whichever way keeps more distance; if both
+    /// ways are blocked too, nowhere: cornered, the unit stands and shoots.
+    /// </summary>
+    private Vector3 KiteDirection(Entity threat, CombatPhysics.Settings s)
+    {
+        Vector3 here = transform.position;
+        Vector3 away = here - threat.transform.position; away.z = 0f;
+        if (away.sqrMagnitude < 0.0001f) away = _entity.isTeam ? Vector3.left : Vector3.right;
+        away.Normalize();
+        Vector3 home = _entity.isTeam ? Vector3.left : Vector3.right;
+        Vector3 dir = (away + home * s.kiteHomeBias).normalized;
+
+        float step = Mathf.Max(0.5f, moveSpeed * s.kiteSpeed * 0.25f);
+        if (Open(here, dir, step)) return dir;
+
+        Vector3 left = new Vector3(-away.y, away.x, 0f), right = -left;
+        bool leftOpen = Open(here, left, step), rightOpen = Open(here, right, step);
+        if (leftOpen && rightOpen)
+        {
+            // Both ways along the wall are open: take the one that ends further from the threat.
+            float dl = Vector3.Distance(here + left * step, threat.transform.position);
+            float dr = Vector3.Distance(here + right * step, threat.transform.position);
+            return dl >= dr ? left : right;
+        }
+        if (leftOpen) return left;
+        if (rightOpen) return right;
+        return Vector3.zero;
+    }
+
+    /// <summary>Whether a step this way stays inside the arena.</summary>
+    private static bool Open(Vector3 from, Vector3 dir, float step)
+    {
+        Vector3 to = from + dir * step;
+        return (ArenaBounds.ClampToArena(to) - to).sqrMagnitude < 1e-4f;
     }
 
     private Entity NearestEnemy(out float distance)

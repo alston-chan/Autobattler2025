@@ -73,7 +73,10 @@ MonoBehaviour:
     impactStun: 0.25
     impactHitstop: 0.06
     impactCooldown: 0.15
+    kiteOnlyWhenTargeted: 1
     kiteFraction: 0.6
+    kiteHysteresis: 1.5
+    kiteHomeBias: 0.5
     kiteSpeed: 0.85
     holdSeconds: 4
   abilityFeedback:

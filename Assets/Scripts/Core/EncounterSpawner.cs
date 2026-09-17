@@ -47,6 +47,7 @@ public class EncounterSpawner : MonoBehaviour
         int count = 0;
         var pending = new List<Entity>();
         var loadouts = new List<EnemyLoadout>();
+        var kinds = new List<EnemyKind>();
         var authored = new List<EncounterData.Spawn>();
         foreach (var spawn in encounter.spawns)
         {
@@ -67,15 +68,16 @@ public class EncounterSpawner : MonoBehaviour
             var loadout = spawn.loadout != null ? spawn.loadout
                         : loadoutOverride != null ? loadoutOverride
                         : encounter.defaultLoadout;
-            if (loadout != null) ArmBeforeWake(entity, loadout);
+            var kind = loadout != null ? ArmBeforeWake(entity, loadout) : EnemyKind.Melee;
 
             pending.Add(entity);
             loadouts.Add(loadout);
+            kinds.Add(kind);
         }
 
         // Now that each knows how it fights, muster: archers to the rear of their lane, brawlers to
         // the front (EnemyMuster). The authored cell is the starting point, not the answer.
-        Muster(pending, authored);
+        Muster(pending, authored, kinds);
 
         // Release them into the scene — this is where Awake finally runs, with the data already set.
         foreach (var go in _spawned)
@@ -90,21 +92,23 @@ public class EncounterSpawner : MonoBehaviour
             // deciding, when a unit staring off-screen reads as broken.
             pending[i].SetFacing(false);
 
-            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i]);
+            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i], kinds[i]);
         }
 
         return count;
     }
 
     /// <summary>Stand each spawn in the cell its way of fighting earns it. See <see cref="EnemyMuster"/>.</summary>
-    private void Muster(List<Entity> entities, List<EncounterData.Spawn> authored)
+    private void Muster(List<Entity> entities, List<EncounterData.Spawn> authored, List<EnemyKind> kinds)
     {
         var grid = BattleGrid.Instance;
         if (grid == null || entities.Count != authored.Count) return;
 
+        // By kind rather than the ranged flag: a wand user stands off like an archer without ever
+        // aiming a bow arm, and the weapon that says so is not equipped until after wake.
         var units = new List<EnemyMuster.Unit>(entities.Count);
         for (int i = 0; i < entities.Count; i++)
-            units.Add(new EnemyMuster.Unit(entities[i].IsRanged, authored[i].column, authored[i].row));
+            units.Add(new EnemyMuster.Unit(EnemyLoadout.IsRangedKind(kinds[i]), authored[i].column, authored[i].row));
 
         var cells = EnemyMuster.Assign(units, grid.columns, grid.rows);
         for (int i = 0; i < entities.Count; i++)
@@ -130,10 +134,11 @@ public class EncounterSpawner : MonoBehaviour
     /// unit's Damage stat, and CombatAI takes its attack range from the same spell, so a unit armed
     /// afterwards would wake up doing zero damage from the wrong distance.
     /// </summary>
-    private void ArmBeforeWake(Entity entity, EnemyLoadout loadout)
+    private EnemyKind ArmBeforeWake(Entity entity, EnemyLoadout loadout)
     {
         // Monsters have no equipment rig and no bow, so they always brawl.
-        bool ranged = entity.isCharacter && Random.value < loadout.rangedChance;
+        var kind = entity.isCharacter ? loadout.RollKind() : EnemyKind.Melee;
+        bool ranged = kind == EnemyKind.Bow;   // the flag also aims a bow arm, which only a bow has
         entity.SetRanged(ranged);
 
         // Scale toughness before Awake, where Entity copies maxHealth into its Health component.
@@ -144,15 +149,16 @@ public class EncounterSpawner : MonoBehaviour
 
         var spells = new List<Spell>();
 
-        var basic = loadout.BasicAttackFor(ranged);
+        var basic = loadout.BasicAttackFor(kind);
         if (basic != null) spells.Add(basic);
         else Debug.LogWarning($"[EncounterSpawner] {loadout.name} has no " +
                               (ranged ? "bow" : "melee") + " basic attack — that unit can't fight.");
 
-        var ability = loadout.RollAbility(ranged);
+        var ability = loadout.RollAbility(kind);
         if (ability != null) spells.Add(ability);
 
         entity.spells = spells;
+        return kind;
     }
 
     /// <summary>
@@ -160,7 +166,7 @@ public class EncounterSpawner : MonoBehaviour
     /// item pool the player's units use, so enemies read as part of the same world — and their stat
     /// modifiers land on the same <see cref="EntityStats"/> pipeline.
     /// </summary>
-    private void DressAfterWake(Entity entity, EnemyLoadout loadout)
+    private void DressAfterWake(Entity entity, EnemyLoadout loadout, EnemyKind kind)
     {
         if (!entity.isCharacter || entity.Appearance == null) return;
 
@@ -168,7 +174,8 @@ public class EncounterSpawner : MonoBehaviour
 
         if (loadout.randomizeEquipment && entity.EquipmentManagement != null)
         {
-            var equipped = entity.EquipmentManagement.EquipRandomFromCollection(entity.IsRanged);
+            // The kind names the weapon class; the weapon then chooses the attack (Loadout.ApplyTo).
+            var equipped = entity.EquipmentManagement.EquipRandomFromCollection(entity.IsRanged, EnemyLoadout.WeaponClassesFor(kind));
 
             // Gear has to reach the stat block too, or enemies look armoured but hit like civilians.
             if (entity.Stats != null && ItemCollection.Active != null)

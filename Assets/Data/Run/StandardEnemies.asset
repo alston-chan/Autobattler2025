@@ -12,6 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b615282ac0206754490e0d2f8e67c6ec, type: 3}
   m_Name: StandardEnemies
   m_EditorClassIdentifier: 
+  kinds:
+  - kind: 0
+    weight: 3
+  - kind: 1
+    weight: 2
+  - kind: 2
+    weight: 1.5
+  - kind: 3
+    weight: 1.5
   meleeBasicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
   bowBasicAttack: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
   healthMultiplier: 3

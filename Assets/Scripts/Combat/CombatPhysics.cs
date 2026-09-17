@@ -59,8 +59,14 @@ public class CombatPhysics : MonoBehaviour
         public float impactCooldown = 0.15f;
 
         [Header("Stances")]
-        [Range(0.1f, 1f), Tooltip("A kiting unit backs away when the nearest enemy is closer than this fraction of its reach.")]
+        [Tooltip("A kiting unit only backs away from an enemy that is coming for it: one whose target it is and whose reach is shorter than its own. Off, it backs away from whatever is nearest.")]
+        public bool kiteOnlyWhenTargeted = true;
+        [Range(0.1f, 1f), Tooltip("A kiting unit starts backing away when the threat is closer than this fraction of its reach.")]
         public float kiteFraction = 0.6f;
+        [Tooltip("Once backing away, it keeps going until the threat is this much further than where it started, so it does not flicker at the line.")]
+        public float kiteHysteresis = 1.5f;
+        [Range(0f, 1f), Tooltip("How much a retreat leans toward the unit's own back line rather than straight away from the threat, so it falls back behind its friends instead of into a corner.")]
+        public float kiteHomeBias = 0.5f;
         [Range(0.1f, 1.5f), Tooltip("Backing away, as a fraction of walking speed.")]
         public float kiteSpeed = 0.85f;
         [Tooltip("A holding unit stands its ground this long, or until it is hurt, before it advances.")]

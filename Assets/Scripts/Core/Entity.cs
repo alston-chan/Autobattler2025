@@ -81,8 +81,22 @@ public class Entity : MonoBehaviour
              "units Kite, everyone else Advances.")]
     public Stance stance = Stance.Auto;
 
-    /// <summary>The stance in force: Auto resolved by whether the unit is ranged.</summary>
-    public Stance EffectiveStance => stance == Stance.Auto ? (IsRanged ? Stance.Kite : Stance.Advance) : stance;
+    /// <summary>
+    /// The stance in force. Auto resolves by reach: a unit whose weapon attack reaches four units
+    /// or more (a bow, a wand) kites, and everyone else advances. Reach rather than the ranged
+    /// flag, because that flag also means "aims a bow arm", which a wand does not.
+    /// </summary>
+    public Stance EffectiveStance => stance == Stance.Auto ? (FightsAtRange ? Stance.Kite : Stance.Advance) : stance;
+
+    /// <summary>Whether this unit's weapon attack is a ranged one: reach of four or more, else the ranged flag.</summary>
+    public bool FightsAtRange
+    {
+        get
+        {
+            var basic = spells != null && spells.Count > 0 ? spells[0] : null;
+            return basic != null ? basic.range >= 4f : IsRanged;
+        }
+    }
 
     /// <summary>This unit's body for collisions (<see cref="CombatPhysics"/>): its UnitData's radius, else the global one.</summary>
     public float BodyRadius => unitData != null && unitData.bodyRadius > 0f ? unitData.bodyRadius : CombatPhysics.Active.bodyRadius;
