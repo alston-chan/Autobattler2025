@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 281490fb386fd9543a01301aaa3c2626, type: 3}
+  m_Name: ShadowCannon
+  m_EditorClassIdentifier: 
+  engravingName: Shadow Cannon
+  description: After you blink, a Cannonball at the nearest enemy, free.
+  trigger: 0
+  castNamed: 
+  spell: {fileID: 11400000, guid: 79d6947bc7385d8489850f11e9fff27d, type: 2}
+  cooldown: 4

@@ -58,6 +58,8 @@ public abstract class Engraving : ScriptableObject
     public virtual void OnCast(Entity owner, Spell spell, int tier) { }
     /// <summary>The owner moved this far under its own power this frame.</summary>
     public virtual void OnMoved(Entity owner, float distance, int tier) { }
+    /// <summary>The owner moved in one step: a blink, a substitute, a throw.</summary>
+    public virtual void OnBlink(Entity owner, UnityEngine.Vector3 from, UnityEngine.Vector3 to, int tier) { }
     /// <summary>The owner's shield ended — broken by a hit, or lapsed.</summary>
     public virtual void OnShieldEnded(Entity owner, bool broken, int tier) { }
 

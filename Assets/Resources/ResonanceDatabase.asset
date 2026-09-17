@@ -115,6 +115,12 @@ MonoBehaviour:
     tierIICost: 5
     tierIIICost: 12
     engraveCost: 5
+  - itemId: FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
+    engraving: {fileID: 11400000, guid: 70471caf925cdcc4884a15fb1a85f1f6, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
   classDefaults:
   - itemClass: 2
     engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}

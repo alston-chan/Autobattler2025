@@ -137,6 +137,7 @@ public class GameManager : Singleton<GameManager>
 
     private void BuildCompany()
     {
+        ApplyScenarioRoster();
         CreateAvatarUI();
         BuildRoster();
 
@@ -543,6 +544,28 @@ public class GameManager : Singleton<GameManager>
             gameObject.AddComponent<DamageNumbersManager>();
     }
 
+    /// <summary>
+    /// A playtest scenario names who fields: everyone else sits out, and a benched hero it names is
+    /// stood up. Before the roster is read and before anyone is dressed, so the rest of the start
+    /// sees the scenario's company as the company. Runtime only; the scene is not touched.
+    /// </summary>
+    private void ApplyScenarioRoster()
+    {
+        var scenario = Playtest.Scenario;
+        if (scenario == null || scenario.FieldsEveryone) return;
+
+        var heroes = new List<Entity>();
+        foreach (var e in Resources.FindObjectsOfTypeAll<Entity>())
+            if (e != null && e.isTeam && e.isCharacter && e.gameObject.scene.IsValid()) heroes.Add(e);
+
+        foreach (var hero in heroes)
+        {
+            bool fields = scenario.Includes(hero.name);
+            if (hero.gameObject.activeSelf != fields) hero.gameObject.SetActive(fields);
+        }
+        Debug.Log($"[Playtest] Scenario '{scenario.name}': fielding {string.Join(", ", scenario.heroes.ConvertAll(h => h.heroName))}.");
+    }
+
     /// <summary>Collect the player-controlled characters for inventory setup.</summary>
     private void BuildRoster()
     {
@@ -618,12 +641,15 @@ public class GameManager : Singleton<GameManager>
             // spellbooks, so the starting spells show in the spell row and drive combat through the
             // SAME equipped-books path as runtime equipping. Equipment.Initialize slots them; the
             // SyncSpellSlots below rebuilds spellSlots from those books (matching what was authored).
+            var kit = Playtest.Scenario != null ? Playtest.Scenario.KitFor(characterEntity.name) : null;
             int addedBooks = saved != null ? CountSpellbooks(equippedItems)
-                                           : EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
+                           : kit != null && kit.noAuthoredSpellbooks ? 0
+                           : EquipAuthoredSpellsAsBooks(characterEntity, equippedItems);
 
             // The hero's signature item — where their identity comes from. Added before the random
-            // roll is committed so it can't be crowded out of its slot.
-            if (saved == null) EquipSignatureItem(characterEntity, equippedItems);
+            // roll is committed so it can't be crowded out of its slot. A playtest kit is the whole
+            // outfit, signature included, so it is not added over one: it displaced the kit's weapon.
+            if (saved == null && kit == null) EquipSignatureItem(characterEntity, equippedItems);
 
             // A hero with nothing to swing has no basic attack and no damage stat, and stands in the
             // fight doing nothing — quietly, because every stage after this still runs.
@@ -668,6 +694,14 @@ public class GameManager : Singleton<GameManager>
             // the first Setup — the sync above ran before anything was held. Once more, now that it is.
             if (characterEntity.Resonance != null && characterEntity.Resonance.GrantedVerbs().Count > 0)
                 characterInventory.SyncSpellSlots();
+
+            // The scenario's last word: how the hero stands and which slot it casts.
+            if (kit != null)
+            {
+                characterEntity.stance = kit.stance;
+                characterEntity.activeSpellSlot = Mathf.Clamp(kit.activeSlot, 0, Mathf.Max(0, characterEntity.spellSlots.Count - 1));
+                characterInventory.SyncSpellSlots();
+            }
         }
     }
 
@@ -738,12 +772,20 @@ public class GameManager : Singleton<GameManager>
     private List<Item> StartingGearFor(Entity hero)
     {
         var run = runManager != null ? runManager.runData : null;
-        if (run == null || run.startingGear == StartingGear.Randomized)
-            return hero.EquipmentManagement.EquipRandomFromCollection(hero.IsRanged);
 
-        var ids = hero.startingItemIds != null && hero.startingItemIds.Count > 0
-            ? hero.startingItemIds
-            : run.fallbackKitItemIds;
+        // A playtest scenario dresses its heroes itself, whatever the run would have done.
+        var kit = Playtest.Scenario != null ? Playtest.Scenario.KitFor(hero.name) : null;
+        List<string> ids = kit != null && kit.itemIds != null && kit.itemIds.Count > 0 ? kit.itemIds : null;
+
+        if (ids == null)
+        {
+            if (run == null || run.startingGear == StartingGear.Randomized)
+                return hero.EquipmentManagement.EquipRandomFromCollection(hero.IsRanged);
+
+            ids = hero.startingItemIds != null && hero.startingItemIds.Count > 0
+                ? hero.startingItemIds
+                : run.fallbackKitItemIds;
+        }
 
         var items = new List<Item>();
         if (ids == null) return items;

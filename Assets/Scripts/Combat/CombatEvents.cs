@@ -59,6 +59,8 @@ public static class CombatEvents
     public static event Action<Entity, bool> ShieldEnded;
     /// <summary>A thrown body hit another body or the wall (<see cref="CombatPhysics"/>).</summary>
     public static event Action<ImpactInfo> Impact;
+    /// <summary>A unit moved in one step: a blink, a substitute, a throw. From where, to where.</summary>
+    public static event Action<Entity, UnityEngine.Vector3, UnityEngine.Vector3> Blink;
 
     public static void RaiseHit(HitInfo hit) => Hit?.Invoke(hit);
     public static void RaiseKill(Entity killer, Entity victim) => Kill?.Invoke(killer, victim);
@@ -66,10 +68,11 @@ public static class CombatEvents
     public static void RaiseMoved(Entity entity, float distance) => Moved?.Invoke(entity, distance);
     public static void RaiseShieldEnded(Entity entity, bool broken) => ShieldEnded?.Invoke(entity, broken);
     public static void RaiseImpact(ImpactInfo impact) => Impact?.Invoke(impact);
+    public static void RaiseBlink(Entity entity, UnityEngine.Vector3 from, UnityEngine.Vector3 to) => Blink?.Invoke(entity, from, to);
 
     /// <summary>Drop every listener. For tests, and for a domain that is starting over.</summary>
     public static void Clear()
     {
-        Hit = null; Kill = null; Cast = null; Moved = null; ShieldEnded = null; Impact = null;
+        Hit = null; Kill = null; Cast = null; Moved = null; ShieldEnded = null; Impact = null; Blink = null;
     }
 }

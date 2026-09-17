@@ -428,6 +428,7 @@ public class Resonance : MonoBehaviour
             CombatEvents.Kill += RouteKill;
             CombatEvents.Cast += RouteCast;
             CombatEvents.Moved += RouteMoved;
+            CombatEvents.Blink += RouteBlink;
             CombatEvents.ShieldEnded += RouteShieldEnded;
         }
         else
@@ -436,6 +437,7 @@ public class Resonance : MonoBehaviour
             CombatEvents.Kill -= RouteKill;
             CombatEvents.Cast -= RouteCast;
             CombatEvents.Moved -= RouteMoved;
+            CombatEvents.Blink -= RouteBlink;
             CombatEvents.ShieldEnded -= RouteShieldEnded;
         }
     }
@@ -474,6 +476,11 @@ public class Resonance : MonoBehaviour
     private void RouteMoved(Entity entity, float distance)
     {
         if (entity == _entity) Route((e, t) => e.OnMoved(_entity, distance, t));
+    }
+
+    private void RouteBlink(Entity entity, Vector3 from, Vector3 to)
+    {
+        if (entity == _entity) Route((e, t) => e.OnBlink(_entity, from, to, t));
     }
 
     private void RouteShieldEnded(Entity entity, bool broken)

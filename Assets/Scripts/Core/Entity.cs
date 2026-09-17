@@ -160,7 +160,11 @@ public class Entity : MonoBehaviour
         Vector3 from = transform.position;
         transform.position = ArenaBounds.ClampToArena(to);
         float moved = Vector3.Distance(from, transform.position);
-        if (moved > 0f) CombatEvents.RaiseMoved(this, moved);
+        if (moved > 0f)
+        {
+            CombatEvents.RaiseMoved(this, moved);
+            CombatEvents.RaiseBlink(this, from, transform.position);   // and a step in one go, for what listens for those
+        }
     }
 
     /// <summary>Slip out of sight for a moment. Extends an existing window, never shortens it.</summary>

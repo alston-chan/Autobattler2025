@@ -183,11 +183,14 @@ public class RunManager : MonoBehaviour
     /// <summary>Clear the field and spawn whatever fight the run is on.</summary>
     private void StartCurrentEncounter()
     {
-        var encounter = State.Current;
+        // A playtest scenario plays its own encounter every fight, in place of the run's.
+        var scenario = Playtest.Scenario;
+        var encounter = scenario != null && scenario.encounter != null ? scenario.encounter : State.Current;
         if (encounter == null) return;
+        var loadout = scenario != null && scenario.loadout != null ? scenario.loadout : State.CurrentLoadout;
 
         _spawner.ClearEnemies();
-        int spawned = _spawner.Spawn(encounter, State.CurrentLoadout);
+        int spawned = _spawner.Spawn(encounter, loadout);
 
         Debug.Log($"[RunManager] {State.Progress} — {encounter.encounterName} ({spawned} enemies).");
     }

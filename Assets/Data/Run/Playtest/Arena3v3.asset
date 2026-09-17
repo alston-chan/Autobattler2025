@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1474bb256568824dbd7a6626631a608, type: 3}
+  m_Name: Arena3v3
+  m_EditorClassIdentifier: 
+  problems: 
+  defaultLoadout: {fileID: 11400000, guid: 80b487e27135e574e8d923fd3d5a31f8, type: 2}
+  rewardPool: {fileID: 0}
+  encounterName: Three Gladiators
+  spawns:
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 0
+    unitData: {fileID: 0}
+    loadout: {fileID: 0}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 1
+    unitData: {fileID: 0}
+    loadout: {fileID: 0}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 2
+    unitData: {fileID: 0}
+    loadout: {fileID: 0}

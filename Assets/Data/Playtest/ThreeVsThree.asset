@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643e6494917fbf44a928db68e3f09f63, type: 3}
+  m_Name: ThreeVsThree
+  m_EditorClassIdentifier: 
+  heroes:
+  - heroName: Hero_Daggers
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
+    - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
+    stance: 4
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  - heroName: Hero_Melee_KnightShield
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.BlacksmithHammer
+    - Extensions.AbandonedWorkshop.Shield.WallKeeperShield
+    - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest
+    - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots
+    - Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
+    stance: 2
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  - heroName: Hero_Wand
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.BishopWand
+    - Extensions.Epic.Shield.BlazeShield
+    - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
+    stance: 3
+    activeSlot: 0
+    noAuthoredSpellbooks: 1
+  encounter: {fileID: 11400000, guid: 850b00b2763e4314484da904438bb7a6, type: 2}
+  loadout: {fileID: 0}
+  notes: 'A gladiator trio: a ninja whose Substitute blink fires a Cannonball (Shadow
+    Cannon hood), a Wall Keeper knight with a mace (Cannonball), a mage with Singularity.
+    Against three foes of three kinds.'
