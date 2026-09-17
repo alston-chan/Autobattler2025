@@ -96,6 +96,25 @@ public class ArenaBounds : MonoBehaviour
     public static Vector3 ClampToArena(Vector3 p) => Instance != null ? Instance.Clamp(p) : p;
 
     /// <summary>
+    /// How far a point is from the edge, in world units: zero on or outside it. For the ellipse an
+    /// approximation along the radius, which is what a unit deciding whether it has room wants.
+    /// </summary>
+    public float EdgeRoom(Vector3 p)
+    {
+        if (shape == ArenaShape.Rectangle)
+            return Mathf.Max(0f, Mathf.Min(Mathf.Min(p.x - MinX, MaxX - p.x), Mathf.Min(p.y - MinY, MaxY - p.y)));
+
+        float rx = size.x * 0.5f, ry = size.y * 0.5f;
+        if (rx <= 0.0001f || ry <= 0.0001f) return 0f;
+        float dx = (p.x - center.x) / rx, dy = (p.y - center.y) / ry;
+        float d = Mathf.Sqrt(dx * dx + dy * dy);
+        return Mathf.Max(0f, 1f - d) * Mathf.Min(rx, ry);
+    }
+
+    /// <summary>Room to the edge from a point, against the active bounds; unbounded when there are none.</summary>
+    public static float RoomToEdge(Vector3 p) => Instance != null ? Instance.EdgeRoom(p) : float.MaxValue;
+
+    /// <summary>
     /// Set the global bounds, creating the instance if none exists yet. Lets a per-map driver (e.g.
     /// <see cref="BackgroundCycler"/>) push a map's play area without caring about script order.
     /// </summary>

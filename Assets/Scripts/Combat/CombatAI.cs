@@ -299,9 +299,12 @@ public class CombatAI : MonoBehaviour
     }
 
     /// <summary>
-    /// Which way to back off: away from the threat, leaning toward our own back line. If that step
-    /// would run into the arena's edge, slide along it whichever way keeps more distance; if both
-    /// ways are blocked too, nowhere: cornered, the unit stands and shoots.
+    /// Which way to back off. Sixteen directions are scored: a step must open distance from the
+    /// threat and land at least the wall margin inside the arena; among those, the one that opens
+    /// the most, leans most toward our own back line, and keeps the most room from the edge wins.
+    /// So a unit with the wall at its back curves around the threat instead of pressing into the
+    /// wall, and one that is already inside the margin walks back out before it thinks about the
+    /// threat. Nothing scores: cornered, the unit stands and shoots.
     /// </summary>
     private Vector3 KiteDirection(Entity threat, CombatPhysics.Settings s)
     {
@@ -310,30 +313,30 @@ public class CombatAI : MonoBehaviour
         if (away.sqrMagnitude < 0.0001f) away = _entity.isTeam ? Vector3.left : Vector3.right;
         away.Normalize();
         Vector3 home = _entity.isTeam ? Vector3.left : Vector3.right;
-        Vector3 dir = (away + home * s.kiteHomeBias).normalized;
 
         float step = Mathf.Max(0.5f, moveSpeed * s.kiteSpeed * 0.25f);
-        if (Open(here, dir, step)) return dir;
+        float margin = Mathf.Max(0f, s.kiteWallMargin);
+        float roomHere = ArenaBounds.RoomToEdge(here);
+        bool insideMargin = roomHere < margin;
 
-        Vector3 left = new Vector3(-away.y, away.x, 0f), right = -left;
-        bool leftOpen = Open(here, left, step), rightOpen = Open(here, right, step);
-        if (leftOpen && rightOpen)
+        Vector3 best = Vector3.zero; float bestScore = float.MinValue;
+        for (int k = 0; k < 16; k++)
         {
-            // Both ways along the wall are open: take the one that ends further from the threat.
-            float dl = Vector3.Distance(here + left * step, threat.transform.position);
-            float dr = Vector3.Distance(here + right * step, threat.transform.position);
-            return dl >= dr ? left : right;
-        }
-        if (leftOpen) return left;
-        if (rightOpen) return right;
-        return Vector3.zero;
-    }
+            float a = k * Mathf.PI * 2f / 16f;
+            Vector3 dir = new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f);
+            Vector3 to = here + dir * step;
+            float roomTo = ArenaBounds.RoomToEdge(to);
+            float gain = Vector3.Dot(dir, away);
 
-    /// <summary>Whether a step this way stays inside the arena.</summary>
-    private static bool Open(Vector3 from, Vector3 dir, float step)
-    {
-        Vector3 to = from + dir * step;
-        return (ArenaBounds.ClampToArena(to) - to).sqrMagnitude < 1e-4f;
+            // Already too near the wall: any step that gets us back out is allowed, even sideways
+            // past the threat, as long as it does not walk straight into it.
+            if (insideMargin) { if (roomTo <= roomHere || gain < -0.3f) continue; }
+            else if (roomTo < margin || gain < 0.15f) continue;
+
+            float score = gain + Vector3.Dot(dir, home) * s.kiteHomeBias + Mathf.Clamp01(roomTo / (margin * 2f + 0.01f)) * 0.5f;
+            if (score > bestScore) { bestScore = score; best = dir; }
+        }
+        return best;
     }
 
     private Entity NearestEnemy(out float distance)

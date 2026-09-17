@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 236c9683fcca74c43a77836517e02f4b, type: 3}
   m_Name: CircleArena
   m_EditorClassIdentifier: 
-  shape: 1
-  center: {x: 0, y: -1.5}
-  size: {x: 17.5, y: 5.5}
+  shape: 0
+  center: {x: 0, y: -1.8}
+  size: {x: 17.2, y: 6.4}

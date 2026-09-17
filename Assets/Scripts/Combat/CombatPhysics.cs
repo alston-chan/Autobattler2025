@@ -69,6 +69,8 @@ public class CombatPhysics : MonoBehaviour
         public float kiteHomeBias = 0.5f;
         [Range(0.1f, 1.5f), Tooltip("Backing away, as a fraction of walking speed.")]
         public float kiteSpeed = 0.85f;
+        [Tooltip("A kiting unit keeps this much room between itself and the arena's edge: it curves around the threat rather than backing into the wall, and when no direction opens distance it stands and shoots.")]
+        public float kiteWallMargin = 1.5f;
         [Tooltip("A holding unit stands its ground this long, or until it is hurt, before it advances.")]
         public float holdSeconds = 4f;
     }

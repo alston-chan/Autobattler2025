@@ -78,6 +78,7 @@ MonoBehaviour:
     kiteHysteresis: 1.5
     kiteHomeBias: 0.5
     kiteSpeed: 0.85
+    kiteWallMargin: 1.5
     holdSeconds: 4
   abilityFeedback:
     enableCallout: 1
