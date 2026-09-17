@@ -37,14 +37,22 @@ public class PlaytestScenario : ScriptableObject
     [Tooltip("The enemy loadout for that encounter. Empty keeps the encounter's own.")]
     public EnemyLoadout loadout;
 
-    [Tooltip("Kits for the encounter's spawns, in spawn order: the first spawn wears the first kit. A " +
-             "kitted enemy resonates like a hero (its weapon's verb, its set's engravings) and keeps the " +
-             "kit's stance. Spawns past the list roll gear as usual. The hero name is a label here.")]
-    public List<HeroKit> enemyKits = new List<HeroKit>();
+    [Tooltip("Kits for the encounter's spawns. Drawn at random, every kit once before any repeats, " +
+             "so the enemy side is a different team each fight; or in order, first spawn first kit. " +
+             "Empty leaves the spawns to the encounter and loadout.")]
+    public List<EnemyKit> enemyKits = new List<EnemyKit>();
+    [Tooltip("Draw the enemy kits at random rather than in order.")]
+    public bool randomEnemyKits = true;
 
-    /// <summary>The kit for the n-th spawn, or null when it rolls its own.</summary>
-    public HeroKit EnemyKitFor(int spawnIndex) =>
-        enemyKits != null && spawnIndex >= 0 && spawnIndex < enemyKits.Count ? enemyKits[spawnIndex] : null;
+    /// <summary>The kits for an encounter's spawns, one per spawn (null where none is given).</summary>
+    public List<EnemyKit> EnemyKitsFor(int spawnCount)
+    {
+        var result = new List<EnemyKit>(spawnCount);
+        if (enemyKits == null || enemyKits.Count == 0) { for (int i = 0; i < spawnCount; i++) result.Add(null); return result; }
+        if (randomEnemyKits) return EnemyKit.Draw(enemyKits, spawnCount);
+        for (int i = 0; i < spawnCount; i++) result.Add(i < enemyKits.Count ? enemyKits[i] : null);
+        return result;
+    }
 
     [TextArea(2, 6), Tooltip("What this scenario is for, so the list reads.")]
     public string notes;

@@ -43,33 +43,14 @@ MonoBehaviour:
   encounter: {fileID: 11400000, guid: 850b00b2763e4314484da904438bb7a6, type: 2}
   loadout: {fileID: 0}
   enemyKits:
-  - heroName: Rival ninja
-    itemIds:
-    - FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
-    - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
-    - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
-    - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
-    stance: 4
-    activeSlot: 0
-    noAuthoredSpellbooks: 1
-  - heroName: Rival knight
-    itemIds:
-    - FantasyHeroes.Basic.MeleeWeapon1H.BlacksmithHammer
-    - Extensions.AbandonedWorkshop.Shield.WallKeeperShield
-    - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest
-    - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots
-    - Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
-    stance: 2
-    activeSlot: 0
-    noAuthoredSpellbooks: 1
-  - heroName: Rival mage
-    itemIds:
-    - FantasyHeroes.Basic.MeleeWeapon1H.BishopWand
-    - Extensions.Epic.Shield.BlazeShield
-    - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
-    stance: 3
-    activeSlot: 0
-    noAuthoredSpellbooks: 1
-  notes: 'A gladiator trio against its mirror: a ninja whose Substitute blink fires
-    a Cannonball (Shadow Cannon hood), a Wall Keeper knight with a mace (Cannonball),
-    a mage with Singularity, on both sides. Enemy health matched to the company.'
+  - {fileID: 11400000, guid: a8dd6c4c68d773141aa17114f2274064, type: 2}
+  - {fileID: 11400000, guid: 1c0aeaa111dd11c4285b3ad2beae8a4e, type: 2}
+  - {fileID: 11400000, guid: 393c9f12778df1e4c843ff3b3adc88f1, type: 2}
+  - {fileID: 11400000, guid: 726169006fc59c94c99f7c3a3a0ca863, type: 2}
+  - {fileID: 11400000, guid: 30e0e1a8421a13740b24547ebd603fea, type: 2}
+  - {fileID: 11400000, guid: 66e353e617e67814dadaffc33413a39c, type: 2}
+  - {fileID: 11400000, guid: a94768e7790962e47aedcf3e80f0f84a, type: 2}
+  randomEnemyKits: 1
+  notes: 'A gladiator trio (ninja, Wall Keeper knight, wand mage) against three foes
+    drawn from seven kits: ninja, wall keeper, wand mage, berserker, lancer, archer,
+    knight. A different enemy team each fight, at the company''s health.'

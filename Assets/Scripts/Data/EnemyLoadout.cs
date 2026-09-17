@@ -26,6 +26,14 @@ public class EnemyLoadout : ScriptableObject
         [Min(0f)] public float weight = 1f;
     }
 
+    [Header("Kits")]
+    [Tooltip("Kits to draw for spawns that name none: every kit once before any repeats, in a random " +
+             "order. Empty rolls gear by kind instead.")]
+    public List<EnemyKit> kits = new List<EnemyKit>();
+    [Tooltip("Rolled gear resonates like a hero's: the weapon teaches its class's verb and a set piece " +
+             "grants its engraving. Off, an enemy's gear is only stats.")]
+    public bool resonateGear = true;
+
     [Header("Kinds")]
     [Tooltip("What the units of this pool fight with, drawn by weight. Empty falls back to the ranged " +
              "chance below: melee or bow. Monsters are always melee whatever this says.")]

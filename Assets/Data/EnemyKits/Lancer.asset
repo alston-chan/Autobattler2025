@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3115e510799f8348aca5afcbcec1cb8, type: 3}
+  m_Name: Lancer
+  m_EditorClassIdentifier: 
+  kitName: Lancer
+  itemIds:
+  - Extensions.Epic.MeleeWeapon1H.SpartanSpear
+  - FantasyHeroes.Basic.Armor.SpearmanArmor.vest
+  - FantasyHeroes.Basic.Armor.SpearmanArmor.boots
+  - FantasyHeroes.Basic.Helmet.SpearmanHelm1
+  stance: 4
+  targetMode: 2
+  activeSlot: 0
+  notes: Bull Rush on a spear. Charges the back line.

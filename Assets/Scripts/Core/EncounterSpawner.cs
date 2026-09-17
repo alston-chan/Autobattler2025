@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Assets.HeroEditor.InventorySystem.Scripts;
+using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using UnityEngine;
 
 /// <summary>
@@ -48,7 +49,15 @@ public class EncounterSpawner : MonoBehaviour
         var pending = new List<Entity>();
         var loadouts = new List<EnemyLoadout>();
         var kinds = new List<EnemyKind>();
+        var kits = new List<EnemyKit>();
         var authored = new List<EncounterData.Spawn>();
+
+        // Who wears what: the scenario's draw first, then the spawn's own kit, then the loadout's
+        // pool, then a random roll. Drawn once per encounter so a pool spreads across the spawns.
+        int spawnCount = 0; foreach (var s in encounter.spawns) if (s != null && s.prefab != null) spawnCount++;
+        var scenarioKits = Playtest.Scenario != null ? Playtest.Scenario.EnemyKitsFor(spawnCount) : null;
+        var poolDraws = new Dictionary<EnemyLoadout, Queue<EnemyKit>>();
+
         foreach (var spawn in encounter.spawns)
         {
             if (spawn == null || spawn.prefab == null) continue;
@@ -68,13 +77,20 @@ public class EncounterSpawner : MonoBehaviour
             var loadout = spawn.loadout != null ? spawn.loadout
                         : loadoutOverride != null ? loadoutOverride
                         : encounter.defaultLoadout;
-            // A playtest kit decides the kind (from its weapon) and brings no rolled ability.
-            var kit = Playtest.Scenario != null ? Playtest.Scenario.EnemyKitFor(pending.Count) : null;
+            // A kit decides the kind (from its weapon) and brings no rolled ability.
+            EnemyKit kit = scenarioKits != null && pending.Count < scenarioKits.Count ? scenarioKits[pending.Count] : null;
+            if (kit == null) kit = spawn.kit;
+            if (kit == null && loadout != null && loadout.kits != null && loadout.kits.Count > 0)
+            {
+                if (!poolDraws.TryGetValue(loadout, out var queue)) { queue = new Queue<EnemyKit>(EnemyKit.Draw(loadout.kits, spawnCount)); poolDraws[loadout] = queue; }
+                if (queue.Count > 0) kit = queue.Dequeue();
+            }
             var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null, kit == null) : EnemyKind.Melee;
 
             pending.Add(entity);
             loadouts.Add(loadout);
             kinds.Add(kind);
+            kits.Add(kit);
         }
 
         // Now that each knows how it fights, muster: archers to the rear of their lane, brawlers to
@@ -94,7 +110,7 @@ public class EncounterSpawner : MonoBehaviour
             // deciding, when a unit staring off-screen reads as broken.
             pending[i].SetFacing(false);
 
-            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i], kinds[i], i);
+            if (loadouts[i] != null) DressAfterWake(pending[i], loadouts[i], kinds[i], kits[i]);
         }
 
         return count;
@@ -137,7 +153,7 @@ public class EncounterSpawner : MonoBehaviour
     /// afterwards would wake up doing zero damage from the wrong distance.
     /// </summary>
     /// <summary>The kind a kit's weapon makes its wearer: what musters it and what it kites with.</summary>
-    private static EnemyKind KindOfKit(PlaytestScenario.HeroKit kit)
+    private static EnemyKind KindOfKit(EnemyKit kit)
     {
         if (kit == null || kit.itemIds == null || ItemCollection.Active == null) return EnemyKind.Melee;
         foreach (var id in kit.itemIds)
@@ -187,45 +203,46 @@ public class EncounterSpawner : MonoBehaviour
     /// item pool the player's units use, so enemies read as part of the same world — and their stat
     /// modifiers land on the same <see cref="EntityStats"/> pipeline.
     /// </summary>
-    private void DressAfterWake(Entity entity, EnemyLoadout loadout, EnemyKind kind, int spawnIndex)
+    private void DressAfterWake(Entity entity, EnemyLoadout loadout, EnemyKind kind, EnemyKit kit)
     {
         if (!entity.isCharacter || entity.Appearance == null) return;
 
         if (loadout.randomizeAppearance) entity.Appearance.SetRandomAppearance();
+        if (entity.EquipmentManagement == null) return;
 
-        // A playtest kit: worn like a hero's, resonating like a hero's, standing as the kit says.
-        var kit = Playtest.Scenario != null ? Playtest.Scenario.EnemyKitFor(spawnIndex) : null;
-        if (kit != null && entity.EquipmentManagement != null)
+        List<Item> worn;
+        if (kit != null)
         {
-            var worn = entity.EquipmentManagement.EquipKit(kit.itemIds);
-            if (entity.Stats != null && ItemCollection.Active != null)
-                foreach (var item in worn)
-                {
-                    var itemParams = ItemCollection.Active.GetItemParams(item);
-                    if (itemParams != null) entity.Stats.ApplyItemModifiers(itemParams, item.Id);
-                }
-            if (entity.Resonance != null) { entity.Resonance.SetWorn(worn); entity.Resonance.Refresh(); }
+            // A kit: worn like a hero's, standing and aiming as the kit says.
+            worn = entity.EquipmentManagement.EquipKit(kit.itemIds);
             entity.stance = kit.stance;
-            if (entity.spellSlots != null && entity.spellSlots.Count > 0)
-                entity.activeSpellSlot = Mathf.Clamp(kit.activeSlot, 0, entity.spellSlots.Count - 1);
-            if (entity.CombatAI != null) entity.CombatAI.RefreshSpells();
-            return;
+            entity.targetMode = kit.targetMode;
         }
-
-        if (loadout.randomizeEquipment && entity.EquipmentManagement != null)
+        else if (loadout.randomizeEquipment)
         {
             // The kind names the weapon class; the weapon then chooses the attack (Loadout.ApplyTo).
-            var equipped = entity.EquipmentManagement.EquipRandomFromCollection(entity.IsRanged, EnemyLoadout.WeaponClassesFor(kind));
-
-            // Gear has to reach the stat block too, or enemies look armoured but hit like civilians.
-            if (entity.Stats != null && ItemCollection.Active != null)
-            {
-                foreach (var item in equipped)
-                {
-                    var itemParams = ItemCollection.Active.GetItemParams(item);
-                    if (itemParams != null) entity.Stats.ApplyItemModifiers(itemParams, item.Id);
-                }
-            }
+            worn = entity.EquipmentManagement.EquipRandomFromCollection(entity.IsRanged, EnemyLoadout.WeaponClassesFor(kind));
         }
+        else return;
+
+        // Gear has to reach the stat block too, or enemies look armoured but hit like civilians.
+        if (entity.Stats != null && ItemCollection.Active != null)
+            foreach (var item in worn)
+            {
+                var itemParams = ItemCollection.Active.GetItemParams(item);
+                if (itemParams != null) entity.Stats.ApplyItemModifiers(itemParams, item.Id);
+            }
+
+        // And it resonates: the weapon's verb, the set's engravings. Every enemy archer whips, every
+        // mace throws Cannonballs, and an enemy in the Ninja set substitutes. A kit always resonates;
+        // rolled gear does when the loadout says so.
+        if ((kit != null || loadout.resonateGear) && entity.Resonance != null)
+        {
+            entity.Resonance.SetWorn(worn);
+            entity.Resonance.Refresh();
+        }
+        if (kit != null && entity.spellSlots != null && entity.spellSlots.Count > 0)
+            entity.activeSpellSlot = Mathf.Clamp(kit.activeSlot, 0, entity.spellSlots.Count - 1);
+        if (entity.CombatAI != null) entity.CombatAI.RefreshSpells();
     }
 }

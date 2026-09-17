@@ -55,6 +55,9 @@ public class EncounterData : ScriptableObject
         public int row;
         [Tooltip("Optional stat override. Leave empty to use the prefab's own values.")]
         public UnitData unitData;
+        [Tooltip("Optional. Dress this spawn in a kit: its gear, stance, target and verb. Overrides the " +
+                 "loadout's kit pool and the random roll.")]
+        public EnemyKit kit;
         [Tooltip("Optional. Rolls this unit's gear, appearance and ability at spawn. Falls back to " +
                  "the encounter's default loadout when empty.")]
         public EnemyLoadout loadout;

@@ -25,14 +25,12 @@ MonoBehaviour:
   encounter: {fileID: 11400000, guid: edc09320553d3cf4180e610b4ebc2c03, type: 2}
   loadout: {fileID: 0}
   enemyKits:
-  - heroName: Rival ninja
-    itemIds:
-    - FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
-    - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
-    - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
-    - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
-    stance: 1
-    activeSlot: 0
-    noAuthoredSpellbooks: 1
-  notes: 'The ninja against its mirror: the same kit, the same health. Backstab,
-    Substitute, Shadow Cannon on both sides.'
+  - {fileID: 11400000, guid: a8dd6c4c68d773141aa17114f2274064, type: 2}
+  - {fileID: 11400000, guid: 1c0aeaa111dd11c4285b3ad2beae8a4e, type: 2}
+  - {fileID: 11400000, guid: 393c9f12778df1e4c843ff3b3adc88f1, type: 2}
+  - {fileID: 11400000, guid: 726169006fc59c94c99f7c3a3a0ca863, type: 2}
+  - {fileID: 11400000, guid: 30e0e1a8421a13740b24547ebd603fea, type: 2}
+  - {fileID: 11400000, guid: 66e353e617e67814dadaffc33413a39c, type: 2}
+  - {fileID: 11400000, guid: a94768e7790962e47aedcf3e80f0f84a, type: 2}
+  randomEnemyKits: 1
+  notes: The ninja alone against one foe drawn from the seven kits, at the same health.

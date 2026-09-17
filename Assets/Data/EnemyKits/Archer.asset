@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3115e510799f8348aca5afcbcec1cb8, type: 3}
+  m_Name: Archer
+  m_EditorClassIdentifier: 
+  kitName: Archer
+  itemIds:
+  - FantasyHeroes.Basic.Bow.HunterBow
+  - FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].vest
+  - FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].boots
+  - Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
+  stance: 3
+  targetMode: 0
+  activeSlot: 0
+  notes: Chain Whip from a bow. Kites and drags the farthest in.
