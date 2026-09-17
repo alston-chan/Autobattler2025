@@ -48,7 +48,7 @@ public class UnitInspector : MonoBehaviour
     public float doubleClickSeconds = 0.35f;
 
     [Header("Card")]
-    public Vector2 cardSize = new Vector2(330f, 500f);
+    public Vector2 cardSize = new Vector2(330f, 532f);
     [Tooltip("Inset from the bottom-right corner of the canvas. Bottom-LEFT is taken by the avatar " +
              "strip and the centre by the equipment windows, so the card lives on the right.")]
     public Vector2 cardMargin = new Vector2(-24f, 24f);
@@ -88,6 +88,14 @@ public class UnitInspector : MonoBehaviour
     private readonly TextMeshProUGUI[] _stanceLabels = new TextMeshProUGUI[4];
     private readonly Button[] _stanceButtons = new Button[4];
     private static readonly Stance[] StanceOrder = { Stance.Advance, Stance.Hold, Stance.Kite, Stance.Dive };
+
+    // The other control: which of the hero's spell slots it casts. A book and the weapon's verb
+    // both sit in the slots and only one is cast; the workshop can pick a book, but the verb has no
+    // item to click, so the switch lives here. Setup only, like the stance.
+    private GameObject _slotRow;
+    private readonly Image[] _slotBacks = new Image[Entity.MaxSpellSlots];
+    private readonly TextMeshProUGUI[] _slotLabels = new TextMeshProUGUI[Entity.MaxSpellSlots];
+    private readonly Button[] _slotButtons = new Button[Entity.MaxSpellSlots];
     private RectTransform _manaFill;
     private TextMeshProUGUI _statKeys;
     private TextMeshProUGUI _statValues;
@@ -402,8 +410,46 @@ public class UnitInspector : MonoBehaviour
         _manaRow.SetActive(_selected.Mana != null);
 
         PaintStance();
+        PaintSlots();
         PaintStats();
         PaintKit();
+    }
+
+    /// <summary>The cast row: one button per filled slot, the active one lit. Company only.</summary>
+    private void PaintSlots()
+    {
+        bool mine = _selected.isTeam && _selected.isCharacter;
+        var slots = _selected.spellSlots;
+        int count = mine && slots != null ? Mathf.Min(slots.Count, Entity.MaxSpellSlots) : 0;
+        _slotRow.SetActive(count > 0);
+        if (count == 0) return;
+
+        var game = GameManager.Instance;
+        bool setup = game == null || game.StateMachine.Current == GameState.Setup;
+        for (int i = 0; i < Entity.MaxSpellSlots; i++)
+        {
+            bool filled = i < count && slots[i] != null;
+            _slotButtons[i].gameObject.SetActive(filled);
+            if (!filled) continue;
+            bool lit = i == _selected.activeSpellSlot;
+            _slotLabels[i].text = slots[i].DisplayName;
+            _slotBacks[i].color = lit ? new Color(Ally.r, Ally.g, Ally.b, 0.85f) : Trough;
+            _slotLabels[i].color = lit ? Backing : Muted;
+            _slotButtons[i].interactable = setup;
+        }
+    }
+
+    private void SetActiveSlot(int index)
+    {
+        if (_selected == null || !_selected.isTeam || _selected.spellSlots == null) return;
+        if (index < 0 || index >= _selected.spellSlots.Count) return;
+        var game = GameManager.Instance;
+        if (game != null && game.StateMachine.Current != GameState.Setup) return;
+        _selected.activeSpellSlot = index;
+        // The inventory owns the slots: syncing through it keeps its highlight and CombatAI in step.
+        if (_selected.characterInventory != null) _selected.characterInventory.SyncSpellSlots();
+        else if (_selected.CombatAI != null) _selected.CombatAI.RefreshSpells();
+        Repaint();
     }
 
     /// <summary>
@@ -626,6 +672,7 @@ public class UnitInspector : MonoBehaviour
         _healthFill = BuildBar("Health", out _healthText, HealthAlly, 18f, 4f);
         _manaRow = BuildManaRow();
         _stanceRow = BuildStanceRow();
+        _slotRow = BuildSlotRow();
 
         // Keys and values are two full-width blocks sharing one row, left- and right-aligned, so the
         // numbers line up on the right edge without a layout group.
@@ -714,6 +761,38 @@ public class UnitInspector : MonoBehaviour
             _stanceBacks[i] = back;
             _stanceLabels[i] = label;
             _stanceButtons[i] = button;
+        }
+        return row;
+    }
+
+    /// <summary>Up to three buttons in one row, one per spell slot; labels are painted per unit.</summary>
+    private GameObject BuildSlotRow()
+    {
+        const float height = 22f, gap = 4f;
+        var row = NewRect("Cast", _card.transform, new Vector2(0.5f, 1f), new Vector2(cardSize.x - 28f, height), Vector2.zero);
+        Stack(row.GetComponent<RectTransform>(), height, 10f);
+
+        float width = (cardSize.x - 28f - gap * (Entity.MaxSpellSlots - 1)) / Entity.MaxSpellSlots;
+        for (int i = 0; i < Entity.MaxSpellSlots; i++)
+        {
+            int index = i;
+            float x = -(cardSize.x - 28f) * 0.5f + width * 0.5f + i * (width + gap);
+            var cell = NewRect("Slot" + i, row.transform, new Vector2(0.5f, 0.5f), new Vector2(width, height), new Vector2(x, 0f));
+            var back = cell.AddComponent<Image>();
+            back.color = Trough;
+            var button = cell.AddComponent<Button>();
+            button.targetGraphic = back;
+            button.transition = Selectable.Transition.None;
+            button.onClick.AddListener(() => SetActiveSlot(index));
+
+            var label = NewText("Label", cell.transform, 12f, Muted, TextAlignmentOptions.Center);
+            label.enableWordWrapping = false;
+            label.overflowMode = TextOverflowModes.Ellipsis;
+            Anchor(label.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(width - 6f, height), Vector2.zero);
+
+            _slotBacks[i] = back;
+            _slotLabels[i] = label;
+            _slotButtons[i] = button;
         }
         return row;
     }

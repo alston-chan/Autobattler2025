@@ -447,13 +447,10 @@ public class CharacterInventory : ItemWorkspace
 
         ApplyWeaponLoadout();
 
-        // The weapon's verb comes first: weapons are verbs (Docs/Spells.md), so what the hero holds
-        // is what it casts unless the player picks a book in Setup. Books follow, in the order worn.
+        // Books first, in the order worn, so a hero's authored ability stays the one it casts; the
+        // weapon's verb follows as a slot the player switches to in Setup (Docs/Spells.md). Verb-first
+        // was tried and made every weapon swap silently change the hero's active ability.
         var spells = new List<Spell>();
-        if (CharacterEntity.Resonance != null)
-            foreach (var verb in CharacterEntity.Resonance.GrantedVerbs())
-                if (!spells.Contains(verb) && spells.Count < Entity.MaxSpellSlots) spells.Add(verb);
-
         foreach (var item in Equipment.Items)
         {
             if (spells.Count >= Entity.MaxSpellSlots) break;
@@ -461,6 +458,10 @@ public class CharacterInventory : ItemWorkspace
             var spell = SpellbookDatabase.Active != null ? SpellbookDatabase.Active.GetSpell(item.Id) : null;
             if (spell != null && !spells.Contains(spell)) spells.Add(spell);
         }
+
+        if (CharacterEntity.Resonance != null)
+            foreach (var verb in CharacterEntity.Resonance.GrantedVerbs())
+                if (!spells.Contains(verb) && spells.Count < Entity.MaxSpellSlots) spells.Add(verb);
 
         CharacterEntity.spellSlots = spells;
         if (CharacterEntity.activeSpellSlot >= spells.Count)
