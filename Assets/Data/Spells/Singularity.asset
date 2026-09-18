@@ -35,8 +35,10 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
+  - rid: 2861304566214819852
   - rid: 2861304566214819843
   - rid: 2861304566214819844
+  - rid: 2861304566214819853
   references:
     version: 2
     RefIds:
@@ -44,7 +46,7 @@ MonoBehaviour:
       type: {class: KnockbackEffect, ns: , asm: Assembly-CSharp}
       data:
         scope: 1
-        force: 10
+        force: 7
         pull: 1
     - rid: 2861304566214819844
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
@@ -59,3 +61,16 @@ MonoBehaviour:
         critChance: 0
         alwaysCrit: 0
         hitstop: 0
+    - rid: 2861304566214819852
+      type: {class: AttachEffect, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 3280519133390621005, guid: a71be3e7990efb040a07565c43cbb198, type: 3}
+        seconds: 1.2
+        scale: 1.4
+    - rid: 2861304566214819853
+      type: {class: SpawnEffect, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
+        scope: 1
+        scale: 0.8
+        lifetime: 3

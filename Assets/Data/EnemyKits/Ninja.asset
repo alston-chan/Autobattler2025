@@ -20,5 +20,6 @@ MonoBehaviour:
   - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
   stance: 4
   targetMode: 2
+  commitment: 1
   activeSlot: 0
   notes: Backstab, Substitute, Shadowstep, Shadow Cannon. Dives the back line.

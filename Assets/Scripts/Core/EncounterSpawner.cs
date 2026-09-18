@@ -217,6 +217,7 @@ public class EncounterSpawner : MonoBehaviour
             worn = entity.EquipmentManagement.EquipKit(kit.itemIds);
             entity.stance = kit.stance;
             entity.targetMode = kit.targetMode;
+            entity.commitment = kit.commitment;
         }
         else if (loadout.randomizeEquipment)
         {

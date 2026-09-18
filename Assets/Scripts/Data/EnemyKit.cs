@@ -19,6 +19,8 @@ public class EnemyKit : ScriptableObject
     public Stance stance = Stance.Auto;
     [Tooltip("Whom this enemy goes for.")]
     public TargetMode targetMode = TargetMode.Nearest;
+    [Tooltip("How long it stays on a target it cannot reach.")]
+    public Commitment commitment = Commitment.Balanced;
     [Tooltip("Which spell slot is cast. With no spellbooks, 0 is the weapon's verb.")]
     public int activeSlot = 0;
     [TextArea(1, 4)] public string notes;

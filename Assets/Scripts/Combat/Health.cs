@@ -224,11 +224,18 @@ public class Health : MonoBehaviour
         float blocking = _entity.Stats.Blocking.Value;
         if (blocking <= 0f) return amount;
 
-        return Mathf.Max(MinimumDamage, amount - blocking);
+        // Blocking takes at most half of any hit. Flat blocking against weapons that swing for ten
+        // to forty turned a fifteen-blocking knight into a wall that took one damage a hit, and a
+        // 3v3 into a minute of tapping; half through keeps armour worth wearing and fights ending.
+        float blocked = Mathf.Min(blocking, amount * MaxBlockedFraction);
+        return Mathf.Max(MinimumDamage, amount - blocked);
     }
 
     /// <summary>Floor on a blocked hit, so damage reduction can never fully negate an attack.</summary>
     private const float MinimumDamage = 1f;
+
+    /// <summary>The most of a hit blocking may take: half.</summary>
+    private const float MaxBlockedFraction = 0.5f;
 
     private void Die(Entity killer)
     {

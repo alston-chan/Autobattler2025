@@ -96,6 +96,7 @@ public class CombatPhysics : MonoBehaviour
         if (_instance != null || !Application.isPlaying) return;
         _instance = FindObjectOfType<CombatPhysics>();
         if (_instance == null) _instance = new GameObject("CombatPhysics").AddComponent<CombatPhysics>();
+        if (_instance.GetComponent<ImpactFx>() == null) _instance.gameObject.AddComponent<ImpactFx>();
     }
 
     public static void OnFightStart()

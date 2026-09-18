@@ -11,6 +11,21 @@ public enum TargetMode
 
     /// <summary>Whoever is furthest away — reaching past the front rank at the line behind it.</summary>
     Furthest = 2,
+
+    /// <summary>Whoever is coming for this unit; else the nearest. The archer's answer to an assassin.</summary>
+    Attacker = 3,
+}
+
+/// <summary>
+/// How long a unit stays on a target it cannot reach (Eslabong calls this commitment). Opportunistic
+/// turns on whatever is in reach the moment its target is not; Balanced gives the target a short
+/// leash; Relentless never lets go of it — the berserker's lock, and what a taunt still overrides.
+/// </summary>
+public enum Commitment
+{
+    Opportunistic = 0,
+    Balanced = 1,
+    Relentless = 2,
 }
 
 /// <summary>
@@ -36,6 +51,13 @@ public static class Targeting
     /// </summary>
     public static float LaneBonus = 1.9f;
 
+    /// <summary>How much nearer an enemy that is targeting the chooser counts, for the Attacker mode.</summary>
+    public static float AttackerBonus = 20f;
+
+    /// <summary>The leash, by commitment: how long a target may stay out of reach before the lock breaks.</summary>
+    public static float LeashFor(Commitment commitment) =>
+        commitment == Commitment.Opportunistic ? 0.75f : commitment == Commitment.Balanced ? LeashSeconds : float.PositiveInfinity;
+
     /// <summary>
     /// Pick a target, preferring to keep the one already being fought.
     ///
@@ -59,7 +81,7 @@ public static class Targeting
     /// target; here bodies block and targets drift, and a unit chasing what it cannot reach while
     /// others hit it reads as broken.
     /// </summary>
-    public static float LeashSeconds = 5f;
+    public static float LeashSeconds = 2.5f;
 
     /// <summary>Whether the leash has run out: out of reach, and no progress for longer than it allows.</summary>
     public static bool LeashBroke(float secondsWithoutProgress, bool inReach) =>
@@ -169,7 +191,9 @@ public static class Targeting
         ScoreFor(mode,
                  Vector3.Distance(chooser.transform.position, candidate.transform.position),
                  HealthFraction(candidate),
-                 chooser.OpeningPending && chooser.DeployedLane >= 0 && chooser.DeployedLane == candidate.DeployedLane);
+                 mode == TargetMode.Attacker
+                     ? candidate.CombatAI != null && candidate.CombatAI.CurrentTarget == chooser
+                     : chooser.OpeningPending && chooser.DeployedLane >= 0 && chooser.DeployedLane == candidate.DeployedLane);
 
     public static float ScoreFor(TargetMode mode, float distance, float healthFraction) =>
         ScoreFor(mode, distance, healthFraction, sameLane: false);
@@ -190,6 +214,10 @@ public static class Targeting
             case TargetMode.Furthest:
                 // Inverted so that further away scores lower, and never divides by zero.
                 return 1f / (1f + Mathf.Max(0f, distance));
+
+            case TargetMode.Attacker:
+                // Distance, with whoever is coming for the chooser counted as if it stood far closer.
+                return Mathf.Max(0f, distance - (sameLane ? AttackerBonus : 0f));
 
             default:
                 return Mathf.Max(0f, distance - (sameLane ? LaneBonus : 0f));

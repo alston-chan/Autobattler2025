@@ -52,6 +52,10 @@ public class CombatFeelSettings : ScriptableObject
     [Tooltip("Bodies, impacts, wall slams and stances. See CombatPhysics.")]
     public CombatPhysics.Settings physics = new CombatPhysics.Settings();
 
+    [Header("Impact effects")]
+    [Tooltip("The particles a body-to-body hit and a wall slam spawn.")]
+    public ImpactFx.Settings impactFx = new ImpactFx.Settings();
+
     [Header("Fight clock")]
     [Tooltip("The clock over the fight, and the speed a long fight runs at.")]
     public FightClock.Settings fightClock = new FightClock.Settings();

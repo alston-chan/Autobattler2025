@@ -20,8 +20,11 @@ MonoBehaviour:
     - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
     - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
     stance: 1
+    targetMode: 0
+    commitment: 1
     activeSlot: 0
     noAuthoredSpellbooks: 1
+  heroHealthScale: 0.35
   encounter: {fileID: 11400000, guid: edc09320553d3cf4180e610b4ebc2c03, type: 2}
   loadout: {fileID: 0}
   enemyKits:

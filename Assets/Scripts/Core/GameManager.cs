@@ -8,6 +8,7 @@ using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Elements;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
 using System.Linq;
+using Kryz.CharacterStats;
 using Random = UnityEngine.Random;
 
 public class GameManager : Singleton<GameManager>
@@ -690,12 +691,22 @@ public class GameManager : Singleton<GameManager>
             if (characterEntity.Resonance != null && characterEntity.Resonance.GrantedVerbs().Count > 0)
                 characterInventory.SyncSpellSlots();
 
-            // The scenario's last word: how the hero stands and which slot it casts.
+            // The scenario's last word: how the hero stands, whom it goes for, which slot it casts,
+            // and how much health it brings.
             if (kit != null)
             {
                 characterEntity.stance = kit.stance;
+                characterEntity.targetMode = kit.targetMode;
+                characterEntity.commitment = kit.commitment;
                 characterEntity.activeSpellSlot = Mathf.Clamp(kit.activeSlot, 0, Mathf.Max(0, characterEntity.spellSlots.Count - 1));
                 characterInventory.SyncSpellSlots();
+                float scale = Playtest.Scenario.heroHealthScale;
+                if (scale > 0f && !Mathf.Approximately(scale, 1f) && characterEntity.Stats != null && characterEntity.Stats.MaxHealth != null)
+                {
+                    characterEntity.Stats.MaxHealth.AddModifier(new StatModifier(scale - 1f, StatModType.PercentMult, this));
+                    characterEntity.Health.SyncMaxFromStats();
+                    characterEntity.Health.HealToFull();
+                }
             }
         }
     }

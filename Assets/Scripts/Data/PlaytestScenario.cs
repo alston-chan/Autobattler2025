@@ -21,6 +21,8 @@ public class PlaytestScenario : ScriptableObject
         [Tooltip("What the hero wears. Weapon verbs and set engravings follow from the items.")]
         [ValueDropdown("ItemIds")] public List<string> itemIds = new List<string>();
         public Stance stance = Stance.Auto;
+        public TargetMode targetMode = TargetMode.Nearest;
+        public Commitment commitment = Commitment.Balanced;
         [Tooltip("Which spell slot is cast. With no spellbooks, 0 is the weapon's verb.")]
         public int activeSlot = 0;
         [Tooltip("Leave the hero's authored spellbooks out, so the weapon's verb is the only ability.")]
@@ -31,6 +33,9 @@ public class PlaytestScenario : ScriptableObject
 
     [Tooltip("The heroes to field. Everyone else sits out. Empty fields the company as authored.")]
     public List<HeroKit> heroes = new List<HeroKit>();
+
+    [Tooltip("Scales the fielded heroes' max health, so a scenario can be paced: 0.5 halves it.")]
+    public float heroHealthScale = 1f;
 
     [Tooltip("The encounter every fight of this scenario plays, in place of the run's. Empty keeps the run's.")]
     public EncounterData encounter;

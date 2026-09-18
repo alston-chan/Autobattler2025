@@ -193,21 +193,26 @@ public class CombatAI : MonoBehaviour
             // from here, whatever the weapon's reach is.
             bool acted = Attack(CurrentTarget, distToTarget);
 
-            // The leash. Progress is any of: a swing, standing within reach, or having closed the
-            // distance since last frame. None of that for LeashSeconds means the target cannot be
-            // reached — blocked by bodies, or drifting away — and the lock breaks.
+            // The leash is reach: a target that has been out of reach for longer than the unit's
+            // commitment allows is let go. Closing the distance no longer counts as progress — a unit
+            // knocked away and walking back closes the distance every frame and never reached anyone,
+            // which is the pinball the leash was meant to end. Relentless never lets go.
             bool inReach = distToTarget <= _attackRange || _isAttacking;
-            if (acted || inReach || distToTarget < _lastDistanceToTarget - 0.02f) _lastProgressTime = Time.time;
+            if (acted || inReach) _lastProgressTime = Time.time;
             _lastDistanceToTarget = distToTarget;
-            if (Targeting.LockOn && Targeting.LeashBroke(Time.time - _lastProgressTime, inReach))
+            float leash = Targeting.LeashFor(_entity.commitment);
+            bool taunted = _entity.Statuses != null && _entity.Statuses.TauntedBy != null;
+            if (Targeting.LockOn && !inReach && !taunted && Time.time - _lastProgressTime > leash)
             {
+                // Something in reach that is coming for us, or anything in reach at all, is the
+                // better fight right now; failing that, pick again without this one.
+                var threat = ThreatInReach();
                 LeashBreaks++;
                 _leashed = CurrentTarget;
                 _leashedUntil = Time.time + LeashHoldoffSeconds;
-                CurrentTarget = null;
                 _lastProgressTime = Time.time;
-                SetAnimState(false);
-                return;                                   // pick again next frame, without this one
+                if (threat != null) { Retarget(threat); }
+                else { CurrentTarget = null; SetAnimState(false); return; }   // pick again next frame, without this one
             }
 
 
@@ -346,6 +351,27 @@ public class CombatAI : MonoBehaviour
 
             float score = gain + Vector3.Dot(dir, home) * s.kiteHomeBias + Mathf.Clamp01(roomTo / (margin * 2f + 0.01f)) * 0.5f;
             if (score > bestScore) { bestScore = score; best = dir; }
+        }
+        return best;
+    }
+
+    /// <summary>
+    /// An enemy within this unit's reach worth turning on: one that is targeting us first, else the
+    /// nearest. What a unit swings at when the one it wanted cannot be reached.
+    /// </summary>
+    private Entity ThreatInReach()
+    {
+        Entity best = null; float bestD = float.MaxValue; bool bestComing = false;
+        var all = EntityRegistry.All;
+        for (int i = 0; i < all.Count; i++)
+        {
+            var e = all[i];
+            if (e == null || e.isDead || e.isTeam == _entity.isTeam || !e.gameObject.activeInHierarchy || e == CurrentTarget) continue;
+            if (!Targeting.IsEnemyOf(_entity, e)) continue;
+            float d = Vector3.Distance(transform.position, e.transform.position);
+            if (d > _attackRange) continue;
+            bool coming = e.CombatAI != null && e.CombatAI.CurrentTarget == _entity;
+            if (coming && !bestComing || (coming == bestComing && d < bestD)) { best = e; bestD = d; bestComing = coming; }
         }
         return best;
     }

@@ -19,6 +19,7 @@ MonoBehaviour:
   - FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].boots
   - Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
   stance: 3
-  targetMode: 0
+  targetMode: 3
+  commitment: 0
   activeSlot: 0
   notes: Chain Whip from a bow. Kites and drags the farthest in.

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcca2034da0291f4191ef56b8a40065b, type: 3}
   m_Name: CombatFeelSettings
   m_EditorClassIdentifier: 
-  enableHitstop: 0
+  enableHitstop: 1
   enableKnockback: 1
   disabledSpells: []
   hitFeedback:
@@ -64,14 +64,14 @@ MonoBehaviour:
     damping: 4
     restSpeed: 0.6
     impactSpeed: 3
-    impactPercentPerSpeed: 0.01
-    wallPercentPerSpeed: 0.015
-    maxImpactPercent: 0.25
+    impactPercentPerSpeed: 0.006
+    wallPercentPerSpeed: 0.008
+    maxImpactPercent: 0.15
     momentumTransfer: 0.6
     chargeRetain: 0.7
     bounce: 0.35
     impactStun: 0.25
-    impactHitstop: 0.06
+    impactHitstop: 0.1
     impactCooldown: 0.15
     kiteOnlyWhenTargeted: 1
     kiteFraction: 0.6
@@ -80,6 +80,10 @@ MonoBehaviour:
     kiteSpeed: 0.85
     kiteWallMargin: 1
     holdSeconds: 4
+  impactFx:
+    bodyHit: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+    wallSlam: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+    scale: 0.9
   fightClock:
     showClock: 1
     speedUpAfter: 40

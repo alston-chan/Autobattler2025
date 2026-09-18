@@ -36,7 +36,9 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
+  - rid: 2861304566214819850
   - rid: 2861304566214819842
+  - rid: 2861304566214819851
   references:
     version: 2
     RefIds:
@@ -52,5 +54,19 @@ MonoBehaviour:
           ofCasterMaxHealth: 0
           perTier: 0.25
         critChance: 0
-        knockback: 12
-        hitstop: 0.08
+        knockback: 8
+        hitstop: 0.12
+    - rid: 2861304566214819850
+      type: {class: SpawnEffect, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
+        scope: 2
+        scale: 1.6
+        lifetime: 4
+    - rid: 2861304566214819851
+      type: {class: SpawnEffect, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 5339739117810204693, guid: 26e1cb216e3635e4a820f58a1118d6b9, type: 3}
+        scope: 2
+        scale: 0.7
+        lifetime: 2

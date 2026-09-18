@@ -19,7 +19,7 @@ MonoBehaviour:
     weight: 1
   meleeBasicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
   bowBasicAttack: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
-  healthMultiplier: 10
+  healthMultiplier: 3.5
   rangedChance: 0.35
   abilityChance: 1
   abilities:

@@ -36,6 +36,7 @@ MonoBehaviour:
   scalesWithAttackSpeed: 0
   baseDamage: 0
   effects:
+  - rid: 2861304566214819856
   - rid: 2861304566214819847
   references:
     version: 2
@@ -43,4 +44,10 @@ MonoBehaviour:
     - rid: 2861304566214819847
       type: {class: DashEffect, ns: , asm: Assembly-CSharp}
       data:
-        force: 14
+        force: 11
+    - rid: 2861304566214819856
+      type: {class: AttachEffect, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 3696007233179127096, guid: c248f95ffea8b8543bc7ad0fffe0216d, type: 3}
+        seconds: 0.8
+        scale: 1.2

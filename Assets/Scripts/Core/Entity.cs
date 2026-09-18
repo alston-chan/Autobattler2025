@@ -106,6 +106,10 @@ public class Entity : MonoBehaviour
              "LowestHealth makes a finisher; Furthest reaches past the front rank.")]
     public TargetMode targetMode = TargetMode.Nearest;
 
+    [Tooltip("How long this unit stays on a target it cannot reach: Opportunistic turns on whatever is " +
+             "in reach at once, Balanced after a short leash, Relentless never (a taunt still turns it).")]
+    public Commitment commitment = Commitment.Balanced;
+
     [Tooltip("How much better a rival target must be before this unit turns away from the one it " +
              "is already fighting, as a fraction: 0.25 means a quarter better. Zero makes a unit " +
              "flip between two equally close enemies every frame and close on neither.")]
