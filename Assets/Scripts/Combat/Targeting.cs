@@ -233,7 +233,7 @@ public static class Targeting
     public static bool BeatsIncumbent(float bestScore, float incumbentScore, float stickiness) =>
         bestScore < incumbentScore * (1f - Mathf.Clamp01(stickiness));
 
-    private static float HealthFraction(Entity entity)
+    public static float HealthFraction(Entity entity)
     {
         var health = entity.Health;
         if (health == null || health.maxHealth <= 0f) return 1f;

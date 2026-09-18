@@ -404,6 +404,37 @@ public class ItemPage
         set { _entry.engraving = value; Dirty(); }
     }
 
+    // A new engraving without leaving the page: pick the kind (every concrete Engraving type in the
+    // project, a Tactics one included), and it is created next to the others, named after the item,
+    // and put on this entry. Its fields are then edited inline above.
+    [BoxGroup("Engraving"), HorizontalGroup("Engraving/new"), ShowInInspector, LabelText("New"), LabelWidth(40)]
+    [ValueDropdown("EngravingTypes")]
+    private System.Type _newEngravingType;
+
+    private static IEnumerable<ValueDropdownItem<System.Type>> EngravingTypes() =>
+        TypeCache.GetTypesDerivedFrom<Engraving>()
+            .Where(t => !t.IsAbstract)
+            .OrderBy(t => t.Name)
+            .Select(t => new ValueDropdownItem<System.Type>(t.Name.EndsWith("Engraving") ? t.Name.Substring(0, t.Name.Length - 9) : t.Name, t));
+
+    [BoxGroup("Engraving"), HorizontalGroup("Engraving/new", 120), Button("Create"), EnableIf("@_newEngravingType != null")]
+    private void CreateEngraving()
+    {
+        if (_newEngravingType == null) return;
+        var asset = ScriptableObject.CreateInstance(_newEngravingType) as Engraving;
+        if (asset == null) return;
+        string shortName = _entry.itemId.Substring(_entry.itemId.LastIndexOf('.') + 1).Replace(" ", "").Replace("[", "").Replace("]", "");
+        string kind = _newEngravingType.Name.EndsWith("Engraving") ? _newEngravingType.Name.Substring(0, _newEngravingType.Name.Length - 9) : _newEngravingType.Name;
+        string path = AssetDatabase.GenerateUniqueAssetPath("Assets/Data/Engravings/" + kind + "_" + shortName + ".asset");
+        asset.engravingName = Catalog.DisplayName(_entry.itemId);
+        AssetDatabase.CreateAsset(asset, path);
+        AssetDatabase.SaveAssetIfDirty(asset);
+        _entry.engraving = asset;
+        Dirty();
+        _window.ForceMenuTreeRebuild();
+        EditorGUIUtility.PingObject(asset);
+    }
+
     // ---- try it
 
     // Ordered last by hand: Odin draws fields before properties, which put this box above the
