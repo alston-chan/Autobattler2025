@@ -234,6 +234,8 @@ Writing them:
   project (`Projectile`'s 3D bullet, `CharacterInventorySetup`'s unimplemented firearm equip and its
   cape handling — a cape is typed Armor and used to wipe the armour equipped before it — and
   `Equipment.FindItem`, which mirrors a paired dagger into the off-hand slot as it already did for
-  two-handers). Vendor files are CRLF: a text edit must match `
+  two-handers; and both `ScaleSpring`s, HeroEditor's and FantasyMonsters', whose hit squash wrote back the
+  facing it captured when the hit landed, so a unit turned during the squash — the fight ending and standing
+  it down — snapped back to face the wrong way). Vendor files are CRLF: a text edit must match `
 `.
   Each such edit says in a comment what it replaced and why.

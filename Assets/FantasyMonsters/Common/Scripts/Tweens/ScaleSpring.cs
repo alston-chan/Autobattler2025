@@ -26,7 +26,12 @@ namespace Assets.FantasyMonsters.Common.Scripts.Tweens
         {
             _amplitude = Mathf.Max(0, _amplitude - Dumping * Time.deltaTime);
 
-            transform.localScale = _scale * (From + (To - From) * Sin() * _amplitude);
+            // Project edit: the spring used to write back the scale it captured when the hit landed,
+            // facing included. A unit turned during the squash (the fight ending and standing it down,
+            // a target crossing behind it) snapped back to the old facing on the next frame, and a
+            // hero hit facing left as the fight ended stood facing left through the whole setup screen.
+            // Only the magnitude is the spring's to animate; the sign is whoever turned the unit last.
+            transform.localScale = KeepFacing(_scale * (From + (To - From) * Sin() * _amplitude));
      
             if (_amplitude <= 0)
             {
@@ -43,7 +48,13 @@ namespace Assets.FantasyMonsters.Common.Scripts.Tweens
 
         public void OnDisable()
         {
-            transform.localScale = _scale;
+            transform.localScale = KeepFacing(_scale);
+        }
+
+        private Vector3 KeepFacing(Vector3 scale)
+        {
+            scale.x = Mathf.Abs(scale.x) * (transform.localScale.x < 0 ? -1 : 1);
+            return scale;
         }
 
         public void Reset()
