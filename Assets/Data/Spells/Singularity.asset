@@ -20,7 +20,7 @@ MonoBehaviour:
   cooldown: 0
   range: 6
   alwaysOn: 0
-  manaCost: 60
+  manaCost: 100
   weaponRequirement: 0
   selector:
     who: 6
@@ -33,6 +33,7 @@ MonoBehaviour:
   contactFallback: 0.2
   contactTimeout: 1
   scalesWithAttackSpeed: 0
+  physicsPerTier: 0.25
   baseDamage: 0
   effects:
   - rid: 2861304566214819852
