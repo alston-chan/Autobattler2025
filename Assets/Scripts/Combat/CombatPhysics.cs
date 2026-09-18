@@ -33,6 +33,10 @@ public class CombatPhysics : MonoBehaviour
         public float allyPush = 0.35f;
         [Tooltip("How fast a knockback dies out. A throw travels about force / damping units.")]
         public float damping = 4f;
+        [Tooltip("The soft wall: a body this close to the arena's edge is nudged back toward the field, so the scrum forms a body's width off the wall and a knocked unit rolls back in. 0 turns it off.")]
+        public float softWall = 1.2f;
+        [Tooltip("How hard the soft wall pushes, in units per second at the edge itself, fading to nothing at the soft wall's distance.")]
+        public float softWallPush = 1.5f;
         [Tooltip("A throw is over once the body is slower than this (units/s) and the unit may walk again. The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
         public float restSpeed = 0.6f;
 
@@ -119,6 +123,25 @@ public class CombatPhysics : MonoBehaviour
         {
             var e = all[i];
             if (e != null && !e.isDead && e.IsFighting && e.gameObject.activeInHierarchy && e.Knockback != null) _bodies.Add(e);
+        }
+
+        // The soft wall: everyone near the edge drifts back toward the field a little each frame,
+        // before the bodies are resolved against each other, so the fight lives a body's width in.
+        if (s.softWall > 0f && s.softWallPush > 0f && ArenaBounds.Instance != null)
+        {
+            var arena = ArenaBounds.Instance;
+            for (int i = 0; i < _bodies.Count; i++)
+            {
+                var e = _bodies[i];
+                if (IsFixed(e)) continue;
+                Vector3 p = e.transform.position;
+                float room = arena.EdgeRoom(p);
+                if (room >= s.softWall) continue;
+                Vector3 inward = new Vector3(arena.center.x, arena.center.y, 0f) - new Vector3(p.x, p.y, 0f);
+                if (inward.sqrMagnitude < 0.0001f) continue;
+                float strength = (1f - room / s.softWall) * s.softWallPush * Time.deltaTime;
+                e.transform.position = arena.Clamp(p + inward.normalized * strength);
+            }
         }
 
         for (int i = 0; i < _bodies.Count; i++)

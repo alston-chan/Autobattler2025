@@ -59,9 +59,11 @@ MonoBehaviour:
   physics:
     enableBodies: 1
     enableImpacts: 1
-    bodyRadius: 0.45
+    bodyRadius: 0.55
     allyPush: 0.35
     damping: 4
+    softWall: 1.2
+    softWallPush: 1.5
     restSpeed: 0.6
     impactSpeed: 3
     impactPercentPerSpeed: 0.006
@@ -76,7 +78,7 @@ MonoBehaviour:
     kiteOnlyWhenTargeted: 1
     kiteFraction: 0.6
     kiteHysteresis: 1.5
-    kiteHomeBias: 0.5
+    kiteHomeBias: 0
     kiteSpeed: 0.85
     kiteWallMargin: 1
     holdSeconds: 4
