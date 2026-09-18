@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellName: Fan of Knives
   description: A shuriken at every enemy in range. Each one Marks.
-  cooldown: 7
+  cooldown: 0
   range: 6
   alwaysOn: 0
   manaCost: 30

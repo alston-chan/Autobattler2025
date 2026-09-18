@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: BoomerangThrow
   m_EditorClassIdentifier: 
   spellName: Boomerang
-  description: Throw a boomerang past the target. Everything along its path takes 12 going out and 12 again coming back. Costs 75 mana.
-  cooldown: 5
+  description: Throw a boomerang past the target. Everything along its path takes
+    12 going out and 12 again coming back. Costs 75 mana.
+  cooldown: 0
   range: 7
   alwaysOn: 0
   manaCost: 75
@@ -25,6 +26,7 @@ MonoBehaviour:
   releaseFallback: 0.33
   maxReleaseWait: 1
   damage: 12
+  critChance: 0.15
   speed: 11
   hitRadius: 0.7
   overshoot: 3.5

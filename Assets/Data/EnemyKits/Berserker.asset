@@ -18,8 +18,5 @@ MonoBehaviour:
   - FantasyHeroes.Basic.Armor.BerserkArmor.vest
   - FantasyHeroes.Basic.Armor.BerserkArmor.boots
   - FantasyHeroes.Basic.Helmet.BerserkHelm
-  stance: 1
-  targetMode: 1
-  commitment: 2
   activeSlot: 0
   notes: Repulsion Nova on an axe. Goes for the weakest.

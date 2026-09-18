@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Star Throw
   description: Throw a star at the current target for 18. Quick and cheap, for 50
     mana.
-  cooldown: 3
+  cooldown: 0
   range: 7
   alwaysOn: 0
   manaCost: 50

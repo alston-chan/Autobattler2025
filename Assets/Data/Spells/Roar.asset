@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Roar
   description: Taunt every enemy nearby for 3 s, and gain 5% max health as Shield
     per enemy taunted.
-  cooldown: 8
+  cooldown: 0
   range: 20
   alwaysOn: 0
   manaCost: 35

@@ -3,8 +3,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
-/// A fight to play on purpose: which heroes field, in what gear, with what stance and which spell
-/// active, against which encounter. For playtesting a question — does 3v3 read better than 5v5,
+/// A fight to play on purpose: which heroes field, in what gear and with which spell active,
+/// against which encounter. Tactics come from the gear, as always. For playtesting a question — does 3v3 read better than 5v5,
 /// does a ninja whose blink fires a Cannonball feel as good as it sounds — without touching the
 /// scene or the run. Nothing here is saved anywhere: the scenario is applied at the start of play
 /// and forgotten when play stops. Pick one in Tools > Playtest > Scenarios; none means the game as
@@ -20,9 +20,6 @@ public class PlaytestScenario : ScriptableObject
         public string heroName;
         [Tooltip("What the hero wears. Weapon verbs and set engravings follow from the items.")]
         [ValueDropdown("ItemIds")] public List<string> itemIds = new List<string>();
-        public Stance stance = Stance.Auto;
-        public TargetMode targetMode = TargetMode.Nearest;
-        public Commitment commitment = Commitment.Balanced;
         [Tooltip("Which spell slot is cast. With no spellbooks, 0 is the weapon's verb.")]
         public int activeSlot = 0;
         [Tooltip("Leave the hero's authored spellbooks out, so the weapon's verb is the only ability.")]

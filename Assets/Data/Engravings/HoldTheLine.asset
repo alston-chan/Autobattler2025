@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: HoldTheLine
   m_EditorClassIdentifier: 
   engravingName: Hold the Line
-  description: While you have not moved, allies Beside you take 5% less per tier.
+  description: Holds the ground. While you have not moved, allies Beside you take
+    5% less per tier.
   heldLine: {fileID: 11400000, guid: ae75f5482db11224684e11296fd07f8d, type: 2}
   slack: 0.6

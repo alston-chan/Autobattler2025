@@ -213,11 +213,8 @@ public class EncounterSpawner : MonoBehaviour
         List<Item> worn;
         if (kit != null)
         {
-            // A kit: worn like a hero's, standing and aiming as the kit says.
+            // A kit: worn like a hero's. How it fights follows from what it wears, as for a hero.
             worn = entity.EquipmentManagement.EquipKit(kit.itemIds);
-            entity.stance = kit.stance;
-            entity.targetMode = kit.targetMode;
-            entity.commitment = kit.commitment;
         }
         else if (loadout.randomizeEquipment)
         {

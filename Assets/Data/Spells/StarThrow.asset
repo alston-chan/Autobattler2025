@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: StarThrow
   m_EditorClassIdentifier: 
   spellName: Throwing Star
-  description: Throw a star at the current target for 18. Quick and cheap, for 50 mana.
-  cooldown: 3
+  description: Throw a star at the current target for 18. Quick and cheap, for 50
+    mana.
+  cooldown: 0
   range: 7
   alwaysOn: 0
   manaCost: 50
@@ -25,6 +26,7 @@ MonoBehaviour:
   releaseFallback: 0.33
   maxReleaseWait: 1
   damage: 18
+  critChance: 0.15
   speed: 16
   hitRadius: 0.6
   overshoot: 3

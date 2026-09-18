@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Backstab
   m_EditorClassIdentifier: 
   spellName: Backstab
-  description: Vanish and reappear behind the enemy closest to death, striking for 45 (35% crit). Enemies lose track of the assassin for 2.5s. Costs full mana.
-  cooldown: 9
+  description: Vanish and reappear behind the enemy closest to death, striking for
+    45 (35% crit). Enemies lose track of the assassin for 2.5s. Costs full mana.
+  cooldown: 0
   range: 100
   alwaysOn: 0
   manaCost: 100

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellName: Shield Wall
   description: Allies you cover gain a shield of 15% of their max health for 3 s.
-  cooldown: 9
+  cooldown: 0
   range: 20
   alwaysOn: 0
   manaCost: 30

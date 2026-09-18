@@ -19,9 +19,6 @@ MonoBehaviour:
     - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
     - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
     - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
-    stance: 1
-    targetMode: 0
-    commitment: 1
     activeSlot: 0
     noAuthoredSpellbooks: 1
   heroHealthScale: 0.35

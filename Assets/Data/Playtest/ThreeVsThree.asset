@@ -19,9 +19,6 @@ MonoBehaviour:
     - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
     - FantasyHeroes.Basic.Armor.NinjaOutfit.boots
     - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
-    stance: 4
-    targetMode: 0
-    commitment: 1
     activeSlot: 0
     noAuthoredSpellbooks: 1
   - heroName: Hero_Melee_KnightShield
@@ -31,9 +28,6 @@ MonoBehaviour:
     - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest
     - Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots
     - Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
-    stance: 2
-    targetMode: 0
-    commitment: 1
     activeSlot: 0
     noAuthoredSpellbooks: 1
   - heroName: Hero_Wand
@@ -41,9 +35,6 @@ MonoBehaviour:
     - FantasyHeroes.Basic.MeleeWeapon1H.BishopWand
     - Extensions.Epic.Shield.BlazeShield
     - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
-    stance: 3
-    targetMode: 0
-    commitment: 1
     activeSlot: 0
     noAuthoredSpellbooks: 1
   heroHealthScale: 0.35

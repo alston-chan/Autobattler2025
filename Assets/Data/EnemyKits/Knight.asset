@@ -19,8 +19,5 @@ MonoBehaviour:
   - FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest
   - FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].boots
   - FantasyHeroes.Knights.Helmet.EliteKnightHelm
-  stance: 2
-  targetMode: 0
-  commitment: 1
   activeSlot: 0
   notes: Cannonball on a plain sword, Bulwark on the shield. Holds the front.

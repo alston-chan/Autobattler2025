@@ -17,8 +17,5 @@ MonoBehaviour:
   - FantasyHeroes.Basic.MeleeWeapon1H.BishopWand
   - Extensions.Epic.Shield.BlazeShield
   - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
-  stance: 3
-  targetMode: 3
-  commitment: 0
   activeSlot: 0
   notes: Singularity from a wand. Kites.

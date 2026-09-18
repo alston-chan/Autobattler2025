@@ -43,7 +43,7 @@ public class PlaytestWindow : EditorWindow
             if (GUILayout.Button("Select", GUILayout.Width(60))) Selection.activeObject = scenario;
             EditorGUILayout.EndHorizontal();
             var summary = new List<string>();
-            if (scenario.heroes != null) foreach (var h in scenario.heroes) if (h != null) summary.Add(h.heroName + " (" + h.stance + ")");
+            if (scenario.heroes != null) foreach (var h in scenario.heroes) if (h != null) summary.Add(h.heroName);
             EditorGUILayout.LabelField(summary.Count > 0 ? string.Join(", ", summary) : "the whole company", EditorStyles.miniLabel);
             if (scenario.encounter != null) EditorGUILayout.LabelField("vs " + scenario.encounter.encounterName + " (" + (scenario.encounter.spawns != null ? scenario.encounter.spawns.Count : 0) + ")", EditorStyles.miniLabel);
             if (!string.IsNullOrEmpty(scenario.notes)) EditorGUILayout.LabelField(scenario.notes, EditorStyles.wordWrappedMiniLabel);

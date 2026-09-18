@@ -3,9 +3,9 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
-/// An enemy dressed on purpose: what it wears, how it stands, whom it goes for, which slot it casts.
-/// Worn gear resonates as a hero's does, so the kit's weapon teaches its verb and its set pieces
-/// grant their engravings. An encounter can name a kit per spawn, a loadout can hold a pool the
+/// An enemy dressed on purpose: what it wears and which slot it casts. Worn gear resonates as a
+/// hero's does, so the kit's weapon teaches its verb, its set pieces grant their engravings, and its
+/// tactics item says how it fights — a kit authors no stance of its own, exactly like a hero. An encounter can name a kit per spawn, a loadout can hold a pool the
 /// spawner draws from, and a playtest scenario can do either. Kits are what make enemies read as a
 /// team with a plan rather than a crowd with weapons.
 /// </summary>
@@ -16,11 +16,6 @@ public class EnemyKit : ScriptableObject
     public string kitName;
     [Tooltip("Everything worn, weapon included. Unknown ids are skipped with a warning.")]
     [ValueDropdown("ItemIds")] public List<string> itemIds = new List<string>();
-    public Stance stance = Stance.Auto;
-    [Tooltip("Whom this enemy goes for.")]
-    public TargetMode targetMode = TargetMode.Nearest;
-    [Tooltip("How long it stays on a target it cannot reach.")]
-    public Commitment commitment = Commitment.Balanced;
     [Tooltip("Which spell slot is cast. With no spellbooks, 0 is the weapon's verb.")]
     public int activeSlot = 0;
     [TextArea(1, 4)] public string notes;

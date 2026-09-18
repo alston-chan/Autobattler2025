@@ -2,9 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Wall Keeper lower — Hold the Line: while you have not moved, allies Beside you take less. Beside
-/// is read from the frozen board at the bell (Docs/PositionalKeywords.md), the allies wear the Held
-/// Line status, and the first real step the owner takes lifts it. Tier is the status's stack count.
+/// Wall Keeper lower — Hold the Line: you hold your ground, and while you have not moved, allies
+/// Beside you take less. The stance is part of the engraving (a tactic, like a TacticsEngraving
+/// carries) because the effect is about not moving: a wearer that advanced at the bell lifted its
+/// own line with its first step. Beside is read from the frozen board at the bell
+/// (Docs/PositionalKeywords.md), the allies wear the Held Line status, and the first real step the
+/// owner takes lifts it. Tier is the status's stack count.
 /// </summary>
 [CreateAssetMenu(menuName = "Data/Engravings/Hold the Line", fileName = "HoldTheLine")]
 public class HoldTheLineEngraving : Engraving
@@ -17,6 +20,9 @@ public class HoldTheLineEngraving : Engraving
     [System.NonSerialized] private readonly List<Entity> _held = new List<Entity>();
     [System.NonSerialized] private float _walked;
     [System.NonSerialized] private bool _broken;
+
+    public override void OnGranted(Entity owner, int tier) { if (owner != null) owner.SetTactics(this, Stance.Hold, null, null); }
+    public override void OnRevoked(Entity owner, int tier) { if (owner != null) owner.ClearTactics(this); }
 
     public override void OnCombatStart(Entity owner, int tier)
     {
@@ -48,5 +54,5 @@ public class HoldTheLineEngraving : Engraving
         _held.Clear();
     }
 
-    public override string DescribeTier(int tier) => $"While you have not moved, allies Beside you take {5 * Mathf.Max(1, tier)}% less.";
+    public override string DescribeTier(int tier) => $"Holds. While you have not moved, allies Beside you take {5 * Mathf.Max(1, tier)}% less.";
 }

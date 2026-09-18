@@ -691,13 +691,10 @@ public class GameManager : Singleton<GameManager>
             if (characterEntity.Resonance != null && characterEntity.Resonance.GrantedVerbs().Count > 0)
                 characterInventory.SyncSpellSlots();
 
-            // The scenario's last word: how the hero stands, whom it goes for, which slot it casts,
-            // and how much health it brings.
+            // The scenario's last word: which slot the hero casts and how much health it brings.
+            // How it fights follows from the gear the scenario put on it.
             if (kit != null)
             {
-                characterEntity.stance = kit.stance;
-                characterEntity.targetMode = kit.targetMode;
-                characterEntity.commitment = kit.commitment;
                 characterEntity.activeSpellSlot = Mathf.Clamp(kit.activeSlot, 0, Mathf.Max(0, characterEntity.spellSlots.Count - 1));
                 characterInventory.SyncSpellSlots();
                 float scale = Playtest.Scenario.heroHealthScale;

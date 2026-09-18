@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Backstab
   description: "Blink behind the Marked enemy \u2014 or the weakest \u2014 and crit.
     A kill resets the cooldown."
-  cooldown: 6
+  cooldown: 0
   range: 20
   alwaysOn: 0
   manaCost: 40

@@ -18,8 +18,5 @@ MonoBehaviour:
   - FantasyHeroes.Basic.Armor.SpearmanArmor.vest
   - FantasyHeroes.Basic.Armor.SpearmanArmor.boots
   - FantasyHeroes.Basic.Helmet.SpearmanHelm1
-  stance: 4
-  targetMode: 2
-  commitment: 2
   activeSlot: 0
   notes: Bull Rush on a spear. Charges the back line.

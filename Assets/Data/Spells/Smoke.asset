@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Smoke
   description: 'A cloud: allies inside slip out of sight for 2 s; enemies inside
     are Exposed.'
-  cooldown: 10
+  cooldown: 0
   range: 20
   alwaysOn: 0
   manaCost: 35

@@ -43,7 +43,11 @@ public static class Tactics
         _ => "balanced",
     };
 
-    /// <summary>One line for a unit: "Holds · the nearest · balanced".</summary>
-    public static string Line(Entity unit) =>
-        Word(unit.EffectiveStance) + " · " + Word(unit.EffectiveTarget) + " · " + Word(unit.EffectiveCommitment);
+    /// <summary>One line for a unit: "Holds · the nearest · balanced". A diver goes for the farthest, as the AI has it.</summary>
+    public static string Line(Entity unit)
+    {
+        var stance = unit.EffectiveStance;
+        var target = stance == Stance.Dive ? TargetMode.Furthest : unit.EffectiveTarget;
+        return Word(stance) + " · " + Word(target) + " · " + Word(unit.EffectiveCommitment);
+    }
 }

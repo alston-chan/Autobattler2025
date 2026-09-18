@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Tactics_Diver
   m_EditorClassIdentifier: 
   engravingName: Diver's Crest
-  description: 'The wearer dives: it picks the farthest enemy and runs at it through
-    whatever is in the way.'
+  description: 'The wearer dives: it picks the farthest enemy, runs at it through
+    whatever is in the way, and never lets go.'
   stance: 4
   setsTarget: 0
   targetMode: 0
-  setsCommitment: 0
-  commitment: 1
+  setsCommitment: 1
+  commitment: 2
