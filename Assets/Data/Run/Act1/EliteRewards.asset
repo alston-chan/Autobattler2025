@@ -19,3 +19,7 @@ MonoBehaviour:
   - Extensions.Epic.Shield.BlazeShield
   - FantasyHeroes.Basic.Bow.BattleBow
   - FantasyHeroes.Basic.Armor.BanditArmor.vest
+  - FantasyHeroes.Basic.Helmet.BerserkHelm
+  - FantasyHeroes.Basic.Helmet.SpearmanHelm1
+  - FantasyHeroes.Knights.Helmet.EliteKnightHelm
+  - Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood

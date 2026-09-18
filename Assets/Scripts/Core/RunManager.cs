@@ -97,7 +97,6 @@ public class RunManager : MonoBehaviour
                 continue;
             }
             Formation.Place(hero, saved.column, saved.row);
-            hero.stance = (Stance)saved.stance;
         }
 
         if (State.IsMapRun)
@@ -148,8 +147,6 @@ public class RunManager : MonoBehaviour
                 saved.column = cell.x;
                 saved.row = cell.y;
             }
-            saved.stance = (int)hero.stance;
-
             var inventory = hero.characterInventory;
             if (inventory != null && inventory.Equipment != null)
                 saved.equipped = RunSave.FromItems(inventory.Equipment.Items);

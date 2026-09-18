@@ -76,17 +76,51 @@ public class Entity : MonoBehaviour
         if (!fighting && Health != null) Health.ClearShield(broken: false);
     }
 
-    [Header("Stance")]
-    [Tooltip("How this unit uses the space between it and the enemy (Docs/Combat.md). Auto: ranged " +
-             "units Kite, everyone else Advances.")]
+    [Header("Tactics")]
+    [Tooltip("How this unit uses the space between it and the enemy (Docs/Combat.md), as authored: by " +
+             "its UnitData, an enemy kit or a playtest scenario. Auto: ranged units Kite, everyone else " +
+             "Advances. A worn tactics item has the last word (EffectiveStance).")]
     public Stance stance = Stance.Auto;
 
     /// <summary>
-    /// The stance in force. Auto resolves by reach: a unit whose weapon attack reaches four units
-    /// or more (a bow, a wand) kites, and everyone else advances. Reach rather than the ranged
-    /// flag, because that flag also means "aims a bow arm", which a wand does not.
+    /// The stance in force: what a worn tactics item says, else the authored one. Auto resolves by
+    /// reach: a unit whose weapon attack reaches four units or more (a bow, a wand) kites, and
+    /// everyone else advances. Reach rather than the ranged flag, because that flag also means
+    /// "aims a bow arm", which a wand does not.
     /// </summary>
-    public Stance EffectiveStance => stance == Stance.Auto ? (FightsAtRange ? Stance.Kite : Stance.Advance) : stance;
+    public Stance EffectiveStance
+    {
+        get
+        {
+            var chosen = _tactics.Count > 0 && _tactics[_tactics.Count - 1].stance != Stance.Auto ? _tactics[_tactics.Count - 1].stance : stance;
+            return chosen == Stance.Auto ? (FightsAtRange ? Stance.Kite : Stance.Advance) : chosen;
+        }
+    }
+
+    /// <summary>Whom this unit goes for: what a worn tactics item says, else the authored rule.</summary>
+    public TargetMode EffectiveTarget => _tactics.Count > 0 && _tactics[_tactics.Count - 1].target.HasValue ? _tactics[_tactics.Count - 1].target.Value : targetMode;
+
+    /// <summary>How long it stays on a target it cannot reach: what a worn tactics item says, else the authored one.</summary>
+    public Commitment EffectiveCommitment => _tactics.Count > 0 && _tactics[_tactics.Count - 1].commitment.HasValue ? _tactics[_tactics.Count - 1].commitment.Value : commitment;
+
+    /// <summary>The item engraving whose tactics are in force, or null when the unit fights as authored.</summary>
+    public Engraving TacticsSource => _tactics.Count > 0 ? _tactics[_tactics.Count - 1].source : null;
+
+    private struct TacticsGrant { public Engraving source; public Stance stance; public TargetMode? target; public Commitment? commitment; }
+
+    // What worn items say, in the order they were granted; the last one worn wins. Not serialized:
+    // Resonance grants it again from the gear on every refresh, so nothing here outlives the item.
+    [System.NonSerialized] private readonly List<TacticsGrant> _tactics = new List<TacticsGrant>();
+
+    /// <summary>A worn item's tactics, over the authored ones. Auto and null mean "leave that part alone".</summary>
+    public void SetTactics(Engraving source, Stance stance, TargetMode? target, Commitment? commitment)
+    {
+        ClearTactics(source);
+        _tactics.Add(new TacticsGrant { source = source, stance = stance, target = target, commitment = commitment });
+    }
+
+    /// <summary>The item came off: back to the authored tactics, or to the next item still worn.</summary>
+    public void ClearTactics(Engraving source) => _tactics.RemoveAll(t => t.source == source);
 
     /// <summary>Whether this unit's weapon attack is a ranged one: reach of four or more, else the ranged flag.</summary>
     public bool FightsAtRange
@@ -101,13 +135,14 @@ public class Entity : MonoBehaviour
     /// <summary>This unit's body for collisions (<see cref="CombatPhysics"/>): its UnitData's radius, else the global one.</summary>
     public float BodyRadius => unitData != null && unitData.bodyRadius > 0f ? unitData.bodyRadius : CombatPhysics.Active.bodyRadius;
 
-    [Header("Targeting")]
-    [Tooltip("How this unit chooses whom to fight. Nearest is the ordinary front-line answer; " +
-             "LowestHealth makes a finisher; Furthest reaches past the front rank.")]
+    [Tooltip("How this unit chooses whom to fight, as authored (a worn tactics item overrides it). " +
+             "Nearest is the ordinary front-line answer; LowestHealth makes a finisher; Furthest " +
+             "reaches past the front rank; Attacker answers whoever is coming for it.")]
     public TargetMode targetMode = TargetMode.Nearest;
 
-    [Tooltip("How long this unit stays on a target it cannot reach: Opportunistic turns on whatever is " +
-             "in reach at once, Balanced after a short leash, Relentless never (a taunt still turns it).")]
+    [Tooltip("How long this unit stays on a target it cannot reach, as authored (a worn tactics item " +
+             "overrides it): Opportunistic turns on whatever is in reach at once, Balanced after a " +
+             "short leash, Relentless never (a taunt still turns it).")]
     public Commitment commitment = Commitment.Balanced;
 
     [Tooltip("How much better a rival target must be before this unit turns away from the one it " +

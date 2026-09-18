@@ -148,7 +148,7 @@ public class CombatAI : MonoBehaviour
         // on is kept out of the running for a moment, or it would be chosen straight back.
         Entity avoid = Time.time < _leashedUntil ? _leashed : null;
         // A diver goes for the back line: the farthest enemy, whatever the unit's own mode says.
-        var mode = _entity.EffectiveStance == Stance.Dive ? TargetMode.Furthest : _entity.targetMode;
+        var mode = _entity.EffectiveStance == Stance.Dive ? TargetMode.Furthest : _entity.EffectiveTarget;
         Entity closestEnemy = Targeting.Choose(_entity, mode, CurrentTarget,
                                                _entity.targetStickiness, avoid);
 
@@ -200,7 +200,7 @@ public class CombatAI : MonoBehaviour
             bool inReach = distToTarget <= _attackRange || _isAttacking;
             if (acted || inReach) _lastProgressTime = Time.time;
             _lastDistanceToTarget = distToTarget;
-            float leash = Targeting.LeashFor(_entity.commitment);
+            float leash = Targeting.LeashFor(_entity.EffectiveCommitment);
             bool taunted = _entity.Statuses != null && _entity.Statuses.TauntedBy != null;
             if (Targeting.LockOn && !inReach && !taunted && Time.time - _lastProgressTime > leash)
             {

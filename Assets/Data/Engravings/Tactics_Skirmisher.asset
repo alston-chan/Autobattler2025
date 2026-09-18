@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a55726abc1dbfd141a086a73a8c093e0, type: 3}
+  m_Name: Tactics_Skirmisher
+  m_EditorClassIdentifier: 
+  engravingName: Skirmisher
+  description: The wearer kites, answers whoever comes for it, and turns on anything
+    in reach the moment its target is not.
+  stance: 3
+  setsTarget: 1
+  targetMode: 3
+  setsCommitment: 1
+  commitment: 0

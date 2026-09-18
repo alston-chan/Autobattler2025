@@ -21,3 +21,7 @@ MonoBehaviour:
   - FantasyHeroes.Basic.Armor.ArielDress [Paint].boots
   - FantasyHeroes.Basic.Bow.BattleBow
   - FantasyHeroes.Basic.Armor.BanditArmor.vest
+  - FantasyHeroes.Basic.Helmet.BerserkHelm
+  - FantasyHeroes.Basic.Helmet.SpearmanHelm1
+  - FantasyHeroes.Knights.Helmet.EliteKnightHelm
+  - Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood

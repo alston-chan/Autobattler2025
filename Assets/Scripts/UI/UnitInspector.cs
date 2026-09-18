@@ -48,7 +48,7 @@ public class UnitInspector : MonoBehaviour
     public float doubleClickSeconds = 0.35f;
 
     [Header("Card")]
-    public Vector2 cardSize = new Vector2(330f, 596f);
+    public Vector2 cardSize = new Vector2(330f, 550f);
     [Tooltip("Inset from the bottom-right corner of the canvas. Bottom-LEFT is taken by the avatar " +
              "strip and the centre by the equipment windows, so the card lives on the right.")]
     public Vector2 cardMargin = new Vector2(-24f, 24f);
@@ -82,34 +82,13 @@ public class UnitInspector : MonoBehaviour
     private GameObject _manaRow;
     private TextMeshProUGUI _manaText;
 
-    // The one control on an otherwise read-only card: how a hero uses the space. Four words, one
-    // lit; pressable only in Setup, since a stance is a decision made before the bell.
-    private GameObject _stanceRow;
-    private readonly Image[] _stanceBacks = new Image[4];
-    private readonly TextMeshProUGUI[] _stanceLabels = new TextMeshProUGUI[4];
-    private readonly Button[] _stanceButtons = new Button[4];
-    private static readonly Stance[] StanceOrder = { Stance.Advance, Stance.Hold, Stance.Kite, Stance.Dive };
-
-    // Whom to fight and how long to stay on it: the two rows Eslabong calls target priority and
-    // commitment. Setup only, like the stance.
-    private ChoiceRow _targetRow, _commitRow;
-    private static readonly TargetMode[] TargetOrder = { TargetMode.Nearest, TargetMode.LowestHealth, TargetMode.Furthest, TargetMode.Attacker };
-    private static readonly string[] TargetLabels = { "Nearest", "Weakest", "Farthest", "Attacker" };
-    private static readonly Commitment[] CommitOrder = { Commitment.Opportunistic, Commitment.Balanced, Commitment.Relentless };
-    private static readonly string[] CommitLabels = { "Opportunist", "Balanced", "Relentless" };
-
-    /// <summary>A row of lit-or-not buttons over an enum, built once and painted per unit.</summary>
-    private class ChoiceRow
-    {
-        public GameObject root;
-        public Image[] backs;
-        public TextMeshProUGUI[] labels;
-        public Button[] buttons;
-    }
+    // How the unit fights, as words: its stance, whom it goes for, how long it stays on it. Read-only,
+    // because these come from its gear (a tactics item) or its authoring (a kit), never from a click.
+    private TextMeshProUGUI _tactics;
 
     // The other control: which of the hero's spell slots it casts. A book and the weapon's verb
     // both sit in the slots and only one is cast; the workshop can pick a book, but the verb has no
-    // item to click, so the switch lives here. Setup only, like the stance.
+    // item to click, so the switch lives here. Setup only.
     private GameObject _slotRow;
     private readonly Image[] _slotBacks = new Image[Entity.MaxSpellSlots];
     private readonly TextMeshProUGUI[] _slotLabels = new TextMeshProUGUI[Entity.MaxSpellSlots];
@@ -431,46 +410,21 @@ public class UnitInspector : MonoBehaviour
 
         _manaRow.SetActive(_selected.Mana != null);
 
-        PaintStance();
-        PaintChoice(_targetRow, System.Array.IndexOf(TargetOrder, _selected.targetMode));
-        PaintChoice(_commitRow, System.Array.IndexOf(CommitOrder, _selected.commitment));
+        PaintTactics();
         PaintSlots();
         PaintStats();
         PaintKit();
     }
 
-    private void PaintChoice(ChoiceRow row, int lit)
+    /// <summary>
+    /// The tactics line: "Holds · the nearest · balanced", and which item says so. Shown for
+    /// everyone, since what an enemy will do is worth as much as what a hero will.
+    /// </summary>
+    private void PaintTactics()
     {
-        bool mine = _selected.isTeam && _selected.isCharacter;
-        row.root.SetActive(mine);
-        if (!mine) return;
-        var game = GameManager.Instance;
-        bool setup = game == null || game.StateMachine.Current == GameState.Setup;
-        for (int i = 0; i < row.buttons.Length; i++)
-        {
-            bool on = i == lit;
-            row.backs[i].color = on ? new Color(Ally.r, Ally.g, Ally.b, 0.85f) : Trough;
-            row.labels[i].color = on ? Backing : Muted;
-            row.buttons[i].interactable = setup;
-        }
-    }
-
-    private void SetTarget(int index)
-    {
-        if (_selected == null || !_selected.isTeam) return;
-        var game = GameManager.Instance;
-        if (game != null && game.StateMachine.Current != GameState.Setup) return;
-        _selected.targetMode = TargetOrder[index];
-        Repaint();
-    }
-
-    private void SetCommitment(int index)
-    {
-        if (_selected == null || !_selected.isTeam) return;
-        var game = GameManager.Instance;
-        if (game != null && game.StateMachine.Current != GameState.Setup) return;
-        _selected.commitment = CommitOrder[index];
-        Repaint();
+        string line = Tactics.Line(_selected);
+        var source = _selected.TacticsSource;
+        _tactics.text = source != null ? line + "\n<color=#8A93A6>from " + source.DisplayName + "</color>" : line;
     }
 
     /// <summary>The cast row: one button per filled slot, the active one lit. Company only.</summary>
@@ -511,37 +465,6 @@ public class UnitInspector : MonoBehaviour
         if (_selected.characterInventory != null) _selected.characterInventory.SyncSpellSlots();
         else if (_selected.CombatAI != null) _selected.CombatAI.RefreshSpells();
         Repaint();
-    }
-
-    /// <summary>
-    /// The stance row: shown for the company only, the word in force lit. Auto lights the stance it
-    /// resolves to, so a ranged hero reads Kite without anyone having chosen it.
-    /// </summary>
-    private void PaintStance()
-    {
-        bool mine = _selected.isTeam && _selected.isCharacter;
-        _stanceRow.SetActive(mine);
-        if (!mine) return;
-
-        var game = GameManager.Instance;
-        bool setup = game == null || game.StateMachine.Current == GameState.Setup;
-        var inForce = _selected.EffectiveStance;
-        for (int i = 0; i < StanceOrder.Length; i++)
-        {
-            bool lit = StanceOrder[i] == inForce;
-            _stanceBacks[i].color = lit ? new Color(Ally.r, Ally.g, Ally.b, 0.85f) : Trough;
-            _stanceLabels[i].color = lit ? Backing : Muted;
-            _stanceButtons[i].interactable = setup;
-        }
-    }
-
-    private void SetStance(Stance stance)
-    {
-        if (_selected == null || !_selected.isTeam) return;
-        var game = GameManager.Instance;
-        if (game != null && game.StateMachine.Current != GameState.Setup) return;
-        _selected.stance = stance;
-        PaintStance();
     }
 
     private void PaintStats()
@@ -732,9 +655,11 @@ public class UnitInspector : MonoBehaviour
 
         _healthFill = BuildBar("Health", out _healthText, HealthAlly, 18f, 4f);
         _manaRow = BuildManaRow();
-        _stanceRow = BuildStanceRow();
-        _targetRow = BuildChoiceRow("Target", TargetLabels, SetTarget);
-        _commitRow = BuildChoiceRow("Commit", CommitLabels, SetCommitment);
+        _tactics = NewText("Tactics", _card.transform, 14f, Color.white, TextAlignmentOptions.Left);
+        _tactics.enableWordWrapping = false;
+        _tactics.overflowMode = TextOverflowModes.Ellipsis;
+        _tactics.alignment = TextAlignmentOptions.TopLeft;
+        Stack(_tactics.rectTransform, 36f, 6f);
         _slotRow = BuildSlotRow();
 
         // Keys and values are two full-width blocks sharing one row, left- and right-aligned, so the
@@ -794,61 +719,6 @@ public class UnitInspector : MonoBehaviour
         labelRect.offsetMin = labelRect.offsetMax = Vector2.zero;
 
         return fillRect;
-    }
-
-    /// <summary>Four buttons in one row, the width of the card, each a stance.</summary>
-    private GameObject BuildStanceRow()
-    {
-        const float height = 22f, gap = 4f;
-        var row = NewRect("Stance", _card.transform, new Vector2(0.5f, 1f), new Vector2(cardSize.x - 28f, height), Vector2.zero);
-        var rect = row.GetComponent<RectTransform>();
-        Stack(rect, height, 10f);
-
-        float width = (cardSize.x - 28f - gap * (StanceOrder.Length - 1)) / StanceOrder.Length;
-        for (int i = 0; i < StanceOrder.Length; i++)
-        {
-            var stance = StanceOrder[i];
-            float x = -(cardSize.x - 28f) * 0.5f + width * 0.5f + i * (width + gap);
-            var cell = NewRect(stance.ToString(), row.transform, new Vector2(0.5f, 0.5f), new Vector2(width, height), new Vector2(x, 0f));
-            var back = cell.AddComponent<Image>();
-            back.color = Trough;
-            var button = cell.AddComponent<Button>();
-            button.targetGraphic = back;
-            button.transition = Selectable.Transition.None;
-            button.onClick.AddListener(() => SetStance(stance));
-
-            var label = NewText("Label", cell.transform, 13f, Muted, TextAlignmentOptions.Center);
-            label.text = stance.ToString();
-            Anchor(label.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(width, height), Vector2.zero);
-
-            _stanceBacks[i] = back;
-            _stanceLabels[i] = label;
-            _stanceButtons[i] = button;
-        }
-        return row;
-    }
-
-    private ChoiceRow BuildChoiceRow(string name, string[] labels, System.Action<int> onPick)
-    {
-        const float height = 22f, gap = 4f;
-        var row = NewRect(name, _card.transform, new Vector2(0.5f, 1f), new Vector2(cardSize.x - 28f, height), Vector2.zero);
-        Stack(row.GetComponent<RectTransform>(), height, 6f);
-        var result = new ChoiceRow { root = row, backs = new Image[labels.Length], labels = new TextMeshProUGUI[labels.Length], buttons = new Button[labels.Length] };
-        float width = (cardSize.x - 28f - gap * (labels.Length - 1)) / labels.Length;
-        for (int i = 0; i < labels.Length; i++)
-        {
-            int index = i;
-            float x = -(cardSize.x - 28f) * 0.5f + width * 0.5f + i * (width + gap);
-            var cell = NewRect(labels[i], row.transform, new Vector2(0.5f, 0.5f), new Vector2(width, height), new Vector2(x, 0f));
-            var back = cell.AddComponent<Image>(); back.color = Trough;
-            var button = cell.AddComponent<Button>(); button.targetGraphic = back; button.transition = Selectable.Transition.None;
-            button.onClick.AddListener(() => onPick(index));
-            var label = NewText("Label", cell.transform, 12f, Muted, TextAlignmentOptions.Center);
-            label.text = labels[i]; label.enableWordWrapping = false; label.overflowMode = TextOverflowModes.Ellipsis;
-            Anchor(label.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(width - 4f, height), Vector2.zero);
-            result.backs[i] = back; result.labels[i] = label; result.buttons[i] = button;
-        }
-        return result;
     }
 
     /// <summary>Up to three buttons in one row, one per spell slot; labels are painted per unit.</summary>

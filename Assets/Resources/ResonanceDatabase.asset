@@ -121,6 +121,30 @@ MonoBehaviour:
     tierIICost: 6
     tierIIICost: 14
     engraveCost: 6
+  - itemId: FantasyHeroes.Basic.Helmet.BerserkHelm
+    engraving: {fileID: 11400000, guid: 770aa3d27ac829549911b1eca62e22ad, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
+  - itemId: FantasyHeroes.Basic.Helmet.SpearmanHelm1
+    engraving: {fileID: 11400000, guid: af1cacd152c21324192d0080d899cf9c, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
+  - itemId: FantasyHeroes.Knights.Helmet.EliteKnightHelm
+    engraving: {fileID: 11400000, guid: 59738851517c96744bff5b716422c900, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
+  - itemId: Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
+    engraving: {fileID: 11400000, guid: cd7102f8c95bccd4ca513c5920255e63, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
   classDefaults:
   - itemClass: 2
     engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}

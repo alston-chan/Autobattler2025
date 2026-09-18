@@ -22,7 +22,7 @@ public class OpeningStarEngraving : Engraving
     {
         if (owner == null || owner.isDead) return;
         // The same pick CombatAI will make a frame later, so the star flies at the promised opener.
-        var opener = Targeting.Choose(owner, owner.targetMode, null, 0f);
+        var opener = Targeting.Choose(owner, owner.EffectiveTarget, null, 0f);
         if (opener == null) return;
         float duration = markSecondsPerTier * Mathf.Max(1, tier);
         Supplies.ThrowStar(owner, opener,
