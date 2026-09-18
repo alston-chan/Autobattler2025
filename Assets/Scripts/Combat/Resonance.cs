@@ -65,6 +65,12 @@ public class Resonance : MonoBehaviour
     /// <summary>Raised when any item's unread mark appears or clears, so badges can follow.</summary>
     public event System.Action OnNoticesChanged;
 
+    /// <summary>
+    /// Fired at the end of a <see cref="Refresh"/> that granted or revoked anything. The inventory
+    /// rebuilds the hero's spell slots from here, once, after the books are settled.
+    /// </summary>
+    public event System.Action OnGrantsChanged;
+
     /// <summary>Whether this hero has anything unlooked-at — the hero-level badge.</summary>
     public bool HasUnseen => MostUrgentNotice != ResonanceNotice.None;
 
@@ -324,18 +330,29 @@ public class Resonance : MonoBehaviour
             }
         }
 
+        // The books are updated BEFORE the engraving hears about it, so anything an OnGranted or
+        // OnRevoked asks of this hero — GrantedVerbs, TierOfVerb — answers for the state it is being
+        // told about. It used to be the other way round, and a verb's OnGranted rebuilt the spell
+        // slots from a list its own grant was not yet in: the sixth cast of a fight crossed tier II,
+        // the grant was revoked and re-granted at the new tier, and the hero fought on with no
+        // ability at all.
+        bool changed = _stale.Count > 0;
         for (int i = 0; i < _stale.Count; i++)
         {
-            Invoke(_stale[i], _active[_stale[i]], false);
+            var grant = _active[_stale[i]];
             _active.Remove(_stale[i]);
+            Invoke(_stale[i], grant, false);
         }
 
         foreach (var pair in desired)
         {
             if (_active.ContainsKey(pair.Key)) continue;
-            Invoke(pair.Key, pair.Value, true);
             _active[pair.Key] = pair.Value;
+            Invoke(pair.Key, pair.Value, true);
+            changed = true;
         }
+
+        if (changed) OnGrantsChanged?.Invoke();
 
         // Reconciling happens on every equipment change, and what the badges show depends on what is
         // worn — so this is also the moment they may need to appear or disappear.

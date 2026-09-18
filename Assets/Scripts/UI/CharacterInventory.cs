@@ -86,6 +86,7 @@ public class CharacterInventory : ItemWorkspace
         if (CharacterEntity != null && CharacterEntity.Resonance != null)
         {
             CharacterEntity.Resonance.OnNoticesChanged += RefreshNoticeBadges;
+            CharacterEntity.Resonance.OnGrantsChanged += SyncSpellSlotsIfVerbsChanged;
 
             // Selecting an item IS the act of reading its news, so that is what clears it.
             OnSelectionChanged += CharacterEntity.Resonance.MarkSeen;
@@ -532,6 +533,31 @@ public class CharacterInventory : ItemWorkspace
     /// equip / unequip — equipment is set up after Awake, so this is what actually gets slotted
     /// spells into the combat kit.
     /// </summary>
+    /// <summary>
+    /// The slots follow the verbs the hero holds. A tier-up revokes and re-grants the same verb, and
+    /// that must not rebuild the slots: rebuilding interrupts the cast in progress (the very cast
+    /// that crossed the tier) and can reorder the slots under the player's chosen one. So the slots
+    /// are only rebuilt when the set of verbs is actually different.
+    /// </summary>
+    private void SyncSpellSlotsIfVerbsChanged()
+    {
+        if (CharacterEntity == null || CharacterEntity.Resonance == null) return;
+        if (SameVerbs(CharacterEntity.spellSlots, CharacterEntity.Resonance.GrantedVerbs())) return;
+        SyncSpellSlots();
+    }
+
+    /// <summary>Whether the slots already hold exactly these verbs, in any order, ignoring what the slot cap left out.</summary>
+    public static bool SameVerbs(List<Spell> slots, List<Spell> verbs)
+    {
+        var wanted = new List<Spell>();
+        if (verbs != null) foreach (var v in verbs) if (v != null && !wanted.Contains(v) && wanted.Count < Entity.MaxSpellSlots) wanted.Add(v);
+        var held = new List<Spell>();
+        if (slots != null) foreach (var s in slots) if (s != null && !held.Contains(s)) held.Add(s);
+        if (held.Count != wanted.Count) return false;
+        foreach (var v in wanted) if (!held.Contains(v)) return false;
+        return true;
+    }
+
     public void SyncSpellSlots()
     {
         if (CharacterEntity == null) return;

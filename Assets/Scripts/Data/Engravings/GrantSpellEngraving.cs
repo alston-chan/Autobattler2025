@@ -19,9 +19,11 @@ public class GrantSpellEngraving : Engraving
     public override void OnGranted(Entity owner, int tier)
     {
         if (owner == null || spell == null) return;
-        // A hero with an inventory rebuilds its slots from what it wears, verbs included; anything
-        // else (an enemy given a verb) is slotted directly.
-        if (owner.characterInventory != null) { owner.characterInventory.SyncSpellSlots(); return; }
+        // A hero with an inventory rebuilds its slots from what it wears, verbs included, once the
+        // resonance books are settled (CharacterInventory listens to Resonance.OnGrantsChanged) —
+        // not here, where a tier-up's revoke-and-regrant would rebuild them twice and interrupt
+        // whatever the hero was casting. Anything else (an enemy given a verb) is slotted directly.
+        if (owner.characterInventory != null) return;
         if (owner.spellSlots == null) owner.spellSlots = new System.Collections.Generic.List<Spell>();
         if (!owner.spellSlots.Contains(spell))
         {
@@ -36,7 +38,7 @@ public class GrantSpellEngraving : Engraving
     public override void OnRevoked(Entity owner, int tier)
     {
         if (owner == null || spell == null || owner.spellSlots == null) return;
-        if (owner.characterInventory != null) { owner.characterInventory.SyncSpellSlots(); return; }
+        if (owner.characterInventory != null) return;
         int index = owner.spellSlots.IndexOf(spell);
         if (index < 0) return;
         owner.spellSlots.RemoveAt(index);

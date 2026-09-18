@@ -228,6 +228,14 @@ Writing them:
   a revive must reset everything the fight left on the body (`DeathFeedback.RestoreAfterRevive`).
   A hero killed mid-swing once revived unable to attack or move because nothing had cleared
   `CombatAI`'s attacking flag, and one killed inside a hitstop revived frozen.
+- **An engraving hears about its grant after the books have it.** `Resonance.Refresh` updates
+  `_active` and only then calls `OnGranted` / `OnRevoked`, and fires `OnGrantsChanged` once at the end;
+  a hero's inventory rebuilds the spell slots from that event, and only when the set of verbs differs.
+  It was the other way round until 2026-09-18, and the symptom was a hero with no ability: a fight's
+  sixth cast crossed tier II, the verb's grant was revoked and re-granted, and its `OnGranted` rebuilt the
+  slots from a list its own grant was not yet in. Measured: `slots=[]` mid-fight with the wand still
+  worn and still granted. The extra `SyncSpellSlots` after the startup refresh in GameManager was the
+  same bug patched at one call site.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
