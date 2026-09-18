@@ -79,6 +79,12 @@ public abstract class Spell : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// The description for a particular holder: a verb held at tier II or III says what its numbers
+    /// are at that tier. The base spell has no tiers, so it is the same text for everyone.
+    /// </summary>
+    public virtual string FullDescriptionFor(Entity holder) => FullDescription;
+
     /// <summary>What the spell does in numbers, from its parts. Empty for a spell that cannot say.</summary>
     public virtual string Mechanics => "";
 

@@ -194,3 +194,9 @@ MonoBehaviour:
     tierIICost: 6
     tierIIICost: 14
     engraveCost: 6
+  - itemClass: 21
+    engraving: {fileID: 11400000, guid: 3b19c089ee3ae044a854973fd655c9e2, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6

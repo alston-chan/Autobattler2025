@@ -49,6 +49,13 @@ public class ScaledValue
         if (ofCasterMaxHealth != 0f) parts.Add($"{ofCasterMaxHealth:P0} your max health");
         return parts.Count > 0 ? string.Join(" + ", parts) : "0";
     }
+
+    /// <summary>The same, with the tier's multiplier shown when there is one: "1× weapon ×1.25".</summary>
+    public string DescribeAt(int tier)
+    {
+        float mult = 1f + perTier * Mathf.Max(0, tier - 1);
+        return Describe() + (mult > 1.001f ? $" ×{mult:0.##}" : "");
+    }
 }
 
 /// <summary>
@@ -63,6 +70,7 @@ public class SpellContext
     public List<Entity> targets = new List<Entity>();
     public CompositeSpell spell;
     public int tier = 1;                  // the verb's attunement tier; 1 when it is not a verb
+    public float scale = 1f;              // force, radius and reach at that tier (CompositeSpell.ScaleAt)
     public bool targetDied;               // set by DealDamage when its target fell
 }
 
@@ -77,6 +85,8 @@ public abstract class SpellEffect
     public abstract IEnumerator Run(SpellContext ctx);
     /// <summary>One line for the card and the designer.</summary>
     public virtual string Describe() => GetType().Name;
+    /// <summary>The same line with the numbers a cast at this tier would use. Effects with a number that scales override it.</summary>
+    public virtual string Describe(int tier, float scale) => Describe();
 }
 
 /// <summary>Whom a composite spell picks. The "who" of the grammar, as data.</summary>
@@ -116,11 +126,15 @@ public class Selector
     [ShowIf("@who == Who.AllEnemiesInRadius || who == Who.AlliesInRadius"), Min(0)]
     public int count = 0;
 
-    public List<Entity> Resolve(Entity caster, Entity current)
+    public List<Entity> Resolve(Entity caster, Entity current) => Resolve(caster, current, 1f);
+
+    /// <summary>As above, with the radius grown by <paramref name="radiusScale"/>: a verb at tier III reaches further.</summary>
+    public List<Entity> Resolve(Entity caster, Entity current, float radiusScale)
     {
         var result = new List<Entity>();
         if (caster == null) return result;
         Vector3 origin = caster.transform.position;
+        float radius = this.radius * radiusScale;
 
         IEnumerable<Entity> enemies = EntityRegistry.All.Where(e => e != null && !e.isDead && e.isTeam != caster.isTeam && e.gameObject.activeInHierarchy && !e.IsAggroDropped);
         IEnumerable<Entity> allies = EntityRegistry.All.Where(e => e != null && !e.isDead && e.isTeam == caster.isTeam && e.gameObject.activeInHierarchy);
@@ -188,8 +202,12 @@ public class Selector
 
     private static void Add(List<Entity> into, Entity e) { if (e != null) into.Add(e); }
 
-    public string Describe()
+    public string Describe() => Describe(1f);
+
+    /// <summary>The same, with the radius grown by a tier's scale.</summary>
+    public string Describe(float radiusScale)
     {
+        float radius = this.radius * radiusScale;
         switch (who)
         {
             case Who.WithStatusElseCurrent: return $"the {(status != null ? status.DisplayName : "?")} enemy, else the target";
@@ -232,6 +250,32 @@ public class CompositeSpell : Spell
     [BoxGroup("How it plays")] public float contactTimeout = 1f;
     [BoxGroup("How it plays"), Tooltip("Scale with attack speed, like a weapon attack, instead of cooldown reduction.")]
     public bool scalesWithAttackSpeed = false;
+    [BoxGroup("How it plays"), Tooltip("Force, radius and reach grow by this per tier above the first: 0.25 is ×1.25 at tier II " +
+             "and ×1.5 at tier III. Damage has its own step on each ScaledValue. This is what attuning a weapon buys.")]
+    public float physicsPerTier = 0.25f;
+
+    /// <summary>The multiplier on force, radius and reach at a tier: 1 at tier I.</summary>
+    public float ScaleAt(int tier) => 1f + physicsPerTier * Mathf.Max(0, tier - 1);
+
+    /// <summary>The tier this caster holds the verb at, else 1.</summary>
+    public int TierFor(Entity caster) => caster != null && caster.Resonance != null ? caster.Resonance.TierOfVerb(this) : 1;
+
+    /// <summary>The sentence at a tier, numbers scaled: what the card shows a hero holding it at tier III.</summary>
+    public string ReadsAt(int tier)
+    {
+        float scale = ScaleAt(tier);
+        return $"{selector.Describe(scale)} → {string.Join(" · ", effects.Where(e => e != null).Select(e => e.Describe(tier, scale)).Where(d => !string.IsNullOrEmpty(d)))}";
+    }
+
+    public override string FullDescriptionFor(Entity holder)
+    {
+        int tier = TierFor(holder);
+        if (tier <= 1) return FullDescription;
+        // The authored text says tier I; the tier's numbers follow it, from the parts.
+        return FullDescription + "\nTier " + Roman(tier) + ": " + ReadsAt(tier);
+    }
+
+    public static string Roman(int tier) => tier >= 3 ? "III" : tier == 2 ? "II" : "I";
     [BoxGroup("How it plays"), Tooltip("Seeds the unit's Damage stat when this is the weapon attack. Zero for anything else.")]
     public float baseDamage = 0f;
 
@@ -246,15 +290,16 @@ public class CompositeSpell : Spell
     public override bool CanCast(Entity caster, Entity target)
     {
         if (caster == null) return false;
-        var targets = selector.Resolve(caster, target);
+        var targets = selector.Resolve(caster, target, ScaleAt(TierFor(caster)));
         return targets.Count > 0;
     }
 
     public override IEnumerator Cast(Entity caster, Entity target)
     {
         var ctx = new SpellContext { caster = caster, spell = this };
-        ctx.tier = caster.Resonance != null ? caster.Resonance.TierOfVerb(this) : 1;
-        ctx.targets = selector.Resolve(caster, target);
+        ctx.tier = TierFor(caster);
+        ctx.scale = ScaleAt(ctx.tier);
+        ctx.targets = selector.Resolve(caster, target, ctx.scale);
         if (ctx.targets.Count == 0) yield break;
         ctx.target = ctx.targets[0];
 
@@ -283,7 +328,7 @@ public class CompositeSpell : Spell
         }
     }
 
-    public string DescribeEffects() => string.Join(" · ", effects.Where(e => e != null).Select(e => e.Describe()));
+    public string DescribeEffects() => string.Join(" · ", effects.Where(e => e != null).Select(e => e.Describe()).Where(d => !string.IsNullOrEmpty(d)));   // a visual effect describes as nothing
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -375,7 +420,8 @@ public class DealDamageEffect : SpellEffect
         }
     }
 
-    public override string Describe() => $"{damage.Describe()} damage" + (alwaysCrit ? ", always a crit" : critChance > 0f ? $" ({critChance:P0} crit)" : "") + (scope == EffectScope.EveryTarget ? " to each" : "");
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"{damage.DescribeAt(tier)} damage" + (alwaysCrit ? ", always a crit" : critChance > 0f ? $" ({critChance:P0} crit)" : "") + (scope == EffectScope.EveryTarget ? " to each" : "");
 }
 
 [Serializable]
@@ -479,11 +525,12 @@ public class DropAggroEffect : SpellEffect
     public override IEnumerator Run(SpellContext ctx)
     {
         IEnumerable<Entity> targets = scope == EffectScope.EveryTarget ? ctx.targets : scope == EffectScope.Caster ? new[] { ctx.caster } : new[] { ctx.target };
-        foreach (var t in targets) t?.DropAggro(seconds);
+        foreach (var t in targets) t?.DropAggro(seconds * ctx.scale);
         yield break;
     }
 
-    public override string Describe() => $"out of sight {seconds:0.#} s{(scope == EffectScope.EveryTarget ? " for each" : "")}";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"out of sight {seconds * scale:0.#} s{(scope == EffectScope.EveryTarget ? " for each" : "")}";
 }
 
 [Serializable]
@@ -544,7 +591,8 @@ public class ShieldEffect : SpellEffect
         yield break;
     }
 
-    public override string Describe() => $"shield {amount.Describe()}{(perTargetFound ? " per target" : "")}{(scope == EffectScope.EveryTarget ? " on each" : scope == EffectScope.Caster ? " on self" : "")}";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"shield {amount.DescribeAt(tier)}{(perTargetFound ? " per target" : "")}{(scope == EffectScope.EveryTarget ? " on each" : scope == EffectScope.Caster ? " on self" : "")}";
 }
 
 [Serializable]
@@ -561,7 +609,8 @@ public class HealEffect : SpellEffect
         yield break;
     }
 
-    public override string Describe() => $"heal {amount.Describe()}{(scope == EffectScope.EveryTarget ? " each" : "")}";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"heal {amount.DescribeAt(tier)}{(scope == EffectScope.EveryTarget ? " each" : "")}";
 }
 
 [Serializable]
@@ -579,12 +628,13 @@ public class KnockbackEffect : SpellEffect
             if (t == null || t.isDead || ctx.caster == null) continue;
             Vector3 dir = (t.transform.position - ctx.caster.transform.position);
             dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right;
-            t.ApplyKnockback(pull ? -dir : dir, force, ctx.caster);
+            t.ApplyKnockback(pull ? -dir : dir, force * ctx.scale, ctx.caster);
         }
         yield break;
     }
 
-    public override string Describe() => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target") + $" (force {force:0}; a body thrown into a body or the wall is hurt by the speed)";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target") + $" (force {force * scale:0}; a body thrown into a body or the wall is hurt by the speed)";
 }
 
 /// <summary>
@@ -603,11 +653,12 @@ public class DashEffect : SpellEffect
         if (caster == null || target == null) yield break;
         Vector3 dir = target.transform.position - caster.transform.position; dir.z = 0f;
         dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : (caster.isTeam ? Vector3.right : Vector3.left);
-        caster.ApplyKnockback(dir, force, caster, charging: true);
+        caster.ApplyKnockback(dir, force * ctx.scale, caster, charging: true);
         yield break;
     }
 
-    public override string Describe() => $"charge at the target (force {force:0}), knocking aside and hurting everything hit; you are not";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"charge at the target (force {force * scale:0}), knocking aside and hurting everything hit; you are not";
 }
 
 /// <summary>Damage everything of one side within a radius of the caster — Shockwave's heart.</summary>
@@ -625,21 +676,23 @@ public class RadiusDamageEffect : SpellEffect
     {
         var caster = ctx.caster; if (caster == null) yield break;
         Vector3 origin = caster.transform.position;
+        float reach = radius * ctx.scale;
         var victims = new List<Entity>();
         foreach (var e in EntityRegistry.All)
-            if (e != null && !e.isDead && e.gameObject.activeInHierarchy && (e.isTeam != caster.isTeam) == enemies && e != caster && (e.transform.position - origin).magnitude <= radius) victims.Add(e);
+            if (e != null && !e.isDead && e.gameObject.activeInHierarchy && (e.isTeam != caster.isTeam) == enemies && e != caster && (e.transform.position - origin).magnitude <= reach) victims.Add(e);
         foreach (var v in victims)
         {
             float dmg = damage.Evaluate(caster, v, ctx.tier);
             v.TakeDamage(dmg, caster, AttackRoll.IsCrit(critChance));
-            if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback, caster); }
+            if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback * ctx.scale, caster); }
             if (hitstop > 0f) v.ApplyHitstop(hitstop);
         }
         ctx.targets = victims;
         if (victims.Count > 0) ctx.target = victims[0];
     }
 
-    public override string Describe() => $"{damage.Describe()} damage to {(enemies ? "enemies" : "allies")} within {radius:0.#}{(critChance > 0f ? $" ({critChance:P0} crit)" : "")}{(knockback > 0 ? $", flung outward (force {knockback:0})" : "")}";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"{damage.DescribeAt(tier)} damage to {(enemies ? "enemies" : "allies")} within {radius * scale:0.#}{(critChance > 0f ? $" ({critChance:P0} crit)" : "")}{(knockback > 0 ? $", flung outward (force {knockback * scale:0})" : "")}";
 }
 
 /// <summary>Put a status on everyone of one side within a radius of the caster — a cloud, a shout, a ring.</summary>
@@ -662,10 +715,11 @@ public class ApplyStatusInRadiusEffect : SpellEffect
         {
             if (e == null || e.isDead || !e.gameObject.activeInHierarchy || e.Statuses == null) continue;
             if ((e.isTeam != caster.isTeam) != enemies) continue;
-            if ((e.transform.position - origin).magnitude > radius) continue;
+            if ((e.transform.position - origin).magnitude > radius * ctx.scale) continue;
             e.Statuses.Apply(status, duration, caster);
         }
     }
 
-    public override string Describe() => $"{(status != null ? status.DisplayName : "?")} on {(enemies ? "enemies" : "allies")} within {radius:0.#}";
+    public override string Describe() => Describe(1, 1f);
+    public override string Describe(int tier, float scale) => $"{(status != null ? status.DisplayName : "?")} on {(enemies ? "enemies" : "allies")} within {radius * scale:0.#}";
 }

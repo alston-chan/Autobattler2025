@@ -551,6 +551,9 @@ public class UnitInspector : MonoBehaviour
             bool inert = !spell.MeetsWeaponRequirement(_selected);
 
             text.Append("<color=#BFC6D4>Ability</color>  ").Append(spell.DisplayName);
+            // A verb is held at a tier, and the tier is what attuning the weapon bought: say it.
+            if (_selected.Resonance != null && _selected.Resonance.GrantedVerbs().Contains(spell))
+                text.Append(' ').Append(CompositeSpell.Roman(_selected.Resonance.TierOfVerb(spell)));
             if (spell.IsUltimate)
                 text.Append("  <color=#5C9AF2>").Append(Mathf.RoundToInt(spell.manaCost))
                     .Append(" mana</color>");
@@ -561,7 +564,7 @@ public class UnitInspector : MonoBehaviour
 
             // What it does, in numbers, under its name — the ability is the one line on the card the
             // player can act on before the bell, and a name alone says nothing about damage or reach.
-            string details = spell.FullDescription;
+            string details = spell.FullDescriptionFor(_selected);
             if (!string.IsNullOrEmpty(details))
                 text.Append("<size=12><color=#BFC6D4>").Append(details.Replace("\n", "  ·  ")).Append("</color></size>\n");
         }

@@ -85,7 +85,11 @@ public class EncounterSpawner : MonoBehaviour
                 if (!poolDraws.TryGetValue(loadout, out var queue)) { queue = new Queue<EnemyKit>(EnemyKit.Draw(loadout.kits, spawnCount)); poolDraws[loadout] = queue; }
                 if (queue.Count > 0) kit = queue.Dequeue();
             }
-            var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null, kit == null) : EnemyKind.Melee;
+            // A rolled ability only where the gear will not resonate: with resonating gear the weapon's
+            // verb is the ability, and a rolled one beside it (Shockwave at 100 mana against a bar the
+            // verb caps at 50) could never be afforded — dead weight in the AI's list.
+            bool rollAbility = kit == null && loadout != null && !loadout.resonateGear;
+            var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null, rollAbility) : EnemyKind.Melee;
 
             pending.Add(entity);
             loadouts.Add(loadout);
