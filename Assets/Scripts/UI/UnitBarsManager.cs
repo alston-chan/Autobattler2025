@@ -156,7 +156,11 @@ public class UnitBarsManager : MonoBehaviour
         var bar = go.GetComponent<ResourceBar>();
         if (bar == null) { Destroy(go); return null; }
 
-        go.transform.localScale = Vector3.Scale(entity.transform.localScale, scaleMul);
+        // The unit's size, never its facing: facing is the sign of the unit's x scale, and a bar that
+        // inherited it was mirrored, draining from the wrong end. A unit revived facing the way it died,
+        // or an enemy spawned facing left, got one.
+        var size = entity.transform.localScale;
+        go.transform.localScale = Vector3.Scale(new Vector3(Mathf.Abs(size.x), Mathf.Abs(size.y), size.z), scaleMul);
         bar.entity = entity;
         bar.offset = offset;
         bar.Apply(effects);     // settings must land before the first SetSize
