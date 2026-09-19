@@ -31,6 +31,7 @@ MonoBehaviour:
   contactFallback: 0.2
   contactTimeout: 1
   scalesWithAttackSpeed: 0
+  physicsPerTier: 0.25
   baseDamage: 0
   effects:
   - rid: 2861304482225979392
