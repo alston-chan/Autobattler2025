@@ -35,7 +35,7 @@ MonoBehaviour:
     - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
     activeSlot: 0
   heroHealthScale: 0.35
-  encounter: {fileID: 11400000, guid: 850b00b2763e4314484da904438bb7a6, type: 2}
+  encounter: {fileID: 11400000, guid: ae63ea282664f074cb27e99ef1d668af, type: 2}
   loadout: {fileID: 0}
   enemyKits:
   - {fileID: 11400000, guid: a8dd6c4c68d773141aa17114f2274064, type: 2}
@@ -46,5 +46,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 66e353e617e67814dadaffc33413a39c, type: 2}
   - {fileID: 11400000, guid: a94768e7790962e47aedcf3e80f0f84a, type: 2}
   randomEnemyKits: 1
-  notes: 'The four space verbs, one per hero, against the 3v3''s enemy side: Arrow
-    Rain on the bow, Whirl on the hammer, Tar Pool on the wand, Ricochet on the dagger.'
+  notes: 'The four space verbs, one per hero, against four gladiators drawn from
+    the enemy kits: Arrow Rain on the bow, Whirl on the hammer, Tar Pool on the wand,
+    Ricochet on the dagger.'

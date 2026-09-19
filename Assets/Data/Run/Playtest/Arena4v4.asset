@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1474bb256568824dbd7a6626631a608, type: 3}
+  m_Name: Arena4v4
+  m_EditorClassIdentifier: 
+  problems: 
+  defaultLoadout: {fileID: 11400000, guid: 48884419f26b8e14f9dec9e4e0614205, type: 2}
+  rewardPool: {fileID: 0}
+  encounterName: Four Gladiators
+  spawns:
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 0
+    unitData: {fileID: 0}
+    kit: {fileID: 0}
+    loadout: {fileID: 0}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 1
+    unitData: {fileID: 0}
+    kit: {fileID: 0}
+    loadout: {fileID: 0}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 2
+    unitData: {fileID: 0}
+    kit: {fileID: 0}
+    loadout: {fileID: 0}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 1
+    row: 1
+    unitData: {fileID: 0}
+    kit: {fileID: 0}
+    loadout: {fileID: 0}
