@@ -41,6 +41,30 @@ public static class ShapeSprites
         return s;
     }
 
+    private static Sprite _thinRing;
+
+    /// <summary>
+    /// A thin ring, one unit across at scale 1. The inspector's ring is a tenth of its diameter thick,
+    /// which at a strike's size becomes a band a body wide; this one stays a line.
+    /// </summary>
+    public static Sprite ThinRing()
+    {
+        if (_thinRing != null) return _thinRing;
+        const int size = 256; const float outer = 0.48f, inner = 0.455f, feather = 0.008f;
+        var texture = new Texture2D(size, size, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+        var pixels = new Color[size * size];
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = (x + 0.5f) / size - 0.5f, dy = (y + 0.5f) / size - 0.5f;
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+                pixels[y * size + x] = new Color(1f, 1f, 1f, Mathf.Clamp01((outer - d) / feather) * Mathf.Clamp01((d - inner) / feather));
+            }
+        texture.SetPixels(pixels); texture.Apply();
+        _thinRing = Sprite.Create(texture, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), size);
+        return _thinRing;
+    }
+
     private static Sprite Blob(int seed, float wobble)
     {
         const int size = 128; const float feather = 0.03f;
@@ -75,7 +99,7 @@ public static class ShapeSprites
     }
 
     public static SpriteRenderer OnFloor(string name, Vector3 at, float radius, Color color, bool filled) =>
-        OnFloor(name, at, radius, color, filled ? Disc() : UnitInspector.RingSprite());
+        OnFloor(name, at, radius, color, filled ? Disc() : ThinRing());
 
     /// <summary>Everything of the other side alive within a radius of a point.</summary>
     public static List<Entity> EnemiesWithin(Entity of, Vector3 point, float radius)
@@ -155,9 +179,12 @@ public class DelayedStrike : MonoBehaviour
         _caster = caster; _point = point; _radius = radius; _delay = Mathf.Max(0.05f, delay); _at = Time.time + _delay; _damage = damage; _force = force; _prefab = landingPrefab; _scale = landingScale;
         _ring = GetComponent<SpriteRenderer>(); _color = color;
         // The second ring: starts wide and closes onto the strike ring over the delay, so the pause reads as "when" as well as "where".
-        _closing = ShapeSprites.OnFloor("ArrowRainClosing", point, radius * 1.9f, new Color(color.r, color.g, color.b, color.a * 0.7f), filled: false);
-        _closing.transform.SetParent(transform, true);
+        // Its own object, not a child: the strike ring is scaled to its radius (and flattened), and a
+        // child inherits that, so a parented closing ring came out several times too big and squashed.
+        _closing = ShapeSprites.OnFloor("ArrowRainClosing", point, radius * 1.6f, new Color(color.r, color.g, color.b, color.a * 0.7f), filled: false);
     }
+
+    private void OnDestroy() { if (_closing != null) Destroy(_closing.gameObject); }
 
     public void Arrows(GameObject prefab, int count, float height, float speed, float volleySeconds)
     {
@@ -171,7 +198,7 @@ public class DelayedStrike : MonoBehaviour
         if (_ring != null) _ring.color = new Color(_color.r, _color.g, _color.b, Mathf.Lerp(_color.a * 0.6f, 1f, t));
         if (_closing != null)
         {
-            float r = Mathf.Lerp(_radius * 1.9f, _radius, t);
+            float r = Mathf.Lerp(_radius * 1.6f, _radius, t);
             _closing.transform.localScale = new Vector3(r * 2f, r * 2f * 0.55f, 1f);
         }
 
@@ -350,7 +377,7 @@ public class OrbitRunner : MonoBehaviour
             {
                 float next; if (_nextHit.TryGetValue(v, out next) && Time.time < next) continue;
                 _nextHit[v] = Time.time + _interval;
-                v.TakeDamage(_damage, _caster);
+                v.TakeDamage(_damage, _caster, quiet: true);   // a pass every half second; a flash each would hold the body white
                 Vector3 dir = v.transform.position - _caster.transform.position;
                 if (_force > 0f) v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, _force, _caster);
             }
@@ -398,8 +425,11 @@ public class ZoneEffect : SpellEffect
         var status = this.status; float statusSeconds = statusDuration; float life = seconds; Color poolColor = color; Color stainColor = stain;
         LobbedBlob.Throw(Supplies.ThrowOrigin(caster), target.transform.position, lobSeconds, poolColor, reach * 0.35f, at =>
         {
+            // Six splat shapes and a random mirror stand in for rotation: a floor shape is flattened by
+            // its scale, and rotating that transform skewed the pool into a tall smear.
             var pool = ShapeSprites.OnFloor("TarPool", at, reach, poolColor, ShapeSprites.Splat(UnityEngine.Random.Range(0, 6)));
-            pool.transform.rotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(0f, 360f));
+            if (UnityEngine.Random.value < 0.5f) pool.flipX = true;
+            if (UnityEngine.Random.value < 0.5f) pool.flipY = true;
             var zone = pool.gameObject.AddComponent<Zone>();
             zone.Begin(caster, reach, life, dps, status, statusSeconds, stainColor);
         });
@@ -510,7 +540,7 @@ public class Zone : MonoBehaviour
         _nextTick += Tick;
         foreach (var v in inside)
         {
-            v.TakeDamage(_dps * Tick, Owner);
+            v.TakeDamage(_dps * Tick, Owner, quiet: true);   // it ticks; the stain is the feedback
             if (_status != null && v.Statuses != null) v.Statuses.Apply(_status, _statusDuration, Owner);
         }
     }

@@ -108,5 +108,14 @@ public class Knockback : MonoBehaviour
             float rest = s != null ? s.restSpeed : 0.6f;
             if (_velocity.magnitude <= Mathf.Max(0.01f, rest)) { _velocity = Vector3.zero; Launcher = null; Charging = false; }
         }
+
+        // A thrown body leans: the top lags the push, so a slide reads as being shoved, not gliding
+        // on ice. A charging body leans the other way, into its run. Back upright as it comes to rest.
+        float lean = _velocity.magnitude > 0.01f ? Mathf.Clamp(_velocity.x * (Charging ? -LeanPerSpeed : LeanPerSpeed), -MaxLean, MaxLean) : 0f;
+        var current = transform.rotation.eulerAngles.z; if (current > 180f) current -= 360f;
+        float tilt = Mathf.MoveTowards(current, lean, LeanRate * dt);
+        if (Mathf.Abs(tilt - current) > 0.001f) transform.rotation = Quaternion.Euler(0f, 0f, tilt);
     }
+
+    private const float LeanPerSpeed = 1.6f, MaxLean = 14f, LeanRate = 160f;
 }

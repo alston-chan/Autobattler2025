@@ -154,7 +154,8 @@ public class Health : MonoBehaviour
     /// damage number reads as a crit. Damage itself never depends on them, so callers with no real
     /// attacker (burn, decay) can leave them defaulted.
     /// </summary>
-    public void TakeDamage(float amount, Entity source = null, bool isCrit = false)
+    /// <param name="quiet">No flash, squash or shake: for damage that ticks (a pool, a blade's pass), which would otherwise hold the body white.</param>
+    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false)
     {
         if (IsDead) return;
 
@@ -195,7 +196,7 @@ public class Health : MonoBehaviour
         // Visual hit feedback — flash / shake / squash, all configurable on the HitFeedback component.
         // Hitstop and flinch are spell-driven (a spell calls ApplyHitstop / HitReact), not per-hit.
         if (_entity.HitFeedback != null)
-            _entity.HitFeedback.Play(maxHealth > 0f ? amount / maxHealth : 0f);
+            if (!quiet) _entity.HitFeedback.Play(maxHealth > 0f ? amount / maxHealth : 0f);
 
         // Mana charges from participation — taking hits is the secondary source.
         if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
