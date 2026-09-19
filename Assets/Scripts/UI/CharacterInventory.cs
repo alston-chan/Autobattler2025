@@ -513,12 +513,6 @@ public class CharacterInventory : ItemWorkspace
     }
 
     /// <summary>
-    /// Rebuild the character's spell slots from the verbs its weapons teach (Docs/Spells.md), apply
-    /// the weapon loadout, clamp the active slot, and refresh CombatAI so the change takes effect.
-    /// Called when the equipment or the rack changes; the resonance books call it through
-    /// <see cref="SyncSpellSlotsIfVerbsChanged"/> when the set of verbs changes.
-    /// </summary>
-    /// <summary>
     /// The slots follow the verbs the hero holds. A tier-up revokes and re-grants the same verb, and
     /// that must not rebuild the slots: rebuilding interrupts the cast in progress (the very cast
     /// that crossed the tier) and can reorder the slots under the player's chosen one. So the slots
@@ -543,6 +537,30 @@ public class CharacterInventory : ItemWorkspace
         return true;
     }
 
+    /// <summary>
+    /// The player picked which verb is cast. Only the index moves: the slots are what they were,
+    /// so nothing is rebuilt and nothing mid-swing is interrupted; CombatAI re-reads its kit and
+    /// the mana bar resizes to the new verb's cost.
+    /// </summary>
+    public void SetActiveSlot(int index)
+    {
+        if (CharacterEntity == null || CharacterEntity.spellSlots == null) return;
+        CharacterEntity.activeSpellSlot = Mathf.Clamp(index, 0, Mathf.Max(0, CharacterEntity.spellSlots.Count - 1));
+        if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.RefreshSpells();
+        HighlightActiveSpellSlot();
+    }
+
+    /// <summary>
+    /// Rebuild the character's spell slots from the verbs its weapons teach (Docs/Spells.md), apply
+    /// the weapon loadout, clamp the active slot, and refresh CombatAI so the change takes effect.
+    ///
+    /// The rule for who calls this: the equipment paths in this class (equip, remove, hollow, the
+    /// rack), because the hand changed; and the resonance books through
+    /// <see cref="SyncSpellSlotsIfVerbsChanged"/>, because the verbs changed. Nobody else. It
+    /// interrupts a cast in progress, so a caller that only wants a different active slot uses
+    /// <see cref="SetActiveSlot"/> and a caller that only granted a verb does nothing — the books
+    /// announce it.
+    /// </summary>
     public void SyncSpellSlots()
     {
         if (CharacterEntity == null) return;

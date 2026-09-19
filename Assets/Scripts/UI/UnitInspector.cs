@@ -460,10 +460,9 @@ public class UnitInspector : MonoBehaviour
         if (index < 0 || index >= _selected.spellSlots.Count) return;
         var game = GameManager.Instance;
         if (game != null && game.StateMachine.Current != GameState.Setup) return;
-        _selected.activeSpellSlot = index;
-        // The inventory owns the slots: syncing through it keeps its highlight and CombatAI in step.
-        if (_selected.characterInventory != null) _selected.characterInventory.SyncSpellSlots();
-        else if (_selected.CombatAI != null) _selected.CombatAI.RefreshSpells();
+        // The inventory owns the slots: picking through it keeps its highlight and CombatAI in step.
+        if (_selected.characterInventory != null) _selected.characterInventory.SetActiveSlot(index);
+        else { _selected.activeSpellSlot = index; if (_selected.CombatAI != null) _selected.CombatAI.RefreshSpells(); }
         Repaint();
     }
 
