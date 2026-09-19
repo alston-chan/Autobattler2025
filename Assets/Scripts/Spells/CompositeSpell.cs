@@ -303,6 +303,14 @@ public class CompositeSpell : Spell
         if (ctx.targets.Count == 0) yield break;
         ctx.target = ctx.targets[0];
 
+        // What you cast on is what you fight now. A backstab that blinked behind the weakest enemy
+        // used to hit it once and walk back to whatever the ninja had been swinging at, because the
+        // lock on the current target only breaks when it dies; a whip that dragged the farthest
+        // archer to your feet left it there and turned away. An enemy chosen by the verb becomes the
+        // target; allies (a Roar, a Shield Wall) and the caster itself are not targets.
+        if (ctx.target != caster && ctx.target.isTeam != caster.isTeam && caster.CombatAI != null && caster.CombatAI.CurrentTarget != ctx.target)
+            caster.CombatAI.Retarget(ctx.target);
+
         // Face the primary target, then play the motion at attack-speed pace if it is a weapon swing.
         if (ctx.target != caster) caster.SetFacing(ctx.target.transform.position.x > caster.transform.position.x);
         float playback = scalesWithAttackSpeed ? GetAttackSpeed(caster) : 1f;
