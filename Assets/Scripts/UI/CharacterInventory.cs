@@ -47,8 +47,8 @@ public class CharacterInventory : ItemWorkspace
     // The window prefab carries its own stat labels as legacy UI.Text ("Health/Mana/Strength/
     // Dexterity" against a hardcoded "99/99/99/99"), and the TMP fields above were never assigned —
     // so the panel had always shown placeholder numbers. Found at runtime and written to instead.
-    private Text _prefabStatKeys;
-    private Text _prefabStatValues;
+    private TMP_Text _prefabStatKeys;
+    private TMP_Text _prefabStatValues;
 
     // Created at runtime under the equipment panel — shows the active spell's name (B).
     private TextMeshProUGUI activeSpellLabel;
@@ -97,8 +97,8 @@ public class CharacterInventory : ItemWorkspace
         {
             var keys = statsPanel.Find("Stats");
             var values = statsPanel.Find("Values");
-            if (keys != null) _prefabStatKeys = keys.GetComponent<Text>();
-            if (values != null) _prefabStatValues = values.GetComponent<Text>();
+            if (keys != null) _prefabStatKeys = keys.GetComponent<TMP_Text>();
+            if (values != null) _prefabStatValues = values.GetComponent<TMP_Text>();
         }
 
         CreateActiveSpellLabel();

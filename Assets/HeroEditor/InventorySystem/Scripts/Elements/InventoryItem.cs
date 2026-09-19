@@ -2,6 +2,7 @@
 using System.Collections;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,7 +17,9 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
         public Image Icon;
         public Image Background;
         public Image Frame;
-        public Text Count;
+        // Project edit: was UnityEngine.UI.Text — the stack count over an inventory item, the last
+        // legacy label in the bag. See ItemInfo for why.
+        public TMP_Text Count;
         public Toggle Toggle;
         
         [Header("Extra")]

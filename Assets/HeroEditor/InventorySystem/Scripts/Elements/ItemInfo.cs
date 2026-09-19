@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using Assets.HeroEditor.InventorySystem.Scripts.Enums;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,10 +16,14 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
     {
         public GameObject Selection;
         public GameObject Buttons;
-        public Text Name;
-        public Text Labels;
-        public Text Values;
-        public Text Price;
+        // Project edit: these four were UnityEngine.UI.Text. Every other piece of text in this game
+        // is TextMeshPro, so the workshop's panel was the one place still drawing Arial with soft
+        // edges. TMP_Text is the base of TextMeshProUGUI and carries .text and .enabled, which is all
+        // this class asks of them.
+        public TMP_Text Name;
+        public TMP_Text Labels;
+        public TMP_Text Values;
+        public TMP_Text Price;
         public Image Icon;
         public Image Background;
 

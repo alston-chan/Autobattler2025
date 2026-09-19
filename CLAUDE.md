@@ -244,7 +244,11 @@ Writing them:
   project (`Projectile`'s 3D bullet, `CharacterInventorySetup`'s unimplemented firearm equip and its
   cape handling — a cape is typed Armor and used to wipe the armour equipped before it — and
   `Equipment.FindItem`, which mirrors a paired dagger into the off-hand slot as it already did for
-  two-handers; and both `ScaleSpring`s, HeroEditor's and FantasyMonsters', whose hit squash wrote back the
+  two-handers; `ItemInfo`'s and `InventoryItem`'s label fields, retyped from `UnityEngine.UI.Text` to
+  `TMP_Text` on 2026-09-19 so the workshop draws TextMeshPro like the rest of the game — the three
+  prefabs it uses (`CustomInventory`, `AvatarPrefab`, HeroEditor's `Item`) were converted with it, and
+  a field retyped BEFORE its prefab is converted loses its reference, so re-point by name afterwards;
+  and both `ScaleSpring`s, HeroEditor's and FantasyMonsters', whose hit squash wrote back the
   facing it captured when the hit landed, so a unit turned during the squash — the fight ending and standing
   it down — snapped back to face the wrong way). Vendor files are CRLF: a text edit must match `
 `.
