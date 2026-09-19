@@ -132,7 +132,9 @@ the `.asset` block by hand; then read it back.
 Anything added to the collection by hand is gone after the next import, and the first sign is a
 test about the workshop bag failing. Add rows to the CSV, never to the asset. Gloves rows are
 disabled there on purpose (armour is upper + lower now), and so are the `Spellbook.*` rows since
-2026-09-17: abilities come from weapons (the rack), and `SpellbookDatabase` is a leftover nothing reads.
+2026-09-17: abilities come from weapons (the rack). The spellbook layer and the old ability spell
+classes (Shockwave, Double Strike, Multi Shot, the throws, the old Backstab) were deleted 2026-09-18;
+every ability is a `CompositeSpell` taught by a weapon.
 
 ## Building test rigs
 

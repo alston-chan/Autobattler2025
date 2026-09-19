@@ -77,7 +77,7 @@ public class EncounterSpawner : MonoBehaviour
             var loadout = spawn.loadout != null ? spawn.loadout
                         : loadoutOverride != null ? loadoutOverride
                         : encounter.defaultLoadout;
-            // A kit decides the kind (from its weapon) and brings no rolled ability.
+            // A kit decides the kind from its weapon.
             EnemyKit kit = scenarioKits != null && pending.Count < scenarioKits.Count ? scenarioKits[pending.Count] : null;
             if (kit == null) kit = spawn.kit;
             if (kit == null && loadout != null && loadout.kits != null && loadout.kits.Count > 0)
@@ -85,11 +85,7 @@ public class EncounterSpawner : MonoBehaviour
                 if (!poolDraws.TryGetValue(loadout, out var queue)) { queue = new Queue<EnemyKit>(EnemyKit.Draw(loadout.kits, spawnCount)); poolDraws[loadout] = queue; }
                 if (queue.Count > 0) kit = queue.Dequeue();
             }
-            // A rolled ability only where the gear will not resonate: with resonating gear the weapon's
-            // verb is the ability, and a rolled one beside it (Shockwave at 100 mana against a bar the
-            // verb caps at 50) could never be afforded — dead weight in the AI's list.
-            bool rollAbility = kit == null && loadout != null && !loadout.resonateGear;
-            var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null, rollAbility) : EnemyKind.Melee;
+            var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null) : EnemyKind.Melee;
 
             pending.Add(entity);
             loadouts.Add(loadout);
@@ -175,7 +171,7 @@ public class EncounterSpawner : MonoBehaviour
         return EnemyKind.Melee;
     }
 
-    private EnemyKind ArmBeforeWake(Entity entity, EnemyLoadout loadout, EnemyKind? kindOverride = null, bool rollAbility = true)
+    private EnemyKind ArmBeforeWake(Entity entity, EnemyLoadout loadout, EnemyKind? kindOverride = null)
     {
         // Monsters have no equipment rig and no bow, so they always brawl.
         var kind = !entity.isCharacter ? EnemyKind.Melee : kindOverride ?? loadout.RollKind();
@@ -194,9 +190,6 @@ public class EncounterSpawner : MonoBehaviour
         if (basic != null) spells.Add(basic);
         else Debug.LogWarning($"[EncounterSpawner] {loadout.name} has no " +
                               (ranged ? "bow" : "melee") + " basic attack — that unit can't fight.");
-
-        var ability = rollAbility ? loadout.RollAbility(kind) : null;
-        if (ability != null) spells.Add(ability);
 
         entity.spells = spells;
         return kind;

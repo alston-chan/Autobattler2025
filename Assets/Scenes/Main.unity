@@ -165,7 +165,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: ae230c0174ac06c4186b7018d25cc2c9, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -326,7 +326,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -893,7 +893,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: d480432569bc86444bd04a75cfd4faa5, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -998,7 +998,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 5bb0c2583fe470b4ea3f41fb5707416a, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -1134,7 +1134,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -1402,7 +1402,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 8d963f4e01a12f048a5cfe7ddac31177, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -1523,7 +1523,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -1766,7 +1766,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -2344,7 +2344,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -2853,7 +2853,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: aecfb1f60f0354a47bec4a2163bee139, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -3243,7 +3243,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -3354,7 +3354,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 359947d3b46d30f4fb15ab5a327e465d, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -3468,7 +3468,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]
@@ -3581,7 +3581,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b5688632a9c3b6a44b8e164e4b9bd4eb, type: 2}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2014301142437070770, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
       propertyPath: spellSlots.Array.data[0]

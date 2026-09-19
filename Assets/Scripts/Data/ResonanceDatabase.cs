@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Which items carry an Engraving, and what it costs to attune them (Docs/Resonance.md).
 ///
-/// Keyed by HeroEditor's <c>ItemParams.Id</c>, the same bridge <see cref="SpellbookDatabase"/> uses,
+/// Keyed by HeroEditor's <c>ItemParams.Id</c>,
 /// so design data can hang off the vendor item catalogue without modifying it. An item absent from
 /// here simply doesn't resonate — most gear is still plain armour.
 ///

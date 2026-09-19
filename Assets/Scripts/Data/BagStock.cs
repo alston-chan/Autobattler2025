@@ -20,7 +20,7 @@ public enum StartingBag
 /// The designed items, and the bag a run starts with.
 ///
 /// "Designed" has one definition here: an item is designed if the game says something about it — it
-/// carries an engraving (ResonanceDatabase) or teaches a spell (SpellbookDatabase). Those two lists
+/// carries an engraving or teaches a verb (ResonanceDatabase). Those lists
 /// are the whole record, so the workshop bag is derived from them rather than kept by hand. The
 /// hand-kept version was three spellbooks and one bow, chosen when they were the only designed items
 /// there were, and every item designed since was left out: Marked's gloves could only be met by

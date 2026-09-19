@@ -22,8 +22,6 @@ public class PlaytestScenario : ScriptableObject
         [ValueDropdown("ItemIds")] public List<string> itemIds = new List<string>();
         [Tooltip("Which spell slot is cast. With no spellbooks, 0 is the weapon's verb.")]
         public int activeSlot = 0;
-        [Tooltip("Leave the hero's authored spellbooks out, so the weapon's verb is the only ability.")]
-        public bool noAuthoredSpellbooks = true;
 
         private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
     }

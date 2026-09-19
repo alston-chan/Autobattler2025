@@ -284,20 +284,6 @@ public class CharacterInventory : ItemWorkspace
         }
     }
 
-    /// <summary>Make an equipped spellbook the character's active spell, and refresh combat + highlight.</summary>
-    private void SetActiveSpellbook(Item item)
-    {
-        if (CharacterEntity == null) return;
-
-        var books = Equipment.Items.Where(i => i.Params.Type == ItemType.Spellbook).ToList();
-        int index = books.IndexOf(item);
-        if (index < 0) return;
-
-        CharacterEntity.activeSpellSlot = index;
-        if (CharacterEntity.CombatAI != null) CharacterEntity.CombatAI.RefreshSpells();
-        HighlightActiveSpellSlot();
-    }
-
     private static readonly Color ReserveBookDim = new Color(0.4f, 0.4f, 0.4f, 1f);
 
     /// <summary>
@@ -527,11 +513,10 @@ public class CharacterInventory : ItemWorkspace
     }
 
     /// <summary>
-    /// Mirror the equipped spellbook items onto the character's spell slots. Spellbooks fill the
-    /// slots in order; each resolves to its Spell via <see cref="SpellbookDatabase"/>. The active
-    /// slot is clamped, and CombatAI is refreshed so the change takes effect. Called after any
-    /// equip / unequip — equipment is set up after Awake, so this is what actually gets slotted
-    /// spells into the combat kit.
+    /// Rebuild the character's spell slots from the verbs its weapons teach (Docs/Spells.md), apply
+    /// the weapon loadout, clamp the active slot, and refresh CombatAI so the change takes effect.
+    /// Called when the equipment or the rack changes; the resonance books call it through
+    /// <see cref="SyncSpellSlotsIfVerbsChanged"/> when the set of verbs changes.
     /// </summary>
     /// <summary>
     /// The slots follow the verbs the hero holds. A tier-up revokes and re-grants the same verb, and

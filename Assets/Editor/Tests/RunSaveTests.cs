@@ -107,7 +107,7 @@ public class RunSaveTests
         };
         var hero = new SavedHero { name = "Hero_Bow", column = 2, row = 1 };
         hero.equipped.Add(new SavedItem { id = "FantasyHeroes.Basic.Bow.HunterBow" });
-        hero.equipped.Add(new SavedItem { id = "Spellbook.Star", modifierId = 0, modifierLevel = 0 });
+        hero.equipped.Add(new SavedItem { id = "FantasyHeroes.Basic.Helmet.ArcherHat", modifierId = 0, modifierLevel = 0 });
         hero.resonance.attunement.Add(new Resonance.AttunementRecord { itemKey = "FantasyHeroes.Basic.Bow.HunterBow|0|0", attunement = 2.5f });
         hero.resonance.banked.Add(new Resonance.BankedRecord { engravingName = "Engraving_Swift", tier = 2 });
         snapshot.heroes.Add(hero);

@@ -17,7 +17,6 @@ using UnityEngine;
 public class EquipmentWindow : OdinMenuEditorWindow
 {
     private const string ResonancePath = "Assets/Resources/ResonanceDatabase.asset";
-    private const string SpellbooksPath = "Assets/Resources/SpellbookDatabase.asset";
 
     [MenuItem("Tools/Equipment/Designer %#e")]
     private static void Open()
@@ -64,7 +63,6 @@ public class EquipmentWindow : OdinMenuEditorWindow
         tree.DefaultMenuStyle.IconSize = 20f;
 
         var resonance = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>(ResonancePath);
-        var spellbooks = AssetDatabase.LoadAssetAtPath<SpellbookDatabase>(SpellbooksPath);
 
         // Art first: the whole collection as pictures, and where a new designed item starts.
         tree.Add("Art", new ArtPage(this));
@@ -93,12 +91,6 @@ public class EquipmentWindow : OdinMenuEditorWindow
             }
         }
 
-        if (spellbooks != null)
-        {
-            foreach (var entry in spellbooks.entries.OrderBy(e => Catalog.DisplayName(e.itemId)))
-                if (entry.spell != null)
-                    tree.Add("Spellbooks/" + Catalog.DisplayName(entry.itemId), entry.spell, Catalog.Icon(entry.itemId));
-        }
 
         tree.AddAllAssetsAtPath("Engravings", "Assets/Data/Engravings", typeof(Engraving), true);
         tree.AddAllAssetsAtPath("Spells", "Assets/Data/Spells", typeof(Spell), true);
@@ -115,7 +107,6 @@ public class EquipmentWindow : OdinMenuEditorWindow
         }
 
         if (resonance != null) tree.Add("Databases/Resonance", resonance);
-        if (spellbooks != null) tree.Add("Databases/Spellbooks", spellbooks);
 
         return tree;
     }

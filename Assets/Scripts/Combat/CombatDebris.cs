@@ -17,8 +17,6 @@ public static class CombatDebris
     {
         int cleared = 0;
         cleared += Clear<Assets.HeroEditor.Common.Scripts.ExampleScripts.Projectile>();
-        cleared += Clear<ThrownBomb>();
-        cleared += Clear<ThrownBoomerang>();
         cleared += Clear<ThrownStar>();
         cleared += Clear<CartoonFX.CFXR_Effect>();
         return cleared;

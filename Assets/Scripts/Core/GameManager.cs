@@ -746,21 +746,6 @@ public class GameManager : Singleton<GameManager>
         return _resume.heroes.Find(h => h != null && h.name == hero.name);
     }
 
-    private static int CountSpellbooks(List<Item> items)
-    {
-        var database = SpellbookDatabase.Active;
-        if (database == null) return 0;
-        int count = 0;
-        foreach (var item in items) if (item != null && database.IsSpellbook(item.Id)) count++;
-        return count;
-    }
-
-    /// <summary>
-    /// Convert the character's editor-authored <see cref="Entity.spellSlots"/> into equipped spellbook
-    /// items (reverse-mapped via <see cref="SpellbookDatabase"/>) appended to <paramref name="equippedItems"/>,
-    /// preserving order so the active slot still lines up. Spells with no spellbook entry are skipped
-    /// with a warning. Returns how many books were added.
-    /// </summary>
     /// <summary>
     /// Equip the hero's signature item, replacing whatever the random roll put in the same slot. A
     /// signature is the hero's identity — the piece they are meant to wear and eventually resonate —
@@ -847,33 +832,6 @@ public class GameManager : Singleton<GameManager>
         else
             Debug.LogWarning($"[GameManager] {characterEntity.name} lost a two-handed weapon to a " +
                              "shield signature and no one-handed replacement exists.");
-    }
-
-    private int EquipAuthoredSpellsAsBooks(Entity characterEntity, List<Item> equippedItems)
-    {
-        if (characterEntity == null || characterEntity.spellSlots == null) return 0;
-        var db = SpellbookDatabase.Active;
-        if (db == null) return 0;
-
-        int added = 0;
-        foreach (var spell in characterEntity.spellSlots)
-        {
-            if (spell == null) continue;
-
-            string bookId = db.GetItemId(spell);
-            if (string.IsNullOrEmpty(bookId))
-            {
-                Debug.LogWarning($"[GameManager] {characterEntity.name} has '{spell.name}' in spellSlots " +
-                                 "but no spellbook maps to it — add a SpellbookDatabase entry so it can " +
-                                 "be equipped. Skipped.");
-                continue;
-            }
-            if (!ItemCollection.Active.Items.Any(i => i.Id == bookId)) continue;
-
-            equippedItems.Add(new Item(bookId));
-            added++;
-        }
-        return added;
     }
 
     public void ToggleCharacterInventories(CharacterInventory characterInventory)

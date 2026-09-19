@@ -16,8 +16,5 @@ MonoBehaviour:
   bowBasicAttack: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
   healthMultiplier: 1
   rangedChance: 0
-  abilityChance: 1
-  abilities:
-  - {fileID: 11400000, guid: 72129cfa221d68b4d8dde4bdfb586d4d, type: 2}
   randomizeAppearance: 1
   randomizeEquipment: 1
