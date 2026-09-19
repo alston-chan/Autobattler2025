@@ -27,3 +27,7 @@ MonoBehaviour:
   - Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
   - FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
   - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
+  - FantasyHeroes.Basic.Bow.RangerBow
+  - FantasyHeroes.Basic.MeleeWeapon1H.WarHammer
+  - FantasyHeroes.Basic.MeleeWeapon1H.FireWizardWand
+  - FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint]

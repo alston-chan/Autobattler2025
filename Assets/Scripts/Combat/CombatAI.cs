@@ -218,7 +218,20 @@ public class CombatAI : MonoBehaviour
 
             if (!acted && !_isAttacking)
             {
-                move = StanceMove(distToTarget);
+                // Hostile ground first: a unit standing in the enemy's pool leaves it before it does
+                // anything its stance would have it do, straight away from the centre. Mid-swing it
+                // stays and finishes; that, and a throw back in, is what the pool is for.
+                var pool = Zone.HostileAt(_entity);
+                if (pool != null) _fleeingPool = pool;
+                else if (_fleeingPool != null && Vector3.Distance(transform.position, _fleeingPool.transform.position) > _fleeingPool.Radius + PoolMargin) _fleeingPool = null;
+                if (_fleeingPool != null)
+                {
+                    // Keep going a little past the rim, or a unit whose target stands across the pool
+                    // steps out, steps back in, and shivers on the edge for the pool's whole life.
+                    Vector3 away = transform.position - _fleeingPool.transform.position; away.z = 0f;
+                    move = (away.sqrMagnitude > 0.0001f ? away.normalized : (_entity.isTeam ? Vector3.left : Vector3.right)) * moveSpeed;
+                }
+                else move = StanceMove(distToTarget);
                 SetAnimState(move.sqrMagnitude > 0.0001f);
             }
             else
@@ -248,6 +261,10 @@ public class CombatAI : MonoBehaviour
     /// like anyone else; Hold stands its ground until hurt or until the wait runs out; Dive is
     /// Advance with a different target. Docs/Combat.md, "Stances".
     /// </summary>
+    /// <summary>The hostile pool this unit is walking out of, until it is clear of the rim by <see cref="PoolMargin"/>.</summary>
+    private Zone _fleeingPool;
+    private const float PoolMargin = 0.6f;
+
     private Vector3 StanceMove(float distToTarget)
     {
         var s = CombatPhysics.Active;

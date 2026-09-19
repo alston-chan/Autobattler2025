@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b105ccda30400ac4abf2b097b166c7fb, type: 3}
+  m_Name: Whirl
+  m_EditorClassIdentifier: 
+  spellName: Whirl
+  description: Three blades circle you for 4 seconds at reach 1.6, each pass dealing
+    0.5x weapon damage and shoving the victim outward at force 5. Pull them in first.
+  cooldown: 0
+  range: 2.5
+  alwaysOn: 0
+  manaCost: 60
+  weaponRequirement: 0
+  selector:
+    who: 8
+    status: {fileID: 0}
+    radius: 3
+    count: 0
+  motion: 1
+  characterEvent: Hit
+  monsterEvent: Attack
+  contactFallback: 0.2
+  contactTimeout: 1
+  scalesWithAttackSpeed: 0
+  physicsPerTier: 0.25
+  baseDamage: 0
+  effects:
+  - rid: 2861304620898058241
+  - rid: 2861304620898058242
+  references:
+    version: 2
+    RefIds:
+    - rid: 2861304620898058241
+      type: {class: OrbitEffect, ns: , asm: Assembly-CSharp}
+      data:
+        blades: 3
+        bladesPerTier: 1
+        seconds: 4
+        radius: 1.6
+        spin: 200
+        damage:
+          baseValue: 0
+          ofWeaponDamage: 0.5
+          ofSubjectMaxHealth: 0
+          ofCasterMaxHealth: 0
+          perTier: 0.25
+        force: 5
+        hitInterval: 0.6
+        hitRadius: 0.55
+        spriteName: ThrowingStar
+        spriteScale: 0.45
+    - rid: 2861304620898058242
+      type: {class: SpawnEffect, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 5880797563127281583, guid: 265d3a5ba69981a4698ceabcedf368b0, type: 3}
+        scope: 2
+        scale: 1
+        lifetime: 2

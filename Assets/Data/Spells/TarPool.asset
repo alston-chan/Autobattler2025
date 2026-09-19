@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b105ccda30400ac4abf2b097b166c7fb, type: 3}
+  m_Name: TarPool
+  m_EditorClassIdentifier: 
+  spellName: Tar Pool
+  description: 'A pool 2 wide under the nearest enemy for 5 seconds: 0.5x weapon
+    damage a second to enemies in it, and they deal 15% less while Tarred. They walk
+    out; throw them back in.'
+  cooldown: 0
+  range: 6
+  alwaysOn: 0
+  manaCost: 90
+  weaponRequirement: 0
+  selector:
+    who: 1
+    status: {fileID: 0}
+    radius: 3
+    count: 0
+  motion: 0
+  characterEvent: Hit
+  monsterEvent: Attack
+  contactFallback: 0.2
+  contactTimeout: 1
+  scalesWithAttackSpeed: 0
+  physicsPerTier: 0.25
+  baseDamage: 0
+  effects:
+  - rid: 2861304620898058243
+  references:
+    version: 2
+    RefIds:
+    - rid: 2861304620898058243
+      type: {class: ZoneEffect, ns: , asm: Assembly-CSharp}
+      data:
+        radius: 2
+        seconds: 5
+        damagePerSecond:
+          baseValue: 0
+          ofWeaponDamage: 0.5
+          ofSubjectMaxHealth: 0
+          ofCasterMaxHealth: 0
+          perTier: 0.25
+        status: {fileID: 11400000, guid: c7ada1c6b7821b24aa87116566a4d543, type: 2}
+        statusDuration: 1.5
+        color: {r: 0.12, g: 0.06, b: 0.02, a: 0.7}

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8007cad88ffcf104f9ed783d67bf184a, type: 3}
+  m_Name: Tarred
+  m_EditorClassIdentifier: 
+  displayName: Tarred
+  description: 'Stuck in the pool: deals 15% less until it is clear.'
+  glyph: ~
+  glyphColor: {r: 0.6, g: 0.4, b: 0.2, a: 1}
+  isDebuff: 1
+  defaultDuration: 1.5
+  stacking: 0
+  maxStacks: 1
+  damageTakenPerStack: 1
+  damageDealtPerStack: 0.85
+  untargetable: 0
+  rooted: 0
+  tauntsToSource: 0
+  tickInterval: 0
+  tickDamagePerStack: 0
+  tickPercentMaxHealthPerStack: 0

@@ -151,6 +151,30 @@ MonoBehaviour:
     tierIICost: 3
     tierIIICost: 6
     engraveCost: 3
+  - itemId: FantasyHeroes.Basic.Bow.RangerBow
+    engraving: {fileID: 11400000, guid: 2f2a1a7f903726b42bff2a3edc0e79aa, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemId: FantasyHeroes.Basic.MeleeWeapon1H.WarHammer
+    engraving: {fileID: 11400000, guid: fdb4b0e966ca959479a34234fb868cc7, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemId: FantasyHeroes.Basic.MeleeWeapon1H.FireWizardWand
+    engraving: {fileID: 11400000, guid: c84c3d1a49dfd39429cf40f812725c1e, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
+  - itemId: FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint]
+    engraving: {fileID: 11400000, guid: e47d3c080ff9271429b99e49bc4145b7, type: 2}
+    requirement: 4
+    tierIICost: 6
+    tierIIICost: 14
+    engraveCost: 6
   classDefaults:
   - itemClass: 2
     engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}
