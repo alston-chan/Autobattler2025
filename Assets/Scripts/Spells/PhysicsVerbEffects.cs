@@ -9,42 +9,73 @@ using UnityEngine;
 /// covers, and a star that bounces between bodies. Each is a composite-spell effect built on the
 /// same context as the others, so tiers scale its force, radius and reach, and each is fire-and-
 /// forget: the cast ends when the thing is launched, and a runner on its own object sees it through.
+///
+/// The look follows one rule: this is a game of cartoon bodies and objects, so the effects are
+/// objects doing physical things (arrows that fall and stick, a blob that is lobbed and spreads,
+/// bubbles that rise) rather than post-processing.
 /// </summary>
 public static class ShapeSprites
 {
     private static Sprite _disc;
+    private static readonly Dictionary<int, Sprite> _splats = new Dictionary<int, Sprite>();
 
     /// <summary>A soft-edged filled circle, one unit across at scale 1. Made once.</summary>
     public static Sprite Disc()
     {
         if (_disc != null) return _disc;
-        const int size = 128; const float outer = 0.48f; const float feather = 0.03f;
+        _disc = Blob(0, 0f);
+        return _disc;
+    }
+
+    /// <summary>
+    /// A spilled shape: a disc whose edge wanders by up to a quarter of its radius, so a pool reads
+    /// as liquid rather than a marker. A handful of seeds, cached, so pools differ without a texture
+    /// per cast.
+    /// </summary>
+    public static Sprite Splat(int seed)
+    {
+        seed = Mathf.Abs(seed) % 6;
+        Sprite s; if (_splats.TryGetValue(seed, out s) && s != null) return s;
+        s = Blob(seed, 0.25f);
+        _splats[seed] = s;
+        return s;
+    }
+
+    private static Sprite Blob(int seed, float wobble)
+    {
+        const int size = 128; const float feather = 0.03f;
         var texture = new Texture2D(size, size, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
         var pixels = new Color[size * size];
+        // Three sine lobes at different frequencies and phases: enough to look poured, never spiky.
+        float p1 = seed * 1.7f, p2 = seed * 2.9f + 1f, p3 = seed * 0.6f + 2f;
         for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
             {
                 float dx = (x + 0.5f) / size - 0.5f, dy = (y + 0.5f) / size - 0.5f;
                 float d = Mathf.Sqrt(dx * dx + dy * dy);
-                pixels[y * size + x] = new Color(1f, 1f, 1f, Mathf.Clamp01((outer - d) / feather));
+                float a = Mathf.Atan2(dy, dx);
+                float edge = 0.48f - wobble * 0.48f * (0.5f + 0.25f * Mathf.Sin(3f * a + p1) + 0.15f * Mathf.Sin(5f * a + p2) + 0.10f * Mathf.Sin(7f * a + p3));
+                pixels[y * size + x] = new Color(1f, 1f, 1f, Mathf.Clamp01((edge - d) / feather));
             }
         texture.SetPixels(pixels); texture.Apply();
-        _disc = Sprite.Create(texture, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), size);
-        return _disc;
+        return Sprite.Create(texture, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), size);
     }
 
-    /// <summary>A ring or disc on the floor at a point, sized to a radius, drawn under the units.</summary>
-    public static SpriteRenderer OnFloor(string name, Vector3 at, float radius, Color color, bool filled)
+    /// <summary>A ring, disc or splat on the floor at a point, sized to a radius, drawn under the units.</summary>
+    public static SpriteRenderer OnFloor(string name, Vector3 at, float radius, Color color, Sprite sprite)
     {
         var go = new GameObject(name);
         go.transform.position = new Vector3(at.x, at.y, 0f);
-        go.transform.localScale = new Vector3(radius * 2f, radius * 2f * 0.55f, 1f);   // the floor is seen at an angle: rings lie flat
+        go.transform.localScale = new Vector3(radius * 2f, radius * 2f * 0.55f, 1f);   // the floor is seen at an angle: shapes lie flat
         var sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = filled ? Disc() : UnitInspector.RingSprite();
+        sr.sprite = sprite;
         sr.color = color;
         sr.sortingOrder = -400;   // under the units, over the background
         return sr;
     }
+
+    public static SpriteRenderer OnFloor(string name, Vector3 at, float radius, Color color, bool filled) =>
+        OnFloor(name, at, radius, color, filled ? Disc() : UnitInspector.RingSprite());
 
     /// <summary>Everything of the other side alive within a radius of a point.</summary>
     public static List<Entity> EnemiesWithin(Entity of, Vector3 point, float radius)
@@ -54,6 +85,17 @@ public static class ShapeSprites
             if (e != null && !e.isDead && e.gameObject.activeInHierarchy && e.isTeam != of.isTeam && (e.transform.position - point).magnitude <= radius) found.Add(e);
         return found;
     }
+
+    /// <summary>A sprite in the world with nothing else on it. Sorting above the units so it reads over them.</summary>
+    public static SpriteRenderer Floating(string name, Sprite sprite, Vector3 at, float scale, Color color, int order = 120)
+    {
+        var go = new GameObject(name);
+        go.transform.position = at;
+        go.transform.localScale = Vector3.one * scale;
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = sprite; sr.color = color; sr.sortingOrder = order;
+        return sr;
+    }
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -61,10 +103,11 @@ public static class ShapeSprites
 // ---------------------------------------------------------------------------------------------
 
 /// <summary>
-/// A ring on the floor where the target stands, a pause, then damage and an outward shove to
-/// everything still inside it. The pause is the point: a diver has left, a holder has not, and a
-/// pull can put a body into the ring before it lands. The caster is free the moment the ring is
-/// drawn; the strike runs on its own object.
+/// A ring on the floor where the target stands and a second ring closing on it; in the last half
+/// second arrows fall out of the sky and stick in the ground; when the closing ring reaches the
+/// strike ring, everything still inside is hit and flung outward. The pause is the point: a diver
+/// has left, a holder has not, and a pull can put a body into the ring before it lands. The caster
+/// is free the moment the ring is drawn; the strike runs on its own object.
 /// </summary>
 [Serializable]
 public class StrikeAtPointEffect : SpellEffect
@@ -76,6 +119,13 @@ public class StrikeAtPointEffect : SpellEffect
     public Color ringColor = new Color(1f, 0.25f, 0.2f, 0.55f);
     [Tooltip("Played at the centre when it lands. Optional.")] public GameObject landingPrefab;
     public float landingScale = 1.2f;
+    [Header("Arrows")]
+    [Tooltip("The arrow that falls; the bow's own. None: the strike is only the ring.")] public GameObject arrowPrefab;
+    [Min(0)] public int arrows = 10;
+    [Tooltip("Where the arrows start, above the ring.")] public float fallHeight = 7f;
+    public float fallSpeed = 22f;
+    [Tooltip("Seconds before the strike the first arrow is loosed; they arrive together with the strike.")] public float volleySeconds = 0.45f;
+    [Tooltip("One arrow fired straight up from the caster at the cast, so the rain came from somewhere.")] public bool launchArrow = true;
 
     public override IEnumerator Run(SpellContext ctx)
     {
@@ -84,30 +134,61 @@ public class StrikeAtPointEffect : SpellEffect
         float reach = radius * ctx.scale;
         var ring = ShapeSprites.OnFloor("ArrowRain", target.transform.position, reach, ringColor, filled: false);
         var strike = ring.gameObject.AddComponent<DelayedStrike>();
-        strike.Arm(caster, ring.transform.position, reach, delay, damage.Evaluate(caster, null, ctx.tier), knockback * ctx.scale, landingPrefab, landingScale);
+        strike.Arm(caster, ring.transform.position, reach, delay, damage.Evaluate(caster, null, ctx.tier), knockback * ctx.scale, landingPrefab, landingScale, ringColor);
+        strike.Arrows(arrowPrefab, arrows + Mathf.RoundToInt(2 * Mathf.Max(0, ctx.tier - 1)), fallHeight, fallSpeed, volleySeconds);
+        if (launchArrow && arrowPrefab != null) FallingArrow.LaunchUp(arrowPrefab, Supplies.ThrowOrigin(caster), fallSpeed * 0.8f, 0.5f);
     }
 
     public override string Describe() => Describe(1, 1f);
     public override string Describe(int tier, float scale) => $"after {delay:0.#} s, {damage.DescribeAt(tier)} damage to enemies within {radius * scale:0.#} of where the target stood" + (knockback > 0f ? $", flung outward (force {knockback * scale:0})" : "");
 }
 
-/// <summary>The strike's clock, on the ring it drew.</summary>
+/// <summary>The strike's clock, on the ring it drew: the closing ring, the volley, the landing.</summary>
 public class DelayedStrike : MonoBehaviour
 {
-    private Entity _caster; private Vector3 _point; private float _radius, _at, _damage, _force, _scale; private GameObject _prefab;
-    private SpriteRenderer _ring; private Color _color;
+    private Entity _caster; private Vector3 _point; private float _radius, _at, _delay, _damage, _force, _scale; private GameObject _prefab;
+    private SpriteRenderer _ring, _closing; private Color _color;
+    private GameObject _arrowPrefab; private int _arrows, _loosed; private float _fallHeight, _fallSpeed, _volley;
 
-    public void Arm(Entity caster, Vector3 point, float radius, float delay, float damage, float force, GameObject landingPrefab, float landingScale)
+    public void Arm(Entity caster, Vector3 point, float radius, float delay, float damage, float force, GameObject landingPrefab, float landingScale, Color color)
     {
-        _caster = caster; _point = point; _radius = radius; _at = Time.time + delay; _damage = damage; _force = force; _prefab = landingPrefab; _scale = landingScale;
-        _ring = GetComponent<SpriteRenderer>(); _color = _ring != null ? _ring.color : Color.white;
+        _caster = caster; _point = point; _radius = radius; _delay = Mathf.Max(0.05f, delay); _at = Time.time + _delay; _damage = damage; _force = force; _prefab = landingPrefab; _scale = landingScale;
+        _ring = GetComponent<SpriteRenderer>(); _color = color;
+        // The second ring: starts wide and closes onto the strike ring over the delay, so the pause reads as "when" as well as "where".
+        _closing = ShapeSprites.OnFloor("ArrowRainClosing", point, radius * 1.9f, new Color(color.r, color.g, color.b, color.a * 0.7f), filled: false);
+        _closing.transform.SetParent(transform, true);
+    }
+
+    public void Arrows(GameObject prefab, int count, float height, float speed, float volleySeconds)
+    {
+        _arrowPrefab = prefab; _arrows = prefab != null ? count : 0; _fallHeight = height; _fallSpeed = speed; _volley = volleySeconds;
     }
 
     private void Update()
     {
-        // The ring brightens as the strike nears, so the pause reads as a countdown.
-        if (_ring != null) { float t = Mathf.Clamp01(1f - (_at - Time.time) / 1.2f); _ring.color = new Color(_color.r, _color.g, _color.b, Mathf.Lerp(_color.a * 0.6f, 1f, t)); }
-        if (Time.time < _at) return;
+        float left = _at - Time.time;
+        float t = Mathf.Clamp01(1f - left / _delay);
+        if (_ring != null) _ring.color = new Color(_color.r, _color.g, _color.b, Mathf.Lerp(_color.a * 0.6f, 1f, t));
+        if (_closing != null)
+        {
+            float r = Mathf.Lerp(_radius * 1.9f, _radius, t);
+            _closing.transform.localScale = new Vector3(r * 2f, r * 2f * 0.55f, 1f);
+        }
+
+        // The volley: loosed one by one through the last stretch, each timed to arrive with the strike.
+        if (_arrowPrefab != null && _loosed < _arrows && left <= _volley)
+        {
+            int due = Mathf.Min(_arrows, Mathf.CeilToInt((1f - left / _volley) * _arrows));
+            while (_loosed < due)
+            {
+                Vector2 spot = UnityEngine.Random.insideUnitCircle * _radius * 0.9f;
+                Vector3 land = _point + new Vector3(spot.x, spot.y * 0.55f, 0f);
+                FallingArrow.Drop(_arrowPrefab, land + Vector3.up * _fallHeight, land, _fallSpeed * UnityEngine.Random.Range(0.9f, 1.15f));
+                _loosed++;
+            }
+        }
+
+        if (left > 0f) return;
         if (_caster != null)
             foreach (var v in ShapeSprites.EnemiesWithin(_caster, _point, _radius))
             {
@@ -115,7 +196,87 @@ public class DelayedStrike : MonoBehaviour
                 if (_force > 0f) { Vector3 dir = v.transform.position - _point; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, _force, _caster); }
             }
         if (_prefab != null) Fx.Spawn(_prefab, _point, _scale);
+        // The ring snaps white and is gone: the landing, seen.
+        var flash = ShapeSprites.OnFloor("ArrowRainLanding", _point, _radius, Color.white, filled: false);
+        flash.gameObject.AddComponent<FadeAway>().Begin(0.18f);
         Destroy(gameObject);
+    }
+}
+
+/// <summary>An arrow in flight with nothing else to it: falls to a point and sticks, or rises and is gone.</summary>
+public class FallingArrow : MonoBehaviour
+{
+    private Vector3 _to; private float _speed, _stuckAt = -1f; private bool _up; private float _upUntil;
+
+    public static void Drop(GameObject prefab, Vector3 from, Vector3 to, float speed)
+    {
+        var go = Make(prefab, from);
+        var a = go.AddComponent<FallingArrow>();
+        a._to = to; a._speed = speed;
+        Vector3 heading = to - from; go.transform.right = heading.sqrMagnitude > 0.0001f ? heading.normalized : Vector3.down;
+    }
+
+    public static void LaunchUp(GameObject prefab, Vector3 from, float speed, float seconds)
+    {
+        var go = Make(prefab, from);
+        var a = go.AddComponent<FallingArrow>();
+        a._up = true; a._speed = speed; a._upUntil = Time.time + seconds;
+        go.transform.right = new Vector3(0.15f, 1f, 0f).normalized;
+    }
+
+    /// <summary>The bow's arrow prefab as a picture only: its physics and its projectile script are switched off.</summary>
+    private static GameObject Make(GameObject prefab, Vector3 at)
+    {
+        var go = UnityEngine.Object.Instantiate(prefab, at, Quaternion.identity);
+        go.name = "RainArrow";
+        foreach (var b in go.GetComponentsInChildren<MonoBehaviour>(true)) b.enabled = false;
+        foreach (var rb in go.GetComponentsInChildren<Rigidbody2D>(true)) rb.simulated = false;
+        foreach (var c in go.GetComponentsInChildren<Collider2D>(true)) c.enabled = false;
+        // The bow's arrow carries a trail for its flight; falling at this speed it drew a streak the height of the arena.
+        foreach (var t in go.GetComponentsInChildren<TrailRenderer>(true)) t.enabled = false;
+        foreach (var ps in go.GetComponentsInChildren<ParticleSystem>(true)) ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        foreach (var r in go.GetComponentsInChildren<SpriteRenderer>(true)) r.sortingOrder = 110;
+        return go;
+    }
+
+    private void Update()
+    {
+        if (_up)
+        {
+            transform.position += transform.right * _speed * Time.deltaTime;
+            if (Time.time >= _upUntil) Destroy(gameObject);
+            return;
+        }
+        if (_stuckAt < 0f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _to, _speed * Time.deltaTime);
+            if (Vector3.Distance(transform.position, _to) > 0.01f) return;
+            // Stuck in the ground: a little off the vertical, under the units from here on.
+            _stuckAt = Time.time;
+            transform.rotation = Quaternion.Euler(0f, 0f, transform.eulerAngles.z + UnityEngine.Random.Range(-8f, 8f));
+            foreach (var r in GetComponentsInChildren<SpriteRenderer>(true)) r.sortingOrder = -390;
+            return;
+        }
+        float age = Time.time - _stuckAt;
+        if (age > 1.2f)
+        {
+            float a = Mathf.Clamp01(1f - (age - 1.2f) / 0.4f);
+            foreach (var r in GetComponentsInChildren<SpriteRenderer>(true)) { var c = r.color; c.a = a; r.color = c; }
+            if (a <= 0f) Destroy(gameObject);
+        }
+    }
+}
+
+/// <summary>Fade every sprite on this object out and destroy it.</summary>
+public class FadeAway : MonoBehaviour
+{
+    private float _seconds, _start;
+    public void Begin(float seconds) { _seconds = Mathf.Max(0.01f, seconds); _start = Time.time; }
+    private void Update()
+    {
+        float a = Mathf.Clamp01(1f - (Time.time - _start) / _seconds);
+        foreach (var r in GetComponentsInChildren<SpriteRenderer>(true)) { var c = r.color; c.a = a; r.color = c; }
+        if (a <= 0f) Destroy(gameObject);
     }
 }
 
@@ -212,9 +373,10 @@ public class OrbitRunner : MonoBehaviour
 // ---------------------------------------------------------------------------------------------
 
 /// <summary>
-/// A pool on the floor at the target for a few seconds. Enemies inside take damage every half
-/// second and wear a status; they walk out when they can (CombatAI leaves hostile ground before it
-/// does anything else), which is what a pull, a throw or a charge into the pool is for.
+/// A blob lobbed from the caster; where it lands a pool spreads and lives a few seconds. Enemies
+/// inside take damage every half second, wear a status and are stained dark; they walk out when
+/// they can (CombatAI leaves hostile ground before it does anything else), which is what a pull, a
+/// throw or a charge into the pool is for.
 /// </summary>
 [Serializable]
 public class ZoneEffect : SpellEffect
@@ -224,19 +386,52 @@ public class ZoneEffect : SpellEffect
     public ScaledValue damagePerSecond = new ScaledValue(0f, ofWeaponDamage: 0.5f);
     [Tooltip("Worn while inside and a moment after. Optional.")] public Status status;
     public float statusDuration = 1.5f;
-    public Color color = new Color(0.12f, 0.06f, 0.02f, 0.7f);
+    public Color color = new Color(0.12f, 0.06f, 0.02f, 0.78f);
+    [Tooltip("How long the blob is in the air from the caster to the target.")] public float lobSeconds = 0.35f;
+    [Tooltip("Units inside are stained this colour.")] public Color stain = new Color(0.45f, 0.32f, 0.22f, 1f);
 
     public override IEnumerator Run(SpellContext ctx)
     {
         var caster = ctx.caster; var target = ctx.target;
         if (caster == null || target == null) yield break;
-        var disc = ShapeSprites.OnFloor("TarPool", target.transform.position, radius * ctx.scale, color, filled: true);
-        var zone = disc.gameObject.AddComponent<Zone>();
-        zone.Begin(caster, radius * ctx.scale, seconds, damagePerSecond.Evaluate(caster, null, ctx.tier), status, statusDuration);
+        float reach = radius * ctx.scale; float dps = damagePerSecond.Evaluate(caster, null, ctx.tier);
+        var status = this.status; float statusSeconds = statusDuration; float life = seconds; Color poolColor = color; Color stainColor = stain;
+        LobbedBlob.Throw(Supplies.ThrowOrigin(caster), target.transform.position, lobSeconds, poolColor, reach * 0.35f, at =>
+        {
+            var pool = ShapeSprites.OnFloor("TarPool", at, reach, poolColor, ShapeSprites.Splat(UnityEngine.Random.Range(0, 6)));
+            pool.transform.rotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(0f, 360f));
+            var zone = pool.gameObject.AddComponent<Zone>();
+            zone.Begin(caster, reach, life, dps, status, statusSeconds, stainColor);
+        });
     }
 
     public override string Describe() => Describe(1, 1f);
     public override string Describe(int tier, float scale) => $"a pool {radius * scale:0.#} wide under the target for {seconds:0.#} s: {damagePerSecond.DescribeAt(tier)} damage a second to enemies in it" + (status != null ? $", {status.DisplayName} while inside" : "") + "; they walk out";
+}
+
+/// <summary>A blob in an arc from hand to floor; what it does when it lands is the caller's.</summary>
+public class LobbedBlob : MonoBehaviour
+{
+    private Vector3 _from, _to; private float _start, _seconds; private Action<Vector3> _onLand;
+
+    public static void Throw(Vector3 from, Vector3 to, float seconds, Color color, float size, Action<Vector3> onLand)
+    {
+        var sr = ShapeSprites.Floating("TarBlob", ShapeSprites.Splat(3), from, size, new Color(color.r, color.g, color.b, 1f), 130);
+        var b = sr.gameObject.AddComponent<LobbedBlob>();
+        b._from = from; b._to = to; b._start = Time.time; b._seconds = Mathf.Max(0.05f, seconds); b._onLand = onLand;
+    }
+
+    private void Update()
+    {
+        float t = Mathf.Clamp01((Time.time - _start) / _seconds);
+        Vector3 p = Vector3.Lerp(_from, _to, t);
+        p.y += Mathf.Sin(t * Mathf.PI) * 2.2f;   // the arc
+        transform.position = p;
+        transform.Rotate(0f, 0f, 240f * Time.deltaTime);
+        if (t < 1f) return;
+        _onLand?.Invoke(_to);
+        Destroy(gameObject);
+    }
 }
 
 /// <summary>A live pool. The AI asks <see cref="HostileAt"/> before it moves anywhere else.</summary>
@@ -246,16 +441,25 @@ public class Zone : MonoBehaviour
 
     public Entity Owner { get; private set; }
     public float Radius { get; private set; }
-    private float _until, _dps, _nextTick, _statusDuration; private Status _status;
-    private const float Tick = 0.5f;
+    private float _born, _until, _dps, _nextTick, _statusDuration, _nextBubble; private Status _status; private Color _stain;
+    private Vector3 _fullScale; private SpriteRenderer _sr; private Color _color;
+    private readonly HashSet<Entity> _stained = new HashSet<Entity>();
+    private const float Tick = 0.5f, Spread = 0.25f, Fade = 1f;
 
-    public void Begin(Entity owner, float radius, float seconds, float damagePerSecond, Status status, float statusDuration)
+    public void Begin(Entity owner, float radius, float seconds, float damagePerSecond, Status status, float statusDuration, Color stain)
     {
-        Owner = owner; Radius = radius; _until = Time.time + seconds; _dps = damagePerSecond; _status = status; _statusDuration = statusDuration; _nextTick = Time.time + Tick;
+        Owner = owner; Radius = radius; _born = Time.time; _until = Time.time + seconds; _dps = damagePerSecond; _status = status; _statusDuration = statusDuration; _stain = stain;
+        _nextTick = Time.time + Tick; _nextBubble = Time.time + 0.3f;
+        _sr = GetComponent<SpriteRenderer>(); _color = _sr != null ? _sr.color : Color.black;
+        _fullScale = transform.localScale;
+        transform.localScale = _fullScale * 0.2f;
+        // The splash of the landing: the blob's own shape, larger and thinner, fading fast.
+        var splash = ShapeSprites.OnFloor("TarSplash", transform.position, radius * 1.4f, new Color(_color.r, _color.g, _color.b, 0.45f), ShapeSprites.Splat(5));
+        splash.gameObject.AddComponent<FadeAway>().Begin(0.35f);
     }
 
     private void OnEnable() { All.Add(this); }
-    private void OnDisable() { All.Remove(this); }
+    private void OnDisable() { All.Remove(this); foreach (var e in _stained) Unstain(e); _stained.Clear(); }
 
     public bool Contains(Entity e) => e != null && (e.transform.position - transform.position).magnitude <= Radius;
 
@@ -274,14 +478,59 @@ public class Zone : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time >= _until || Owner == null) { Destroy(gameObject); return; }
+        float age = Time.time - _born; float left = _until - Time.time;
+        if (left <= 0f || Owner == null) { Destroy(gameObject); return; }
+
+        // Spreads out from the landing, sits, then sinks away over its last second.
+        float grow = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(age / Spread));
+        float sink = Mathf.Clamp01(left / Fade);
+        transform.localScale = _fullScale * Mathf.Lerp(0.2f, 1f, grow) * Mathf.Lerp(0.6f, 1f, sink);
+        if (_sr != null) _sr.color = new Color(_color.r, _color.g, _color.b, _color.a * sink);
+
+        // Bubbles: a small dark disc that rises a little, grows and pops.
+        if (Time.time >= _nextBubble && sink > 0.5f)
+        {
+            _nextBubble = Time.time + UnityEngine.Random.Range(0.25f, 0.5f);
+            Vector2 spot = UnityEngine.Random.insideUnitCircle * Radius * 0.7f;
+            var bubble = ShapeSprites.Floating("TarBubble", ShapeSprites.Disc(), transform.position + new Vector3(spot.x, spot.y * 0.55f, 0f), 0.12f, new Color(_color.r + 0.12f, _color.g + 0.08f, _color.b + 0.05f, 0.9f), -395);
+            bubble.gameObject.AddComponent<Bubble>();
+        }
+
+        // Who is in it: stained while inside, clean again on the way out.
+        var inside = ShapeSprites.EnemiesWithin(Owner, transform.position, Radius);
+        foreach (var e in inside) if (_stained.Add(e)) Stain(e);
+        if (_stained.Count > inside.Count)
+        {
+            var gone = new List<Entity>();
+            foreach (var e in _stained) if (e == null || e.isDead || !inside.Contains(e)) gone.Add(e);
+            foreach (var e in gone) { _stained.Remove(e); Unstain(e); }
+        }
+
         if (Time.time < _nextTick) return;
         _nextTick += Tick;
-        foreach (var v in ShapeSprites.EnemiesWithin(Owner, transform.position, Radius))
+        foreach (var v in inside)
         {
             v.TakeDamage(_dps * Tick, Owner);
             if (_status != null && v.Statuses != null) v.Statuses.Apply(_status, _statusDuration, Owner);
         }
+    }
+
+    private void Stain(Entity e) { if (e != null && e.HitFeedback != null) e.HitFeedback.SetTint(_stain); }
+    private void Unstain(Entity e) { if (e != null && e.HitFeedback != null) e.HitFeedback.SetTint(Color.white); }
+}
+
+/// <summary>A tar bubble: rises a little, swells, and is gone.</summary>
+public class Bubble : MonoBehaviour
+{
+    private float _start = -1f; private SpriteRenderer _sr; private Color _color; private float _size;
+    private void Update()
+    {
+        if (_start < 0f) { _start = Time.time; _sr = GetComponent<SpriteRenderer>(); _color = _sr != null ? _sr.color : Color.black; _size = transform.localScale.x; }
+        float t = (Time.time - _start) / 0.6f;
+        if (t >= 1f) { Destroy(gameObject); return; }
+        transform.position += Vector3.up * 0.25f * Time.deltaTime;
+        transform.localScale = Vector3.one * _size * (1f + t * 0.8f);
+        if (_sr != null) _sr.color = new Color(_color.r, _color.g, _color.b, _color.a * (1f - t * t));
     }
 }
 

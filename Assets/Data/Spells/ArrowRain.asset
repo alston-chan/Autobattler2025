@@ -54,3 +54,9 @@ MonoBehaviour:
         ringColor: {r: 1, g: 0.25, b: 0.2, a: 0.55}
         landingPrefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
         landingScale: 1.2
+        arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
+        arrows: 10
+        fallHeight: 7
+        fallSpeed: 22
+        volleySeconds: 0.45
+        launchArrow: 1

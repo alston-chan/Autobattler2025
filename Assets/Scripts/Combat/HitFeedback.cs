@@ -168,6 +168,26 @@ public class HitFeedback : MonoBehaviour
     /// _FlashAmount on the Sprites/Flash shader. A MaterialPropertyBlock keeps this
     /// batching-friendly and avoids leaking material instances.
     /// </summary>
+    /// <summary>
+    /// A lasting stain on the whole body, next to the flash: a unit in tar is tinted tar. White clears
+    /// it. Rides on the same property block as the flash, so the two never fight over the renderers.
+    /// </summary>
+    public void SetTint(Color tint)
+    {
+        if (_renderers == null) CacheRenderers();
+        if (_renderers == null) return;
+        if (_mpb == null) _mpb = new MaterialPropertyBlock();
+        for (int i = 0; i < _renderers.Length; i++)
+        {
+            var r = _renderers[i];
+            if (r == null) continue;
+            r.GetPropertyBlock(_mpb);
+            _mpb.SetColor(TintId, tint);
+            r.SetPropertyBlock(_mpb);
+        }
+    }
+    private static readonly int TintId = Shader.PropertyToID("_Color");
+
     private void SetFlash(float amount, Color color)
     {
         if (_renderers == null) return;
