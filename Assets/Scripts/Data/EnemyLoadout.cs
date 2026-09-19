@@ -104,6 +104,9 @@ public class EnemyLoadout : ScriptableObject
              "enough to be a fight — enemy prefabs are shared with the player's units, so their own " +
              "health can't be raised without buffing the company too.")]
     public float healthMultiplier = 1f;
+    [Tooltip("Multiplies every unit's Damage stat after its gear is on: 1.3 hits 30% harder. The second tuning knob " +
+             "beside health, since a side that only has more health makes fights longer, not harder.")]
+    public float damageMultiplier = 1f;
 
     [Header("Ranged mix")]
     [Range(0f, 1f)]

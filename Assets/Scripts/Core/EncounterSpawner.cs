@@ -235,6 +235,11 @@ public class EncounterSpawner : MonoBehaviour
                 if (itemParams != null) entity.Stats.ApplyItemModifiers(itemParams, item.Id);
             }
 
+        // The loadout's damage knob, on top of the gear: a percentage, so a kit with a heavy weapon
+        // stays heavier than one with a wand.
+        if (entity.Stats != null && entity.Stats.Damage != null && loadout.damageMultiplier > 0f && !Mathf.Approximately(loadout.damageMultiplier, 1f))
+            entity.Stats.Damage.AddModifier(new Kryz.CharacterStats.StatModifier(loadout.damageMultiplier - 1f, Kryz.CharacterStats.StatModType.PercentMult, loadout));
+
         // And it resonates: the weapon's verb, the set's engravings. Every enemy archer whips, every
         // mace throws Cannonballs, and an enemy in the Ninja set substitutes. A kit always resonates;
         // rolled gear does when the loadout says so.
