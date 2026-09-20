@@ -563,14 +563,19 @@ public class UnitInspector : MonoBehaviour
 
             // What it does, in numbers, under its name — the ability is the one line on the card the
             // player can act on before the bell, and a name alone says nothing about damage or reach.
-            string details = spell.FullDescriptionFor(_selected);
+            // Decorated here rather than by the block pass below: the prose is wrapped in a muted
+            // colour, and the glossary leaves coloured text alone. TMP keeps a colour stack, so a
+            // keyword's colour inside the wrapper pops back to muted after it.
+            string details = Keywords.Decorate(spell.FullDescriptionFor(_selected));
             if (!string.IsNullOrEmpty(details))
                 text.Append("<size=12><color=#BFC6D4>").Append(details.Replace("\n", "  ·  ")).Append("</color></size>\n");
         }
 
         AppendEngravings(text);
 
-        _kit.text = text.Length > 0 ? text.ToString().TrimEnd('\n') : "";
+        // The vocabulary coloured last, over the finished block: Keywords leaves our own coloured
+        // labels alone, so one call does the ability's prose and the engraving lines together.
+        _kit.text = text.Length > 0 ? Keywords.Decorate(text.ToString().TrimEnd('\n')) : "";
     }
 
     private void AppendEngravings(StringBuilder text)

@@ -115,7 +115,7 @@ public class RewardPanel : MonoBehaviour
         // "attacks faster" gives the player nothing to compare. Tier I is quoted because that is what
         // the item is worth on the fight after it's taken.
         detail.text = entry != null && entry.engraving != null
-            ? $"<b>{entry.engraving.DisplayName}</b>\n{entry.engraving.DescribeTier(1)}"
+            ? Keywords.Decorate($"<b>{entry.engraving.DisplayName}</b>\n{entry.engraving.DescribeTier(1)}")
             : "No engraving.";
 
         return card;

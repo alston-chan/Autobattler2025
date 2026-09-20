@@ -191,7 +191,7 @@ public class CharacterInventory : ItemWorkspace
 
         spellDescriptionLabel.gameObject.SetActive(show);
         if (show)
-            spellDescriptionLabel.text = $"<b>{spell.DisplayName}</b>\n{spell.FullDescription}";
+            spellDescriptionLabel.text = Keywords.Decorate($"<b>{spell.DisplayName}</b>\n{spell.FullDescription}");
     }
 
     /// <summary>(B) Spawn the "Active Spell: …" label under the equipment grid.</summary>

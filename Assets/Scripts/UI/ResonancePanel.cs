@@ -104,7 +104,7 @@ public class ResonancePanel : MonoBehaviour
         if (!worn)
         {
             _title.text = entry.engraving.DisplayName;
-            _detail.text = entry.engraving.DescribeTier(1) + "\nEquip to begin attuning.";
+            _detail.text = Keywords.Decorate(entry.engraving.DescribeTier(1) + "\nEquip to begin attuning.");
             _barFill.anchorMax = new Vector2(0f, 1f);
             _resonateButton.interactable = false;
             _resonateBackground.color = ButtonBlocked;
@@ -131,7 +131,7 @@ public class ResonancePanel : MonoBehaviour
             : $"{attunement:0} / {next} {unit}  →  <b>{Roman(tier + 1)}</b>: " +
               entry.engraving.DescribeTier(tier + 1);
 
-        _detail.text = effect + "\n" + progress;
+        _detail.text = Keywords.Decorate(effect + "\n" + progress);
 
         // Progress within the current tier band, so the bar restarts at each threshold. Tier I starts
         // at zero because it costs nothing — it comes with the item.
@@ -172,7 +172,7 @@ public class ResonancePanel : MonoBehaviour
                 .Append(Roman(mark.tier)).Append("</color>  ")
                 .Append(mark.engraving.DescribeTier(mark.tier));
         }
-        _bankedLabel.text = text.ToString();
+        _bankedLabel.text = Keywords.Decorate(text.ToString());
     }
 
     private void Resonate()

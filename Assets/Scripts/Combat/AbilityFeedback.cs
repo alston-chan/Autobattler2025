@@ -95,6 +95,14 @@ public class AbilityCallout : MonoBehaviour
         var mr = go.GetComponent<MeshRenderer>();
         if (mr != null) mr.sortingOrder = 32001;   // above sprites and damage numbers
 
+        // The callout is the one moment worth animating: a verb just fired, it is on screen for a
+        // second, and there is never more than one at a time. Everything else the game writes stays
+        // still on purpose — animated prose on a card is noise, and it costs per glyph every frame.
+        var animator = go.AddComponent<Febucci.UI.TextAnimator_TMP>();
+        // a=0.25: the shipped bounce throws letters a third of their height apart, which reads as a
+        // ransom note on a two-word callout. A quarter of that is a nudge.
+        animator.SetText("<bounce a=0.25>" + text + "</bounce>", false);
+
         // A runtime-created 3D TMP won't build its mesh until forced — otherwise verts=0, nothing drawn.
         tmp.ForceMeshUpdate();
 
