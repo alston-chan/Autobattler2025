@@ -26,6 +26,11 @@ public static class AbilityFeedback
         public Vector3 offset = new Vector3(0f, 1.8f, 0f);
         public float riseSpeed = 1.1f;
         public float lifetime = 1.1f;
+        [Tooltip("The callout arrives this much too big and settles to its size, overshooting a little " +
+                 "on the way — the label as a whole, never its letters (Docs/Juice.md).")]
+        [Range(1f, 2f)] public float punchScale = 1.35f;
+        [Tooltip("How long the arrival takes. Short: it is a punctuation mark, not an animation.")]
+        public float punchSeconds = 0.18f;
         [Tooltip("Dark edge so the name reads on any terrain (same reasoning as damage numbers).")]
         [Range(0f, 1f)] public float outlineWidth = 0.5f;
         public Color outlineColor = Color.black;
@@ -95,10 +100,11 @@ public class AbilityCallout : MonoBehaviour
         var mr = go.GetComponent<MeshRenderer>();
         if (mr != null) mr.sortingOrder = 32001;   // above sprites and damage numbers
 
-        // No text animation here. Text Animator's bounce gives every character its own phase, so a
-        // callout came out as a scatter of letters rather than a word that bobs: the effect is built
-        // for a line of dialogue read left to right, not for two large words seen for a second.
-        // Text Animator stays in the project; nothing currently uses it.
+        // No per-character animation here. Text Animator's behaviours give every character its own
+        // phase of one wave, so a callout came out as a scatter of letters rather than a word that
+        // bobs: they are built for a line of dialogue read left to right at body-text size. What
+        // moves instead is the label itself — see the punch in Update. Text Animator stays in the
+        // project, unused.
 
         // A runtime-created 3D TMP won't build its mesh until forced — otherwise verts=0, nothing drawn.
         tmp.ForceMeshUpdate();
@@ -116,6 +122,21 @@ public class AbilityCallout : MonoBehaviour
         _tmp = tmp;
         _s = s;
         _baseColor = tmp.color;
+        // Born big, so the first frame already reads as an arrival rather than a fade-in.
+        if (Punching) transform.localScale = Vector3.one * s.punchScale;
+    }
+
+    private bool Punching => _s.punchScale > 1.001f && _s.punchSeconds > 0.0001f;
+
+    /// <summary>
+    /// Ease out with a small overshoot: the label passes its resting size, dips a hair under and
+    /// settles. The dip is what makes it read as weight landing rather than a zoom.
+    /// </summary>
+    private static float EaseOutBack(float k)
+    {
+        const float c1 = 1.70158f, c3 = c1 + 1f;
+        float x = k - 1f;
+        return 1f + c3 * x * x * x + c1 * x * x;
     }
 
     private void Update()
@@ -128,6 +149,14 @@ public class AbilityCallout : MonoBehaviour
         }
 
         transform.position += Vector3.up * _s.riseSpeed * Time.deltaTime;
+
+        // The arrival: the whole label settles from too big to its size. Unclamped, so the easing's
+        // overshoot is allowed to carry it a little under one before it comes back.
+        if (Punching)
+        {
+            float k = Mathf.Clamp01(_age / _s.punchSeconds);
+            transform.localScale = Vector3.one * Mathf.LerpUnclamped(_s.punchScale, 1f, EaseOutBack(k));
+        }
 
         // Fade the back half of the lifetime.
         float t = _age / _s.lifetime;
