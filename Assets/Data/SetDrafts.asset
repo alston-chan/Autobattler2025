@@ -12,4 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83f33bc440e6994d938391dfe86a179, type: 3}
   m_Name: SetDrafts
   m_EditorClassIdentifier: 
-  drafts: []
+  drafts:
+  - title: AssassinArmor [Paint]
+    status: 0
+    setKey: FantasyHeroes.Basic.Armor.AssassinArmor [Paint]
+    notes: 
+    pieces:
+    - itemId: FantasyHeroes.Basic.Armor.AssassinArmor [Paint].vest
+      engraving: {fileID: 0}
+      idea: 
+      engraving: {fileID: 0}
+      idea: 
+    - itemId: FantasyHeroes.Basic.Armor.AssassinArmor [Paint].boots
+      engraving: {fileID: 0}
+      idea: 
+    - itemId: FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
+      engraving: {fileID: 0}
+      idea: 
+    - itemId: FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
+      engraving: {fileID: 0}
+      idea: 
+  - title: NinjaOutfit
+    status: 0
+    setKey: FantasyHeroes.Basic.Armor.NinjaOutfit
+    notes: 
+    pieces:
+    - itemId: FantasyHeroes.Basic.Armor.NinjaOutfit.vest
+      engraving: {fileID: 0}
+      idea: 
+      engraving: {fileID: 0}
+      idea: 
+    - itemId: FantasyHeroes.Basic.Armor.NinjaOutfit.boots
+      engraving: {fileID: 0}
+      idea: 
