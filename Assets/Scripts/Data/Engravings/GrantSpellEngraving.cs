@@ -46,5 +46,15 @@ public class GrantSpellEngraving : Engraving
         if (owner.CombatAI != null) owner.CombatAI.RefreshSpells();
     }
 
-    public override string DescribeTier(int tier) => spell != null ? $"Verb: {spell.DisplayName}" : "Verb: (none)";
+    /// <summary>
+    /// What the verb does at this tier. Not "Verb: Whirl" — every panel that shows this already
+    /// prints the engraving's name directly above it, so naming it again was the whole line wasted
+    /// on a reward card, which is exactly where a player needs the numbers to compare.
+    /// </summary>
+    public override string DescribeTier(int tier)
+    {
+        if (spell == null) return "Teaches nothing.";
+        if (spell is CompositeSpell composite) return composite.ReadsAt(Mathf.Max(1, tier));
+        return string.IsNullOrEmpty(spell.description) ? "Teaches " + spell.DisplayName + "." : spell.description;
+    }
 }

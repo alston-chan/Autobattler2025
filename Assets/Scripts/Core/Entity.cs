@@ -218,6 +218,10 @@ public class Entity : MonoBehaviour
     [Header("Unit Data (optional)")]
     [Tooltip("Assign a UnitData asset to drive stats from data. Leave null to use serialized fields below.")]
     public UnitData unitData;
+
+    [Tooltip("What the player calls this unit, on its card, its bar and the scoreboard. Empty tidies " +
+             "the object's own name instead (DisplayNames.Unit) — an enemy is given its kit's name at spawn.")]
+    public string displayName;
     #endregion
 
     #region Fallback fields (used when unitData is null)

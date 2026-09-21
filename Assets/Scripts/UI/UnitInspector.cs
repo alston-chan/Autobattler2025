@@ -48,12 +48,20 @@ public class UnitInspector : MonoBehaviour
     public float doubleClickSeconds = 0.35f;
 
     [Header("Card")]
-    public Vector2 cardSize = new Vector2(330f, 550f);
+    [Tooltip("The card's width. The height is whatever the unit's own card needs (LayoutCard) — this " +
+             "y is only what it is built at before the first unit is painted into it.")]
+    public Vector2 cardSize = new Vector2(330f, 640f);
     [Tooltip("Inset from the bottom-right corner of the canvas. Bottom-LEFT is taken by the avatar " +
              "strip and the centre by the equipment windows, so the card lives on the right.")]
     public Vector2 cardMargin = new Vector2(-24f, 24f);
 
-    private static readonly Color Backing = new Color(0.05f, 0.05f, 0.07f, 0.93f);
+    // Opaque. At 0.96 the board showed through as a ghost of whatever stood behind the card —
+    // faint, but enough that a dark ability paragraph was being read over a moving character.
+    private static readonly Color Backing = new Color(0.07f, 0.07f, 0.09f, 1f);
+    private static readonly Color Rule = new Color(1f, 0.82f, 0.28f, 0.35f);
+
+    /// <summary>A card shorter than this reads as a tooltip that failed rather than a small unit.</summary>
+    private const float MinCardHeight = 220f;
     private static readonly Color Ally = new Color(1f, 0.82f, 0.28f, 1f);
     private static readonly Color Enemy = new Color(0.95f, 0.42f, 0.36f, 1f);
     private static readonly Color Muted = new Color(0.72f, 0.72f, 0.75f, 1f);
@@ -97,6 +105,11 @@ public class UnitInspector : MonoBehaviour
     private TextMeshProUGUI _statKeys;
     private TextMeshProUGUI _statValues;
     private TextMeshProUGUI _kit;
+
+    // The card is re-stacked for every unit it describes, so these are kept rather than positioned
+    // once: a unit with no mana, no ability and no engravings is a much shorter card than a hero.
+    private RectTransform _rule;
+    private RectTransform _healthRow;
 
     private SpriteRenderer _ring;
 
@@ -359,8 +372,33 @@ public class UnitInspector : MonoBehaviour
         if (unit == null) return;
 
         _nextRefresh = 0f;
+        StandClearOf(unit);
         Repaint();
         FollowBars();
+    }
+
+    /// <summary>
+    /// Put the card on the opposite side of the screen from the unit it is about. Clicking an enemy
+    /// to ask what it does, and having the answer land on top of the enemy's own back rank, is the
+    /// one thing a read-only card must not do. Bottom corners both, because the avatar strip is
+    /// hidden while the board is up and the middle belongs to the equipment windows.
+    /// </summary>
+    private void StandClearOf(Entity unit)
+    {
+        if (_card == null) return;
+        var rect = _card.GetComponent<RectTransform>();
+        if (rect == null) return;
+
+        bool right = true;
+        if (_camera != null && unit != null)
+        {
+            var viewport = _camera.WorldToViewportPoint(unit.transform.position);
+            right = viewport.x <= 0.55f;   // a unit left of centre leaves the right corner free
+        }
+
+        var corner = new Vector2(right ? 1f : 0f, 0f);
+        rect.anchorMin = rect.anchorMax = rect.pivot = corner;
+        rect.anchoredPosition = new Vector2(right ? cardMargin.x : -cardMargin.x, cardMargin.y);
     }
 
     #region Painting
@@ -414,6 +452,46 @@ public class UnitInspector : MonoBehaviour
         PaintSlots();
         PaintStats();
         PaintKit();
+        LayoutCard();
+    }
+
+    /// <summary>
+    /// Stack the blocks that are actually showing, measure the two that vary, and shrink the card to
+    /// what it holds. A fixed-height card is wrong in both directions at once: a hero with a long
+    /// verb ran off the bottom edge, and an archer with no ability and no spell slots left a third of
+    /// the card empty with a hole in the middle where the cast row would have been.
+    /// </summary>
+    private void LayoutCard()
+    {
+        const float pad = 14f, width = 28f;
+        float inner = cardSize.x - width;
+
+        _cursor = -pad;
+        Stack(_name.rectTransform, 28f, 0f);
+        Stack(_side.rectTransform, 18f, 6f);
+        Stack(_rule, 2f, 8f);
+        Stack(_healthRow, 18f, 4f);
+        if (_manaRow.activeSelf) Stack((RectTransform)_manaRow.transform, 16f, 12f);
+        Stack(_tactics.rectTransform, Measure(_tactics, inner, 20f), 6f);
+        if (_slotRow.activeSelf) Stack((RectTransform)_slotRow.transform, 22f, 10f);
+
+        float statsTop = _cursor;
+        Stack(_statKeys.rectTransform, 88f, 0f);
+        _cursor = statsTop;
+        Stack(_statValues.rectTransform, 88f, 10f);
+
+        Stack(_kit.rectTransform, Measure(_kit, inner, 0f), 0f);
+
+        // _cursor is now the content's bottom edge, measured downward from the card's top.
+        var rect = _card.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(cardSize.x, Mathf.Max(MinCardHeight, -_cursor + pad));
+    }
+
+    /// <summary>How tall a block of text actually is at the card's width, never less than a minimum.</summary>
+    private static float Measure(TextMeshProUGUI text, float width, float minimum)
+    {
+        if (text == null || string.IsNullOrEmpty(text.text)) return minimum;
+        return Mathf.Max(minimum, text.GetPreferredValues(text.text, width, 0f).y);
     }
 
     /// <summary>
@@ -592,6 +670,7 @@ public class UnitInspector : MonoBehaviour
             {
                 var entry = resonance.EntryFor(item);
                 if (entry == null || entry.engraving == null) continue;
+                if (AlreadyListed(entry.engraving)) continue;
                 Engraving(text, entry.engraving.DisplayName, resonance.TierFor(item), worn: true);
             }
         }
@@ -600,8 +679,23 @@ public class UnitInspector : MonoBehaviour
         foreach (var mark in resonance.banked)
         {
             if (mark == null || mark.engraving == null) continue;
+            if (AlreadyListed(mark.engraving)) continue;
             Engraving(text, mark.engraving.DisplayName, mark.tier, worn: false);
         }
+    }
+
+    /// <summary>
+    /// Whether the ability block above already said this. A weapon's engraving IS its verb, so a
+    /// hero holding Bull Rush read "Ability  Bull Rush I ..." and then, four lines later, "Bull Rush
+    /// I" again — the same fact twice, the second time with nothing added. Only a verb can double
+    /// up like this; every other engraving says something the ability list never does.
+    /// </summary>
+    private bool AlreadyListed(Engraving engraving)
+    {
+        if (!(engraving is GrantSpellEngraving verb) || verb.spell == null) return false;
+        foreach (var spell in _selected.CastableSpells())
+            if (spell == verb.spell && spell.IsAbility) return true;
+        return false;
     }
 
     private static void Engraving(StringBuilder text, string name, int tier, bool worn)
@@ -625,17 +719,7 @@ public class UnitInspector : MonoBehaviour
     /// underscores for itself, so the same hero read as "Hero_Wand" on its card and "Wand" on its
     /// bar — two rules for one name, which is wrong whichever is prettier.
     /// </summary>
-    public static string DisplayName(Entity unit)
-    {
-        if (unit.unitData != null && !string.IsNullOrEmpty(unit.unitData.unitName))
-            return unit.unitData.unitName;
-
-        // Spawned units carry Unity's instantiation debris in their name — "HumanPrefab(Clone)" is
-        // not something to show a player.
-        string name = unit.name.Replace("(Clone)", "").Trim();
-        if (name.EndsWith("Prefab")) name = name.Substring(0, name.Length - "Prefab".Length);
-        return name;
-    }
+    public static string DisplayName(Entity unit) => DisplayNames.Unit(unit);
 
     #endregion
 
@@ -645,6 +729,8 @@ public class UnitInspector : MonoBehaviour
     {
         _card = NewRect("UnitInspectorCard", canvas, new Vector2(1f, 0f), cardSize, cardMargin);
         _card.GetComponent<RectTransform>().pivot = new Vector2(1f, 0f);
+
+        UiLayer.Raise(_card, UiLayer.UnitCard);
 
         var backing = _card.AddComponent<Image>();
         backing.color = Backing;
@@ -658,9 +744,15 @@ public class UnitInspector : MonoBehaviour
         Stack(_name.rectTransform, 28f, 0f);
 
         _side = NewText("Side", _card.transform, 14f, Muted, TextAlignmentOptions.Left);
-        Stack(_side.rectTransform, 18f, 10f);
+        Stack(_side.rectTransform, 18f, 6f);
+
+        var rule = NewRect("Rule", _card.transform, new Vector2(0.5f, 1f), Vector2.zero, Vector2.zero);
+        rule.AddComponent<Image>().color = Rule;
+        _rule = rule.GetComponent<RectTransform>();
+        Stack(_rule, 2f, 8f);
 
         _healthFill = BuildBar("Health", out _healthText, HealthAlly, 18f, 4f);
+        _healthRow = (RectTransform)_healthFill.parent;
         _manaRow = BuildManaRow();
         _tactics = NewText("Tactics", _card.transform, 14f, Color.white, TextAlignmentOptions.Left);
         _tactics.enableWordWrapping = false;
@@ -682,7 +774,7 @@ public class UnitInspector : MonoBehaviour
 
         _kit = NewText("Kit", _card.transform, 15f, Color.white, TextAlignmentOptions.TopLeft);
         _kit.enableWordWrapping = true;
-        Stack(_kit.rectTransform, 242f, 0f);
+        Stack(_kit.rectTransform, 330f, 0f);
     }
 
     /// <summary>
@@ -764,8 +856,8 @@ public class UnitInspector : MonoBehaviour
     {
         // The number matters now that the pool is the active verb's cost: "38 / 60" says how far
         // the next cast is, and which verb it is charging is on the ability line below.
-        var fill = BuildBar("Mana", out _manaText, ManaFill, 12f, 12f);
-        _manaText.fontSize = 10f;
+        var fill = BuildBar("Mana", out _manaText, ManaFill, 16f, 12f);
+        _manaText.fontSize = 12f;
         _manaFill = fill;
         return fill.parent.gameObject;
     }

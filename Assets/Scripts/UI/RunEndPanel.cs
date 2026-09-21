@@ -84,6 +84,8 @@ public class RunEndPanel : MonoBehaviour
         shade.color = Backdrop;
         shade.raycastTarget = true;
 
+        UiLayer.Raise(_root, UiLayer.RunEnd);
+
         _heading = NewText("Heading", _root.transform, 48f, Gold);
         Place(_heading.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 70f), new Vector2(0f, 250f));
 

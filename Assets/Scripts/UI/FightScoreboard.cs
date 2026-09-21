@@ -204,6 +204,8 @@ public class FightScoreboard : MonoBehaviour
         face.color = Panel;
         face.raycastTarget = false;
 
+        UiLayer.Raise(_root, UiLayer.Scoreboard);
+
         _title = NewText("Title", _root.transform, 17f, Gold);
         Place(_title.rectTransform, new Vector2(0.5f, 1f), new Vector2(Width - 20f, 26f), new Vector2(0f, -18f));
 

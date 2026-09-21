@@ -386,10 +386,13 @@ public class CharacterInventory : ItemWorkspace
         var spell = CharacterEntity.ActiveSpell;
         var from = spell != null && CharacterEntity.Resonance != null ? CharacterEntity.Resonance.WeaponTeaching(spell) : null;
         string rack = "";
-        foreach (var w in CharacterEntity.carriedWeapons) if (w != null) rack += (rack.Length > 0 ? ", " : "") + Catalog.ShortName(w.Id);
-        activeSpellLabel.text = (spell != null ? "Active: " + spell.DisplayName + (from != null ? " (" + Catalog.ShortName(from.Id) + ")" : "") : "Active: —")
+        foreach (var w in CharacterEntity.carriedWeapons) if (w != null) rack += (rack.Length > 0 ? ", " : "") + Name(w.Id);
+        activeSpellLabel.text = (spell != null ? "Active: " + spell.DisplayName + (from != null ? " (" + Name(from.Id) + ")" : "") : "Active: —")
                               + (rack.Length > 0 ? "\nRack: " + rack : "");
     }
+
+    /// <summary>An item id as a name: the catalogue's tail, with the spaces its sprite name lost.</summary>
+    private static string Name(string itemId) => DisplayNames.Item(Catalog.ShortName(itemId));
 
     public void Equip()
     {

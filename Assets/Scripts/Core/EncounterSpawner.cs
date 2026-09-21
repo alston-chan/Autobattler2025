@@ -87,6 +87,10 @@ public class EncounterSpawner : MonoBehaviour
             }
             var kind = loadout != null ? ArmBeforeWake(entity, loadout, kit != null ? KindOfKit(kit) : (EnemyKind?)null) : EnemyKind.Melee;
 
+            // A kit is a fighter with a name — "Rain Archer", not "Human". Set before the entity
+            // wakes, so the first card ever drawn for it already reads right.
+            if (kit != null) entity.displayName = kit.DisplayName;
+
             pending.Add(entity);
             loadouts.Add(loadout);
             kinds.Add(kind);

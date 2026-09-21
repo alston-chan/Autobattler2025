@@ -182,6 +182,8 @@ public class MapPanel : MonoBehaviour
         shade.color = Backdrop;
         shade.raycastTarget = false;
 
+        UiLayer.Raise(_root, UiLayer.Map);
+
         _heading = NewText("Heading", _root.transform, 30f, Gold);
         Place(_heading.rectTransform, new Vector2(0.5f, 1f), new Vector2(900f, 44f), new Vector2(0f, -40f));
 

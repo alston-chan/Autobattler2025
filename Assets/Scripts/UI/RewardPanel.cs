@@ -54,8 +54,8 @@ public class RewardPanel : MonoBehaviour
         // Says outright that the next fight is waiting, since the panel now blocks it — a player
         // pressing Space and getting nothing deserves to know why.
         _heading.text = _runManager.State != null
-            ? $"Victory — {_runManager.State.Progress}.   Choose your spoils to continue."
-            : "Choose your spoils to continue.";
+            ? $"Victory — {_runManager.State.Progress}  ·  choose your spoils"
+            : "Choose your spoils";
 
         foreach (var card in _cards) Destroy(card);
         _cards.Clear();
@@ -131,11 +131,11 @@ public class RewardPanel : MonoBehaviour
         if (itemParams != null)
         {
             string localized = itemParams.GetLocalizedName(Application.systemLanguage.ToString());
-            if (!string.IsNullOrEmpty(localized) && localized != itemId) return localized;
+            if (!string.IsNullOrEmpty(localized) && localized != itemId) return DisplayNames.Item(localized);
         }
 
         int dot = itemId.LastIndexOf('.');
-        return dot >= 0 ? itemId.Substring(dot + 1) : itemId;
+        return DisplayNames.Item(dot >= 0 ? itemId.Substring(dot + 1) : itemId);
     }
 
     #region Construction
@@ -155,6 +155,8 @@ public class RewardPanel : MonoBehaviour
         var shade = _root.AddComponent<Image>();
         shade.color = Backdrop;
         shade.raycastTarget = false;
+
+        UiLayer.Raise(_root, UiLayer.Reward);
 
         _heading = NewText("Heading", _root.transform, 34f, Gold);
         Place(_heading.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 50f),
