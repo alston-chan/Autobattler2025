@@ -46,10 +46,13 @@ public class CombatAI : MonoBehaviour
         _fightStart = Time.time;
         _healthAtBell = _entity != null && _entity.Health != null ? _entity.Health.currentHealth : 0f;
 
-        // A new fight is a new question: whoever we could not outrun last time is not here.
+        // A new fight is a new question: whoever we could not outrun last time is not here, and
+        // neither is the ground we were keeping off.
         _unescapable = null;
         _kiting = false;
         _closing = false;
+        _fleeingPool = null;
+        _avoided = null;
     }
     private float[] _spellCooldowns;
 
@@ -209,7 +212,7 @@ public class CombatAI : MonoBehaviour
             if (distToTarget > _attackRange && !_isAttacking && !taunted &&
                 _entity.EffectiveCommitment != Commitment.Relentless)
             {
-                var here = ThreatInReach(_attackRange * SettleFraction);
+                var here = ThreatInReach(_attackRange * WellInsideReach);
                 if (here != null)
                 {
                     Retarget(here);
@@ -249,7 +252,7 @@ public class CombatAI : MonoBehaviour
                 // anything its stance would have it do, straight away from the centre. Mid-swing it
                 // stays and finishes; that, and a throw back in, is what the pool is for.
                 var pool = Zone.HostileAt(_entity);
-                if (pool != null) _fleeingPool = pool;
+                if (pool != null) { _fleeingPool = pool; _avoided = pool; }
                 else if (_fleeingPool != null && Vector3.Distance(transform.position, _fleeingPool.transform.position) > _fleeingPool.Radius + PoolMargin) _fleeingPool = null;
                 if (_fleeingPool != null)
                 {
@@ -292,6 +295,27 @@ public class CombatAI : MonoBehaviour
     private Zone _fleeingPool;
     private const float PoolMargin = 0.6f;
 
+    /// <summary>Ground this unit has walked out of and will not walk back into while it lives.</summary>
+    private Zone _avoided;
+
+    /// <summary>
+    /// Whether the fight this unit wants is standing in ground it just left. Measured as the single
+    /// largest source of a melee unit backing away: more than half of one greatsword's back-off
+    /// frames were a tar pool. It walked out, walked straight back in because its target was still
+    /// in there, took the tick, and walked out again — across the rim, for the pool's whole life.
+    ///
+    /// A pool is a cost to pay once, not a place to pace across. So the unit holds at the edge
+    /// instead, where the rule above ("take the fight that is already here") will hand it anything
+    /// that comes out, and the pool's own five seconds resolve the standoff.
+    /// </summary>
+    private bool StandingOffFrom(Entity target)
+    {
+        if (_avoided == null) return false;                       // destroyed pools read as null
+        if (target == null) { _avoided = null; return false; }
+        return Vector3.Distance(target.transform.position, _avoided.transform.position)
+               <= _avoided.Radius + PoolMargin;
+    }
+
     // The chaser this unit has accepted it cannot outrun, and the retreat it is judging (Kiting).
     // Held until that chaser leaves or gives up on us, so the decision is made once rather than
     // retaken every frame — which is what turned a failed retreat into a shuffle on the spot.
@@ -299,13 +323,23 @@ public class CombatAI : MonoBehaviour
     private float _retreatStarted;
     private float _retreatStartDistance;
 
-    // Walking in, as opposed to standing and fighting. Reach is a boundary like any other here, and
-    // like the others it needs a band: bodies shove each other half a unit at a time, so a melee
-    // unit whose target sits exactly at its reach was stepping forward and back every time the
-    // scrum breathed. It closes to comfortably inside reach and does not set off again until the
-    // target is properly outside it.
+    // Walking in, as opposed to standing and fighting.
+    //
+    // A unit stops the moment it can hit, and does not set off again until the target is a little
+    // past its reach. The slack is small on purpose. This band used to run the other way — walk in
+    // to 0.8 of reach, set off again at reach — and that was wrong for a reason no amount of
+    // tuning fixes: two bodies have a radius of 0.55 each, so they cannot stand closer than 1.10,
+    // and 0.8 of a 1.5 reach is 1.20. The unit was being told to stand a tenth of a unit off the
+    // body wall, CombatPhysics.ResolveBodies pushed it back out every frame, and it walked in
+    // again — run in, back off, repeat, for the whole fight. Standing at reach leaves four tenths
+    // of clearance instead.
     private bool _closing;
-    private const float SettleFraction = 0.8f;
+
+    /// <summary>How far past its reach a target must drift before the unit walks again.</summary>
+    private const float ReachSlack = 0.15f;
+
+    /// <summary>A free fight has to be comfortably inside reach, not balanced on its edge.</summary>
+    private const float WellInsideReach = 0.8f;
 
     private Vector3 StanceMove(float distToTarget)
     {
@@ -360,8 +394,11 @@ public class CombatAI : MonoBehaviour
                 break;
             }
         }
-        if (_closing) { if (distToTarget <= _attackRange * SettleFraction) _closing = false; }
-        else if (distToTarget > _attackRange) _closing = true;
+        if (_closing) { if (distToTarget <= _attackRange) _closing = false; }
+        else if (distToTarget > _attackRange + ReachSlack) _closing = true;
+
+        // But never back into the ground we just walked out of.
+        if (_closing && StandingOffFrom(CurrentTarget)) return Vector3.zero;
         return _closing ? Approach(distToTarget) : Vector3.zero;
     }
 
