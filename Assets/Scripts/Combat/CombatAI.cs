@@ -45,6 +45,11 @@ public class CombatAI : MonoBehaviour
     {
         _fightStart = Time.time;
         _healthAtBell = _entity != null && _entity.Health != null ? _entity.Health.currentHealth : 0f;
+
+        // A new fight is a new question: whoever we could not outrun last time is not here.
+        _unescapable = null;
+        _kiting = false;
+        _closing = false;
     }
     private float[] _spellCooldowns;
 
@@ -265,6 +270,21 @@ public class CombatAI : MonoBehaviour
     private Zone _fleeingPool;
     private const float PoolMargin = 0.6f;
 
+    // The chaser this unit has accepted it cannot outrun, and the retreat it is judging (Kiting).
+    // Held until that chaser leaves or gives up on us, so the decision is made once rather than
+    // retaken every frame — which is what turned a failed retreat into a shuffle on the spot.
+    private Entity _unescapable;
+    private float _retreatStarted;
+    private float _retreatStartDistance;
+
+    // Walking in, as opposed to standing and fighting. Reach is a boundary like any other here, and
+    // like the others it needs a band: bodies shove each other half a unit at a time, so a melee
+    // unit whose target sits exactly at its reach was stepping forward and back every time the
+    // scrum breathed. It closes to comfortably inside reach and does not set off again until the
+    // target is properly outside it.
+    private bool _closing;
+    private const float SettleFraction = 0.8f;
+
     private Vector3 StanceMove(float distToTarget)
     {
         var s = CombatPhysics.Active;
@@ -279,11 +299,34 @@ public class CombatAI : MonoBehaviour
                 var threat = NearestThreat(s, out float threatDist);
                 float start = _attackRange * s.kiteFraction;
                 float stop = start + s.kiteHysteresis;
-                bool retreat = threat != null && (threatDist < start || (_kiting && threatDist < stop));
+
+                // Whoever we gave up running from stops counting once they are off us, so a chaser
+                // that turns away, dies, or is thrown clear can be kited again.
+                if (_unescapable != null && (threat != _unescapable || _unescapable.isDead ||
+                                             !_unescapable.gameObject.activeInHierarchy || threatDist >= stop))
+                    _unescapable = null;
+
+                bool retreat = threat != null && threat != _unescapable &&
+                               (threatDist < start || (_kiting && threatDist < stop));
                 if (retreat)
                 {
+                    if (!_kiting) { _retreatStarted = Time.time; _retreatStartDistance = threatDist; }
+
                     Vector3 dir = KiteDirection(threat, s);
-                    if (dir.sqrMagnitude > 0.0001f) { _kiting = true; return dir * moveSpeed * s.kiteSpeed; }
+                    // Cornered — nothing scored — or running that is not opening the gap. Either
+                    // way the retreat has failed, and a unit that keeps trying it paces on the spot
+                    // (Kiting). Accept the fight: with the chaser inside our reach we shoot it from
+                    // here, which is a worse position and a better answer than the shuffle.
+                    if (dir.sqrMagnitude <= 0.0001f ||
+                        !Kiting.Escaping(Time.time - _retreatStarted, _retreatStartDistance, threatDist))
+                    {
+                        _unescapable = threat;
+                    }
+                    else
+                    {
+                        _kiting = true;
+                        return dir * moveSpeed * s.kiteSpeed;
+                    }
                 }
                 _kiting = false;
                 break;
@@ -295,7 +338,9 @@ public class CombatAI : MonoBehaviour
                 break;
             }
         }
-        return distToTarget > _attackRange ? Approach(distToTarget) : Vector3.zero;
+        if (_closing) { if (distToTarget <= _attackRange * SettleFraction) _closing = false; }
+        else if (distToTarget > _attackRange) _closing = true;
+        return _closing ? Approach(distToTarget) : Vector3.zero;
     }
 
     /// <summary>Close on the target, drifting a little to the side so a column does not walk single file.</summary>
