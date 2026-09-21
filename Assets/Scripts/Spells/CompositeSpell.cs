@@ -218,9 +218,22 @@ public class Selector
             case Who.AlliesInRank: return "allies in your Rank";
             case Who.AlliesCovered: return "allies you Cover";
             case Who.EnemyAcross: return "the enemy Across";
+
+            // Every remaining case is named, deliberately: the fallback used to be the enum's own
+            // name, so a card read "CurrentTarget → 1x weapon damage" and "FarthestEnemy → pull the
+            // target". Those are field names, not words, and they reached the player wherever a verb
+            // described itself — the item panel, the resonance block, a reward card.
+            case Who.CurrentTarget: return "your target";
+            case Who.NearestEnemy: return "the nearest enemy";
+            case Who.LowestHealthEnemy: return "the weakest enemy";
+            case Who.FarthestEnemy: return "the farthest enemy";
+            case Who.Self: return "you";
             default: return who.ToString();
         }
     }
+
+    /// <summary>Every value the description knows how to say, for the test that keeps it complete.</summary>
+    public static Who[] AllWho => (Who[])System.Enum.GetValues(typeof(Who));
 }
 
 /// <summary>

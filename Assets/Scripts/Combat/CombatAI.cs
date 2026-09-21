@@ -194,6 +194,29 @@ public class CombatAI : MonoBehaviour
             }
             float distToTarget = Vector3.Distance(transform.position, CurrentTarget.transform.position);
 
+            // Take the fight that is already here. Measured over a fight: melee units spent about
+            // half of it walking, and in 55 to 83% of those frames an enemy was standing inside
+            // their reach the whole time — thrown there, or arrived while this unit chased a target
+            // that a knockback had just flung across the arena. Walking past a fight to get to one
+            // that keeps moving is what reads as a unit that will not commit.
+            //
+            // The leash reaches the same conclusion — "something in reach is the better fight right
+            // now" — but only after two and a half seconds without progress, so it fired about once
+            // a fight. This asks the question every frame instead, and only when the answer costs
+            // nothing: our target is out of reach and someone else is comfortably inside it.
+            // Relentless never lets go; that is what the commitment means.
+            bool taunted = _entity.Statuses != null && _entity.Statuses.TauntedBy != null;
+            if (distToTarget > _attackRange && !_isAttacking && !taunted &&
+                _entity.EffectiveCommitment != Commitment.Relentless)
+            {
+                var here = ThreatInReach(_attackRange * SettleFraction);
+                if (here != null)
+                {
+                    Retarget(here);
+                    distToTarget = Vector3.Distance(transform.position, CurrentTarget.transform.position);
+                }
+            }
+
             // Ask first, walk second. Something with the reach to be used from here should be used
             // from here, whatever the weapon's reach is.
             bool acted = Attack(CurrentTarget, distToTarget);
@@ -206,7 +229,6 @@ public class CombatAI : MonoBehaviour
             if (acted || inReach) _lastProgressTime = Time.time;
             _lastDistanceToTarget = distToTarget;
             float leash = Targeting.LeashFor(_entity.EffectiveCommitment);
-            bool taunted = _entity.Statuses != null && _entity.Statuses.TauntedBy != null;
             if (Targeting.LockOn && !inReach && !taunted && Time.time - _lastProgressTime > leash)
             {
                 // Something in reach that is coming for us, or anything in reach at all, is the
@@ -421,7 +443,13 @@ public class CombatAI : MonoBehaviour
     /// An enemy within this unit's reach worth turning on: one that is targeting us first, else the
     /// nearest. What a unit swings at when the one it wanted cannot be reached.
     /// </summary>
-    private Entity ThreatInReach()
+    private Entity ThreatInReach() => ThreatInReach(_attackRange);
+
+    /// <summary>
+    /// The best enemy already within <paramref name="within"/>: one that is coming for us if there
+    /// is one, else the closest. Never the current target.
+    /// </summary>
+    private Entity ThreatInReach(float within)
     {
         Entity best = null; float bestD = float.MaxValue; bool bestComing = false;
         var all = EntityRegistry.All;
@@ -431,7 +459,7 @@ public class CombatAI : MonoBehaviour
             if (e == null || e.isDead || e.isTeam == _entity.isTeam || !e.gameObject.activeInHierarchy || e == CurrentTarget) continue;
             if (!Targeting.IsEnemyOf(_entity, e)) continue;
             float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d > _attackRange) continue;
+            if (d > within) continue;
             bool coming = e.CombatAI != null && e.CombatAI.CurrentTarget == _entity;
             if (coming && !bestComing || (coming == bestComing && d < bestD)) { best = e; bestD = d; bestComing = coming; }
         }
