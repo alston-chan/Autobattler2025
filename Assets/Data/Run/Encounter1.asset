@@ -19,24 +19,29 @@ MonoBehaviour:
     column: 0
     row: 0
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: a6d89f8e2ab3453c80a15fe75016416c, type: 2}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
     column: 0
     row: 1
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: a94768e7790962e47aedcf3e80f0f84a, type: 2}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    column: 0
+    column: 1
     row: 2
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: 53aedec7efe24ed3b19a0c88fc33d410, type: 2}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    column: 1
+    column: 2
     row: 0
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: 623425dbadce4d87bb3c73df3a98db20, type: 2}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    column: 1
-    row: 1
+    column: 2
+    row: 2
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: 982aa164ba854a41b850cc541ba8bf06, type: 2}
     loadout: {fileID: 0}

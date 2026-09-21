@@ -151,6 +151,12 @@ MonoBehaviour:
     tierIICost: 3
     tierIIICost: 6
     engraveCost: 3
+  - itemId: FantasyHeroes.Basic.Helmet.WarlockHood
+    engraving: {fileID: 11400000, guid: cd7102f8c95bccd4ca513c5920255e63, type: 2}
+    requirement: 0
+    tierIICost: 3
+    tierIIICost: 6
+    engraveCost: 3
   - itemId: FantasyHeroes.Basic.Bow.RangerBow
     engraving: {fileID: 11400000, guid: 2f2a1a7f903726b42bff2a3edc0e79aa, type: 2}
     requirement: 4

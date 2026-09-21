@@ -12,31 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1474bb256568824dbd7a6626631a608, type: 3}
   m_Name: Encounter5
   m_EditorClassIdentifier: 
-  defaultLoadout: {fileID: 11400000, guid: 4c0c2ceef3b3b0a4fac5848df2f6282f, type: 2}
+  defaultLoadout: {fileID: 11400000, guid: 19f14811fb934e4b9f1eb86908be6cca, type: 2}
   encounterName: Warband
   spawns:
-  - prefab: {fileID: 117150395161187363, guid: 10b703a09b8106a44b1bdf7c1df0596d, type: 3}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
     column: 0
     row: 0
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: a94768e7790962e47aedcf3e80f0f84a, type: 2}
     loadout: {fileID: 0}
-  - prefab: {fileID: 117150395161187363, guid: 10b703a09b8106a44b1bdf7c1df0596d, type: 3}
-    column: 1
-    row: 0
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 0
+    row: 1
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: 1c0aeaa111dd11c4285b3ad2beae8a4e, type: 2}
+    loadout: {fileID: 0}
+  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
+    column: 1
+    row: 2
+    unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: a6d89f8e2ab3453c80a15fe75016416c, type: 2}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
     column: 2
     row: 0
     unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: 623425dbadce4d87bb3c73df3a98db20, type: 2}
     loadout: {fileID: 0}
   - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    column: 0
-    row: 1
+    column: 2
+    row: 2
     unitData: {fileID: 0}
-    loadout: {fileID: 0}
-  - prefab: {fileID: 1109986072035710, guid: 39fb5dfbd1a1e504a8bb1a0c06c05f07, type: 3}
-    column: 1
-    row: 1
-    unitData: {fileID: 0}
+    kit: {fileID: 11400000, guid: 982aa164ba854a41b850cc541ba8bf06, type: 2}
     loadout: {fileID: 0}

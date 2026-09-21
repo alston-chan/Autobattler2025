@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3115e510799f8348aca5afcbcec1cb8, type: 3}
+  m_Name: RainArcher
+  m_EditorClassIdentifier: 
+  kitName: Rain Archer
+  itemIds:
+  - FantasyHeroes.Basic.Bow.RangerBow
+  - Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
+  - FantasyHeroes.Basic.Armor.SiegeArcherArmor.vest
+  - FantasyHeroes.Basic.Armor.SiegeArcherArmor.boots
+  activeSlot: 0
+  notes: Arrow Rain from a ranger bow. Kites, and rings the farthest hero - the one who thought it was safe.

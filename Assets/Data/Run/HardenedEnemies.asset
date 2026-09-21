@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b615282ac0206754490e0d2f8e67c6ec, type: 3}
-  m_Name: StandardEnemies
+  m_Name: HardenedEnemies
   m_EditorClassIdentifier: 
   kits:
   - {fileID: 11400000, guid: 66e353e617e67814dadaffc33413a39c, type: 2}
@@ -36,8 +36,8 @@ MonoBehaviour:
     weight: 1.5
   meleeBasicAttack: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
   bowBasicAttack: {fileID: 11400000, guid: 34fd88043fd217a4c84d18751e564e68, type: 2}
-  healthMultiplier: 3.6
-  damageMultiplier: 1.25
+  healthMultiplier: 4.2
+  damageMultiplier: 1.5
   rangedChance: 0.35
   randomizeAppearance: 1
   randomizeEquipment: 1
