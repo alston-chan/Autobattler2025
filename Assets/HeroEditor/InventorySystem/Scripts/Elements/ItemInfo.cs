@@ -67,7 +67,10 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             Selection.SetActive(true);
             Buttons.SetActive(true);
 
-            Name.text = item.Params.GetLocalizedName(Application.systemLanguage.ToString());
+            // PROJECT EDIT (Autobattler2025): an item's authored name is its sprite's —
+            // "BowOfElegance", "ArielDress [Paint] (Lower)" — which is a file name, not something
+            // to show a player. Same tidy as every other panel uses (DisplayNames).
+            Name.text = DisplayNames.Item(item.Params.GetLocalizedName(Application.systemLanguage.ToString()));
             Icon.transform.parent.gameObject.SetActive(true);
             Icon.sprite = ItemCollection.Active.FindIcon(item.Params.IconId);
             Background.sprite = ItemCollection.Active.GetBackground(item);

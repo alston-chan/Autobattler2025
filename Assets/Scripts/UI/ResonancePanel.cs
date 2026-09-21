@@ -126,10 +126,23 @@ public class ResonancePanel : MonoBehaviour
         // Name what the counter counts. "525 / 900" alone doesn't say whether that's fights, kills or
         // damage, so the player can't tell how close they are or what to do to get there.
         string unit = ResonanceRequirements.Describe(entry.requirement);
-        string progress = tier >= 3
-            ? "<b>Fully attuned</b> — resonate to bank it and free the slot."
-            : $"{attunement:0} / {next} {unit}  →  <b>{Roman(tier + 1)}</b>: " +
-              entry.engraving.DescribeTier(tier + 1);
+        string progress;
+        if (tier >= 3)
+        {
+            progress = "<b>Fully attuned</b> — resonate to bank it and free the slot.";
+        }
+        else
+        {
+            progress = $"{attunement:0} / {next} {unit}  →  <b>{Roman(tier + 1)}</b>";
+
+            // And what that tier buys, when it can be said in a breath. For a stat engraving it is
+            // "+30%" against the "+15%" above, which is the whole basis for deciding whether more
+            // fights are worth it. For a verb it is the entire verb restated with bigger numbers —
+            // seven lines that ran straight through the attune bar and the button under it, and
+            // that nobody could diff by eye anyway.
+            string buys = entry.engraving.DescribeTier(tier + 1);
+            if (!string.IsNullOrEmpty(buys) && buys.Length <= 64) progress += ": " + buys;
+        }
 
         _detail.text = Keywords.Decorate(effect + "\n" + progress);
 
@@ -237,7 +250,7 @@ public class ResonancePanel : MonoBehaviour
     private void BuildButton()
     {
         var buttonObject = NewRect("ResonateButton", _block.transform, new Vector2(0.5f, 1f),
-                                   new Vector2(220f, 38f), new Vector2(0f, -134f));
+                                   new Vector2(320f, 38f), new Vector2(0f, -134f));
 
         _resonateBackground = buttonObject.AddComponent<Image>();
         _resonateBackground.color = ButtonReady;
@@ -246,7 +259,11 @@ public class ResonancePanel : MonoBehaviour
         _resonateButton.targetGraphic = _resonateBackground;
         _resonateButton.onClick.AddListener(Resonate);
 
-        var label = NewText("Label", buttonObject.transform, 20f, Color.white, TextAlignmentOptions.Center);
+        // "Engrave at 6 abilities cast" is a long thing to say on a button; it wrapped to two lines
+        // and spilled out of it.
+        var label = NewText("Label", buttonObject.transform, 16f, Color.white, TextAlignmentOptions.Center);
+        label.enableWordWrapping = false;
+        label.overflowMode = TextOverflowModes.Ellipsis;
         var rect = label.rectTransform;
         rect.anchorMin = Vector2.zero;
         rect.anchorMax = Vector2.one;
@@ -262,8 +279,8 @@ public class ResonancePanel : MonoBehaviour
 
         _bankedLabel = NewText("BankedEngravings", host, 15f, Color.white, TextAlignmentOptions.Top);
         _bankedLabel.enableWordWrapping = true;
-        Anchor(_bankedLabel.rectTransform, new Vector2(0.5f, 0f), new Vector2(380f, 150f),
-               new Vector2(0f, 95f));
+        Anchor(_bankedLabel.rectTransform, new Vector2(0.5f, 0f), new Vector2(380f, 110f),
+               new Vector2(0f, 55f));
     }
 
     private Transform FindPanel(string named)

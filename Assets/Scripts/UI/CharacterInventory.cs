@@ -53,6 +53,12 @@ public class CharacterInventory : ItemWorkspace
     // Created at runtime under the equipment panel — shows the active spell's name (B).
     private TextMeshProUGUI activeSpellLabel;
 
+    /// <summary>
+    /// The window is built once and then shown and hidden, so opening it is not a Refresh: with
+    /// nothing selected, nothing ran and the item panel opened blank.
+    /// </summary>
+    private void OnEnable() => UpdateEmptyItemHint();
+
     public void Awake()
     {
         ItemCollection.Active = ItemCollection;
@@ -146,52 +152,43 @@ public class CharacterInventory : ItemWorkspace
             CharacterEntity.Appearance.Refresh();
     }
 
-    private TextMeshProUGUI spellDescriptionLabel;
+    private TextMeshProUGUI emptyItemHint;
 
     /// <summary>
-    /// What the selected spellbook's spell does, under the item panel — with its real numbers. A
-    /// spellbook's own info panel is blank, because HeroEditor items describe themselves through
-    /// stat properties and a book has none; a player choosing between three books was choosing
-    /// between three names. Hidden for anything that isn't a spellbook.
+    /// What the item panel says when nothing is selected — which is most of the time it is first
+    /// opened, and used to be a tall blank rectangle with a title on it. The verb prose that used
+    /// to live here is gone with it: it hung BELOW the panel, over the battlefield, and said what
+    /// the resonance block inside the panel already says at the item's real tier.
     /// </summary>
-    private void UpdateSpellDescription()
+    private void UpdateEmptyItemHint()
     {
-        // A weapon's verb, from the database: what this weapon would teach if worn.
-        Spell spell = null;
-        if (SelectedItem != null && SelectedItem.IsWeapon && ResonanceDatabase.Active != null)
-        {
-            var entry = ResonanceDatabase.Active.FindFor(SelectedItem);
-            if (entry != null && entry.engraving is GrantSpellEngraving grant) spell = grant.spell;
-        }
-        bool show = spell != null && !string.IsNullOrEmpty(spell.FullDescription);
+        bool empty = SelectedItem == null;
 
-        if (spellDescriptionLabel == null)
+        if (emptyItemHint == null)
         {
-            if (!show || ItemInfo == null) return;
+            if (!empty || ItemInfo == null) return;
 
-            var go = new GameObject("SpellDescription", typeof(RectTransform));
+            var go = new GameObject("NothingSelected", typeof(RectTransform));
             go.transform.SetParent(ItemInfo.transform, false);
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
+            tmp.text = "Click a piece of gear — worn, or in the bag below — to read it.";
             tmp.fontSize = 17;
             tmp.alignment = TextAlignmentOptions.Top;
-            tmp.color = new Color(0.92f, 0.92f, 0.92f, 1f);
+            tmp.color = new Color(0.62f, 0.62f, 0.66f, 1f);
             tmp.enableWordWrapping = true;
             tmp.raycastTarget = false;
 
             var rt = tmp.rectTransform;
-            rt.anchorMin = new Vector2(0.5f, 0f);   // hangs below the item panel
-            rt.anchorMax = new Vector2(0.5f, 0f);
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 1f);
             rt.pivot = new Vector2(0.5f, 1f);
-            rt.sizeDelta = new Vector2(320f, 110f);
-            rt.anchoredPosition = new Vector2(0f, -6f);
+            rt.sizeDelta = new Vector2(320f, 90f);
+            rt.anchoredPosition = new Vector2(0f, -70f);
 
-            spellDescriptionLabel = tmp;
+            emptyItemHint = tmp;
         }
 
-        spellDescriptionLabel.gameObject.SetActive(show);
-        if (show)
-            spellDescriptionLabel.text = Keywords.Decorate($"<b>{spell.DisplayName}</b>\n{spell.FullDescription}");
+        emptyItemHint.gameObject.SetActive(empty);
     }
 
     /// <summary>(B) Spawn the "Active Spell: …" label under the equipment grid.</summary>
@@ -217,7 +214,7 @@ public class CharacterInventory : ItemWorkspace
         rt.anchorMax = new Vector2(0.5f, 0f);
         rt.pivot = new Vector2(0.5f, 0f);
         rt.sizeDelta = new Vector2(340f, 40f);
-        rt.anchoredPosition = new Vector2(0f, 246f);
+        rt.anchoredPosition = new Vector2(0f, 62f);
 
         activeSpellLabel = tmp;
     }
@@ -248,6 +245,7 @@ public class CharacterInventory : ItemWorkspace
         if (!Equipment.SelectAny() && !PlayerInventory.SelectAny())
         {
             ItemInfo.Reset();
+            UpdateEmptyItemHint();
         }
     }
 
@@ -722,6 +720,7 @@ public class CharacterInventory : ItemWorkspace
         if (SelectedItem == null)
         {
             ItemInfo.Reset();
+            UpdateEmptyItemHint();
             EquipButton.SetActive(false);
             RemoveButton.SetActive(false);
         }
@@ -734,7 +733,7 @@ public class CharacterInventory : ItemWorkspace
             UseButton.SetActive(CanUse());
         }
 
-        UpdateSpellDescription();
+        UpdateEmptyItemHint();
 
         var receipt = SelectedItem != null && SelectedItem.Params.Type == ItemType.Recipe;
 
