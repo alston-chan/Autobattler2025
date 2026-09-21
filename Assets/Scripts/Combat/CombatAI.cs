@@ -276,7 +276,9 @@ public class CombatAI : MonoBehaviour
         }
 
         bool rooted = _entity.Statuses != null && _entity.Statuses.Rooted;
-        if (!_entity.Knockback.IsActive && !_entity.Knockback.IsStunned && !rooted)
+        // Steerable, not merely at rest: the last of a slide is a body that has landed, and a unit
+        // that may not walk until the drift is gone spends the scrum's small shoves standing still.
+        if (_entity.Knockback.Steerable && !_entity.Knockback.IsStunned && !rooted)
         {
             Vector3 finalMove = (move + separation * separationStrength) * Time.deltaTime;
             transform.position += finalMove;

@@ -37,8 +37,13 @@ public class CombatPhysics : MonoBehaviour
         public float softWall = 1.2f;
         [Tooltip("How hard the soft wall pushes, in units per second at the edge itself, fading to nothing at the soft wall's distance.")]
         public float softWallPush = 1.5f;
-        [Tooltip("A throw is over once the body is slower than this (units/s) and the unit may walk again. The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
+        [Tooltip("A throw is over once the body is slower than this (units/s). The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
         public float restSpeed = 0.6f;
+        [Tooltip("A body slower than this may steer itself again, while the last of the slide carries it. " +
+                 "Being thrown should cost a unit its feet, not a quarter of the fight: measured, a greatsword " +
+                 "was locked out of its own movement 28% of a fight, and in 73% of those frames it was drifting " +
+                 "slower than half its walking speed. Below a walk, a body has landed.")]
+        public float steerSpeed = 2f;
 
         [Header("Impacts")]
         [Tooltip("Closing speed (units/s) below which a collision is a shove, not a hit.")]

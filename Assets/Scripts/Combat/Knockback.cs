@@ -27,6 +27,21 @@ public class Knockback : MonoBehaviour
     /// <summary>True while knockback velocity is still being applied.</summary>
     public bool IsActive => _velocity.magnitude > 0.01f;
 
+    /// <summary>
+    /// Whether the unit may steer itself again. A hard throw takes a body off its feet and there is
+    /// nothing to be done until it lands; the tail of the slide is not that. Splitting the two is
+    /// what stops a scrum's constant small shoves — measured at 38 to 70 a minute — from adding up
+    /// to a quarter of the fight spent unable to walk, while barely moving.
+    /// </summary>
+    public bool Steerable
+    {
+        get
+        {
+            var s = CombatPhysics.Active;
+            return _velocity.magnitude <= (s != null ? s.steerSpeed : 2f);
+        }
+    }
+
     /// <summary>The body's velocity in the world, units per second.</summary>
     public Vector3 Velocity => _velocity;
     public float Speed => _velocity.magnitude;
