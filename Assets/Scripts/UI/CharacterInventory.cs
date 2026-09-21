@@ -203,18 +203,21 @@ public class CharacterInventory : ItemWorkspace
         go.transform.SetParent(Equipment.transform, false);
 
         var tmp = go.AddComponent<TextMeshProUGUI>();
-        tmp.text = "Active Spell: —";
-        tmp.fontSize = 22;
+        tmp.text = "Active: —";
+        tmp.fontSize = 19;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = new Color(1f, 0.82f, 0.28f, 1f);
         tmp.raycastTarget = false;
 
+        // In the band between the worn gear and the bag. It used to hang below the panel with a
+        // top pivot and a negative offset, which put it outside the window entirely — gold text
+        // floating over the battlefield, belonging to nothing.
         var rt = tmp.rectTransform;
-        rt.anchorMin = new Vector2(0.5f, 0f);   // bottom-centre of the equipment panel
+        rt.anchorMin = new Vector2(0.5f, 0f);
         rt.anchorMax = new Vector2(0.5f, 0f);
-        rt.pivot = new Vector2(0.5f, 1f);
-        rt.sizeDelta = new Vector2(340f, 32f);
-        rt.anchoredPosition = new Vector2(0f, -8f);
+        rt.pivot = new Vector2(0.5f, 0f);
+        rt.sizeDelta = new Vector2(340f, 40f);
+        rt.anchoredPosition = new Vector2(0f, 246f);
 
         activeSpellLabel = tmp;
     }

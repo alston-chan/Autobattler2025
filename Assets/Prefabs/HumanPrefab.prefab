@@ -735,6 +735,7 @@ MonoBehaviour:
   commitment: 1
   targetStickiness: 0.25
   unitData: {fileID: 0}
+  displayName: 
   maxHealth: 100
   healthBarOffset: {x: 0, y: 1.5, z: 1}
   attackSpeed: 1

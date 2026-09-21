@@ -172,6 +172,16 @@ every ability is a `CompositeSpell` taught by a weapon.
 - The MCP running a script twice is real: a play probe that adds spells and subscribes handlers ran
   twice in one call and doubled every count. Guard with a marker object (`GameObject.Find("X_ARMED")`)
   created on arming and destroyed when the probe ends.
+- **A probe that subscribes to `EditorApplication.update` must catch its own exceptions.** The
+  callback is never removed when it throws, so it throws again the next tick, forever — and because
+  the exception propagates out of `Internal_CallUpdateFunctions`, it takes the rest of that tick's
+  callbacks with it, the MCP plugin's pump included. Measured 2026-09-21: a probe that read a
+  `CharacterInventory` after play mode stopped put a NullReferenceException in `Editor.log` on every
+  tick, and from that moment *every* `script-execute` timed out at 60 s while the editor still
+  reported `Responding: True` and showed no dialog. Nothing but a domain reload clears the
+  subscription, and nothing could reach the editor to cause one: it needed a restart. Wrap the whole
+  body in `try { ... } catch { EditorApplication.update -= cb; ... }` — every probe in the scratchpad
+  now carries that guard, marked `PROBE_GUARDED`.
 
 ## Odin
 
