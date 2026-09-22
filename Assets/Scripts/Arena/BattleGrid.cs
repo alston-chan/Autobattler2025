@@ -39,81 +39,29 @@ public class BattleGrid : MonoBehaviour
     /// <summary>
     /// World position of a cell centre. Columns run away from the centre line on each side, so
     /// column 0 is always the rank closest to the enemy.
+    ///
+    /// The centre, exactly, and nothing else. It used to be squeezed into the arena's soft-wall
+    /// band and pulled off the walls, so a unit stood beside its tile rather than on it, and the
+    /// tiles themselves overlapped. The wall now keeps out of the grid instead
+    /// (<see cref="CombatPhysics.WallBand"/>), which is the same promise — nobody opens the fight
+    /// being shoved — kept by the side that can afford to give.
     /// </summary>
     public Vector3 CellToWorld(bool allySide, int column, int row)
     {
         Vector2 origin = allySide ? allyFrontBottom : enemyFrontBottom;
         float dir = allySide ? -1f : 1f;   // allies stack backwards to the left, enemies to the right
-
-        float top = origin.y + (rows - 1) * cellSize.y;
-        var cell = new Vector3(origin.x + dir * column * cellSize.x,
-                               FitRow(origin.y + row * cellSize.y, origin.y, top),
-                               0f);
-
-        return OffTheWall(cell);
+        return new Vector3(origin.x + dir * column * cellSize.x, origin.y + row * cellSize.y, 0f);
     }
 
-    /// <summary>
-    /// A row's height, squeezed evenly when the grid is taller than the arena will let it be.
-    ///
-    /// The grid is one authored thing and the arenas are several: the coliseum is 4.2 tall with a
-    /// 1.2 band top and bottom, which leaves 1.8 for a grid whose three rows span 3.0. Clamping each
-    /// cell on its own put the bottom and top rows on the band's edges and left the middle where it
-    /// was — gaps of 1.1 and 0.7, bodies overlapping, and a jostle at the bell as the scrum sorted
-    /// it out. Scaling the whole span into the band keeps the rows evenly spaced and in order, which
-    /// is what a formation is. Only the rectangle knows its band as two numbers; a round arena is
-    /// left to <see cref="OffTheWall"/>, which pulls along the radius and keeps ranks anyway.
-    /// </summary>
-    private static float FitRow(float y, float lowestRow, float highestRow)
+    /// <summary>The least room any cell has to the arena's edge: how deep the soft wall may reach.</summary>
+    public float Clearance(ArenaBounds arena)
     {
-        var arena = ArenaBounds.Instance;
-        if (arena == null || arena.shape != ArenaShape.Rectangle) return y;
-
-        var physics = CombatPhysics.Active;
-        if (physics == null || !physics.enableBodies || physics.softWallPush <= 0f) return y;
-
-        float bandLow = arena.MinY + physics.softWall, bandHigh = arena.MaxY - physics.softWall;
-        float span = highestRow - lowestRow, band = bandHigh - bandLow;
-        if (span <= 0.0001f || band <= 0.0001f || span <= band) return y;
-
-        return bandLow + (y - lowestRow) / span * band;
-    }
-
-    /// <summary>
-    /// The cell, pulled in far enough that the soft wall will leave a unit standing there alone.
-    ///
-    /// The grid is authored in its own coordinates and the arena is authored separately, so nothing
-    /// made them agree: a back-rank cell could sit inside the band that <see cref="CombatPhysics"/>
-    /// pushes inward from. The unit was then slid toward the centre at the bell with no walk
-    /// animation, because the animation follows the AI's intent and the shove is not the AI's doing.
-    /// It read as broken pathing and was reported as such.
-    ///
-    /// Doing it here rather than at each caller is deliberate — placement, the encounter spawner,
-    /// the board snapshot's distances and the formation preview all come through this one function,
-    /// so they cannot disagree about where a cell is.
-    ///
-    /// It is not sufficient on its own, which is why it is public: the arena is resized per map by
-    /// <see cref="BackgroundCycler"/>, so a cell that was clear when the formation was set can be
-    /// inside the band by the time the fight starts. The bell applies this again, and that is the
-    /// one that actually holds.
-    ///
-    /// A unit will not sit exactly where this puts it: bodies push each other apart every frame, so
-    /// the outermost of a packed formation is shoved back toward the band by its neighbours and
-    /// settles a little inside it. Measured at the bell — seated on the line, units come to rest at
-    /// about 1.14 against a 1.20 band, which is a residual push of under a tenth of a unit per
-    /// second. Granting extra margin does not move that: the formation is wider than the arena's
-    /// safe area, so a bigger margin only stacks everyone on the boundary for the scrum to expand
-    /// again. The equilibrium is the system working; what mattered was the 0.41 that preceded it.
-    /// </summary>
-    public static Vector3 OffTheWall(Vector3 cell)
-    {
-        var arena = ArenaBounds.Instance;
-        if (arena == null) return cell;
-
-        var physics = CombatPhysics.Active;
-        if (physics == null || !physics.enableBodies || physics.softWallPush <= 0f) return cell;
-
-        return arena.ClampInside(cell, physics.softWall);
+        float least = float.MaxValue;
+        for (int side = 0; side < 2; side++)
+        for (int c = 0; c < columns; c++)
+        for (int r = 0; r < rows; r++)
+            least = Mathf.Min(least, arena.EdgeRoom(CellToWorld(side == 0, c, r)));
+        return least;
     }
 
     /// <summary>

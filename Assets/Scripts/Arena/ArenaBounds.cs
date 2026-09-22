@@ -126,53 +126,6 @@ public class ArenaBounds : MonoBehaviour
     public static float RoomToEdge(Vector3 p) => Instance != null ? Instance.EdgeRoom(p) : float.MaxValue;
 
     /// <summary>
-    /// The nearest point with at least <paramref name="margin"/> of room to the edge.
-    ///
-    /// <see cref="Clamp"/> answers "is this inside the arena"; this answers "is this somewhere a body
-    /// may stand without being pushed". They are different questions because of the soft wall, which
-    /// slides anything within its band toward the centre. A unit placed inside that band is legally
-    /// in the arena and still gets shoved — and because the shove writes the position directly while
-    /// the walk animation follows what the unit DECIDED to do, it arrives as an idle sprite gliding
-    /// across the ground. Measured: a hero opening 0.41 from the edge against a 1.20 band.
-    ///
-    /// An arena too small to honour the margin returns its centre, which is the only point that
-    /// satisfies "as far in as possible".
-    /// </summary>
-    public Vector3 ClampInside(Vector3 p, float margin)
-    {
-        if (margin <= 0f) return Clamp(p);
-
-        if (shape == ArenaShape.Rectangle)
-        {
-            float minX = MinX + margin, maxX = MaxX - margin;
-            float minY = MinY + margin, maxY = MaxY - margin;
-            p.x = minX <= maxX ? Mathf.Clamp(p.x, minX, maxX) : center.x;
-            p.y = minY <= maxY ? Mathf.Clamp(p.y, minY, maxY) : center.y;
-            return p;
-        }
-
-        float rx = size.x * 0.5f, ry = size.y * 0.5f;
-        if (rx <= 0.0001f || ry <= 0.0001f) return new Vector3(center.x, center.y, p.z);
-
-        float dx = (p.x - center.x) / rx, dy = (p.y - center.y) / ry;
-        float d = Mathf.Sqrt(dx * dx + dy * dy);
-        if (d < 0.0001f) return p;   // at the centre already
-
-        // The same ray as EdgeRoom: room along it is R * (1 - d), with R the ellipse's world radius
-        // in this direction, so the margin is a ceiling on d of 1 - margin / R. Pulling along the
-        // ray rather than toward the short axis is what keeps a back-rank unit in its rank.
-        float worldRadius = Mathf.Sqrt((p.x - center.x) * (p.x - center.x) + (p.y - center.y) * (p.y - center.y)) / d;
-        float allowed = 1f - margin / worldRadius;
-        if (allowed <= 0f) return new Vector3(center.x, center.y, p.z);
-        if (d <= allowed) return p;
-
-        float shrink = allowed / d;
-        p.x = center.x + dx * shrink * rx;
-        p.y = center.y + dy * shrink * ry;
-        return p;
-    }
-
-    /// <summary>
     /// Set the global bounds, creating the instance if none exists yet. Lets a per-map driver (e.g.
     /// <see cref="BackgroundCycler"/>) push a map's play area without caring about script order.
     /// </summary>

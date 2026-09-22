@@ -134,6 +134,29 @@ public class CombatPhysics : MonoBehaviour
         if (_instance.GetComponent<ImpactFx>() == null) _instance.gameObject.AddComponent<ImpactFx>();
     }
 
+    /// <summary>
+    /// How far in from the edge the soft wall reaches in this arena: its authored depth, or less
+    /// where the deployment grid comes closer to the edge than that.
+    ///
+    /// The wall shoves by writing positions, and the walk animation follows what a unit decided,
+    /// so a unit seated inside the band opens the fight gliding across the ground in its idle pose.
+    /// The grid's rows span 3.0 and the coliseum is 4.2 tall, so a 1.2 band covered the top and
+    /// bottom rows. That was first fixed by moving the units off their cells, which left them
+    /// standing beside their tiles; a cell is a promise about where a unit stands, so the wall
+    /// gives way instead. Recomputed on every read, because the arena is resized per map.
+    /// </summary>
+    public static float WallBand
+    {
+        get
+        {
+            var s = Active;
+            if (s == null || s.softWall <= 0f) return 0f;
+            var arena = ArenaBounds.Instance; var grid = BattleGrid.Instance;
+            if (arena == null || grid == null) return s.softWall;
+            return Mathf.Max(0f, Mathf.Min(s.softWall, grid.Clearance(arena) - 0.05f));
+        }
+    }
+
     public static void OnFightStart()
     {
         Collisions = 0; WallSlams = 0; ImpactDamage = 0f; DeepOverlaps = 0;
@@ -158,7 +181,8 @@ public class CombatPhysics : MonoBehaviour
 
         // The soft wall: everyone near the edge drifts back toward the field a little each frame,
         // before the bodies are resolved against each other, so the fight lives a body's width in.
-        if (s.softWall > 0f && s.softWallPush > 0f && ArenaBounds.Instance != null)
+        float band = WallBand;
+        if (band > 0f && s.softWallPush > 0f && ArenaBounds.Instance != null)
         {
             var arena = ArenaBounds.Instance;
             for (int i = 0; i < _bodies.Count; i++)
@@ -167,10 +191,10 @@ public class CombatPhysics : MonoBehaviour
                 if (IsFixed(e)) continue;
                 Vector3 p = e.transform.position;
                 float room = arena.EdgeRoom(p);
-                if (room >= s.softWall) continue;
+                if (room >= band) continue;
                 Vector3 inward = new Vector3(arena.center.x, arena.center.y, 0f) - new Vector3(p.x, p.y, 0f);
                 if (inward.sqrMagnitude < 0.0001f) continue;
-                float strength = (1f - room / s.softWall) * s.softWallPush * Time.deltaTime;
+                float strength = (1f - room / band) * s.softWallPush * Time.deltaTime;
                 e.transform.position = arena.Clamp(p + inward.normalized * strength);
             }
         }

@@ -187,8 +187,16 @@ public static class PlayChecks
         // kited or thrown there, which is allowed; this check is about where units are SEATED, and
         // sampling a fight in progress made it fail at random on units that had every right to be
         // in the corner. So watch for the transition itself and sample on the frame it happens.
+        // The seats are read inside the state change itself: by the check's next tick a diver may
+        // already have blinked.
         bool rang = false;
-        Action<GameState, GameState> watch = (from, to) => { if (to == GameState.Combat) rang = true; };
+        var seats = new Dictionary<Entity, Vector3>();
+        Action<GameState, GameState> watch = (from, to) =>
+        {
+            if (to != GameState.Combat || rang) return;
+            rang = true;
+            foreach (var unit in PlayHarness.Living()) seats[unit] = unit.transform.position;
+        };
         var states = GameManager.Instance.StateMachine;
         states.OnStateChanged += watch;
 
@@ -203,27 +211,44 @@ public static class PlayChecks
             if (telemetry != null) telemetry.autoAdvance = false;
         }
 
+        // Everyone stands on the centre of a cell. The first fix for the gliding below moved units
+        // off their cells and away from the wall, and a unit standing beside its tile looked wrong
+        // enough to be reported; the wall gives way now instead. Enemies are seated by the spawner
+        // and the company by the formation, and both go through CellToWorld.
+        if (BattleGrid.Instance != null)
+        {
+            var grid = BattleGrid.Instance;
+            foreach (var seat in seats)
+            {
+                var unit = seat.Key; Vector3 at = seat.Value;
+                grid.ClosestCell(unit.isTeam, at, out int column, out int row);
+                float off = Vector2.Distance(at, grid.CellToWorld(unit.isTeam, column, row));
+                Assert.That(off, Is.LessThan(0.1f), DisplayNames.Unit(unit) + " opens the fight " + off.ToString("0.00") +
+                            " off the centre of its cell (" + column + "," + row + "), and " +
+                            Vector2.Distance(at, unit.transform.position).ToString("0.00") + " from there a moment later");
+            }
+        }
+
         var physics = CombatPhysics.Active;
-        if (physics == null || !physics.enableBodies || physics.softWall <= 0f || physics.softWallPush <= 0f)
+        float band = CombatPhysics.WallBand;
+        if (physics == null || !physics.enableBodies || band <= 0f || physics.softWallPush <= 0f)
             yield break;     // the wall is off; there is nothing to be shoved by
         if (ArenaBounds.Instance == null) yield break;
 
-        // The symptom, not the rule. Asking for zero wall pressure asks the impossible: the
-        // formation is wider than the arena's safe area, so the bodies at the edge are pushed back
-        // toward the band by their own neighbours and settle just inside it. What the player sees is
-        // the SPEED of the resulting slide, so that is what this measures. The reported bug ran at
-        // about 1.0 units/sec; the equilibrium after the fix is under 0.1.
+        // Measured as the speed a unit would be slid, because the speed is what the player sees.
+        // The reported bug ran at about 1.0 units/sec. With the wall kept out of the grid this
+        // reads zero; the bar leaves room for a neighbour's nudge at the bell.
         Entity worst = null;
         float fastestDrift = 0f;
-        foreach (var unit in PlayHarness.Living())
+        foreach (var seat in seats)
         {
-            float room = ArenaBounds.Instance.EdgeRoom(unit.transform.position);
-            if (room >= physics.softWall) continue;
-            float drift = (1f - room / physics.softWall) * physics.softWallPush;
-            if (drift > fastestDrift) { fastestDrift = drift; worst = unit; }
+            float room = ArenaBounds.Instance.EdgeRoom(seat.Value);
+            if (room >= band) continue;
+            float drift = (1f - room / band) * physics.softWallPush;
+            if (drift > fastestDrift) { fastestDrift = drift; worst = seat.Key; }
         }
 
-        Assert.That(PlayHarness.Living(), Is.Not.Empty, "no living units at the bell");
+        Assert.That(seats, Is.Not.Empty, "no living units at the bell");
         Assert.That(fastestDrift, Is.LessThan(0.25f),
                     (worst != null ? DisplayNames.Unit(worst) : "someone") + " opens the fight sliding " +
                     fastestDrift.ToString("0.00") + " units/sec toward the centre with no walk " +

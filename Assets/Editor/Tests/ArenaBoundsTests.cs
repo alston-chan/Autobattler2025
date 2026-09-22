@@ -2,13 +2,12 @@ using NUnit.Framework;
 using UnityEngine;
 
 /// <summary>
-/// The arena's idea of "room": how far a point is from the edge, and where a point with too little
-/// is moved to.
+/// The arena's idea of "room": how far a point is from the edge.
 ///
 /// The ellipse is the one worth pinning. Its room used to be (1 - d) * min(rx, ry): exact on the
 /// short axis and, on a 17 x 4 arena, four times too small on the long one — a unit 2.6 from the
 /// side wall read 0.6, so the soft wall treated most of a wide oval as its band. Every consumer
-/// (the wall, the kiters' corner test, the bell's seating) reasons in world units, so the answer
+/// (the wall, the kiters' corner test, the wall's give around the grid) reasons in world units, so the answer
 /// has to be one.
 /// </summary>
 public class ArenaBoundsTests
@@ -52,27 +51,6 @@ public class ArenaBoundsTests
         Assert.That(_arena.EdgeRoom(new Vector3(0f, -2.3f, 0f)), Is.EqualTo(2.1f).Within(0.01f));
     }
 
-    [Test]
-    public void APointTooNearTheSideWallIsPulledAlongItsOwnRayNotTowardTheShortAxis()
-    {
-        _arena.shape = ArenaShape.Ellipse;
-        var moved = _arena.ClampInside(new Vector3(-8f, -2.3f, 0f), 1.2f);
-
-        // Ends up with exactly the margin of room, on the same ray. The old clamp took d down to
-        // 1 - 1.2 / 2.1 and put this at x = -3.7: a back-rank archer seated in the front rank.
-        Assert.That(moved.x, Is.EqualTo(-7.4f).Within(0.01f));
-        Assert.That(moved.y, Is.EqualTo(-2.3f).Within(0.01f));
-        Assert.That(_arena.EdgeRoom(moved), Is.EqualTo(1.2f).Within(0.02f));
-    }
-
-    [Test]
-    public void APointWithRoomToSpareIsLeftAlone()
-    {
-        _arena.shape = ArenaShape.Ellipse;
-        var p = new Vector3(-3f, -2.5f, 0f);
-        Assert.That(_arena.ClampInside(p, 1.2f), Is.EqualTo(p));
-    }
-
     // ---------- the rectangle ----------
 
     [Test]
@@ -82,13 +60,54 @@ public class ArenaBoundsTests
         // y = -3.6 is 0.8 above the floor at -4.4, and much further from everything else.
         Assert.That(_arena.EdgeRoom(new Vector3(-1f, -3.6f, 0f)), Is.EqualTo(0.8f).Within(0.01f));
     }
+}
+
+/// <summary>
+/// A cell is where a unit stands, and its tile is drawn around it. Both used to be squeezed into
+/// the arena's soft-wall band on a small map, so a unit stood beside its tile and the tiles
+/// overlapped. The wall gives way to the grid now instead of the other way round.
+/// </summary>
+public class BattleGridTests
+{
+    private BattleGrid _grid;
+    private ArenaBounds _arena, _was;
+    private static readonly System.Reflection.MethodInfo SetInstance =
+        typeof(ArenaBounds).GetProperty("Instance").GetSetMethod(true);
+
+    [SetUp]
+    public void Make()
+    {
+        _grid = new GameObject("BattleGridTest").AddComponent<BattleGrid>();
+        _grid.columns = 4; _grid.rows = 3; _grid.cellSize = new Vector2(2f, 1.5f);
+        _grid.allyFrontBottom = new Vector2(-1f, -3.6f); _grid.enemyFrontBottom = new Vector2(1f, -3.6f);
+
+        // The coliseum: 4.2 tall, so a 1.2 wall top and bottom leaves 1.8 for rows that span 3.0.
+        _arena = new GameObject("ArenaForGridTest").AddComponent<ArenaBounds>();
+        _arena.shape = ArenaShape.Rectangle; _arena.center = new Vector2(0f, -2.3f); _arena.size = new Vector2(17.2f, 4.2f);
+        _was = ArenaBounds.Instance;
+        SetInstance.Invoke(null, new object[] { _arena });
+    }
+
+    [TearDown]
+    public void CleanUp()
+    {
+        SetInstance.Invoke(null, new object[] { _was });
+        Object.DestroyImmediate(_grid.gameObject);
+        Object.DestroyImmediate(_arena.gameObject);
+    }
 
     [Test]
-    public void ARectangleClampsEachAxisToItsBand()
+    public void ACellIsItsCentreHoweverSmallTheArena()
     {
-        _arena.shape = ArenaShape.Rectangle;
-        var moved = _arena.ClampInside(new Vector3(-1f, -3.6f, 0f), 1.2f);
-        Assert.That(moved.x, Is.EqualTo(-1f).Within(0.001f), "x had room and must not move");
-        Assert.That(moved.y, Is.EqualTo(-3.2f).Within(0.01f), "y comes up to the band");
+        Assert.That(Vector3.Distance(_grid.CellToWorld(true, 3, 2), new Vector3(-7f, -0.6f, 0f)), Is.LessThan(0.001f), "the company's back corner");
+        Assert.That(Vector3.Distance(_grid.CellToWorld(true, 0, 1), new Vector3(-1f, -2.1f, 0f)), Is.LessThan(0.001f), "a middle row stays in the middle");
+        Assert.That(Vector3.Distance(_grid.CellToWorld(false, 0, 0), new Vector3(1f, -3.6f, 0f)), Is.LessThan(0.001f), "the enemy's front");
+    }
+
+    [Test]
+    public void TheWallReachesNoFurtherThanTheGridsNearestCell()
+    {
+        // The top row sits 0.4 under the ceiling; that is as deep as the wall may push here.
+        Assert.That(_grid.Clearance(_arena), Is.EqualTo(0.4f).Within(0.001f));
     }
 }
