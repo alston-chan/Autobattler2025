@@ -96,10 +96,27 @@ public class CombatAudio : MonoBehaviour
     private void OnHit(HitInfo hit)
     {
         Vector3 where = hit.target != null ? hit.target.transform.position : Vector3.zero;
-        Play(BankFor(Flavour(hit.source)), where);
+        Play(BankFor(Flavour(hit.source)), where, WeaponLevel(Lib, UnderAnAbility));
 
-        // Layered, not substituted — a crit is the same blow landing harder.
+        // Layered, not substituted — a crit is the same blow landing harder. Not part of the bed:
+        // a crit is one of the moments, so it is neither held down nor ducked.
         if (hit.isCrit) Play(Lib.crit, where);
+    }
+
+    // When the last ability started being heard. Weapon sounds inside this window are ducked.
+    private float _abilityHeardUntil = float.NegativeInfinity;
+    private bool UnderAnAbility => Time.unscaledTime < _abilityHeardUntil;
+
+    /// <summary>
+    /// How loud the weapon bed — swings, and the hits they land — plays right now. Under the
+    /// abilities always, and further under them while one is being heard. Public and pure so the
+    /// rule can be tested as a rule; the play check then confirms it reaches an AudioSource.
+    /// </summary>
+    public static float WeaponLevel(SfxLibrary lib, bool underAnAbility)
+    {
+        float level = lib.weaponAttackLevel;
+        if (underAnAbility) level *= 1f - Mathf.Clamp01(lib.duckWeaponsUnderAbilities);
+        return level;
     }
 
     private void OnKill(Entity killer, Entity victim)
@@ -110,13 +127,26 @@ public class CombatAudio : MonoBehaviour
 
     private void OnCast(Entity caster, Spell spell)
     {
-        var bank = Lib.For(spell);
+        var lib = Lib;
+        var bank = lib.For(spell);
+        bool authored = bank != null && bank.HasClips;
 
         // An unlisted spell still makes the noise its weapon makes, so a new verb is quiet rather
         // than silent — and so the swing of a basic attack is covered by the same path.
-        if (bank == null || !bank.HasClips) bank = SwingBank(Flavour(caster));
+        if (!authored) bank = SwingBank(Flavour(caster));
 
-        Play(bank, caster != null ? caster.transform.position : Vector3.zero);
+        // An ability is the loud layer and opens the duck; everything else is the bed. A borrowed
+        // swing plays at bed level even for an ability, because it IS a swing sound — loud, it
+        // would announce a verb with a sword noise.
+        float level;
+        if (spell != null && spell.IsAbility && authored)
+        {
+            _abilityHeardUntil = Time.unscaledTime + Mathf.Max(0f, lib.duckSeconds);
+            level = lib.abilityLevel;
+        }
+        else level = WeaponLevel(lib, UnderAnAbility);
+
+        Play(bank, caster != null ? caster.transform.position : Vector3.zero, level);
     }
 
     private void OnImpact(ImpactInfo impact)

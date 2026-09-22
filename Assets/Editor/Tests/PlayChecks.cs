@@ -148,6 +148,8 @@ public static class PlayChecks
         Assert.That(decoyBar, Is.LessThan(bodyBar * 2f),
                     "a decoy's bar is " + (decoyBar / bodyBar).ToString("0.0") +
                     "x a real unit's — its art size has leaked into the bar");
+
+        UnityEngine.Object.Destroy(decoy.gameObject);   // leave nothing for the next check to chase
     }
 
     /// <summary>
@@ -210,6 +212,36 @@ public static class PlayChecks
                 if (voice.clip == authored) heard = true;
 
         Assert.That(heard, Is.True, "a sword attack was cast and none of its clips reached a voice");
+
+        // And the mix reaches the speaker: an ability's voice is louder than the swing's. The rule
+        // is unit-tested on its own; this is the proof that the number the rule produces is the
+        // number the AudioSource is given, with the row's trim and the master fader on top.
+        AudioSource swordVoice = null;
+        foreach (var voice in voices)
+            foreach (var authored in swordBank.clips)
+                if (voice.clip == authored) swordVoice = voice;
+
+        var whirl = UnityEditor.AssetDatabase.LoadAssetAtPath<Spell>("Assets/Data/Spells/Whirl.asset");
+        var whirlBank = whirl != null ? SfxLibrary.Active.For(whirl) : null;
+        Assert.That(whirlBank, Is.Not.Null, "the library has no row for Whirl — pick another ability for this check");
+
+        var abilityProbe = AudioClip.Create("AbilityProbe", 8000, 1, 8000, false);
+        var whirlHad = whirlBank.clips;
+        whirlBank.clips = new[] { abilityProbe };
+        try
+        {
+            CombatEvents.RaiseCast(swung, whirl);
+            AudioSource abilityVoice = null;
+            foreach (var voice in voices) if (voice.clip == abilityProbe) abilityVoice = voice;
+            Assert.That(abilityVoice, Is.Not.Null, "an ability was cast and no voice picked it up");
+            Assert.That(abilityVoice.volume, Is.GreaterThan(swordVoice.volume),
+                        "an ability plays at " + abilityVoice.volume.ToString("0.00") + " and a sword swing at " +
+                        swordVoice.volume.ToString("0.00") + " — the bed is not under the abilities");
+        }
+        finally
+        {
+            whirlBank.clips = whirlHad;
+        }
     }
 
     /// <summary>
@@ -283,6 +315,12 @@ public static class PlayChecks
         yield return null;
         Assert.That(friendly.isTeam, Is.True);
         Assert.That(PlayHarness.BarIsEnemyColoured(friendly), Is.False, "an ally's decoy wears the enemy's colour");
+
+        // Leave nothing behind. A decoy taunts and lives six seconds, and the checks after this one
+        // run inside those seconds: the pacing check counted units walking to these as walking past
+        // a fight, and failed at random for an afternoon.
+        UnityEngine.Object.Destroy(decoy.gameObject);
+        UnityEngine.Object.Destroy(friendly.gameObject);
     }
 
     /// <summary>
@@ -326,21 +364,23 @@ public static class PlayChecks
         yield return PlayHarness.ReachTheBell();
 
         int walking = 0, walkingPastSomeone = 0;
+        var offenders = new Dictionary<string, int>();
         for (int sweep = 0; sweep < 120; sweep++)
         {
             foreach (var unit in PlayHarness.Living())
             {
                 var ai = unit.CombatAI;
                 if (ai == null || ai.CurrentTarget == null) continue;
-                if (unit.EffectiveStance == Stance.Kite) continue;                       // kiters are meant to back off
-                if (unit.EffectiveCommitment == Commitment.Relentless) continue;         // and these never let go
-                if (unit.Knockback != null && !unit.Knockback.Steerable) continue;       // being thrown is not walking
 
-                // A taunted unit is meant to walk past everyone to reach what taunted it — the
-                // retarget rule this check measures skips it too. Without this the check failed
-                // at 43-47% whenever the decoy checks before it had left a decoy alive: every
-                // counted frame was one unit, taunted, walking past a kiter to reach the decoy.
+                // The same exclusions as the rule this measures (CombatAI, "take the fight that is
+                // already here"): a kiter is meant to back off, Relentless never lets go, a thrown
+                // body is not walking, a taunted one walks past everyone by design, and a unit
+                // mid-swing at a target that just stepped out of reach is finishing its swing.
+                if (unit.EffectiveStance == Stance.Kite) continue;
+                if (unit.EffectiveCommitment == Commitment.Relentless) continue;
+                if (unit.Knockback != null && !unit.Knockback.Steerable) continue;
                 if (unit.Statuses != null && unit.Statuses.TauntedBy != null) continue;
+                if (ai.IsAttacking) continue;
 
                 float reach = ai.AttackRange;
                 if (Vector3.Distance(unit.transform.position, ai.CurrentTarget.transform.position) <= reach) continue;
@@ -349,8 +389,12 @@ public static class PlayChecks
                 foreach (var other in PlayHarness.Living())
                 {
                     if (other == unit || other == ai.CurrentTarget || other.isTeam == unit.isTeam) continue;
-                    if (Vector3.Distance(unit.transform.position, other.transform.position) <= reach * 0.8f)
-                    { walkingPastSomeone++; break; }
+                    if (Vector3.Distance(unit.transform.position, other.transform.position) > reach * 0.8f) continue;
+                    walkingPastSomeone++;
+                    string who = DisplayNames.Unit(unit) + " [" + unit.EffectiveStance + "] -> " +
+                                 DisplayNames.Unit(ai.CurrentTarget) + " past " + DisplayNames.Unit(other);
+                    offenders[who] = offenders.TryGetValue(who, out int n) ? n + 1 : 1;
+                    break;
                 }
             }
             yield return null;
@@ -358,9 +402,16 @@ public static class PlayChecks
 
         if (walking < 20) yield break;   // too quiet a fight to say anything
 
+        // A failure names its frames. This check failed at random for an afternoon before it did,
+        // and every guess about why was wrong until the frames were listed.
+        var worst = new List<KeyValuePair<string, int>>(offenders);
+        worst.Sort((a, b) => b.Value.CompareTo(a.Value));
+        var detail = new System.Text.StringBuilder();
+        for (int i = 0; i < worst.Count && i < 4; i++) detail.Append(" | ").Append(worst[i].Value).Append(" frames: ").Append(worst[i].Key);
+
         float share = walkingPastSomeone * 100f / walking;
         Debug.Log($"[PlayChecks] walked past a reachable enemy in {share:0}% of walking frames ({walkingPastSomeone}/{walking})");
         Assert.That(share, Is.LessThan(35f),
-                    $"units walk past a fight they could be having in {share:0}% of the frames they spend walking");
+                    $"units walk past a fight they could be having in {share:0}% of the frames they spend walking" + detail);
     }
 }

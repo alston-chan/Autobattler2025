@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: SfxLibrary
   m_EditorClassIdentifier: 
   enabled: 1
-  masterVolume: 1
+  masterVolume: 0.467
+  weaponAttackLevel: 0.5
+  abilityLevel: 1
+  duckWeaponsUnderAbilities: 0.5
+  duckSeconds: 0.4
   hitLight:
     clips: []
     volume: 0.7

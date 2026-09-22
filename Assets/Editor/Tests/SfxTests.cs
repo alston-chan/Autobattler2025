@@ -142,6 +142,38 @@ public class SfxTests
         }
     }
 
+    // ---------- the mix: abilities over the weapon bed ----------
+
+    [Test]
+    public void ASwingIsQuieterThanAnAbilityAndQuieterStillUnderOne()
+    {
+        var lib = ScriptableObject.CreateInstance<SfxLibrary>();
+        float swing = CombatAudio.WeaponLevel(lib, underAnAbility: false);
+        float swingUnder = CombatAudio.WeaponLevel(lib, underAnAbility: true);
+
+        Assert.That(swing, Is.LessThan(lib.abilityLevel), "the bed sits under the abilities");
+        Assert.That(swingUnder, Is.LessThan(swing), "and drops further while one is being heard");
+        Assert.That(swingUnder, Is.GreaterThan(0f), "ducked, not muted — the fight is still there");
+    }
+
+    [Test]
+    public void WithNoDuckTheBedHoldsItsLevelUnderAnAbility()
+    {
+        var lib = ScriptableObject.CreateInstance<SfxLibrary>();
+        lib.duckWeaponsUnderAbilities = 0f;
+        Assert.That(CombatAudio.WeaponLevel(lib, true), Is.EqualTo(CombatAudio.WeaponLevel(lib, false)));
+    }
+
+    [Test]
+    public void TheShippedLibraryKeepsAbilitiesOverTheBed()
+    {
+        // A content guard: the asset can be edited in play and saved by anything. If someone drags
+        // the bed up over the abilities while tuning, this is what says so.
+        var lib = SfxLibrary.Active;
+        Assert.That(lib.weaponAttackLevel, Is.LessThan(lib.abilityLevel),
+                    "weapon swings (" + lib.weaponAttackLevel + ") are not under abilities (" + lib.abilityLevel + ")");
+    }
+
     // ---------- helpers ----------
 
     private static AudioClip AClip() => AudioClip.Create("test", 16, 1, 8000, false);

@@ -41,6 +41,26 @@ public class SfxLibrary : ScriptableObject
     [Tooltip("Scales everything below. The per-bank volumes are the mix; this is the fader.")]
     public float masterVolume = 1f;
 
+    [Header("Mix — abilities over the weapon bed")]
+    [Tooltip("Level of the routine layer: weapon swings and the hits they land. This game's player " +
+             "is reading a board, not pressing attack, so a swing confirms nothing they did — it is " +
+             "texture. Kept well under the abilities so the moments that change the fight are the " +
+             "ones that cut through. A rule here rather than a volume per row, so the next weapon " +
+             "row anyone adds is quiet by default.")]
+    [Range(0f, 1f)] public float weaponAttackLevel = 0.5f;
+
+    [Tooltip("Level of an ability cast — a verb, a cost spell. The loud layer.")]
+    [Range(0f, 1f)] public float abilityLevel = 1f;
+
+    [Tooltip("How far the weapon bed drops while an ability is being heard, 0 to 1. Ducking is what " +
+             "makes an ability feel loud without being louder: the busiest second of a fight has " +
+             "fourteen sounds in it, and this is how one of them wins.")]
+    [Range(0f, 1f)] public float duckWeaponsUnderAbilities = 0.5f;
+
+    [Tooltip("How long the duck lasts after an ability starts. About the length of the cast's " +
+             "own sound; long enough to clear the swing that lands on top of it.")]
+    public float duckSeconds = 0.4f;
+
     [Header("Weapon hits — chosen by what the attacker is holding")]
     [Tooltip("A sword, a dagger, a fist: the routine hit. This is the most-heard sound in the game.")]
     public SfxBank hitLight = new SfxBank();

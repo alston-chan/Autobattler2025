@@ -66,6 +66,9 @@ public class CombatAI : MonoBehaviour
     /// <summary>The current enemy target this entity is pursuing.</summary>
     public Entity CurrentTarget { get; private set; }
 
+    /// <summary>Mid-swing. Read by the pacing check, which has to skip exactly what the retarget rule skips.</summary>
+    public bool IsAttacking => _isAttacking;
+
     public void Initialize(Entity entity)
     {
         _entity = entity;
