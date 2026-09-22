@@ -53,13 +53,16 @@ public static class PlayChecks
         // A free-standing character: not a rooted decoy (it does not move), not a body already
         // flying (its own throw would hide ours), and not thrown between fights, when nothing is
         // hurt at all. This check failed once with "never happened" and no way to tell which.
+        // The LOWEST such character: a body thrown down from the top of the field hit an ally on
+        // the way, passed its momentum on, and never reached the floor. Nothing stands below the
+        // lowest unit, so its path to the floor is clear by definition.
         Entity unit = null;
         foreach (var u in PlayHarness.Living())
         {
             if (u.Health == null || u.Knockback == null || !u.isCharacter) continue;
             if (!u.Knockback.Steerable) continue;
             if (u.Statuses != null && u.Statuses.Rooted) continue;
-            unit = u; break;
+            if (unit == null || u.transform.position.y < unit.transform.position.y) unit = u;
         }
         Assert.That(unit, Is.Not.Null, "no free-standing character to throw");
         Assert.That(GameManager.Instance.StateMachine.Current, Is.EqualTo(GameState.Combat), "nothing is hurt outside a fight");

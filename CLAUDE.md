@@ -306,7 +306,9 @@ Writing them:
   (`Mitigation.Reduce`, 100/(100+rating)), then statuses, then shields. Blocking is gone — it was a
   flat, half-capped reduction whose worth depended on what was swinging — converted at x6 with a
   60 cap (vest 3 → armour 18, shield 12 → 60). Effects, statuses and the projectile declare their
-  type; the wand and its verbs are magical.
+  type; the wand and its verbs are magical. Magic resist is the helmet's stat and nothing else's —
+  hoods and hats 30, helms 12 — so body armour is for blades and the head is for spells;
+  `MitigationTests` holds both halves of that rule.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this

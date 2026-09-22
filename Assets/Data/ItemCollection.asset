@@ -11908,6 +11908,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.AdvancedDipperHat
@@ -11925,6 +11927,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.AgileHat
@@ -11942,6 +11946,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.AmateurDipperHat
@@ -11959,6 +11965,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.AmateurDodgeHat
@@ -11976,6 +11984,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.AngelicRibbon [FullHair]
@@ -11993,6 +12003,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.ArcaneHat
@@ -12010,6 +12022,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ArcherHat
@@ -12027,6 +12041,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Zombies.Helmet.Arrows [FullHair]
@@ -12044,6 +12060,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
@@ -12061,6 +12079,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.AsteraHood
@@ -12078,6 +12098,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Zombies.Helmet.Axe [FullHair]
@@ -12095,6 +12117,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.BaboonMask
@@ -12112,6 +12136,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.BattleguardHelm
@@ -12129,6 +12155,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.BennuEarpiece [FullHair]
@@ -12146,6 +12174,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.BerserkHelm
@@ -12163,6 +12193,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.BishopHat [FullHair]
@@ -12180,6 +12212,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.BlacksmithHeadband
@@ -12197,6 +12231,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.BlazewingHelmet
@@ -12214,6 +12250,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.BlessedHalo [FullHair]
@@ -12231,6 +12269,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.BloodiedSpiritHelmet
@@ -12248,6 +12288,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Blossom [Paint] [FullHair]
@@ -12265,6 +12307,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.BootlegHat
@@ -12282,6 +12326,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.BowmanHat [Paint]
@@ -12299,6 +12345,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Zombies.Helmet.Brainz [Paint] [FullHair]
@@ -12316,6 +12364,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.BunnyEarsA1 [Paint] [FullHair]
@@ -12333,6 +12383,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.BunnyEarsA2 [Paint] [FullHair]
@@ -12350,6 +12402,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.BunnyEarsB1 [Paint] [FullHair]
@@ -12367,6 +12421,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.BunnyEarsB2 [Paint] [FullHair]
@@ -12384,6 +12440,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.BunnyPin [Paint] [FullHair]
@@ -12401,6 +12459,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.CardinalHat [Paint]
@@ -12418,6 +12478,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.CataclysmHelmet
@@ -12435,6 +12497,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.CataphractHelm [Paint]
@@ -12452,6 +12516,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.CatEars [Paint] [FullHair]
@@ -12469,6 +12535,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.ChampionHelm
@@ -12486,6 +12554,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Common.Chrismas.Helmet.ChristmasHat [FullHair]
@@ -12503,6 +12573,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ClericHood [Paint]
@@ -12520,6 +12592,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ClothHeadband
@@ -12537,6 +12611,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.CommanderOrcHelm
@@ -12554,6 +12630,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Crown [Paint] [FullHair]
@@ -12571,6 +12649,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.CrownOfFortune [FullHair]
@@ -12588,6 +12668,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.CrownOfJerome [FullHair]
@@ -12605,6 +12687,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Knights.Helmet.CrusaderHelm [Paint]
@@ -12622,6 +12706,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.CrystalCrown
@@ -12639,6 +12725,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Zombies.Helmet.Dagger [FullHair]
@@ -12656,6 +12744,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.DarkLordHelmet
@@ -12673,6 +12763,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Thrones.Helmet.DarkMountainHelm [Paint]
@@ -12690,6 +12782,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Common.Halloween.Helmet.DeathHood
@@ -12707,6 +12801,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Common.Halloween.Helmet.DeerHorns [FullHair]
@@ -12724,6 +12820,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.DeserterBandage [FullHair]
@@ -12741,6 +12839,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.DestroyerHelm [Paint]
@@ -12758,6 +12858,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.DevotionHat
@@ -12775,6 +12877,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Diadem [FullHair]
@@ -12792,6 +12896,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.DivinePreciousCrown [FullHair]
@@ -12809,6 +12915,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.DraconicHelmet
@@ -12826,6 +12934,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.DrifterForehead
@@ -12843,6 +12953,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.DruidHat [Paint]
@@ -12860,6 +12972,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.DwellerHood [Paint]
@@ -12877,6 +12991,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
@@ -12894,6 +13010,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.ElementalArcherCrown [FullHair]
@@ -12911,6 +13029,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.ElementalHelmet
@@ -12928,6 +13048,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.ElementalMageHood
@@ -12945,6 +13067,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.ElementalMageHood2
@@ -12962,6 +13086,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Knights.Helmet.EliteKnightHelm
@@ -12979,6 +13105,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.EliteTowerKeeperHelm
@@ -12996,6 +13124,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.EnchantedScarletHelm
@@ -13013,6 +13143,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.EnforcedHelm [Paint]
@@ -13030,6 +13162,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ExpertBowmanHat
@@ -13047,6 +13181,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ExpertHunterHat
@@ -13064,6 +13200,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.EyeguardOfTorment [FullHair]
@@ -13081,6 +13219,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Knights.Helmet.FalconIronHelm
@@ -13098,6 +13238,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.FallenlordMask
@@ -13115,6 +13257,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.FireAdeptHood
@@ -13132,6 +13276,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.FireBeastHelmet
@@ -13149,6 +13295,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.FireWizardHood
@@ -13166,6 +13314,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.FlameSalamanderHelm
@@ -13183,6 +13333,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.FlexureHelm
@@ -13200,6 +13352,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.ForestKeeperHat
@@ -13217,6 +13371,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.ForestWhispererHat
@@ -13234,6 +13390,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.FrozenMightHat
@@ -13251,6 +13409,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Furry.Helmet.FurryEars1 [Paint]
@@ -13268,6 +13428,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Furry.Helmet.FurryEars2 [Paint]
@@ -13285,6 +13447,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Furry.Helmet.FurryEars3 [Paint]
@@ -13302,6 +13466,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Furry.Helmet.FurryEars4 [Paint]
@@ -13319,6 +13485,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.GearOfInfinity [FullHair]
@@ -13336,6 +13504,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.GenieTurban
@@ -13353,6 +13523,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.GladiatorHelm1
@@ -13370,6 +13542,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.GladiatorHelm2
@@ -13387,6 +13561,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.GrimReaperHood
@@ -13404,6 +13580,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Knights.Helmet.GuardHelm [Paint]
@@ -13421,6 +13599,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.GuardHelm1 [Paint]
@@ -13438,6 +13618,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.GuardHelm2 [Paint]
@@ -13455,6 +13637,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.GuardHelm3 [Paint]
@@ -13472,6 +13656,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.GuildHelmet
@@ -13489,6 +13675,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.GypsyHat
@@ -13506,6 +13694,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.HalberdierHelm [Paint]
@@ -13523,6 +13713,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HalfmoonHat
@@ -13540,6 +13732,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.HawkHelm
@@ -13557,6 +13751,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.HeavenlyHelm
@@ -13574,6 +13770,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.HeavyHelm [Paint]
@@ -13591,6 +13789,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfCorruption
@@ -13608,6 +13808,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfCorruptionTypeB
@@ -13625,6 +13827,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfCryingDemon
@@ -13642,6 +13846,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfEndingLight
@@ -13659,6 +13865,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfFadedHeavens
@@ -13676,6 +13884,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfForgottenFoe [FullHair]
@@ -13693,6 +13903,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfImmortality
@@ -13710,6 +13922,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfImmortalityTypeB
@@ -13727,6 +13941,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfLoneWolf
@@ -13744,6 +13960,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfRagingCrux
@@ -13761,6 +13979,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmetOfRelentlessNightmares [FullHair]
@@ -13778,6 +13998,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmOfAncestors [FullHair]
@@ -13795,6 +14017,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.HelmOfSunwalker
@@ -13812,6 +14036,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HermitHat
@@ -13829,6 +14055,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HermitHood [Paint]
@@ -13846,6 +14074,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.HighCrusaderHelm
@@ -13863,6 +14093,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.HighKnightHelm
@@ -13880,6 +14112,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns1 [FullHair]
@@ -13897,6 +14131,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns1 [Paint] [FullHair]
@@ -13914,6 +14150,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns1 [Paint] [FullHair]
@@ -13931,6 +14169,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns10 [Paint] [FullHair]
@@ -13948,6 +14188,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns11 [Paint] [FullHair]
@@ -13965,6 +14207,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns12 [Paint] [FullHair]
@@ -13982,6 +14226,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns13 [Paint] [FullHair]
@@ -13999,6 +14245,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns14 [Paint] [FullHair]
@@ -14016,6 +14264,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns15[Paint] [FullHair]
@@ -14033,6 +14283,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns2 [FullHair]
@@ -14050,6 +14302,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns2 [Paint] [FullHair]
@@ -14067,6 +14321,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns2 [Paint] [FullHair]
@@ -14084,6 +14340,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns3 [FullHair]
@@ -14101,6 +14359,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns3 [Paint] [FullHair]
@@ -14118,6 +14378,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns3 [Paint] [FullHair]
@@ -14135,6 +14397,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns4 [FullHair]
@@ -14152,6 +14416,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Horns (FM).Helmet.Horns4 [Paint] [FullHair]
@@ -14169,6 +14435,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns4 [Paint] [FullHair]
@@ -14186,6 +14454,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns5 [Paint] [FullHair]
@@ -14203,6 +14473,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns6 [Paint] [FullHair]
@@ -14220,6 +14492,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns7 [Paint] [FullHair]
@@ -14237,6 +14511,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns8 [Paint] [FullHair]
@@ -14254,6 +14530,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Horns (Style).Helmet.Horns9 [Paint] [FullHair]
@@ -14271,6 +14549,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HunterHat
@@ -14288,6 +14568,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HunterHat1
@@ -14305,6 +14587,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HunterHat2
@@ -14322,6 +14606,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.HunterHelm [Paint]
@@ -14339,6 +14625,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.IceWizardHood
@@ -14356,6 +14644,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.Imperial TemplarHelm
@@ -14373,6 +14663,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.ImperialKnightHelm
@@ -14390,6 +14682,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.IncorruptibleHelmet
@@ -14407,6 +14701,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.InquisitorHat1 [Paint]
@@ -14424,6 +14720,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.InquisitorHat2 [Paint]
@@ -14441,6 +14739,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.IronHeavyHelm
@@ -14458,6 +14758,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.IronHunterHelm
@@ -14475,6 +14777,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.JesterHat
@@ -14492,6 +14796,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.KingCrown
@@ -14509,6 +14815,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.KnightHelm [Paint]
@@ -14526,6 +14834,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.Knyaz
@@ -14543,6 +14853,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.Kopeynik
@@ -14560,6 +14872,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.LandsknechtHelm [Paint]
@@ -14577,6 +14891,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.LeatherCap
@@ -14594,6 +14910,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.LeatherHelm
@@ -14611,6 +14929,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.Luchnik
@@ -14630,6 +14950,8 @@ MonoBehaviour:
       Value: 8
     - Id: 41
       Value: 20
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.LushKnightHelmet
@@ -14647,6 +14969,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.MagnetismHelmet
@@ -14664,6 +14988,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.ManticoreHelmet
@@ -14681,6 +15007,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MarauderHood
@@ -14698,6 +15026,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.MarkedScoutOrcHelm
@@ -14715,6 +15045,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.MarketCommanderOrcHelm
@@ -14732,6 +15064,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MasterDodgeHat
@@ -14749,6 +15083,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MedievalBartender [FullHair]
@@ -14766,6 +15102,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MedievalCook [FullHair]
@@ -14783,6 +15121,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.MercenaryHelm1 [Paint]
@@ -14800,6 +15140,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.MercenaryHelm2 [Paint]
@@ -14817,6 +15159,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MilitiamanHelmet1 [Paint]
@@ -14834,6 +15178,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MilitiamanHelmet2 [Paint]
@@ -14851,6 +15197,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.MinerHelmet
@@ -14868,6 +15216,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Thrones.Helmet.MountainHelm [Paint]
@@ -14885,6 +15235,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Mummies.Helmet.MummyHat1
@@ -14902,6 +15254,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Mummies.Helmet.MummyHat2
@@ -14919,6 +15273,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Mummies.Helmet.MummyHat3
@@ -14936,6 +15292,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Mummies.Helmet.MummyHat4
@@ -14953,6 +15311,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.NativeVillagerHeadband01 [FullHair]
@@ -14970,6 +15330,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.NativeVillagerHeadband02 [FullHair]
@@ -14987,6 +15349,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.NecromancerHood
@@ -15004,6 +15368,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.NemeanHelmet
@@ -15021,6 +15387,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Samurai.Helmet.NinjaHelm1 [Paint]
@@ -15038,6 +15406,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Samurai.Helmet.NinjaHelm2 [Paint]
@@ -15055,6 +15425,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Samurai.Helmet.NinjaHelm3 [Paint]
@@ -15072,6 +15444,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.NobleKingCrown [FullHair]
@@ -15089,6 +15463,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.NordicHelm
@@ -15106,6 +15482,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.NorthmanHelmet
@@ -15123,6 +15501,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.NosrossArcherHelm
@@ -15140,6 +15520,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.NunVeil
@@ -15157,6 +15539,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.NunVeilTypeB
@@ -15174,6 +15558,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Common.Chrismas.Helmet.NutcrackerHat
@@ -15191,6 +15577,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Zombies.Helmet.OldCap
@@ -15208,6 +15596,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: UndeadHeroes.Skeletons.Helmet.OldGladiatorHelm
@@ -15225,6 +15615,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: UndeadHeroes.Skeletons.Helmet.OldHornHelm
@@ -15242,6 +15634,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Skeletons.Helmet.OldLeatherHelm
@@ -15259,6 +15653,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Skeletons.Helmet.OldPirateHat
@@ -15276,6 +15672,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.OminousHelmet
@@ -15293,6 +15691,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.OzeriasHood
@@ -15310,6 +15710,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.PaladinHelm [Paint]
@@ -15327,6 +15729,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.PathfinderHat [Paint]
@@ -15344,6 +15748,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.PathfinderHood
@@ -15361,6 +15767,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.PeasantCap
@@ -15378,6 +15786,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.PersianArcherHelmet
@@ -15395,6 +15805,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.PersianDuelistHelmet
@@ -15412,6 +15824,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.PersianLancerHelmet
@@ -15429,6 +15843,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.PersianWarriorHelmet
@@ -15446,6 +15862,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.PhobosHelmet
@@ -15463,6 +15881,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.PorcelainMask [FullHair]
@@ -15480,6 +15900,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.PrincessTiara [FullHair]
@@ -15497,6 +15919,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Common.Halloween.Helmet.PumpkinHead
@@ -15514,6 +15938,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.QueenCrown
@@ -15531,6 +15957,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.RangerHat [Paint]
@@ -15548,6 +15976,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.Ratnik
@@ -15565,6 +15995,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Skeletons.Helmet.RedBandana [FullHair]
@@ -15582,6 +16014,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.RedKittyHood
@@ -15599,6 +16033,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.RedLunarHood
@@ -15616,6 +16052,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.RenovatedHelm
@@ -15633,6 +16071,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Ribbon1 [FullHair]
@@ -15650,6 +16090,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Ribbon1 [Paint] [FullHair]
@@ -15667,6 +16109,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Ribbon2 [FullHair]
@@ -15684,6 +16128,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.Ribbon2 [Paint] [FullHair]
@@ -15701,6 +16147,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.RobberCap
@@ -15718,6 +16166,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Style.Helmet.Rocky [Paint] [FullHair]
@@ -15735,6 +16185,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.RoyalArcherHat
@@ -15752,6 +16204,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.RoyalHeaddress
@@ -15769,6 +16223,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.SacredWolfyHood
@@ -15786,6 +16242,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.SaintPatrickHat
@@ -15803,6 +16261,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Samurai.Helmet.SamuraiElderHelm
@@ -15820,6 +16280,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Samurai.Helmet.SamuraiHelm1
@@ -15837,6 +16299,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Samurai.Helmet.SamuraiHelm2
@@ -15854,6 +16318,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Samurai.Helmet.SamuraiHelm3
@@ -15871,6 +16337,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SandLords.Helmet.SandElderTurban
@@ -15888,6 +16356,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SandLords.Helmet.SandHealerHood
@@ -15905,6 +16375,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.SandHijab
@@ -15922,6 +16394,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SandLords.Helmet.SandShooterTurban
@@ -15939,6 +16413,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SandLords.Helmet.SandWarriorHelm1
@@ -15956,6 +16432,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SandLords.Helmet.SandWarriorHelm2
@@ -15973,6 +16451,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Christmas.Helmet.SantaHat
@@ -15990,6 +16470,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Christmas.Helmet.SantaHat
@@ -16007,6 +16489,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Christmas.Helmet.SantaHelperHat1
@@ -16024,6 +16508,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Christmas.Helmet.SantaHelperHat1
@@ -16041,6 +16527,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Christmas.Helmet.SantaHelperHat2
@@ -16058,6 +16546,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Christmas.Helmet.SantaHelperHat2
@@ -16075,6 +16565,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Christmas.Helmet.SantaHelperHat3
@@ -16092,6 +16584,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Christmas.Helmet.SantaHelperHat3
@@ -16109,6 +16603,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.ScintillateCrown
@@ -16126,6 +16622,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ScoutHelm
@@ -16143,6 +16641,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.ScoutOrcHelm
@@ -16160,6 +16660,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ShamanHelm
@@ -16177,6 +16679,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SwampLords.Helmet.ShamanMask [FullHair]
@@ -16194,6 +16698,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SwampLords.Helmet.ShamanMask2 [FullHair]
@@ -16211,6 +16717,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SwampLords.Helmet.ShamanMask3 [FullHair]
@@ -16228,6 +16736,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Knights.Helmet.SharpHelm [Paint]
@@ -16245,6 +16755,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.SiegeArcherHelm [Paint]
@@ -16262,6 +16774,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.SilkKingGear [FullHair]
@@ -16279,6 +16793,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: UndeadHeroes.Skeletons.Helmet.SkeletonBrains [FullHair]
@@ -16296,6 +16812,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: UndeadHeroes.Skeletons.Helmet.SkeletonKing [FullHair]
@@ -16313,6 +16831,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Style.Helmet.SkullPin [Paint] [FullHair]
@@ -16330,6 +16850,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.SlaveHeadband [FullHair]
@@ -16347,6 +16869,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Common.Chrismas.Helmet.SnowMaiden [FullHair]
@@ -16364,6 +16888,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.SnperHood
@@ -16381,6 +16907,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.SoulHeavyHelm
@@ -16398,6 +16926,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.SpartanHelmet
@@ -16415,6 +16945,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.SpearmanHelm1
@@ -16432,6 +16964,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: FantasyHeroes.Basic.Helmet.SpearmanHelm2
@@ -16449,6 +16983,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.SteelHelm [Paint]
@@ -16466,6 +17002,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.SteelPotHelm
@@ -16483,6 +17021,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: UndeadHeroes.Zombies.Helmet.Stiches [FullHair]
@@ -16500,6 +17040,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.StormcallerHelmet [FullHair]
@@ -16517,6 +17059,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.StrawHat
@@ -16534,6 +17078,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.Strelets
@@ -16551,6 +17097,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.SunlightHelmet
@@ -16568,6 +17116,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SwampLords.Helmet.SwampLordMask1 [FullHair]
@@ -16585,6 +17135,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.SwampLords.Helmet.SwampLordMask2  [FullHair]
@@ -16602,6 +17154,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.SweetnessRibbon [FullHair]
@@ -16619,6 +17173,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.TechnomancerHelmet
@@ -16636,6 +17192,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.TennoCrown [FullHair]
@@ -16653,6 +17211,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.TerraHelmet
@@ -16670,6 +17230,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.ThiefHelm [Paint]
@@ -16687,6 +17249,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.ThunderguardHelmet
@@ -16704,6 +17268,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.UncleSamHat [FullHair]
@@ -16721,6 +17287,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.ViciousHelmet
@@ -16738,6 +17306,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Vikings.Helmet.VikingIronHelm1
@@ -16755,6 +17325,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Vikings.Helmet.VikingIronHelm2
@@ -16772,6 +17344,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Vikings.Helmet.VikingIronHelm3
@@ -16789,6 +17363,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Vikings.Helmet.VikingLeatherHelm
@@ -16806,6 +17382,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.Epic.Helmet.VillainCrown [FullHair]
@@ -16823,6 +17401,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Basic.Helmet.VisorKnightHelm [Paint]
@@ -16840,6 +17420,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.Vityaz
@@ -16857,6 +17439,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.Epic.Helmet.Voivode
@@ -16874,6 +17458,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
@@ -16891,6 +17477,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.WarlockHood
@@ -16908,6 +17496,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 10
     IconId: FantasyHeroes.Knights.Helmet.WarriorHelm [Paint]
@@ -16925,6 +17515,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.AbandonedWorkshop.Helmet.WarriorOrcHelm
@@ -16942,6 +17534,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 12
     Price: 0
     Weight: 6
     IconId: Extensions.Epic.Helmet.WaterElementalHelmet
@@ -16959,6 +17553,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.WaterWizardHelm
@@ -16976,6 +17572,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Extensions.AbandonedWorkshop.Helmet.WhiteKittyHood
@@ -16993,6 +17591,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: Common.Halloween.Helmet.WitchHat
@@ -17010,6 +17610,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.WitchHat [Paint]
@@ -17027,6 +17629,8 @@ MonoBehaviour:
     Properties:
     - Id: 22
       Value: 8
+    - Id: 40
+      Value: 30
     Price: 0
     Weight: 3
     IconId: FantasyHeroes.Basic.Helmet.WitchHunterHat [Paint]

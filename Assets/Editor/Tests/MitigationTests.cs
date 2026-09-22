@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
@@ -76,6 +77,54 @@ public class MitigationTests
         Assert.That(item, Is.Not.Null);
         foreach (var p in item.Properties) if (p.Id == id) return p.Value;
         return null;
+    }
+
+    // ---------- magic resist lives on the head ----------
+
+    [Test]
+    public void EveryHelmetResistsMagicAndNothingElseDoes()
+    {
+        // The rule the player can hold: body armour for blades, the head for spells. A hood or a
+        // hat is 30, a helm is 12, and no vest or shield grants any — one stat, one slot.
+        var items = new Dictionary<string, string>();
+        foreach (var line in File.ReadAllLines("Assets/Data/Items.csv"))
+        {
+            var cols = line.Split(',');
+            if (cols.Length > 2 && cols[0] == "TRUE") items[cols[1]] = cols[2];
+        }
+
+        var resist = new Dictionary<string, int>();
+        foreach (var line in File.ReadAllLines("Assets/Data/Properties.csv"))
+        {
+            var cols = line.Split(',');
+            if (cols.Length == 3 && cols[1] == "MagicResist") resist[cols[0]] = int.Parse(cols[2]);
+        }
+
+        int helmets = 0;
+        foreach (var kv in items)
+        {
+            if (kv.Value == "Helmet")
+            {
+                helmets++;
+                Assert.That(resist.ContainsKey(kv.Key), Is.True, kv.Key + " is a helmet that resists nothing");
+                Assert.That(resist[kv.Key], Is.EqualTo(12).Or.EqualTo(30), kv.Key + " has an off-rule value");
+            }
+            else
+            {
+                Assert.That(resist.ContainsKey(kv.Key), Is.False, kv.Key + " is not a helmet and grants magic resist");
+            }
+        }
+        Assert.That(helmets, Is.GreaterThan(100), "the helmet set is missing");
+    }
+
+    [Test]
+    public void AHoodResistsMoreThanAHelmAndTheCollectionCarriesBoth()
+    {
+        ItemCollection.Active = AssetDatabase.LoadAssetAtPath<ItemCollection>("Assets/Data/ItemCollection.asset");
+        var hood = ItemCollection.Active.Items.Find(i => i.Id == "FantasyHeroes.Basic.Helmet.WarlockHood");
+        var helm = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm");
+        Assert.That(Of(hood, PropertyId.MagicResist), Is.EqualTo("30"), "a warlock's hood — re-import the CSV if this is null");
+        Assert.That(Of(helm, PropertyId.MagicResist), Is.EqualTo("12"), "a wall keeper's helm");
     }
 
     // ---------- who is magical ----------

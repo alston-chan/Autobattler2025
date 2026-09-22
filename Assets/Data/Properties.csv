@@ -2556,3 +2556,305 @@ FantasyHeroes.Basic.Back.TravallerBackpack,HealthMax,5
 Extensions.AbandonedWorkshop.Shield.WallKeeperShield,KnockbackResist,40
 Extensions.Epic.Armor.ThunderguardArmor.vest,KnockbackResist,30
 Extensions.Epic.Helmet.LushKnightHelmet,KnockbackResist,20
+FantasyHeroes.Basic.Helmet.AdvancedDipperHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.AgileHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.AmateurDipperHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.AmateurDodgeHat,MagicResist,30
+Extensions.Epic.Helmet.AngelicRibbon [FullHair],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.ArcaneHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.ArcherHat,MagicResist,30
+UndeadHeroes.Zombies.Helmet.Arrows [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.AssassinHood [Paint],MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.AsteraHood,MagicResist,30
+UndeadHeroes.Zombies.Helmet.Axe [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.BaboonMask,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.BattleguardHelm,MagicResist,12
+Extensions.Epic.Helmet.BennuEarpiece [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.BerserkHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.BishopHat [FullHair],MagicResist,30
+FantasyHeroes.Basic.Helmet.BlacksmithHeadband,MagicResist,12
+Extensions.Epic.Helmet.BlazewingHelmet,MagicResist,12
+Extensions.Epic.Helmet.BlessedHalo [FullHair],MagicResist,30
+Extensions.Epic.Helmet.BloodiedSpiritHelmet,MagicResist,12
+Extensions.Style.Helmet.Blossom [Paint] [FullHair],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.BootlegHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.BowmanHat [Paint],MagicResist,30
+UndeadHeroes.Zombies.Helmet.Brainz [Paint] [FullHair],MagicResist,12
+Extensions.Style.Helmet.BunnyEarsA1 [Paint] [FullHair],MagicResist,12
+Extensions.Style.Helmet.BunnyEarsA2 [Paint] [FullHair],MagicResist,12
+Extensions.Style.Helmet.BunnyEarsB1 [Paint] [FullHair],MagicResist,12
+Extensions.Style.Helmet.BunnyEarsB2 [Paint] [FullHair],MagicResist,12
+Extensions.Style.Helmet.BunnyPin [Paint] [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.CardinalHat [Paint],MagicResist,30
+Extensions.Epic.Helmet.CataclysmHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.CataphractHelm [Paint],MagicResist,12
+Extensions.Style.Helmet.CatEars [Paint] [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.ChampionHelm,MagicResist,12
+Common.Chrismas.Helmet.ChristmasHat [FullHair],MagicResist,30
+FantasyHeroes.Basic.Helmet.ClericHood [Paint],MagicResist,30
+FantasyHeroes.Basic.Helmet.ClothHeadband,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.CommanderOrcHelm,MagicResist,12
+Extensions.Style.Helmet.Crown [Paint] [FullHair],MagicResist,30
+Extensions.Epic.Helmet.CrownOfFortune [FullHair],MagicResist,30
+Extensions.Epic.Helmet.CrownOfJerome [FullHair],MagicResist,30
+FantasyHeroes.Knights.Helmet.CrusaderHelm [Paint],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.CrystalCrown,MagicResist,30
+UndeadHeroes.Zombies.Helmet.Dagger [FullHair],MagicResist,12
+Extensions.Epic.Helmet.DarkLordHelmet,MagicResist,12
+FantasyHeroes.Thrones.Helmet.DarkMountainHelm [Paint],MagicResist,12
+Common.Halloween.Helmet.DeathHood,MagicResist,30
+Common.Halloween.Helmet.DeerHorns [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.DeserterBandage [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.DestroyerHelm [Paint],MagicResist,12
+Extensions.Epic.Helmet.DevotionHat,MagicResist,30
+Extensions.Style.Helmet.Diadem [FullHair],MagicResist,12
+Extensions.Epic.Helmet.DivinePreciousCrown [FullHair],MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.DraconicHelmet,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.DrifterForehead,MagicResist,12
+FantasyHeroes.Basic.Helmet.DruidHat [Paint],MagicResist,30
+FantasyHeroes.Basic.Helmet.DwellerHood [Paint],MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood,MagicResist,30
+Extensions.Epic.Helmet.ElementalArcherCrown [FullHair],MagicResist,30
+Extensions.Epic.Helmet.ElementalHelmet,MagicResist,12
+Extensions.Epic.Helmet.ElementalMageHood,MagicResist,30
+Extensions.Epic.Helmet.ElementalMageHood2,MagicResist,30
+FantasyHeroes.Knights.Helmet.EliteKnightHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.EliteTowerKeeperHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.EnchantedScarletHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.EnforcedHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.ExpertBowmanHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.ExpertHunterHat,MagicResist,30
+Extensions.Epic.Helmet.EyeguardOfTorment [FullHair],MagicResist,12
+FantasyHeroes.Knights.Helmet.FalconIronHelm,MagicResist,12
+Extensions.Epic.Helmet.FallenlordMask,MagicResist,12
+FantasyHeroes.Basic.Helmet.FireAdeptHood,MagicResist,30
+Extensions.Epic.Helmet.FireBeastHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.FireWizardHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.FlameSalamanderHelm,MagicResist,12
+Extensions.Epic.Helmet.FlexureHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.ForestKeeperHat,MagicResist,30
+Extensions.Epic.Helmet.ForestWhispererHat,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.FrozenMightHat,MagicResist,30
+UndeadHeroes.Furry.Helmet.FurryEars1 [Paint],MagicResist,12
+UndeadHeroes.Furry.Helmet.FurryEars2 [Paint],MagicResist,12
+UndeadHeroes.Furry.Helmet.FurryEars3 [Paint],MagicResist,12
+UndeadHeroes.Furry.Helmet.FurryEars4 [Paint],MagicResist,12
+Extensions.Epic.Helmet.GearOfInfinity [FullHair],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.GenieTurban,MagicResist,30
+FantasyHeroes.Basic.Helmet.GladiatorHelm1,MagicResist,12
+FantasyHeroes.Basic.Helmet.GladiatorHelm2,MagicResist,12
+Extensions.Epic.Helmet.GrimReaperHood,MagicResist,30
+FantasyHeroes.Knights.Helmet.GuardHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.GuardHelm1 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.GuardHelm2 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.GuardHelm3 [Paint],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.GuildHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.GypsyHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.HalberdierHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.HalfmoonHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.HawkHelm,MagicResist,12
+Extensions.Epic.Helmet.HeavenlyHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.HeavyHelm [Paint],MagicResist,12
+Extensions.Epic.Helmet.HelmetOfCorruption,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfCorruptionTypeB,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfCryingDemon,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfEndingLight,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfFadedHeavens,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfForgottenFoe [FullHair],MagicResist,12
+Extensions.Epic.Helmet.HelmetOfImmortality,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfImmortalityTypeB,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfLoneWolf,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfRagingCrux,MagicResist,12
+Extensions.Epic.Helmet.HelmetOfRelentlessNightmares [FullHair],MagicResist,12
+Extensions.Epic.Helmet.HelmOfAncestors [FullHair],MagicResist,12
+Extensions.Epic.Helmet.HelmOfSunwalker,MagicResist,12
+FantasyHeroes.Basic.Helmet.HermitHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.HermitHood [Paint],MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.HighCrusaderHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.HighKnightHelm,MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns1 [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns1 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns1 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns10 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns11 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns12 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns13 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns14 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns15[Paint] [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns2 [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns2 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns2 [Paint] [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns3 [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns3 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns3 [Paint] [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns4 [FullHair],MagicResist,12
+UndeadHeroes.Horns (FM).Helmet.Horns4 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns4 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns5 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns6 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns7 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns8 [Paint] [FullHair],MagicResist,12
+Extensions.Horns (Style).Helmet.Horns9 [Paint] [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.HunterHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.HunterHat1,MagicResist,12
+FantasyHeroes.Basic.Helmet.HunterHat2,MagicResist,12
+FantasyHeroes.Basic.Helmet.HunterHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.IceWizardHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.Imperial TemplarHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.ImperialKnightHelm,MagicResist,12
+Extensions.Epic.Helmet.IncorruptibleHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.InquisitorHat1 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.InquisitorHat2 [Paint],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.IronHeavyHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.IronHunterHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.JesterHat,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.KingCrown,MagicResist,30
+FantasyHeroes.Basic.Helmet.KnightHelm [Paint],MagicResist,12
+Extensions.Epic.Helmet.Knyaz,MagicResist,12
+Extensions.Epic.Helmet.Kopeynik,MagicResist,12
+FantasyHeroes.Basic.Helmet.LandsknechtHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.LeatherCap,MagicResist,12
+FantasyHeroes.Basic.Helmet.LeatherHelm,MagicResist,12
+Extensions.Epic.Helmet.Luchnik,MagicResist,12
+Extensions.Epic.Helmet.LushKnightHelmet,MagicResist,12
+Extensions.Epic.Helmet.MagnetismHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.ManticoreHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.MarauderHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.MarkedScoutOrcHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.MarketCommanderOrcHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.MasterDodgeHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.MedievalBartender [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.MedievalCook [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.MercenaryHelm1 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.MercenaryHelm2 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.MilitiamanHelmet1 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.MilitiamanHelmet2 [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.MinerHelmet,MagicResist,12
+FantasyHeroes.Thrones.Helmet.MountainHelm [Paint],MagicResist,12
+UndeadHeroes.Mummies.Helmet.MummyHat1,MagicResist,12
+UndeadHeroes.Mummies.Helmet.MummyHat2,MagicResist,12
+UndeadHeroes.Mummies.Helmet.MummyHat3,MagicResist,12
+UndeadHeroes.Mummies.Helmet.MummyHat4,MagicResist,12
+FantasyHeroes.Basic.Helmet.NativeVillagerHeadband01 [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.NativeVillagerHeadband02 [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.NecromancerHood,MagicResist,30
+Extensions.Epic.Helmet.NemeanHelmet,MagicResist,12
+FantasyHeroes.Samurai.Helmet.NinjaHelm1 [Paint],MagicResist,12
+FantasyHeroes.Samurai.Helmet.NinjaHelm2 [Paint],MagicResist,12
+FantasyHeroes.Samurai.Helmet.NinjaHelm3 [Paint],MagicResist,12
+Extensions.Epic.Helmet.NobleKingCrown [FullHair],MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.NordicHelm,MagicResist,12
+Extensions.Epic.Helmet.NorthmanHelmet,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.NosrossArcherHelm,MagicResist,12
+Extensions.Epic.Helmet.NunVeil,MagicResist,30
+Extensions.Epic.Helmet.NunVeilTypeB,MagicResist,30
+Common.Chrismas.Helmet.NutcrackerHat,MagicResist,30
+UndeadHeroes.Zombies.Helmet.OldCap,MagicResist,12
+UndeadHeroes.Skeletons.Helmet.OldGladiatorHelm,MagicResist,12
+UndeadHeroes.Skeletons.Helmet.OldHornHelm,MagicResist,12
+UndeadHeroes.Skeletons.Helmet.OldLeatherHelm,MagicResist,12
+UndeadHeroes.Skeletons.Helmet.OldPirateHat,MagicResist,30
+Extensions.Epic.Helmet.OminousHelmet,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.OzeriasHood,MagicResist,30
+FantasyHeroes.Basic.Helmet.PaladinHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.PathfinderHat [Paint],MagicResist,30
+FantasyHeroes.Basic.Helmet.PathfinderHood,MagicResist,30
+FantasyHeroes.Basic.Helmet.PeasantCap,MagicResist,12
+Extensions.Epic.Helmet.PersianArcherHelmet,MagicResist,12
+Extensions.Epic.Helmet.PersianDuelistHelmet,MagicResist,12
+Extensions.Epic.Helmet.PersianLancerHelmet,MagicResist,12
+Extensions.Epic.Helmet.PersianWarriorHelmet,MagicResist,12
+Extensions.Epic.Helmet.PhobosHelmet,MagicResist,12
+Extensions.Epic.Helmet.PorcelainMask [FullHair],MagicResist,12
+Extensions.Epic.Helmet.PrincessTiara [FullHair],MagicResist,30
+Common.Halloween.Helmet.PumpkinHead,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.QueenCrown,MagicResist,30
+FantasyHeroes.Basic.Helmet.RangerHat [Paint],MagicResist,30
+Extensions.Epic.Helmet.Ratnik,MagicResist,12
+UndeadHeroes.Skeletons.Helmet.RedBandana [FullHair],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.RedKittyHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.RedLunarHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.RenovatedHelm,MagicResist,12
+Extensions.Style.Helmet.Ribbon1 [FullHair],MagicResist,12
+Extensions.Style.Helmet.Ribbon1 [Paint] [FullHair],MagicResist,12
+Extensions.Style.Helmet.Ribbon2 [FullHair],MagicResist,12
+Extensions.Style.Helmet.Ribbon2 [Paint] [FullHair],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.RobberCap,MagicResist,12
+Extensions.Style.Helmet.Rocky [Paint] [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.RoyalArcherHat,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.RoyalHeaddress,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.SacredWolfyHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.SaintPatrickHat,MagicResist,30
+FantasyHeroes.Samurai.Helmet.SamuraiElderHelm,MagicResist,12
+FantasyHeroes.Samurai.Helmet.SamuraiHelm1,MagicResist,12
+FantasyHeroes.Samurai.Helmet.SamuraiHelm2,MagicResist,12
+FantasyHeroes.Samurai.Helmet.SamuraiHelm3,MagicResist,12
+FantasyHeroes.SandLords.Helmet.SandElderTurban,MagicResist,30
+FantasyHeroes.SandLords.Helmet.SandHealerHood,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.SandHijab,MagicResist,12
+FantasyHeroes.SandLords.Helmet.SandShooterTurban,MagicResist,30
+FantasyHeroes.SandLords.Helmet.SandWarriorHelm1,MagicResist,12
+FantasyHeroes.SandLords.Helmet.SandWarriorHelm2,MagicResist,12
+FantasyHeroes.Christmas.Helmet.SantaHat,MagicResist,30
+UndeadHeroes.Christmas.Helmet.SantaHat,MagicResist,30
+FantasyHeroes.Christmas.Helmet.SantaHelperHat1,MagicResist,12
+UndeadHeroes.Christmas.Helmet.SantaHelperHat1,MagicResist,12
+FantasyHeroes.Christmas.Helmet.SantaHelperHat2,MagicResist,12
+UndeadHeroes.Christmas.Helmet.SantaHelperHat2,MagicResist,12
+FantasyHeroes.Christmas.Helmet.SantaHelperHat3,MagicResist,12
+UndeadHeroes.Christmas.Helmet.SantaHelperHat3,MagicResist,12
+Extensions.Epic.Helmet.ScintillateCrown,MagicResist,30
+FantasyHeroes.Basic.Helmet.ScoutHelm,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.ScoutOrcHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.ShamanHelm,MagicResist,30
+FantasyHeroes.SwampLords.Helmet.ShamanMask [FullHair],MagicResist,30
+FantasyHeroes.SwampLords.Helmet.ShamanMask2 [FullHair],MagicResist,30
+FantasyHeroes.SwampLords.Helmet.ShamanMask3 [FullHair],MagicResist,30
+FantasyHeroes.Knights.Helmet.SharpHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.SiegeArcherHelm [Paint],MagicResist,12
+Extensions.Epic.Helmet.SilkKingGear [FullHair],MagicResist,12
+UndeadHeroes.Skeletons.Helmet.SkeletonBrains [FullHair],MagicResist,12
+UndeadHeroes.Skeletons.Helmet.SkeletonKing [FullHair],MagicResist,12
+Extensions.Style.Helmet.SkullPin [Paint] [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.SlaveHeadband [FullHair],MagicResist,12
+Common.Chrismas.Helmet.SnowMaiden [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.SnperHood,MagicResist,30
+Extensions.Epic.Helmet.SoulHeavyHelm,MagicResist,12
+Extensions.Epic.Helmet.SpartanHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.SpearmanHelm1,MagicResist,12
+FantasyHeroes.Basic.Helmet.SpearmanHelm2,MagicResist,12
+FantasyHeroes.Basic.Helmet.SteelHelm [Paint],MagicResist,12
+FantasyHeroes.Basic.Helmet.SteelPotHelm,MagicResist,12
+UndeadHeroes.Zombies.Helmet.Stiches [FullHair],MagicResist,12
+Extensions.Epic.Helmet.StormcallerHelmet [FullHair],MagicResist,12
+FantasyHeroes.Basic.Helmet.StrawHat,MagicResist,30
+Extensions.Epic.Helmet.Strelets,MagicResist,12
+Extensions.Epic.Helmet.SunlightHelmet,MagicResist,12
+FantasyHeroes.SwampLords.Helmet.SwampLordMask1 [FullHair],MagicResist,12
+FantasyHeroes.SwampLords.Helmet.SwampLordMask2  [FullHair],MagicResist,12
+Extensions.Epic.Helmet.SweetnessRibbon [FullHair],MagicResist,12
+Extensions.Epic.Helmet.TechnomancerHelmet,MagicResist,12
+Extensions.Epic.Helmet.TennoCrown [FullHair],MagicResist,30
+Extensions.Epic.Helmet.TerraHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.ThiefHelm [Paint],MagicResist,12
+Extensions.Epic.Helmet.ThunderguardHelmet,MagicResist,12
+Extensions.Epic.Helmet.UncleSamHat [FullHair],MagicResist,30
+Extensions.Epic.Helmet.ViciousHelmet,MagicResist,12
+FantasyHeroes.Vikings.Helmet.VikingIronHelm1,MagicResist,12
+FantasyHeroes.Vikings.Helmet.VikingIronHelm2,MagicResist,12
+FantasyHeroes.Vikings.Helmet.VikingIronHelm3,MagicResist,12
+FantasyHeroes.Vikings.Helmet.VikingLeatherHelm,MagicResist,12
+Extensions.Epic.Helmet.VillainCrown [FullHair],MagicResist,30
+FantasyHeroes.Basic.Helmet.VisorKnightHelm [Paint],MagicResist,12
+Extensions.Epic.Helmet.Vityaz,MagicResist,12
+Extensions.Epic.Helmet.Voivode,MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm,MagicResist,12
+FantasyHeroes.Basic.Helmet.WarlockHood,MagicResist,30
+FantasyHeroes.Knights.Helmet.WarriorHelm [Paint],MagicResist,12
+Extensions.AbandonedWorkshop.Helmet.WarriorOrcHelm,MagicResist,12
+Extensions.Epic.Helmet.WaterElementalHelmet,MagicResist,12
+FantasyHeroes.Basic.Helmet.WaterWizardHelm,MagicResist,30
+Extensions.AbandonedWorkshop.Helmet.WhiteKittyHood,MagicResist,30
+Common.Halloween.Helmet.WitchHat,MagicResist,30
+FantasyHeroes.Basic.Helmet.WitchHat [Paint],MagicResist,30
+FantasyHeroes.Basic.Helmet.WitchHunterHat [Paint],MagicResist,30
