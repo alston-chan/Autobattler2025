@@ -71,6 +71,26 @@ public static class PlayChecks
         {
             bank.clips = hadClips;   // the library is a real asset; leave it exactly as found
         }
+
+        // And the other route, which is the one every authored clip actually uses: a spell named in
+        // the library is heard when it is cast. This one needs no seeding — it asserts against the
+        // real wiring, so it fails if a clip is unassigned or the row is pointed at the wrong spell.
+        var sword = UnityEditor.AssetDatabase.LoadAssetAtPath<Spell>("Assets/Data/Spells/DefaultMeleeAttack.asset");
+        Assert.That(sword, Is.Not.Null, "DefaultMeleeAttack has moved — this check is out of date");
+
+        var swordBank = SfxLibrary.Active.For(sword);
+        Assert.That(swordBank, Is.Not.Null, "the library has no row for the sword attack");
+        Assert.That(swordBank.HasClips, Is.True, "the sword attack's row has no clip in it");
+
+        var swung = PlayHarness.Living()[0];
+        CombatEvents.RaiseCast(swung, sword);
+
+        bool heard = false;
+        foreach (var voice in voices)
+            foreach (var authored in swordBank.clips)
+                if (voice.clip == authored) heard = true;
+
+        Assert.That(heard, Is.True, "a sword attack was cast and none of its clips reached a voice");
     }
 
     /// <summary>

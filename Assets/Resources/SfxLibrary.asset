@@ -121,95 +121,97 @@ MonoBehaviour:
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 6dd4dcd99579f9c4f80808f8bb2e8fb5, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 79d6947bc7385d8489850f11e9fff27d, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 8d963f4e01a12f048a5cfe7ddac31177, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 4476c95eac7845f4f9333a897b0063b9, type: 2}
     bank:
-      clips: []
+      clips:
+      - {fileID: 8300000, guid: 35608116763f5934ba00782c8ff57598, type: 3}
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 6bbd9c7010b2c5d4eb9400425315b016, type: 2}
     bank:
-      clips: []
+      clips:
+      - {fileID: 8300000, guid: 408be1c7c79ddca4799e9eace094a485, type: 3}
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 5bb0c2583fe470b4ea3f41fb5707416a, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 65d4007698ad5954cb063d3f498b821d, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 05975d71ec32fe64a8721a60d5fd72f2, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 965718666e13b3b4384d95a6b8018fbc, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 359947d3b46d30f4fb15ab5a327e465d, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 9b0600dc7bd05c14bb0fc5e1b2842e92, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: 380c94e0195a70a40968446fcb2858b8, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
   - spell: {fileID: 11400000, guid: c1e74f579fa1c4b488e67ccfdf196b9b, type: 2}
     bank:
       clips: []
       volume: 0.85
       pitchJitter: 0.04
       minGapSeconds: 0.05
-    onCast: 1
+  - spell: {fileID: 11400000, guid: f20390ec28a913a42888ffc6f2c254f8, type: 2}
+    bank:
+      clips:
+      - {fileID: 8300000, guid: 82c77e8ba18e7754dad5d2cf2dd668a8, type: 3}
+      volume: 0.85
+      pitchJitter: 0.06
+      minGapSeconds: 0.05
+  - spell: {fileID: 11400000, guid: 648c62a3236971a489a3e524851fc5f4, type: 2}
+    bank:
+      clips:
+      - {fileID: 8300000, guid: cc30162c2752b6f4589c7c4a736953f9, type: 3}
+      volume: 0.85
+      pitchJitter: 0.06
+      minGapSeconds: 0.05

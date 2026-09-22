@@ -14,15 +14,20 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/Sfx Library", fileName = "SfxLibrary")]
 public class SfxLibrary : ScriptableObject
 {
-    /// <summary>A bank tied to one spell — the verbs, and any weapon attack worth its own sound.</summary>
+    /// <summary>
+    /// A bank tied to one spell — the verbs, and any weapon attack worth its own sound.
+    ///
+    /// It plays when the cast <i>begins</i>, which is what makes this the right home for a swing:
+    /// a sword and a dagger are different spells (DefaultMeleeAttack, DefaultDualWieldAttack), so
+    /// naming the spell is already naming the weapon, and no separate swing layer is needed to tell
+    /// them apart. A sound that should instead play when the spell <i>lands</i> has nowhere to go
+    /// yet — <c>CombatEvents.Hit</c> does not carry the spell that caused it.
+    /// </summary>
     [Serializable]
     public class SpellSound
     {
         public Spell spell;
         public SfxBank bank = new SfxBank();
-        [Tooltip("Played when the cast begins rather than when it lands. Off for a sound that IS " +
-                 "the landing (a nova's woomph), on for a wind-up (a bow being drawn).")]
-        public bool onCast = true;
     }
 
     private const string ResourcePath = "SfxLibrary";
