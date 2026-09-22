@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bbac4b2c7e44594b23067f04d5c5597, type: 3}
   m_Name: Playtest
   m_EditorClassIdentifier: Assembly-CSharp::Playtest
-  active: {fileID: 0}
+  active: {fileID: 11400000, guid: 64bfc60dd3bc0804ea2b37db5e1f39bb, type: 2}

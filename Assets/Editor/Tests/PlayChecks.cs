@@ -24,12 +24,107 @@ public static class PlayChecks
 {
     public static List<PlayCheck> All() => new List<PlayCheck>
     {
+        // First, because it is the only check that needs an actual bell rather than a fight in
+        // progress: the others tolerate joining one, and this one is about where units START.
+        new PlayCheck("nobody is being shoved by the wall at the bell", NobodyStartsInsideTheSoftWall),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
         new PlayCheck("nobody fights a body they cannot reach", NobodyWalksPastAFight),
         new PlayCheck("a blow that lands reaches a voice", AHitIsHeard),
+        new PlayCheck("a bar is the size of a body, whatever the art", ABarIsTheSizeOfABody),
     };
+
+    /// <summary>
+    /// Where units stand when the bell rings, against the soft wall that pushes them in.
+    ///
+    /// The soft wall moves a body by writing its position (CombatPhysics), and the walk animation is
+    /// driven by what the AI <i>decided</i> to do. A unit that has decided to stand still while the
+    /// wall slides it is therefore an idle sprite gliding across the ground — which reads as a
+    /// pathing bug and was reported as one. The fix is for nobody to be inside the band at the bell,
+    /// so this asserts the formation and the arena agree about where the field is.
+    /// </summary>
+    private static IEnumerator NobodyStartsInsideTheSoftWall()
+    {
+        yield return PlayHarness.Until(() => GameManager.Instance != null, "the game to wake up");
+
+        // A real bell, not "a fight is happening". Mid-fight a unit near the edge has usually been
+        // kited or thrown there, which is allowed; this check is about where units are SEATED, and
+        // sampling a fight in progress made it fail at random on units that had every right to be
+        // in the corner. So watch for the transition itself and sample on the frame it happens.
+        bool rang = false;
+        Action<GameState, GameState> watch = (from, to) => { if (to == GameState.Combat) rang = true; };
+        var states = GameManager.Instance.StateMachine;
+        states.OnStateChanged += watch;
+
+        var telemetry = UnityEngine.Object.FindObjectOfType<CombatTelemetry>();
+        if (telemetry != null) telemetry.autoAdvance = true;
+
+        try { yield return PlayHarness.Until(() => rang, "a fight to begin", 120f); }
+        finally
+        {
+            states.OnStateChanged -= watch;
+            telemetry = UnityEngine.Object.FindObjectOfType<CombatTelemetry>();
+            if (telemetry != null) telemetry.autoAdvance = false;
+        }
+
+        var physics = CombatPhysics.Active;
+        if (physics == null || !physics.enableBodies || physics.softWall <= 0f || physics.softWallPush <= 0f)
+            yield break;     // the wall is off; there is nothing to be shoved by
+        if (ArenaBounds.Instance == null) yield break;
+
+        // The symptom, not the rule. Asking for zero wall pressure asks the impossible: the
+        // formation is wider than the arena's safe area, so the bodies at the edge are pushed back
+        // toward the band by their own neighbours and settle just inside it. What the player sees is
+        // the SPEED of the resulting slide, so that is what this measures. The reported bug ran at
+        // about 1.0 units/sec; the equilibrium after the fix is under 0.1.
+        Entity worst = null;
+        float fastestDrift = 0f;
+        foreach (var unit in PlayHarness.Living())
+        {
+            float room = ArenaBounds.Instance.EdgeRoom(unit.transform.position);
+            if (room >= physics.softWall) continue;
+            float drift = (1f - room / physics.softWall) * physics.softWallPush;
+            if (drift > fastestDrift) { fastestDrift = drift; worst = unit; }
+        }
+
+        Assert.That(PlayHarness.Living(), Is.Not.Empty, "no living units at the bell");
+        Assert.That(fastestDrift, Is.LessThan(0.25f),
+                    (worst != null ? DisplayNames.Unit(worst) : "someone") + " opens the fight sliding " +
+                    fastestDrift.ToString("0.00") + " units/sec toward the centre with no walk " +
+                    "animation, because the soft wall is pushing a unit that has decided to stand still");
+    }
+
+    /// <summary>
+    /// A bar belongs to a body, not to a piece of art. UnitBarsManager copies the entity's localScale
+    /// onto the bar, and a decoy scales its ROOT to make an arbitrary sprite stand a body high — up
+    /// to six times — so a decoy made from a small sprite wore a health bar six times everyone
+    /// else's. Reported as "large health bars spawning".
+    /// </summary>
+    private static IEnumerator ABarIsTheSizeOfABody()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var owner = PlayHarness.Living()[0];
+        float bodyBar = owner.healthBar != null ? Mathf.Abs(owner.healthBar.transform.lossyScale.x) : 0f;
+        Assert.That(bodyBar, Is.GreaterThan(0f), "the unit to compare against has no bar");
+
+        // A deliberately tiny sprite: this is exactly the input that made the root scale up.
+        var texture = new Texture2D(4, 4);
+        var tiny = Sprite.Create(texture, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 100f);
+
+        var decoy = Decoy.Spawn(owner, owner.transform.position, 50f, 4f, null, tiny, "BarSizeCheckDecoy");
+        Assert.That(decoy, Is.Not.Null, "no decoy was made");
+
+        yield return null;   // a frame, so the bars manager has provisioned it
+
+        Assert.That(PlayHarness.WhyNoBar(decoy), Is.Null, "the decoy has no visible bar to measure");
+        float decoyBar = Mathf.Abs(decoy.healthBar.transform.lossyScale.x);
+
+        Assert.That(decoyBar, Is.LessThan(bodyBar * 2f),
+                    "a decoy's bar is " + (decoyBar / bodyBar).ToString("0.0") +
+                    "x a real unit's — its art size has leaked into the bar");
+    }
 
     /// <summary>
     /// The audio path, end to end: the bus announces a hit, <see cref="CombatAudio"/> is listening,

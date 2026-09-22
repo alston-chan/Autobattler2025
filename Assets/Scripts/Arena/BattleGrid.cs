@@ -45,9 +45,48 @@ public class BattleGrid : MonoBehaviour
         Vector2 origin = allySide ? allyFrontBottom : enemyFrontBottom;
         float dir = allySide ? -1f : 1f;   // allies stack backwards to the left, enemies to the right
 
-        return new Vector3(origin.x + dir * column * cellSize.x,
-                           origin.y + row * cellSize.y,
-                           0f);
+        var cell = new Vector3(origin.x + dir * column * cellSize.x,
+                               origin.y + row * cellSize.y,
+                               0f);
+
+        return OffTheWall(cell);
+    }
+
+    /// <summary>
+    /// The cell, pulled in far enough that the soft wall will leave a unit standing there alone.
+    ///
+    /// The grid is authored in its own coordinates and the arena is authored separately, so nothing
+    /// made them agree: a back-rank cell could sit inside the band that <see cref="CombatPhysics"/>
+    /// pushes inward from. The unit was then slid toward the centre at the bell with no walk
+    /// animation, because the animation follows the AI's intent and the shove is not the AI's doing.
+    /// It read as broken pathing and was reported as such.
+    ///
+    /// Doing it here rather than at each caller is deliberate — placement, the encounter spawner,
+    /// the board snapshot's distances and the formation preview all come through this one function,
+    /// so they cannot disagree about where a cell is.
+    ///
+    /// It is not sufficient on its own, which is why it is public: the arena is resized per map by
+    /// <see cref="BackgroundCycler"/>, so a cell that was clear when the formation was set can be
+    /// inside the band by the time the fight starts. The bell applies this again, and that is the
+    /// one that actually holds.
+    /// </summary>
+    /// A unit will not sit exactly where this puts it: bodies push each other apart every frame, so
+    /// the outermost of a packed formation is shoved back toward the band by its neighbours and
+    /// settles a little inside it. Measured at the bell — seated on the line, units come to rest at
+    /// about 1.14 against a 1.20 band, which is a residual push of under a tenth of a unit per
+    /// second. Granting extra margin does not move that: the formation is wider than the arena's
+    /// safe area, so a bigger margin only stacks everyone on the boundary for the scrum to expand
+    /// again. The equilibrium is the system working; what mattered was the 0.41 that preceded it.
+    /// </summary>
+    public static Vector3 OffTheWall(Vector3 cell)
+    {
+        var arena = ArenaBounds.Instance;
+        if (arena == null) return cell;
+
+        var physics = CombatPhysics.Active;
+        if (physics == null || !physics.enableBodies || physics.softWallPush <= 0f) return cell;
+
+        return arena.ClampInside(cell, physics.softWall);
     }
 
     /// <summary>

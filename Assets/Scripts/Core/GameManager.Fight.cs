@@ -128,9 +128,20 @@ public partial class GameManager
         {
             if (all[i] == null) continue;
             all[i].SetFighting(fighting);
-            // At the bell everyone looks across the centre line, whatever the setup screen left them
-            // looking at; CombatAI turns them onto their targets from the first tick after this.
-            if (fighting) all[i].SetFacing(all[i].isTeam);
+            if (fighting)
+            {
+                // At the bell everyone looks across the centre line, whatever the setup screen left
+                // them looking at; CombatAI turns them onto their targets from the first tick after.
+                all[i].SetFacing(all[i].isTeam);
+
+                // And everyone stands somewhere the soft wall will leave them alone. It slides a
+                // body by writing its position, while the walk animation follows what the AI
+                // DECIDED to do — so a unit seated inside the band opens the fight gliding inward
+                // in its idle pose, which reads as broken pathing. BattleGrid keeps its cells clear
+                // of the band already; this is the last word, because the arena is resized per map
+                // and can shrink under a formation that was legal when it was set.
+                all[i].transform.position = BattleGrid.OffTheWall(all[i].transform.position);
+            }
         }
         // The fallen have left the registry (they are deactivated), but they are still the company:
         // a hero that died mid-fight must hear the fight end too, or it carries the fight's states

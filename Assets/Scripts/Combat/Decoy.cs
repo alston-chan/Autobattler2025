@@ -35,16 +35,34 @@ public static class Decoy
         {
             go = new GameObject(name);
             go.transform.position = at;
-            var renderer = go.AddComponent<SpriteRenderer>();
+
+            // The art hangs on a CHILD, and the fit scale goes there. It used to scale this object,
+            // and a root transform is not private: UnitBarsManager sizes a unit's health bar from
+            // its localScale, so a decoy built from a small sprite — scaled up to six — wore a bar
+            // twelve times a real unit's. Whatever an arbitrary sprite has to be stretched by to
+            // stand a body high is a fact about the picture, not about the body.
+            // The root says how big the BODY is — a body's worth, taken from the owner, so a bar
+            // sized from it matches the bars around it.
+            float body = Mathf.Abs(owner.transform.localScale.y);
+            if (body < 0.01f) body = 1f;
+            go.transform.localScale = Vector3.one * body;
+
+            var art = new GameObject("Art");
+            art.transform.SetParent(go.transform, false);
+            var renderer = art.AddComponent<SpriteRenderer>();
             renderer.sprite = sprite;
             renderer.sortingOrder = 50;
+
+            // A supply icon is small; stand it up to roughly a body's height. Divided by the root's
+            // scale, so the picture ends up exactly the size it always was on screen while the root
+            // goes on telling the truth about the body.
+            float fit = 1f;
             if (sprite != null)
             {
-                // A supply icon is small; stand it up to roughly a body's height.
                 float h = sprite.bounds.size.y;
-                float fit = h > 0.01f ? Mathf.Clamp(1.6f / h, 0.3f, 6f) : 1f;
-                go.transform.localScale = Vector3.one * fit;
+                if (h > 0.01f) fit = Mathf.Clamp(1.6f / h, 0.3f, 6f);
             }
+            art.transform.localScale = Vector3.one * (fit / body);
         }
 
         // Configured before it wakes, like an encounter's spawns are (EncounterSpawner). AddComponent
