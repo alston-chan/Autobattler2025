@@ -13,11 +13,7 @@ MonoBehaviour:
   m_Name: RepulsionNova
   m_EditorClassIdentifier: 
   spellName: Repulsion Nova
-  description: Everything within 3 units of you takes 0.6x weapon damage and is flung
-    outward at force 12. Bodies flung into other bodies are hurt again by the collision
-    (1% of max health per unit of closing speed above 3, up to 25%) and staggered;
-    bodies flung into the wall slam and bounce. Clump them first and the second hit
-    lands on all of them.
+  description: 'Everything within 3 units of you takes 0.6x weapon damage and is flung outward at force 12. A body flung into another slams it for 8% of its max health and staggers it; a body flung into the wall loses 12% and bounces. Clump them first and the second hit lands on all of them.'
   cooldown: 0
   range: 3
   alwaysOn: 0

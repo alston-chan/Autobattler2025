@@ -60,7 +60,17 @@ public class Knockback : MonoBehaviour
     public void Apply(Vector3 direction, float force) => Apply(direction, force, null, false);
 
     /// <summary>Throw this body. <paramref name="source"/> is credited for what it hits.</summary>
-    public void Apply(Vector3 direction, float force, Entity source, bool charging = false)
+    /// <summary>The slam multiplier of the throw this body is on. 1 for an ordinary throw; a Cannonball's is more.</summary>
+    public float ImpactMultiplier { get; private set; } = 1f;
+
+    /// <summary>A force after a unit's knockback resistance, 0..1. Pure, so the item line can be tested as arithmetic.</summary>
+    public static float Resisted(float force, float resistance) => force * (1f - Mathf.Clamp01(resistance));
+
+    private float Resistance =>
+        _entity != null && _entity.Stats != null && _entity.Stats.KnockbackResistance != null
+            ? _entity.Stats.KnockbackResistance.Value : 0f;
+
+    public void Apply(Vector3 direction, float force, Entity source, bool charging = false, float impactMultiplier = 1f)
     {
         if (_immunityTimer > 0f) return;
 
@@ -70,23 +80,25 @@ public class Knockback : MonoBehaviour
         // target that has stopped working with nothing on screen to explain it.
         if (force <= 0f) return;
 
-        // Mass: the same throw moves a robed mage further than a shield knight. Division, so the
-        // median unit at mass 1 flies exactly as far as it did before mass existed and every force
-        // number already tuned stays tuned (BodyMass).
-        float mass = _entity != null ? _entity.Mass : 1f;
-        _velocity += direction.normalized * (force / Mathf.Max(0.01f, mass));
+        // Everyone is thrown the same, except by what they wear: knockback resistance is a rare
+        // item line, and it is the only thing about a unit that changes a throw. There used to be
+        // mass, summed from armour weight, and it was a stat the player had to reason about on
+        // every reward screen for an effect they could barely see.
+        _velocity += direction.normalized * Resisted(force, Resistance);
         Launcher = source;
         Charging = charging;
+        ImpactMultiplier = Mathf.Max(0f, impactMultiplier);
         if (!charging) _stunTimer = Mathf.Max(_stunTimer, stunTime);
         // _immunityTimer = immunityTime;  // Uncomment to enable immunity window
     }
 
     /// <summary>Set the body flying at this velocity, thrown by <paramref name="source"/> — what a collision does to the struck body.</summary>
-    public void Launch(Vector3 velocity, Entity source)
+    public void Launch(Vector3 velocity, Entity source, float impactMultiplier = 1f)
     {
-        _velocity = velocity;
+        _velocity = velocity * (1f - Mathf.Clamp01(Resistance));
         Launcher = source;
         Charging = false;
+        ImpactMultiplier = Mathf.Max(0f, impactMultiplier);
     }
 
     /// <summary>Change the velocity without changing who threw it — a bounce, a slide, momentum passed on.</summary>
@@ -125,7 +137,7 @@ public class Knockback : MonoBehaviour
             // its own, and a unit that may not walk until it does stands idle for most of a second
             // after the throw has visibly ended.
             float rest = s != null ? s.restSpeed : 0.6f;
-            if (_velocity.magnitude <= Mathf.Max(0.01f, rest)) { _velocity = Vector3.zero; Launcher = null; Charging = false; }
+            if (_velocity.magnitude <= Mathf.Max(0.01f, rest)) { _velocity = Vector3.zero; Launcher = null; Charging = false; ImpactMultiplier = 1f; }
         }
 
         // A thrown body leans: the top lags the push, so a slide reads as being shoved, not gliding

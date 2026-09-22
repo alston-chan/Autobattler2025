@@ -48,12 +48,13 @@ public class DamageNumber : MonoBehaviour
         _velocity = new Vector3(Random.Range(-s.driftX, s.driftX), s.riseSpeed, 0f);
 
         bool crit = info.isCrit;
-        _color = crit ? s.critColor : s.normalColor;
+        bool slam = info.kind == DamageKind.Slam;
+        _color = slam ? s.slamColor : crit ? s.critColor : s.normalColor;
         _popScale = crit ? Mathf.Max(1f, s.critPopScale) : 1f;
 
         int shown = Mathf.Max(1, Mathf.RoundToInt(info.amount));
-        _tmp.text = crit ? shown + s.critSuffix : shown.ToString();
-        _tmp.fontSize = crit ? s.fontSize * s.critSizeMultiplier : s.fontSize;
+        _tmp.text = slam ? s.slamPrefix + shown : crit ? shown + s.critSuffix : shown.ToString();
+        _tmp.fontSize = crit ? s.fontSize * s.critSizeMultiplier : slam ? s.fontSize * s.slamSizeMultiplier : s.fontSize;
         _tmp.color = _color;
 
         // Dark outline for readability on any terrain. Set through TMP's own properties rather than

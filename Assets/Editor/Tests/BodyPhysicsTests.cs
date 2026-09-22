@@ -55,11 +55,13 @@ public class BodyPhysicsTests
     }
 
     [Test]
-    public void ImpactPercentIsNothingUnderTheThresholdAndCappedAbove()
+    public void ASlamIsFlatNothingUnderTheThresholdAndCappedAfterTheMultiplier()
     {
-        Assert.AreEqual(0f, BodyMath.ImpactPercent(2f, 3f, 0.02f, 0.4f));
-        Assert.AreEqual(0.1f, BodyMath.ImpactPercent(8f, 3f, 0.02f, 0.4f), 1e-5f);
-        Assert.AreEqual(0.4f, BodyMath.ImpactPercent(100f, 3f, 0.02f, 0.4f), 1e-5f);
+        Assert.AreEqual(0f, BodyMath.SlamPercent(2f, 3f, 0.08f, 1f, 0.25f), "a shove");
+        Assert.AreEqual(0.08f, BodyMath.SlamPercent(4f, 3f, 0.08f, 1f, 0.25f), 1e-5f, "just over: the full number");
+        Assert.AreEqual(0.08f, BodyMath.SlamPercent(40f, 3f, 0.08f, 1f, 0.25f), 1e-5f, "far over: the same number — flat, not by speed");
+        Assert.AreEqual(0.16f, BodyMath.SlamPercent(8f, 3f, 0.08f, 2f, 0.25f), 1e-5f, "a Cannonball doubles it");
+        Assert.AreEqual(0.25f, BodyMath.SlamPercent(8f, 3f, 0.08f, 9f, 0.25f), 1e-5f, "and the cap holds");
     }
 
     [Test]

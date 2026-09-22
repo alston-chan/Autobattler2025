@@ -43,6 +43,13 @@ public class DamageNumbersManager : MonoBehaviour
         [Tooltip("Appended to crit numbers.")]
         public string critSuffix = "!";
 
+        [Header("Slam")]
+        [Tooltip("A thrown body hitting a wall or another body. Its own colour and word, so the player can " +
+                 "see the moment physics hurt someone rather than wondering where the damage came from.")]
+        public Color slamColor = new Color(1f, 0.5f, 0.25f, 1f);
+        public string slamPrefix = "SLAM ";
+        public float slamSizeMultiplier = 1.25f;
+
         [Header("Outline")]
         [Tooltip("Dark edge so a number reads on any terrain — the battlefield is sage green — and so " +
                  "the face colour is later free to encode damage type.")]

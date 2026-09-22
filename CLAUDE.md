@@ -290,6 +290,14 @@ Writing them:
   as the file, because provenance cannot be reconstructed afterwards and a clip nobody can place has
   to be cut before release. Generated clips record the prompt that made them; without it, "one more
   like that" is a re-roll from scratch.
+- **Physics damage is flat per slam, and knockback resistance is `PropertyId.Resistance`.** A thrown
+  unit loses `wallSlamPercent` into the wall and takes `bodySlamPercent` off a unit it hits; below
+  `impactSpeed` nothing happens; a throw's `impactMultiplier` is the only thing that changes it, and
+  `CombatPhysics.DescribeThrow` prints the rule on every verb from the live numbers. There is no mass
+  any more (it was a stat the player had to weigh on every reward screen for an effect they could
+  barely see). Resistance rides on HeroEditor's unused `Resistance` property, as a percent in
+  `Properties.csv`, and is meant to be rare. Slams show as `SLAM n` in their own colour and have a
+  `slam` column in the telemetry, so "where did that damage come from" has an answer on screen.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this

@@ -155,7 +155,7 @@ public class Health : MonoBehaviour
     /// attacker (burn, decay) can leave them defaulted.
     /// </summary>
     /// <param name="quiet">No flash, squash or shake: for damage that ticks (a pool, a blade's pass), which would otherwise hold the body white.</param>
-    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false)
+    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false, DamageKind kind = DamageKind.Hit)
     {
         if (IsDead) return;
 
@@ -201,7 +201,7 @@ public class Health : MonoBehaviour
         // Mana charges from participation — taking hits is the secondary source.
         if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
 
-        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit, incoming - amount));
+        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit, incoming - amount, kind));
         CombatEvents.RaiseHit(new HitInfo(source, _entity, amount, isCrit, currentHealth <= 0f));
 
         if (!IsDead && currentHealth <= 0)

@@ -565,9 +565,10 @@ public class UnitInspector : MonoBehaviour
         Line(keys, values, "Move Speed", stats.Speed.Value.ToString("0.##"));
         Line(keys, values, "Blocking", stats.Blocking.Value.ToString("0.##"));
 
-        // Not a number: 0.86 against 1.35 tells a player nothing, "Light" against "Heavy" tells
-        // them why the knight barely moved when the Cannonball landed on it (BodyMass).
-        Line(keys, values, "Weight", _selected.MassWord);
+        // Only when something grants it: a line that reads 0% on every unit is noise, and the whole
+        // point of the item line is that it is rare.
+        float resist = stats.KnockbackResistance != null ? stats.KnockbackResistance.Value : 0f;
+        if (resist > 0f) Line(keys, values, "Knockback resist", (resist * 100f).ToString("0") + "%");
 
         _statKeys.text = keys.ToString();
         _statValues.text = values.ToString();

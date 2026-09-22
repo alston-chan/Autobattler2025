@@ -155,7 +155,7 @@ public class CombatAudio : MonoBehaviour
         float loudness = Loudness(impact.speed, loudImpactSpeed);
 
         // struck == null is the wall (CombatEvents).
-        Play(impact.struck == null ? Lib.wallSlam : BodyBank(impact.mover), where, loudness);
+        Play(impact.struck == null ? Lib.wallSlam : Lib.bodyImpact, where, loudness);
     }
 
     private void OnShieldEnded(Entity entity, bool broken)
@@ -225,22 +225,6 @@ public class CombatAudio : MonoBehaviour
     // The wind-up has no bank of its own yet: a swing that is not separately authored borrows the
     // hit, quietly, which is better than nothing and obviously temporary once clips exist.
     private SfxBank SwingBank(HitFlavour flavour) => BankFor(flavour);
-
-    /// <summary>
-    /// The three mass words, as three sounds. This is the payoff for mass being authored at all —
-    /// a Heavy unit landing has to sound like more than a Light one, or the stat is only a number
-    /// on a card.
-    /// </summary>
-    private SfxBank BodyBank(Entity mover)
-    {
-        if (mover == null) return Lib.bodyMedium;
-        switch (BodyMass.Word(mover.Mass))
-        {
-            case "Light": return Lib.bodyLight;
-            case "Heavy": return Lib.bodyHeavy;
-            default: return Lib.bodyMedium;
-        }
-    }
 
     private SfxBank DeathBank(Entity victim)
     {

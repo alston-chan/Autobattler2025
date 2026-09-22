@@ -48,20 +48,10 @@ MonoBehaviour:
     volume: 0.9
     pitchJitter: 0.04
     minGapSeconds: 0.08
-  bodyLight:
-    clips: []
-    volume: 0.75
-    pitchJitter: 0.1
-    minGapSeconds: 0.06
-  bodyMedium:
+  bodyImpact:
     clips: []
     volume: 0.8
     pitchJitter: 0.09
-    minGapSeconds: 0.06
-  bodyHeavy:
-    clips: []
-    volume: 0.85
-    pitchJitter: 0.07
     minGapSeconds: 0.06
   wallSlam:
     clips: []

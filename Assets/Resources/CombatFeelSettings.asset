@@ -47,6 +47,9 @@ MonoBehaviour:
     critSizeMultiplier: 1.6
     critPopScale: 1.45
     critSuffix: '!'
+    slamColor: {r: 1, g: 0.5, b: 0.25, a: 1}
+    slamPrefix: 'SLAM '
+    slamSizeMultiplier: 1.25
     outline: 1
     outlineColor: {r: 0, g: 0, b: 0, a: 1}
     outlineWidth: 0.5
@@ -66,13 +69,10 @@ MonoBehaviour:
     softWallPush: 1.5
     restSpeed: 0.6
     steerSpeed: 2
-    bareBodyMass: 0.75
-    minMass: 0.8
-    maxMass: 1.35
     impactSpeed: 3
-    impactPercentPerSpeed: 0.006
-    wallPercentPerSpeed: 0.008
-    maxImpactPercent: 0.15
+    bodySlamPercent: 0.08
+    wallSlamPercent: 0.12
+    maxImpactPercent: 0.25
     momentumTransfer: 0.6
     chargeRetain: 0.7
     bounce: 0.35

@@ -78,11 +78,8 @@ public class SfxLibrary : ScriptableObject
     public SfxBank crit = new SfxBank();
 
     [Header("Bodies — the physics layer")]
-    [Tooltip("A Light unit landing on something. Mass decides which of these three plays, so the " +
-             "player can hear the difference a heavy kit makes before reading it on the card.")]
-    public SfxBank bodyLight = new SfxBank();
-    public SfxBank bodyMedium = new SfxBank();
-    public SfxBank bodyHeavy = new SfxBank();
+    [Tooltip("A thrown body landing on another. One sound: everyone is thrown alike now.")]
+    public SfxBank bodyImpact = new SfxBank();
     [Tooltip("A body thrown into the arena wall.")]
     public SfxBank wallSlam = new SfxBank();
 

@@ -4,10 +4,20 @@ using UnityEngine;
 
 /// <summary>
 /// Bodies. Every living unit in a fight is a circle that cannot share ground with another, and a
-/// unit thrown by a knockback carries momentum: it hits what it is thrown into, both stagger, both
-/// are hurt in proportion to the speed, and part of the throw passes on — so a Cannonball dominoes
-/// through a line and a Repulsion Nova flings bodies into bodies. The arena's edge is a wall: a body
-/// thrown into it slams, bounces off, and is hurt.
+/// unit thrown by a knockback carries momentum.
+///
+/// <b>The rule, in full.</b> A thrown unit that hits the wall loses <c>wallSlamPercent</c> of its
+/// max health. A thrown unit that hits another unit takes <c>bodySlamPercent</c> of THAT unit's
+/// max health off it and shoves it on; both stagger. A collision slower than <c>impactSpeed</c> is
+/// a shove and does nothing. The damage is flat per slam, not scaled by speed, so the rule fits in
+/// a sentence, is printed on every verb that throws (<see cref="DescribeThrow"/>), and reads the
+/// same number every time it happens. A throw's own multiplier — a Cannonball's — is the only thing
+/// that changes it. Nothing about the units does: there is no mass and no weight. The one thing a
+/// unit can carry is knockback resistance, a rare item line, which throws it less far and so less
+/// often into anything.
+///
+/// Routine weapon hits shove at 0.6 to 1.2 and never cross the threshold, so physics damage happens
+/// when a verb fires — and the SLAM number over the victim is how the player sees that it did.
 ///
 /// This is what makes a shove mean something. Before it, a knockback moved one sprite half a unit
 /// and nothing else in the fight noticed; now the fight is a space with pressure in it, and every
@@ -39,15 +49,6 @@ public class CombatPhysics : MonoBehaviour
         public float softWallPush = 1.5f;
         [Tooltip("A throw is over once the body is slower than this (units/s). The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
         public float restSpeed = 0.6f;
-        [Header("Mass")]
-        [Tooltip("A bare body's mass, before anything it wears. Armour adds to this (BodyMass).")]
-        public float bareBodyMass = 0.75f;
-        [Tooltip("The lightest a unit can be. Mass divides knockback force, so the spread is kept narrow " +
-                 "on purpose: a wide one would delete the physics layer from fights between armoured teams.")]
-        public float minMass = 0.8f;
-        [Tooltip("The heaviest a unit can be.")]
-        public float maxMass = 1.35f;
-
         [Tooltip("A body slower than this may steer itself again, while the last of the slide carries it. " +
                  "Being thrown should cost a unit its feet, not a quarter of the fight: measured, a greatsword " +
                  "was locked out of its own movement 28% of a fight, and in 73% of those frames it was drifting " +
@@ -57,11 +58,11 @@ public class CombatPhysics : MonoBehaviour
         [Header("Impacts")]
         [Tooltip("Closing speed (units/s) below which a collision is a shove, not a hit.")]
         public float impactSpeed = 3f;
-        [Tooltip("Damage from a body-to-body impact: this fraction of the victim's max health per unit of closing speed above the threshold.")]
-        public float impactPercentPerSpeed = 0.01f;
-        [Tooltip("As above, for a slam into the arena wall.")]
-        public float wallPercentPerSpeed = 0.015f;
-        [Range(0f, 1f), Tooltip("Cap on any one impact, as a fraction of max health.")]
+        [Range(0f, 1f), Tooltip("A thrown body hitting another: that body loses this fraction of its max health. Flat, not by speed, so the rule can be said.")]
+        public float bodySlamPercent = 0.08f;
+        [Range(0f, 1f), Tooltip("A thrown body hitting the wall: it loses this fraction of its max health.")]
+        public float wallSlamPercent = 0.12f;
+        [Range(0f, 1f), Tooltip("Cap on any one slam after a throw's own multiplier, as a fraction of max health.")]
         public float maxImpactPercent = 0.25f;
         [Range(0f, 1f), Tooltip("How much of the closing speed the struck body inherits.")]
         public float momentumTransfer = 0.6f;
@@ -94,6 +95,22 @@ public class CombatPhysics : MonoBehaviour
     }
 
     public static Settings Active => CombatFeelSettings.Active.physics;
+
+    /// <summary>
+    /// What a throw at this speed does, in the words the player reads on the verb. Generated from
+    /// the live numbers, so the text cannot drift from the rule — three spell descriptions had,
+    /// quoting forces and formulas that were no longer true.
+    /// </summary>
+    public static string DescribeThrow(float force, float multiplier = 1f)
+    {
+        var s = Active;
+        if (s == null || !s.enableImpacts) return "";
+        if (force <= s.impactSpeed) return " — a shove, too slow to slam";
+        float body = Mathf.Min(s.bodySlamPercent * multiplier, s.maxImpactPercent) * 100f;
+        float wall = Mathf.Min(s.wallSlamPercent * multiplier, s.maxImpactPercent) * 100f;
+        string times = Mathf.Approximately(multiplier, 1f) ? "" : $" (x{multiplier:0.#})";
+        return $" — a slam{times}: a unit it hits loses {body:0}% of its max health and is shoved on; into the wall it loses {wall:0}%";
+    }
 
     // For measuring the rule. Reset at each bell.
     /// <summary>Body-to-body impacts this fight.</summary>
@@ -183,9 +200,11 @@ public class CombatPhysics : MonoBehaviour
 
     /// <summary>
     /// Two overlapping bodies, one of them thrown: the hit. Whichever body brings the closing speed
-    /// is the mover; the other is struck. Both are hurt by the speed (a charging body is not — it is
-    /// the weapon), both stagger, and the struck body inherits part of the throw and the thrower's
-    /// name, so if it flies on into the wall the credit still flows.
+    /// is the mover; the other is struck. The struck body is hurt, both stagger, and the struck body
+    /// inherits part of the throw and the thrower's name, so if it flies on into the wall the credit
+    /// still flows. The mover is not hurt by a body it hits — only by the wall. It used to be, and
+    /// that was a second number the thrower could not read, making throws into a crowd worth more
+    /// than they looked.
     /// </summary>
     private static void TryImpact(Entity a, Entity b, Vector3 n, bool aFixed, bool bFixed, Settings s)
     {
@@ -202,20 +221,18 @@ public class CombatPhysics : MonoBehaviour
         Vector3 toStruck = aMoves ? n : -n;
         Vector3 vm = aMoves ? va : vb, vs = aMoves ? vb : va;
 
-        float pct = BodyMath.ImpactPercent(closing, s.impactSpeed, s.impactPercentPerSpeed, s.maxImpactPercent);
+        float pct = BodyMath.SlamPercent(closing, s.impactSpeed, s.bodySlamPercent, km.ImpactMultiplier, s.maxImpactPercent);
         Entity source = km.Launcher != null ? km.Launcher : mover;
         // The thrower's own side braced for it: a Chain Whip yanks a body into the caster's line,
         // and the line is the wall — neither hurt nor staggered by its own side's pull. The body
         // still is. So a push never hurts the pusher's team; the damage of a throw is the enemy's.
         bool braced = source != null && struck.isTeam == source.isTeam;
 
-        // A thrown anchor bowls a mage over; a thrown mage bounces off the anchor. Without this,
-        // mass would only ever make heavy units better — this is what it costs them, and what makes
-        // throwing one a play rather than a waste.
-        float transfer = s.momentumTransfer * BodyMass.TransferRatio(mover.Mass, struck.Mass);
-        BodyMath.Exchange(ref vm, ref vs, toStruck, closing, transfer, km.Charging ? s.chargeRetain : 0f, struckFixed);
+        BodyMath.Exchange(ref vm, ref vs, toStruck, closing, s.momentumTransfer, km.Charging ? s.chargeRetain : 0f, struckFixed);
         km.SetVelocity(vm);
-        if (!struckFixed) ks.Launch(vs, source);
+        // The throw's multiplier travels with the body it passes on to, so a Cannonball's domino
+        // slams as a Cannonball all the way down the line.
+        if (!struckFixed) ks.Launch(vs, source, km.ImpactMultiplier);
         km.MarkImpact(); ks.MarkImpact();
         if (!km.Charging) km.Stagger(s.impactStun);
         if (!braced) ks.Stagger(s.impactStun);
@@ -224,13 +241,7 @@ public class CombatPhysics : MonoBehaviour
         if (struck.Health != null && !braced)
         {
             float dmg = pct * struck.Health.maxHealth;
-            struck.TakeDamage(dmg, source);
-            dealt += dmg;
-        }
-        if (!km.Charging && mover.Health != null)
-        {
-            float dmg = pct * mover.Health.maxHealth;
-            mover.TakeDamage(dmg, source != mover ? source : null);
+            struck.TakeDamage(dmg, source, kind: DamageKind.Slam);
             dealt += dmg;
         }
         mover.ApplyHitstop(s.impactHitstop);
@@ -256,7 +267,7 @@ public class CombatPhysics : MonoBehaviour
             return;
         }
 
-        float pct = BodyMath.ImpactPercent(into, s.impactSpeed, s.wallPercentPerSpeed, s.maxImpactPercent);
+        float pct = BodyMath.SlamPercent(into, s.impactSpeed, s.wallSlamPercent, k.ImpactMultiplier, s.maxImpactPercent);
         Entity source = k.Launcher;
         k.SetVelocity(BodyMath.Bounce(v, inward, s.bounce));
         k.MarkImpact();
@@ -264,7 +275,7 @@ public class CombatPhysics : MonoBehaviour
         e.ApplyHitstop(s.impactHitstop);
 
         float dmg = e.Health != null ? pct * e.Health.maxHealth : 0f;
-        if (dmg > 0f) e.TakeDamage(dmg, source);
+        if (dmg > 0f) e.TakeDamage(dmg, source, kind: DamageKind.Slam);
 
         WallSlams++;
         ImpactDamage += dmg;
@@ -291,8 +302,9 @@ public static class BodyMath
     public static float ClosingSpeed(Vector3 va, Vector3 vb, Vector3 n) => Vector3.Dot(va - vb, n);
 
     /// <summary>Damage as a fraction of max health for a closing speed: nothing under the threshold, linear above, capped.</summary>
-    public static float ImpactPercent(float closing, float threshold, float perSpeed, float cap) =>
-        Mathf.Clamp(Mathf.Max(0f, closing - threshold) * perSpeed, 0f, cap);
+    /// <summary>Flat damage per slam: nothing under the threshold; above it the percent, times the throw's own multiplier, capped.</summary>
+    public static float SlamPercent(float closing, float threshold, float percent, float multiplier, float cap) =>
+        closing > threshold ? Mathf.Clamp(percent * Mathf.Max(0f, multiplier), 0f, cap) : 0f;
 
     /// <summary>
     /// Push two overlapping bodies apart along the normal. A fixed body does not move; the other

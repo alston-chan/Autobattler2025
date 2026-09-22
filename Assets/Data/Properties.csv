@@ -2553,3 +2553,6 @@ FantasyHeroes.Basic.Back.ExplorerBackpack,HealthMax,5
 FantasyHeroes.Basic.Back.SmallBackpack,HealthMax,5
 FantasyHeroes.Basic.Back.TraderBackpack,HealthMax,5
 FantasyHeroes.Basic.Back.TravallerBackpack,HealthMax,5
+Extensions.AbandonedWorkshop.Shield.WallKeeperShield,Resistance,40
+Extensions.Epic.Armor.ThunderguardArmor.vest,Resistance,30
+Extensions.Epic.Helmet.LushKnightHelmet,Resistance,20

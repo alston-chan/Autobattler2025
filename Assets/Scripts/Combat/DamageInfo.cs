@@ -1,3 +1,12 @@
+/// <summary>What kind of hurt this was — the one distinction feedback needs to make today.</summary>
+public enum DamageKind
+{
+    /// <summary>A weapon, a spell, a status: the ordinary number.</summary>
+    Hit,
+    /// <summary>A thrown body hitting a wall or another body (CombatPhysics). Shown as SLAM, so the player can see when physics hurt someone.</summary>
+    Slam,
+}
+
 /// <summary>
 /// The payload of <see cref="Health.OnDamaged"/> — everything a feedback system needs to react to a
 /// hit without reaching back into combat logic. This is the seed of the damage pipeline sketched in
@@ -23,12 +32,16 @@ public readonly struct DamageInfo
     /// <summary>What the victim's Blocking took off this hit before it landed. Feedback and telemetry only.</summary>
     public readonly float blocked;
 
-    public DamageInfo(float amount, float remainingHealth, Entity source, bool isCrit, float blocked = 0f)
+    /// <summary>A hit, or a slam.</summary>
+    public readonly DamageKind kind;
+
+    public DamageInfo(float amount, float remainingHealth, Entity source, bool isCrit, float blocked = 0f, DamageKind kind = DamageKind.Hit)
     {
         this.amount = amount;
         this.remainingHealth = remainingHealth;
         this.source = source;
         this.isCrit = isCrit;
         this.blocked = blocked;
+        this.kind = kind;
     }
 }

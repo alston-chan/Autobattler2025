@@ -33,7 +33,49 @@ public static class PlayChecks
         new PlayCheck("nobody fights a body they cannot reach", NobodyWalksPastAFight),
         new PlayCheck("a blow that lands reaches a voice", AHitIsHeard),
         new PlayCheck("a bar is the size of a body, whatever the art", ABarIsTheSizeOfABody),
+        new PlayCheck("a body thrown into the wall loses the flat number, as a slam", AWallSlamIsFlatAndSaysSo),
     };
+
+    /// <summary>
+    /// The physics rule end to end: a real throw reaches a real wall, the hurt that arrives is
+    /// exactly the flat wall number, and it is tagged as a slam so the damage number can say SLAM.
+    /// The arithmetic is unit-tested on its own; this is the proof that the number the rule states
+    /// is the number a unit actually loses, with nothing in between quietly scaling it.
+    /// </summary>
+    private static IEnumerator AWallSlamIsFlatAndSaysSo()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var s = CombatPhysics.Active;
+        if (s == null || !s.enableImpacts || !CombatFeelSettings.Active.enableKnockback) yield break;
+        Assert.That(ArenaBounds.Instance, Is.Not.Null, "no arena to have a wall");
+
+        Entity unit = null;
+        foreach (var u in PlayHarness.Living()) if (u.Health != null && u.Knockback != null) { unit = u; break; }
+        Assert.That(unit, Is.Not.Null, "no living body to throw");
+        unit.Health.HealToFull();
+
+        DamageInfo? slam = null;
+        Action<DamageInfo> watch = info => { if (info.kind == DamageKind.Slam && slam == null) slam = info; };
+        unit.Health.OnDamaged += watch;
+        try
+        {
+            // Straight down: the floor is the nearest wall from anywhere on the field, so a throw
+            // this hard cannot fail to reach it, and it reaches it inside a second.
+            unit.ApplyKnockback(Vector3.down, 20f, null);
+            yield return PlayHarness.Until(() => slam != null, "a thrown body to hit the wall and be hurt", 4f);
+        }
+        finally { unit.Health.OnDamaged -= watch; }
+
+        // What the rule sent, before blocking and shields took their share: amount + blocked is the
+        // number TakeDamage was handed, and that is the one the rule promises.
+        float sent = slam.Value.amount + slam.Value.blocked;
+        float promised = s.wallSlamPercent * unit.Health.maxHealth;
+        Assert.That(sent, Is.EqualTo(promised).Within(0.5f),
+                    DisplayNames.Unit(unit) + " hit the wall for " + sent.ToString("0") + " and the rule says " +
+                    promised.ToString("0") + " (" + (s.wallSlamPercent * 100f).ToString("0") + "% of " +
+                    unit.Health.maxHealth.ToString("0") + ")");
+    }
 
     /// <summary>
     /// Where units stand when the bell rings, against the soft wall that pushes them in.

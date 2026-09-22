@@ -640,6 +640,10 @@ public class KnockbackEffect : SpellEffect
     public EffectScope scope = EffectScope.PrimaryTarget;
     public float force = 8f;
     [Tooltip("Away from the caster (default) or toward it (a pull).")] public bool pull = false;
+    [Tooltip("How much harder this throw slams than an ordinary one. 1 is the rule as written; a " +
+             "Cannonball's 2 doubles what its victim takes off a wall or a body. The only thing in the " +
+             "game that changes the slam numbers, so it is printed on the verb.")]
+    [Min(0f)] public float impactMultiplier = 1f;
 
     public override IEnumerator Run(SpellContext ctx)
     {
@@ -649,13 +653,13 @@ public class KnockbackEffect : SpellEffect
             if (t == null || t.isDead || ctx.caster == null) continue;
             Vector3 dir = (t.transform.position - ctx.caster.transform.position);
             dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right;
-            t.ApplyKnockback(pull ? -dir : dir, force * ctx.scale, ctx.caster);
+            t.ApplyKnockback(pull ? -dir : dir, force * ctx.scale, ctx.caster, impactMultiplier: impactMultiplier);
         }
         yield break;
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target") + $" (force {force * scale:0}; a body thrown into a body or the wall is hurt by the speed)";
+    public override string Describe(int tier, float scale) => (pull ? "pull " : "knock back ") + (scope == EffectScope.EveryTarget ? "each" : "the target") + $" (force {force * scale:0})" + CombatPhysics.DescribeThrow(force * scale, impactMultiplier);
 }
 
 /// <summary>
@@ -679,7 +683,7 @@ public class DashEffect : SpellEffect
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => $"charge at the target (force {force * scale:0}), knocking aside and hurting everything hit; you are not";
+    public override string Describe(int tier, float scale) => $"charge at the target (force {force * scale:0}), knocking aside everything in the way" + CombatPhysics.DescribeThrow(force * scale) + "; you are hurt only by the wall";
 }
 
 /// <summary>Damage everything of one side within a radius of the caster — Shockwave's heart.</summary>

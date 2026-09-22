@@ -22,13 +22,15 @@ public class CombatTelemetry : MonoBehaviour
     public class Row
     {
         public float DamageDealt, DamageTaken, Blocked;
+        /// <summary>Of DamageDealt, the part that was a body slamming into a wall or another body.</summary>
+        public float SlamDealt;
         public int Hits, Crits, Kills, Deaths, Fights, Ults;
 
         public float CritRate => Hits > 0 ? (float)Crits / Hits : 0f;
 
         public Row Copy() => new Row
         {
-            DamageDealt = DamageDealt, DamageTaken = DamageTaken, Blocked = Blocked,
+            DamageDealt = DamageDealt, DamageTaken = DamageTaken, Blocked = Blocked, SlamDealt = SlamDealt,
             Hits = Hits, Crits = Crits, Kills = Kills, Deaths = Deaths, Fights = Fights, Ults = Ults
         };
 
@@ -41,6 +43,7 @@ public class CombatTelemetry : MonoBehaviour
                 DamageDealt = DamageDealt - earlier.DamageDealt,
                 DamageTaken = DamageTaken - earlier.DamageTaken,
                 Blocked = Blocked - earlier.Blocked,
+                SlamDealt = SlamDealt - earlier.SlamDealt,
                 Hits = Hits - earlier.Hits,
                 Crits = Crits - earlier.Crits,
                 Kills = Kills - earlier.Kills,
@@ -126,6 +129,7 @@ public class CombatTelemetry : MonoBehaviour
 
         var attacker = RowFor(info.source);
         attacker.DamageDealt += info.amount;
+        if (info.kind == DamageKind.Slam) attacker.SlamDealt += info.amount;
         attacker.Hits++;
         if (info.isCrit) attacker.Crits++;
     }
@@ -203,12 +207,12 @@ public class CombatTelemetry : MonoBehaviour
 
         var sb = new StringBuilder();
         sb.AppendLine($"[Telemetry] after {_fightsRecorded} fight(s)");
-        sb.AppendLine($"{"unit",-26}{"dealt",9}{"taken",9}{"blocked",9}{"hits",7}{"crit%",7}{"kills",7}{"deaths",7}{"ults",6}");
+        sb.AppendLine($"{"unit",-26}{"dealt",9}{"slam",7}{"taken",9}{"blocked",9}{"hits",7}{"crit%",7}{"kills",7}{"deaths",7}{"ults",6}");
 
         foreach (var pair in Standings)
         {
             var r = pair.Value;
-            sb.AppendLine($"{Trim(pair.Key, 25),-26}{r.DamageDealt,9:F0}{r.DamageTaken,9:F0}{r.Blocked,9:F0}" +
+            sb.AppendLine($"{Trim(pair.Key, 25),-26}{r.DamageDealt,9:F0}{r.SlamDealt,7:F0}{r.DamageTaken,9:F0}{r.Blocked,9:F0}" +
                           $"{r.Hits,7}{r.CritRate * 100f,6:F0}%{r.Kills,7}{r.Deaths,7}{r.Ults,6}");
         }
         return sb.ToString();

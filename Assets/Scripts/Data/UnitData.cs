@@ -11,9 +11,6 @@ public class UnitData : ScriptableObject
     [Header("Identity")]
     public string unitName;
 
-    [Tooltip("How hard this body is to move, before anything it wears. 0 works it out from the " +
-             "physics settings — a designed unit (a wall, a rat) can say so itself. See BodyMass.")]
-    public float mass;
     public bool isCharacter = true;
     public bool isRanged = false;
 
