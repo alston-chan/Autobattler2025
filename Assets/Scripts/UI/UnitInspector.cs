@@ -62,6 +62,9 @@ public class UnitInspector : MonoBehaviour
 
     /// <summary>A card shorter than this reads as a tooltip that failed rather than a small unit.</summary>
     private const float MinCardHeight = 220f;
+
+    /// <summary>Five stat lines at the stat block's font.</summary>
+    private const float StatsHeight = 110f;
     private static readonly Color Ally = new Color(1f, 0.82f, 0.28f, 1f);
     private static readonly Color Enemy = new Color(0.95f, 0.42f, 0.36f, 1f);
     private static readonly Color Muted = new Color(0.72f, 0.72f, 0.75f, 1f);
@@ -476,9 +479,9 @@ public class UnitInspector : MonoBehaviour
         if (_slotRow.activeSelf) Stack((RectTransform)_slotRow.transform, 22f, 10f);
 
         float statsTop = _cursor;
-        Stack(_statKeys.rectTransform, 88f, 0f);
+        Stack(_statKeys.rectTransform, StatsHeight, 0f);
         _cursor = statsTop;
-        Stack(_statValues.rectTransform, 88f, 10f);
+        Stack(_statValues.rectTransform, StatsHeight, 10f);
 
         Stack(_kit.rectTransform, Measure(_kit, inner, 0f), 0f);
 
@@ -561,6 +564,10 @@ public class UnitInspector : MonoBehaviour
         Line(keys, values, "Attacks / sec", stats.AttacksPerSecond.ToString("0.##"));
         Line(keys, values, "Move Speed", stats.Speed.Value.ToString("0.##"));
         Line(keys, values, "Blocking", stats.Blocking.Value.ToString("0.##"));
+
+        // Not a number: 0.86 against 1.35 tells a player nothing, "Light" against "Heavy" tells
+        // them why the knight barely moved when the Cannonball landed on it (BodyMass).
+        Line(keys, values, "Weight", _selected.MassWord);
 
         _statKeys.text = keys.ToString();
         _statValues.text = values.ToString();
@@ -765,12 +772,12 @@ public class UnitInspector : MonoBehaviour
         // numbers line up on the right edge without a layout group.
         float statsTop = _cursor;
         _statKeys = NewText("StatKeys", _card.transform, 16f, Muted, TextAlignmentOptions.TopLeft);
-        Stack(_statKeys.rectTransform, 88f, 0f);
+        Stack(_statKeys.rectTransform, StatsHeight, 0f);
 
         _cursor = statsTop;
         _statValues = NewText("StatValues", _card.transform, 16f, Color.white,
                               TextAlignmentOptions.TopRight);
-        Stack(_statValues.rectTransform, 88f, 10f);
+        Stack(_statValues.rectTransform, StatsHeight, 10f);
 
         _kit = NewText("Kit", _card.transform, 15f, Color.white, TextAlignmentOptions.TopLeft);
         _kit.enableWordWrapping = true;

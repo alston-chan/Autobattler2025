@@ -294,9 +294,13 @@ public class ResourceBar : MonoBehaviour
 
         // Runs in LateUpdate, after Update's flash has written barSR.color at full alpha — so the
         // fade always gets the last word.
-        if (entity.isDead && effects.fadeOnDeath && _deathFade > 0f)
+        // An invariant rather than a countdown: a living unit's bar is solid, whatever dimmed it
+        // (BarFade). The countdown had no way back up, so a bar that was still attached when its
+        // owner came back stayed at the alpha it had faded to — at worst invisible, for good.
+        float fade = BarFade.Step(entity.isDead, effects.fadeOnDeath, _deathFade, Time.deltaTime, effects.deathFadeDuration);
+        if (!Mathf.Approximately(fade, _deathFade))
         {
-            _deathFade = Mathf.Max(0f, _deathFade - Time.deltaTime / Mathf.Max(0.0001f, effects.deathFadeDuration));
+            _deathFade = fade;
             ApplyDeathFade();
         }
 
