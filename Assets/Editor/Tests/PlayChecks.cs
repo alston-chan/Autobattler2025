@@ -34,7 +34,62 @@ public static class PlayChecks
         new PlayCheck("a blow that lands reaches a voice", AHitIsHeard),
         new PlayCheck("a bar is the size of a body, whatever the art", ABarIsTheSizeOfABody),
         new PlayCheck("a body thrown into the wall loses the flat number, as a slam", AWallSlamIsFlatAndSaysSo),
+        new PlayCheck("nobody stands a hand's width out of reach", NobodyStandsJustOutOfReach),
     };
+
+    /// <summary>
+    /// The deadlock: a unit whose target is just past its reach, standing still, not attacking.
+    /// CombatAI's walk-in band once began at reach + 0.15 while attacking needs distance <= reach,
+    /// so a unit in between did neither — and two melee units facing each other 1.55 apart, both
+    /// with 1.5 reach, stood for the rest of the fight. Reported as "units standing still, not
+    /// attacking anyone and not moving to a target"; measured at 12% of unit-frames with a target.
+    ///
+    /// Movement is judged over a window of frames, not one: the editor ticks at about 160 Hz and a
+    /// walking unit moves under 0.02 a frame, which a per-frame test called standing still.
+    /// </summary>
+    private static IEnumerator NobodyStandsJustOutOfReach()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var trail = new Dictionary<Entity, Queue<Vector3>>();
+        int withTarget = 0, justOutOfReach = 0;
+        Entity worst = null; int worstFrames = 0; var perUnit = new Dictionary<Entity, int>();
+
+        for (int sweep = 0; sweep < 240; sweep++)
+        {
+            foreach (var unit in PlayHarness.Living())
+            {
+                var ai = unit.CombatAI;
+                if (ai == null || ai.CurrentTarget == null) continue;
+                Vector3 p = unit.transform.position;
+                if (!trail.TryGetValue(unit, out var q)) trail[unit] = q = new Queue<Vector3>();
+                q.Enqueue(p); if (q.Count > 12) q.Dequeue();
+                bool moved = q.Count < 12 || (q.Peek() - p).sqrMagnitude > 0.01f;
+
+                // Only a unit that has every reason to act: walking stances, free to move, not held
+                // by a taunt, a stun, a throw or a root, and not mid-swing.
+                if (unit.EffectiveStance != Stance.Advance && unit.EffectiveStance != Stance.Dive) continue;
+                if (unit.Knockback == null || !unit.Knockback.Steerable || unit.Knockback.IsStunned) continue;
+                if (unit.Statuses != null && (unit.Statuses.Rooted || unit.Statuses.TauntedBy != null)) continue;
+                if (ai.IsAttacking) continue;
+                withTarget++;
+
+                float d = Vector3.Distance(p, ai.CurrentTarget.transform.position);
+                if (moved || d <= ai.AttackRange || d > ai.AttackRange + 0.2f) continue;
+                justOutOfReach++;
+                perUnit[unit] = (perUnit.TryGetValue(unit, out int n) ? n : 0) + 1;
+                if (perUnit[unit] > worstFrames) { worstFrames = perUnit[unit]; worst = unit; }
+            }
+            yield return null;
+        }
+
+        if (withTarget < 200) yield break;   // too quiet a fight to say anything
+        float share = justOutOfReach * 100f / withTarget;
+        Debug.Log($"[PlayChecks] stood just out of reach in {share:0.0}% of frames ({justOutOfReach}/{withTarget})");
+        Assert.That(share, Is.LessThan(1f),
+                    $"units stand a hand's width out of reach, neither walking nor attacking, in {share:0.0}% of frames" +
+                    (worst != null ? " — worst: " + DisplayNames.Unit(worst) + " for " + worstFrames + " frames facing " + DisplayNames.Unit(worst.CombatAI.CurrentTarget) : ""));
+    }
 
     /// <summary>
     /// The physics rule end to end: a real throw reaches a real wall, the hurt that arrives is

@@ -209,6 +209,13 @@ Three things cost an afternoon to learn:
   The checks then share one session — `PlayHarness.ReachTheBell` works whether the game is in Setup,
   already fighting, or between fights — because a session per check would mean carrying the run's
   progress across a reload too.
+- **An audit of "who is standing still" must judge movement over a window, and name causes in the
+  right order.** The editor ticks at about 160 Hz in play mode, so a walking unit moves under 0.02 a
+  frame; a per-frame threshold of 0.02 called every walker idle and put 4,000 frames in the wrong
+  bucket. Judge over ~12 frames. And classify by the most specific cause first: a Hold-stance unit
+  that is really in the reach dead band reads as "holding" if stance is checked before distance —
+  that misattribution hid the actual bug (two melee units facing each other 1.55 apart, both with
+  1.5 reach, neither walking nor able to hit) under a plausible label for a whole run.
 - **Because they share a session, a check's leftovers are the next check's fight.** The decoy checks
   leave decoys alive for six seconds, decoys taunt, and the pacing check that runs next counted every
   taunted unit walking past a kiter to reach one as "walking past a fight" — 43–47%, failing at

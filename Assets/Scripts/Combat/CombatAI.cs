@@ -330,17 +330,17 @@ public class CombatAI : MonoBehaviour
 
     // Walking in, as opposed to standing and fighting.
     //
-    // A unit stops the moment it can hit, and does not set off again until the target is a little
-    // past its reach. The slack is small on purpose. This band used to run the other way — walk in
-    // to 0.8 of reach, set off again at reach — and that was wrong for a reason no amount of
-    // tuning fixes: two bodies have a radius of 0.55 each, so they cannot stand closer than 1.10,
-    // and 0.8 of a 1.5 reach is 1.20. The unit was being told to stand a tenth of a unit off the
-    // body wall, CombatPhysics.ResolveBodies pushed it back out every frame, and it walked in
-    // again — run in, back off, repeat, for the whole fight. Standing at reach leaves four tenths
-    // of clearance instead.
+    // A unit sets off the moment its target is out of reach, and stops a little INSIDE reach — never
+    // inside the body wall. The slack has been on both sides of reach and both were wrong in ways
+    // no tuning fixes. Stopping at 0.8 of reach (1.20 for a 1.5 reach) was a tenth off the 1.10 two
+    // bodies can stand at, so ResolveBodies pushed the unit out every frame and it walked in again:
+    // run in, back off, repeat. Then the slack went OUTSIDE reach — set off only past reach + 0.15 —
+    // and a unit between reach and that line neither walked nor could hit, so two melee units facing
+    // each other 1.55 apart stood there for the rest of the fight. Inside reach, above the wall, is
+    // the only place the stop can live.
     private bool _closing;
 
-    /// <summary>How far past its reach a target must drift before the unit walks again.</summary>
+    /// <summary>How far inside its reach a unit stops, so the scrum's shoves do not pop it back out.</summary>
     private const float ReachSlack = 0.15f;
 
     /// <summary>A free fight has to be comfortably inside reach, not balanced on its edge.</summary>
@@ -399,8 +399,18 @@ public class CombatAI : MonoBehaviour
                 break;
             }
         }
-        if (_closing) { if (distToTarget <= _attackRange) _closing = false; }
-        else if (distToTarget > _attackRange + ReachSlack) _closing = true;
+        // Close the moment the target is out of reach; stop a little INSIDE reach, so the scrum's
+        // shoves do not pop the unit back out — but never inside the body wall, where the two bodies
+        // would push apart every frame and the unit would walk forever (the bug before this one).
+        //
+        // The slack used to sit outside reach: closing began at reach + 0.15, attacking needs
+        // distance <= reach, so a unit between the two neither closed nor attacked — and two melee
+        // units facing each other 1.55 apart, both with 1.5 reach, stood there for the rest of the
+        // fight. Measured: 21% of all unit-frames with a target were idle, most of them this.
+        float bodyWall = _entity.BodyRadius + (CurrentTarget != null ? CurrentTarget.BodyRadius : _entity.BodyRadius);
+        float stopAt = Mathf.Max(_attackRange - ReachSlack, bodyWall + 0.05f);
+        if (_closing) { if (distToTarget <= stopAt) _closing = false; }
+        else if (distToTarget > _attackRange) _closing = true;
 
         // But never back into the ground we just walked out of.
         if (_closing && StandingOffFrom(CurrentTarget)) return Vector3.zero;
