@@ -275,6 +275,13 @@ Writing them:
   slots from a list its own grant was not yet in. Measured: `slots=[]` mid-fight with the wand still
   worn and still granted. The extra `SyncSpellSlots` after the startup refresh in GameManager was the
   same bug patched at one call site.
+- **Not every clip in `Assets/Audio` is ours.** Some are Mixkit stock placeholders
+  (<https://mixkit.co/free-sound-effects/sword/>) standing in until the real library exists, and
+  their licence terms have not been confirmed yet — the text is behind a consent gate on
+  mixkit.co/license. `Assets/Audio/CREDITS.md` is the record: add the source line in the same commit
+  as the file, because provenance cannot be reconstructed afterwards and a clip nobody can place has
+  to be cut before release. Generated clips record the prompt that made them; without it, "one more
+  like that" is a re-roll from scratch.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
