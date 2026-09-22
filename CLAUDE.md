@@ -183,6 +183,33 @@ every ability is a `CompositeSpell` taught by a weapon.
   body in `try { ... } catch { EditorApplication.update -= cb; ... }` — every probe in the scratchpad
   now carries that guard, marked `PROBE_GUARDED`.
 
+## Play checks: the tests that need a running game
+
+`Tools > Tests > Run Play Tests` starts a play session, runs `PlayChecks`, writes
+`Temp/PlayTests.txt` and stops. Start it and poll that file — a whole fight is minutes and the MCP
+`tests-run` tool gives up at sixty seconds, so it reports to a file rather than to its caller, the
+same shape every probe here arrived at. The ordinary `tests-run` is untouched and still about a
+second.
+
+Three things cost an afternoon to learn:
+
+- **NUnit cannot host these.** The obvious build is `[UnityTest]` with `EnterPlayMode`, and the
+  framework answers *"EditMode test can only yield null, but not &lt;EnterPlayMode&gt;"*. That
+  capability is only granted to tests in a test assembly defined by an asmdef — and an asmdef
+  assembly cannot reference the predefined `Assembly-CSharp`, which is where this whole game lives.
+  So `PlayTestRunner` drives the checks itself, off `EditorApplication.update`, and NUnit's `Assert`
+  is used only for the assertions and their messages.
+- **A hand-rolled coroutine driver must step into nested `IEnumerator`s.** Calling `MoveNext` on
+  only the outermost one ran all four checks to completion in a tenth of a second and reported four
+  passes. A harness that lies is worse than no harness: keep a `Stack<IEnumerator>`, push whatever
+  `Current` turns out to be one, and **prove it fails** by reintroducing a real bug before trusting
+  a green run.
+- **Entering play mode reloads the domain**, so the run is two halves: `Run()` leaves a note in
+  EditorPrefs and asks for play mode, and an `[InitializeOnLoad]` static picks it up on the far side.
+  The checks then share one session — `PlayHarness.ReachTheBell` works whether the game is in Setup,
+  already fighting, or between fights — because a session per check would mean carrying the run's
+  progress across a reload too.
+
 ## Odin
 
 Odin Inspector is installed (`Assets/Plugins/Sirenix`) for its **attributes only**. Never derive from
