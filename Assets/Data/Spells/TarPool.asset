@@ -52,4 +52,5 @@ MonoBehaviour:
           perTier: 0.25
         status: {fileID: 11400000, guid: c7ada1c6b7821b24aa87116566a4d543, type: 2}
         statusDuration: 1.5
+        damageType: 1
         color: {r: 0.12, g: 0.06, b: 0.02, a: 0.7}

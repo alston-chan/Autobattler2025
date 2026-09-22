@@ -59,6 +59,7 @@ MonoBehaviour:
           ofSubjectMaxHealth: 0
           ofCasterMaxHealth: 0
           perTier: 0.25
+        damageType: 1
         critChance: 0
         alwaysCrit: 0
         hitstop: 0

@@ -59,6 +59,8 @@ public class Status : ScriptableObject
     public float tickDamagePerStack = 0f;
     [Tooltip("Damage per tick as a fraction of max health, per stack. 0.015 = 1.5%.")]
     public float tickPercentMaxHealthPerStack = 0f;
+    [Tooltip("What resists the ticks. A burn is magical; a bleed would be physical.")]
+    public DamageType damageType = DamageType.Physical;
 
     public bool Ticks => tickInterval > 0f && (tickDamagePerStack > 0f || tickPercentMaxHealthPerStack > 0f);
 
@@ -265,7 +267,7 @@ public class StatusController : MonoBehaviour
         {
             if (_entity == null || _entity.isDead || _entity.Health == null) break;
             float dmg = (a.status.tickDamagePerStack + a.status.tickPercentMaxHealthPerStack * _entity.Health.maxHealth) * a.stacks;
-            if (dmg > 0f) _entity.Health.TakeDamage(dmg, a.source);
+            if (dmg > 0f) _entity.Health.TakeDamage(dmg, a.source, type: a.status.damageType);
         }
         _set.Tick(now);
     }

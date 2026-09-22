@@ -207,7 +207,7 @@ public class CombatTelemetry : MonoBehaviour
 
         var sb = new StringBuilder();
         sb.AppendLine($"[Telemetry] after {_fightsRecorded} fight(s)");
-        sb.AppendLine($"{"unit",-26}{"dealt",9}{"slam",7}{"taken",9}{"blocked",9}{"hits",7}{"crit%",7}{"kills",7}{"deaths",7}{"ults",6}");
+        sb.AppendLine($"{"unit",-26}{"dealt",9}{"slam",7}{"taken",9}{"reduced",9}{"hits",7}{"crit%",7}{"kills",7}{"deaths",7}{"ults",6}");
 
         foreach (var pair in Standings)
         {

@@ -42,6 +42,7 @@ public class PhysicsRuleTests
         var s = CombatPhysics.Active;
         string words = CombatPhysics.DescribeThrow(s.impactSpeed + 5f);
         Assert.That(words, Does.Contain("slam"));
+        Assert.That(words, Does.Contain("physical"), "a slam is resisted by armour, and the verb says so");
         Assert.That(words, Does.Contain((s.bodySlamPercent * 100f).ToString("0") + "%"), "the body number");
         Assert.That(words, Does.Contain((s.wallSlamPercent * 100f).ToString("0") + "%"), "the wall number");
     }
@@ -83,7 +84,7 @@ public class PhysicsRuleTests
     {
         int rows = 0;
         foreach (var line in File.ReadAllLines("Assets/Data/Properties.csv"))
-            if (line.Contains(",Resistance,")) rows++;
+            if (line.Contains(",KnockbackResist,")) rows++;
         Assert.That(rows, Is.GreaterThan(0), "nothing grants it");
         Assert.That(rows, Is.LessThanOrEqualTo(8), rows + " items grant it — it is meant to be rare");
     }
@@ -96,7 +97,7 @@ public class PhysicsRuleTests
         var shield = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Shield.WallKeeperShield");
         Assert.That(shield, Is.Not.Null);
         Property line = null;
-        foreach (var p in shield.Properties) if (p.Id == PropertyId.Resistance) line = p;
+        foreach (var p in shield.Properties) if (p.Id == PropertyId.KnockbackResist) line = p;
         Assert.That(line, Is.Not.Null, "the Wall Keeper's shield lost its resistance — re-import the CSV");
         Assert.That(line.Value, Is.EqualTo("40"));
     }

@@ -102,9 +102,8 @@ namespace Assets.HeroEditor.InventorySystem.Scripts.Elements
             {
                 switch (p.Id)
                 {
-                    // Project edit: PropertyId.Resistance is this game's knockback resistance, authored as a
-                    // percent, and a bare "Resistance" would not tell the player what it resists.
-                    case PropertyId.Resistance:
+                    // Project edit: knockback resistance is authored as a percent; say so.
+                    case PropertyId.KnockbackResist:
                         dict.Add("ItemInfo.KnockbackResist", $"{p.Value}%");
                         break;
                     default:

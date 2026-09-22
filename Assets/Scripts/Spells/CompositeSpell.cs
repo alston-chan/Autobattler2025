@@ -412,6 +412,8 @@ public class DealDamageEffect : SpellEffect
 {
     public EffectScope scope = EffectScope.PrimaryTarget;
     public ScaledValue damage = new ScaledValue(0f, ofWeaponDamage: 1f);
+    [Tooltip("What resists it: armour, magic resist, or nothing. A blade is physical; a wand's verb is magical.")]
+    public DamageType damageType = DamageType.Physical;
     [Range(0f, 1f)] public float critChance = 0.1f;
     public bool alwaysCrit = false;
     [Tooltip("Freeze the victim this long on impact. Zero for none.")]
@@ -424,7 +426,7 @@ public class DealDamageEffect : SpellEffect
             if (victim == null || victim.isDead) continue;
             float dmg = damage.Evaluate(ctx.caster, victim, ctx.tier);
             bool crit = alwaysCrit || AttackRoll.IsCrit(critChance);
-            victim.TakeDamage(dmg, ctx.caster, crit);
+            victim.TakeDamage(dmg, ctx.caster, crit, type: damageType);
             if (hitstop > 0f) victim.ApplyHitstop(hitstop);
             if (victim.isDead) ctx.targetDied = true;
         }
@@ -693,6 +695,8 @@ public class RadiusDamageEffect : SpellEffect
     [Min(0f)] public float radius = 3f;
     public bool enemies = true;
     public ScaledValue damage = new ScaledValue(10f, ofWeaponDamage: 0.5f);
+    [Tooltip("What resists it: armour, magic resist, or nothing.")]
+    public DamageType damageType = DamageType.Physical;
     [Range(0f, 1f)] public float critChance = 0f;
     [Tooltip("Knock each victim away from the caster with this force. Zero for none.")] public float knockback = 0f;
     public float hitstop = 0f;
@@ -708,7 +712,7 @@ public class RadiusDamageEffect : SpellEffect
         foreach (var v in victims)
         {
             float dmg = damage.Evaluate(caster, v, ctx.tier);
-            v.TakeDamage(dmg, caster, AttackRoll.IsCrit(critChance));
+            v.TakeDamage(dmg, caster, AttackRoll.IsCrit(critChance), type: damageType);
             if (knockback > 0f) { Vector3 dir = v.transform.position - origin; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, knockback * ctx.scale, caster); }
             if (hitstop > 0f) v.ApplyHitstop(hitstop);
         }

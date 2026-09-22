@@ -28,3 +28,4 @@ MonoBehaviour:
   tickInterval: 1
   tickDamagePerStack: 0
   tickPercentMaxHealthPerStack: 0.015
+  damageType: 1

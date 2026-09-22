@@ -155,7 +155,7 @@ public class Health : MonoBehaviour
     /// attacker (burn, decay) can leave them defaulted.
     /// </summary>
     /// <param name="quiet">No flash, squash or shake: for damage that ticks (a pool, a blade's pass), which would otherwise hold the body white.</param>
-    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false, DamageKind kind = DamageKind.Hit)
+    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false, DamageKind kind = DamageKind.Hit, DamageType type = DamageType.Physical)
     {
         if (IsDead) return;
 
@@ -165,8 +165,10 @@ public class Health : MonoBehaviour
         // next fight in its death pose with nothing left to bring it back.
         if (_entity != null && !_entity.IsFighting) return;
 
+        // The pipeline, in order: armour or magic resist by type, then the statuses' multipliers,
+        // then a shield. A flat "reduce X before armour" item line would go first, when one exists.
         float incoming = amount;
-        amount = ApplyBlocking(amount);
+        amount = Mitigate(amount, type);
 
         // Statuses are the one other thing that scales a hit — a Mark on the victim, a curse on the
         // attacker — and they apply here so every spell, old or new, respects them.
@@ -201,7 +203,7 @@ public class Health : MonoBehaviour
         // Mana charges from participation — taking hits is the secondary source.
         if (_entity.Mana != null) _entity.Mana.OnDamageTaken(amount);
 
-        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit, incoming - amount, kind));
+        OnDamaged?.Invoke(new DamageInfo(amount, currentHealth, source, isCrit, incoming - amount, kind, type));
         CombatEvents.RaiseHit(new HitInfo(source, _entity, amount, isCrit, currentHealth <= 0f));
 
         if (!IsDead && currentHealth <= 0)
@@ -211,32 +213,27 @@ public class Health : MonoBehaviour
     }
 
     /// <summary>
-    /// Subtract the target's Blocking from an incoming hit. Blocking has existed as a stat — items
-    /// grant it, seeds add to it — but nothing ever read it, so armour was decorative and damage was
-    /// applied raw.
+    /// Armour against physical, magic resist against magical, nothing against true. The curve is
+    /// <see cref="Mitigation"/>'s, shared by both, so a point of either reads the same way.
     ///
-    /// A hit always lands for at least <see cref="MinimumDamage"/>, so stacking enough Blocking can
+    /// This replaced flat Blocking. Flat reduction was capped at half a hit, which made it worth
+    /// nothing against a greatsword and everything against paired daggers — a shield's value
+    /// depended on what was swinging at it, and two hundred and ninety-seven vests all said "3"
+    /// while meaning something different in every fight. A percentage says one thing.
+    ///
+    /// A hit always lands for at least <see cref="MinimumDamage"/>, so stacking resistance can
     /// blunt an attacker but never make a unit immune to one.
     /// </summary>
-    private float ApplyBlocking(float amount)
+    private float Mitigate(float amount, DamageType type)
     {
-        if (_entity == null || _entity.Stats == null || _entity.Stats.Blocking == null) return amount;
-
-        float blocking = _entity.Stats.Blocking.Value;
-        if (blocking <= 0f) return amount;
-
-        // Blocking takes at most half of any hit. Flat blocking against weapons that swing for ten
-        // to forty turned a fifteen-blocking knight into a wall that took one damage a hit, and a
-        // 3v3 into a minute of tapping; half through keeps armour worth wearing and fights ending.
-        float blocked = Mathf.Min(blocking, amount * MaxBlockedFraction);
-        return Mathf.Max(MinimumDamage, amount - blocked);
+        if (type == DamageType.True || _entity == null || _entity.Stats == null) return amount;
+        var rating = type == DamageType.Magical ? _entity.Stats.MagicResist : _entity.Stats.Armor;
+        if (rating == null || rating.Value <= 0f) return amount;
+        return Mathf.Max(MinimumDamage, Mitigation.Reduce(amount, rating.Value));
     }
 
-    /// <summary>Floor on a blocked hit, so damage reduction can never fully negate an attack.</summary>
+    /// <summary>Floor on a mitigated hit, so damage reduction can never fully negate an attack.</summary>
     private const float MinimumDamage = 1f;
-
-    /// <summary>The most of a hit blocking may take: half.</summary>
-    private const float MaxBlockedFraction = 0.5f;
 
     private void Die(Entity killer)
     {

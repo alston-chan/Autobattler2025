@@ -109,7 +109,7 @@ public class CombatPhysics : MonoBehaviour
         float body = Mathf.Min(s.bodySlamPercent * multiplier, s.maxImpactPercent) * 100f;
         float wall = Mathf.Min(s.wallSlamPercent * multiplier, s.maxImpactPercent) * 100f;
         string times = Mathf.Approximately(multiplier, 1f) ? "" : $" (x{multiplier:0.#})";
-        return $" — a slam{times}: a unit it hits loses {body:0}% of its max health and is shoved on; into the wall it loses {wall:0}%";
+        return $" — a slam{times}: a unit it hits loses {body:0}% of its max health, physical, and is shoved on; into the wall it loses {wall:0}%";
     }
 
     // For measuring the rule. Reset at each bell.

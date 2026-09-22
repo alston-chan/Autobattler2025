@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// The words on the badges, and how several grants of one engraving on one unit read as one line.
-/// The merged line is where the stacking rule becomes visible to the player — "BULWARK -12 ×2"
+/// The merged line is where the stacking rule becomes visible to the player — "BULWARK +108 ×2"
 /// says the two add, "MARKED · 80% ×2" says they don't — so it is pinned per engraving.
 /// </summary>
 public class EngravingPreviewTests
@@ -20,7 +20,7 @@ public class EngravingPreviewTests
     private static BulwarkEngraving Bulwark()
     {
         var bulwark = ScriptableObject.CreateInstance<BulwarkEngraving>();
-        bulwark.blockingPerTier = 6f;
+        bulwark.armorPerTier = 36f;
         return bulwark;
     }
 
@@ -37,21 +37,21 @@ public class EngravingPreviewTests
         Assert.That(Marked().PreviewLabel(1), Is.EqualTo("MARKED · 80%"));
         Assert.That(Marked().PreviewLabel(3), Is.EqualTo("MARKED · 60%"));
         Assert.That(Vanguard().PreviewLabel(1), Is.EqualTo("VANGUARD +20%"));
-        Assert.That(Bulwark().PreviewLabel(2), Is.EqualTo("BULWARK -12"));
+        Assert.That(Bulwark().PreviewLabel(2), Is.EqualTo("BULWARK +72"));
     }
 
     [Test]
     public void OneGrantHasNoCount()
     {
-        Assert.That(Bulwark().MergedLabel(new List<int> { 1 }), Is.EqualTo("BULWARK -6"));
+        Assert.That(Bulwark().MergedLabel(new List<int> { 1 }), Is.EqualTo("BULWARK +36"));
         Assert.That(Marked().MergedLabel(new List<int> { 2 }), Is.EqualTo("MARKED · 70%"));
     }
 
     [Test]
-    public void FlatBlockingAdds()
+    public void FlatArmourAdds()
     {
-        // An ally between a Tier I and a Tier II bearer gets both: 6 + 12.
-        Assert.That(Bulwark().MergedLabel(new List<int> { 1, 2 }), Is.EqualTo("BULWARK -18 ×2"));
+        // An ally between a Tier I and a Tier II bearer gets both: 36 + 72.
+        Assert.That(Bulwark().MergedLabel(new List<int> { 1, 2 }), Is.EqualTo("BULWARK +108 ×2"));
     }
 
     [Test]

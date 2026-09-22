@@ -569,9 +569,9 @@ public class Entity : MonoBehaviour
     #region Public API — delegates to components
 
     /// <summary><paramref name="source"/> and <paramref name="isCrit"/> are optional — feedback only. <paramref name="quiet"/> skips the hit feedback, for damage that ticks.</summary>
-    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false, DamageKind kind = DamageKind.Hit)
+    public void TakeDamage(float amount, Entity source = null, bool isCrit = false, bool quiet = false, DamageKind kind = DamageKind.Hit, DamageType type = DamageType.Physical)
     {
-        Health.TakeDamage(amount, source, isCrit, quiet, kind);
+        Health.TakeDamage(amount, source, isCrit, quiet, kind, type);
     }
 
     /// <summary>

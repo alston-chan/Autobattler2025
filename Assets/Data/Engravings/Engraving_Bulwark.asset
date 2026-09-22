@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   engravingName: Bulwark
   description: Allies adjacent to the bearer take less damage from every hit.
-  blockingPerTier: 6
+  armorPerTier: 36

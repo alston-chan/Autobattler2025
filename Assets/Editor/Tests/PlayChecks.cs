@@ -50,10 +50,21 @@ public static class PlayChecks
         if (s == null || !s.enableImpacts || !CombatFeelSettings.Active.enableKnockback) yield break;
         Assert.That(ArenaBounds.Instance, Is.Not.Null, "no arena to have a wall");
 
+        // A free-standing character: not a rooted decoy (it does not move), not a body already
+        // flying (its own throw would hide ours), and not thrown between fights, when nothing is
+        // hurt at all. This check failed once with "never happened" and no way to tell which.
         Entity unit = null;
-        foreach (var u in PlayHarness.Living()) if (u.Health != null && u.Knockback != null) { unit = u; break; }
-        Assert.That(unit, Is.Not.Null, "no living body to throw");
+        foreach (var u in PlayHarness.Living())
+        {
+            if (u.Health == null || u.Knockback == null || !u.isCharacter) continue;
+            if (!u.Knockback.Steerable) continue;
+            if (u.Statuses != null && u.Statuses.Rooted) continue;
+            unit = u; break;
+        }
+        Assert.That(unit, Is.Not.Null, "no free-standing character to throw");
+        Assert.That(GameManager.Instance.StateMachine.Current, Is.EqualTo(GameState.Combat), "nothing is hurt outside a fight");
         unit.Health.HealToFull();
+        Vector3 before = unit.transform.position;
 
         DamageInfo? slam = null;
         Action<DamageInfo> watch = info => { if (info.kind == DamageKind.Slam && slam == null) slam = info; };
@@ -63,9 +74,15 @@ public static class PlayChecks
             // Straight down: the floor is the nearest wall from anywhere on the field, so a throw
             // this hard cannot fail to reach it, and it reaches it inside a second.
             unit.ApplyKnockback(Vector3.down, 20f, null);
-            yield return PlayHarness.Until(() => slam != null, "a thrown body to hit the wall and be hurt", 4f);
+            float deadline = Time.time + 6f;
+            while (slam == null && Time.time < deadline) yield return null;
         }
         finally { unit.Health.OnDamaged -= watch; }
+
+        Assert.That(slam, Is.Not.Null,
+                    DisplayNames.Unit(unit) + " was thrown down from " + before + " and is at " + unit.transform.position +
+                    " (state " + GameManager.Instance.StateMachine.Current + ", dead=" + unit.isDead +
+                    ", steerable=" + unit.Knockback.Steerable + ") — no slam arrived");
 
         // What the rule sent, before blocking and shields took their share: amount + blocked is the
         // number TakeDamage was handed, and that is the one the rule promises.
@@ -75,6 +92,18 @@ public static class PlayChecks
                     DisplayNames.Unit(unit) + " hit the wall for " + sent.ToString("0") + " and the rule says " +
                     promised.ToString("0") + " (" + (s.wallSlamPercent * 100f).ToString("0") + "% of " +
                     unit.Health.maxHealth.ToString("0") + ")");
+
+        // And armour took its share: a slam is physical, and this is the damage pipeline running on
+        // a real unit wearing real items. A shield may have taken more on top, never less.
+        // The share from the curve's closed form, NOT from Mitigation.Reduce: an expectation computed
+        // through the code under test agreed with it perfectly when that code was broken to do
+        // nothing — "expected 0, got 0". A check has to know the answer on its own.
+        float armour = unit.Stats != null && unit.Stats.Armor != null ? unit.Stats.Armor.Value : 0f;
+        float armoursShare = sent * armour / (Mitigation.Constant + armour);
+        Assert.That(slam.Value.blocked, Is.GreaterThanOrEqualTo(armoursShare - 0.5f),
+                    DisplayNames.Unit(unit) + " has " + armour.ToString("0") + " armour, which should take " +
+                    armoursShare.ToString("0.0") + " off a " + sent.ToString("0") + " slam; mitigation took " +
+                    slam.Value.blocked.ToString("0.0"));
     }
 
     /// <summary>

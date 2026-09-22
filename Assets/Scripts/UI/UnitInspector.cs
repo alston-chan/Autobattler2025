@@ -563,7 +563,11 @@ public class UnitInspector : MonoBehaviour
         Line(keys, values, "Damage", stats.Damage.Value.ToString("0.##"));
         Line(keys, values, "Attacks / sec", stats.AttacksPerSecond.ToString("0.##"));
         Line(keys, values, "Move Speed", stats.Speed.Value.ToString("0.##"));
-        Line(keys, values, "Blocking", stats.Blocking.Value.ToString("0.##"));
+        // The rating, and what it means: "Armour 18" tells a player nothing, "15% less" tells them
+        // why the knight is still standing. Magic resist only when something grants it.
+        Line(keys, values, "Armour", stats.Armor.Value.ToString("0") + "  (" + (Mitigation.Fraction(stats.Armor.Value) * 100f).ToString("0") + "% less physical)");
+        if (stats.MagicResist.Value > 0f)
+            Line(keys, values, "Magic resist", stats.MagicResist.Value.ToString("0") + "  (" + (Mitigation.Fraction(stats.MagicResist.Value) * 100f).ToString("0") + "% less magical)");
 
         // Only when something grants it: a line that reads 0% on every unit is noise, and the whole
         // point of the item line is that it is rare.

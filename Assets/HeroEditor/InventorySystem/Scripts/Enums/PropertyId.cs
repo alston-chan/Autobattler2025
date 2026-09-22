@@ -44,6 +44,12 @@
         StaminaRecovery,
         StaminaRestore,
         StaminaMax,
-        Shock
+        Shock,
+
+        // Project additions. APPENDED, never inserted: ItemCollection.asset stores a property as
+        // its integer, so any member added above these would silently renumber every item.
+        Armor,
+        MagicResist,
+        KnockbackResist
     }
 }

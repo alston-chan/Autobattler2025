@@ -14,13 +14,16 @@ public class EntityStats : MonoBehaviour
     public CharacterStat Damage { get; private set; }
     public CharacterStat MaxHealth { get; private set; }
     public CharacterStat Speed { get; private set; }
-    public CharacterStat Blocking { get; private set; }
+    /// <summary>Resistance to physical damage: every point is one percent more effective health against it (<see cref="Mitigation"/>).</summary>
+    public CharacterStat Armor { get; private set; }
+    /// <summary>Resistance to magical damage, on the same curve as <see cref="Armor"/>.</summary>
+    public CharacterStat MagicResist { get; private set; }
     public CharacterStat AttackSpeed { get; private set; }
 
     /// <summary>
     /// Knockback resistance, 0..1: the fraction of any throw this unit shrugs off. A rare item line
     /// (PropertyId.Resistance, authored as a percent); everyone else is 0 and thrown alike.
-    /// A stat rather than a lookup so it arrives by the same route as Blocking: equip, unequip and
+    /// A stat rather than a lookup so it arrives by the same route as Armor: equip, unequip and
     /// engrave all keep it right without a second code path.
     /// </summary>
     public CharacterStat KnockbackResistance { get; private set; }
@@ -30,7 +33,7 @@ public class EntityStats : MonoBehaviour
     [SerializeField] private float _damage;
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _speed;
-    [SerializeField] private float _blocking;
+    [SerializeField] private float _armor;
     [SerializeField] private float _attackSpeed;
 
     /// <summary>Fired after any modifier is added or removed so UI can refresh.</summary>
@@ -60,7 +63,8 @@ public class EntityStats : MonoBehaviour
 
         MaxHealth = new CharacterStat(_entity.maxHealth);
         Speed = new CharacterStat(_entity.unitData != null ? _entity.unitData.moveSpeed : 3f);
-        Blocking = new CharacterStat(0f);
+        Armor = new CharacterStat(0f);
+        MagicResist = new CharacterStat(0f);
         AttackSpeed = new CharacterStat(_entity.attackSpeed);
 
         KnockbackResistance = new CharacterStat(0f);
@@ -105,13 +109,15 @@ public class EntityStats : MonoBehaviour
                 case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.Speed:
                     Speed.AddModifier(new StatModifier(val, StatModType.Flat, source));
                     break;
-                case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.Blocking:
-                    Blocking.AddModifier(new StatModifier(val, StatModType.Flat, source));
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.Armor:
+                    Armor.AddModifier(new StatModifier(val, StatModType.Flat, source));
+                    break;
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.MagicResist:
+                    MagicResist.AddModifier(new StatModifier(val, StatModType.Flat, source));
                     break;
 
                 // Knockback resistance, authored as a percent (40 = shrugs off 40% of any throw).
-                // The vendor enum's unused Resistance slot, so the workshop already sorts and shows it.
-                case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.Resistance:
+                case Assets.HeroEditor.InventorySystem.Scripts.Enums.PropertyId.KnockbackResist:
                     KnockbackResistance.AddModifier(new StatModifier(val / 100f, StatModType.Flat, source));
                     break;
 
@@ -136,7 +142,8 @@ public class EntityStats : MonoBehaviour
         Damage.RemoveAllModifiersFromSource(source);
         MaxHealth.RemoveAllModifiersFromSource(source);
         Speed.RemoveAllModifiersFromSource(source);
-        Blocking.RemoveAllModifiersFromSource(source);
+        Armor.RemoveAllModifiersFromSource(source);
+        MagicResist.RemoveAllModifiersFromSource(source);
         AttackSpeed.RemoveAllModifiersFromSource(source);
 
         RefreshInspector();
@@ -186,7 +193,7 @@ public class EntityStats : MonoBehaviour
         _damage = Damage?.Value ?? 0f;
         _maxHealth = MaxHealth?.Value ?? 0f;
         _speed = Speed?.Value ?? 0f;
-        _blocking = Blocking?.Value ?? 0f;
+        _armor = Armor?.Value ?? 0f;
         _attackSpeed = AttackSpeed?.Value ?? 0f;
     }
 
@@ -200,7 +207,8 @@ public class EntityStats : MonoBehaviour
             { "Damage",       Damage.Value },
             { "Max Health",   MaxHealth.Value },
             { "Speed",        Speed.Value },
-            { "Blocking",     Blocking.Value },
+            { "Armor",        Armor.Value },
+            { "Magic Resist", MagicResist.Value },
             // Stated as a rate, not as the underlying multiplier — see AttacksPerSecond.
             { "Attacks / sec", AttacksPerSecond },
         };

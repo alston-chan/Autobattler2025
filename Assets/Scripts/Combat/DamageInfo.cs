@@ -1,3 +1,10 @@
+/// <summary>
+/// What mitigates a hit. Physical is reduced by Armor, Magical by MagicResist, True by nothing.
+/// Both resistances use the same curve (<see cref="Mitigation"/>): every point is one percent
+/// more effective health against that type, with no cap and no breakpoints.
+/// </summary>
+public enum DamageType { Physical, Magical, True }
+
 /// <summary>What kind of hurt this was — the one distinction feedback needs to make today.</summary>
 public enum DamageKind
 {
@@ -29,14 +36,18 @@ public readonly struct DamageInfo
     /// <summary>True for a critical hit — drives the louder number, per the readability rule.</summary>
     public readonly bool isCrit;
 
-    /// <summary>What the victim's Blocking took off this hit before it landed. Feedback and telemetry only.</summary>
+    /// <summary>What mitigation — armour or magic resist, then any shield — took off this hit before it landed. Feedback and telemetry only.</summary>
     public readonly float blocked;
 
     /// <summary>A hit, or a slam.</summary>
     public readonly DamageKind kind;
 
-    public DamageInfo(float amount, float remainingHealth, Entity source, bool isCrit, float blocked = 0f, DamageKind kind = DamageKind.Hit)
+    /// <summary>Physical, magical or true — what it was resisted by.</summary>
+    public readonly DamageType type;
+
+    public DamageInfo(float amount, float remainingHealth, Entity source, bool isCrit, float blocked = 0f, DamageKind kind = DamageKind.Hit, DamageType type = DamageType.Physical)
     {
+        this.type = type;
         this.amount = amount;
         this.remainingHealth = remainingHealth;
         this.source = source;

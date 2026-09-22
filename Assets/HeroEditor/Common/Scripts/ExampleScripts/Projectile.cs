@@ -20,6 +20,9 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
         public float critChance;
 
         public float knockbackForce = 3.5f;
+        // Project edit: what resists this projectile's hit. A bow's arrow is physical; a wand's bolt
+        // is magical, and WandAttackSpell says so when it launches one.
+        public DamageType damageType = DamageType.Physical;
         public float homingSpeed = 18.75f;
 
         public Entity shooter;
@@ -81,7 +84,7 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
             Entity entity = other.GetComponent<Entity>();
             if (entity != null && target != null && entity == target)
             {
-                entity.TakeDamage(damage, shooter, AttackRoll.IsCrit(critChance));
+                entity.TakeDamage(damage, shooter, AttackRoll.IsCrit(critChance), type: damageType);
                 Vector3 direction = (other.transform.position - transform.position).normalized;
                 entity.ApplyKnockback(direction, knockbackForce);
 

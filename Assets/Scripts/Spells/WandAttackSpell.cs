@@ -117,6 +117,7 @@ public class WandAttackSpell : Spell
         projectile.knockbackForce = knockbackForce;
         projectile.shooter = caster;
         projectile.target = target;
+        projectile.damageType = DamageType.Magical;   // a bolt of light is resisted by magic resist, not armour
 
         projectile.homingSpeed = boltSpeed;
 

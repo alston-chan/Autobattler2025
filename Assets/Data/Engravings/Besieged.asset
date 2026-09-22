@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Besieged
   m_EditorClassIdentifier: 
   engravingName: Besieged
-  description: +4 blocking per enemy targeting you.
-  blockingPerEnemyPerTier: 4
+  description: +24 armour per enemy targeting you.
+  armorPerEnemyPerTier: 24

@@ -15,8 +15,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/Engraving/Bulwark", fileName = "Engraving_Bulwark")]
 public class BulwarkEngraving : Engraving
 {
-    [Tooltip("Damage subtracted from each hit an adjacent ally takes, per tier.")]
-    public float blockingPerTier = 6f;
+    [Tooltip("Armour granted to each adjacent ally, per tier. 36 is about a quarter less physical damage.")]
+    public float armorPerTier = 36f;
 
     // Safe as an ordinary field: Resonance hands every hero their own copy of this engraving, so
     // this list belongs to one bearer rather than being shared across all of them.
@@ -29,22 +29,21 @@ public class BulwarkEngraving : Engraving
     }
 
     public override string DescribeTier(int tier) =>
-        $"Allies adjacent to the bearer take {blockingPerTier * Mathf.Max(1, tier):0.#} less damage " +
-        "from every hit.";
+        $"Allies adjacent to the bearer gain {armorPerTier * Mathf.Max(1, tier):0.#} armour — about {Mitigation.Fraction(armorPerTier * Mathf.Max(1, tier)) * 100f:0}% less physical damage — while you both stand.";
 
-    /// <summary>The badge shown over each ally beside the bearer: "BULWARK -6".</summary>
-    public override string PreviewLabel(int tier) => $"BULWARK -{blockingPerTier * Mathf.Max(1, tier):0.#}";
+    /// <summary>The badge shown over each ally beside the bearer: "BULWARK +36".</summary>
+    public override string PreviewLabel(int tier) => $"BULWARK +{armorPerTier * Mathf.Max(1, tier):0.#}";
 
     /// <summary>
-    /// Flat blocking adds, so an ally between two bearers reads as the total it will get. Bounded
+    /// Flat armour adds, so an ally between two bearers reads as the total it will get. Bounded
     /// in play by the damage floor a hit can never go below, not by anything here.
     /// </summary>
     public override string MergedLabel(List<int> tiers)
     {
         if (tiers.Count <= 1) return base.MergedLabel(tiers);
         float total = 0f;
-        foreach (var tier in tiers) total += blockingPerTier * Mathf.Max(1, tier);
-        return $"BULWARK -{total:0.#} ×{tiers.Count}";
+        foreach (var tier in tiers) total += armorPerTier * Mathf.Max(1, tier);
+        return $"BULWARK +{total:0.#} ×{tiers.Count}";
     }
 
     public override void Preview(Entity owner, int tier, List<Badge> into)
@@ -63,15 +62,15 @@ public class BulwarkEngraving : Engraving
         var runManager = GameManager.Instance != null ? GameManager.Instance.runManager : null;
         if (runManager == null || owner == null) return;
 
-        float amount = blockingPerTier * Mathf.Max(1, tier);
+        float amount = armorPerTier * Mathf.Max(1, tier);
 
         foreach (var ally in runManager.Formation.AdjacentTo(owner))
         {
-            if (ally == null || ally.Stats == null || ally.Stats.Blocking == null) continue;
+            if (ally == null || ally.Stats == null || ally.Stats.Armor == null) continue;
 
-            // Sourced by this copy so the grant can be removed without disturbing the Blocking an
+            // Sourced by this copy so the grant can be removed without disturbing the Armour an
             // ally gets from its own armour — or from another bearer of this same engraving.
-            ally.Stats.Blocking.AddModifier(new Kryz.CharacterStats.StatModifier(
+            ally.Stats.Armor.AddModifier(new Kryz.CharacterStats.StatModifier(
                 amount, Kryz.CharacterStats.StatModType.Flat, this));
             _buffed.Add(ally);
         }
@@ -82,8 +81,8 @@ public class BulwarkEngraving : Engraving
     {
         foreach (var ally in _buffed)
         {
-            if (ally == null || ally.Stats == null || ally.Stats.Blocking == null) continue;
-            ally.Stats.Blocking.RemoveAllModifiersFromSource(this);
+            if (ally == null || ally.Stats == null || ally.Stats.Armor == null) continue;
+            ally.Stats.Armor.RemoveAllModifiersFromSource(this);
         }
         _buffed.Clear();
     }

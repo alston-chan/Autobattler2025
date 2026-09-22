@@ -8,10 +8,9 @@ using UnityEngine;
 /// thrown weapon never did — not by decision, but because each new attack copied a neighbour that
 /// happened not to. Half the game's damage could not crit and nothing said so.
 ///
-/// This is deliberately two one-line rules rather than a damage pipeline. The pipeline is worth
-/// building when a mechanic needs every point of damage to pass through one place — armour,
-/// resistances, lifesteal, on-hit triggers — and writing it now would be guessing at that shape.
-/// What it does buy is that the next attack cannot quietly disagree about these two.
+/// This is deliberately two one-line rules. The damage pipeline itself — armour, magic resist,
+/// statuses, shields — lives in <see cref="Health.TakeDamage"/>, where every point of damage passes
+/// through one place; what this buys is that the next attack cannot quietly disagree about these two.
 /// </summary>
 public static class AttackRoll
 {

@@ -411,6 +411,7 @@ public class ZoneEffect : SpellEffect
     [Min(0.1f)] public float radius = 2f;
     public float seconds = 5f;
     public ScaledValue damagePerSecond = new ScaledValue(0f, ofWeaponDamage: 0.5f);
+    [Tooltip("What resists the ticks. Tar from a wand is magical.")] public DamageType damageType = DamageType.Physical;
     [Tooltip("Worn while inside and a moment after. Optional.")] public Status status;
     public float statusDuration = 1.5f;
     public Color color = new Color(0.12f, 0.06f, 0.02f, 0.78f);
@@ -423,6 +424,7 @@ public class ZoneEffect : SpellEffect
         if (caster == null || target == null) yield break;
         float reach = radius * ctx.scale; float dps = damagePerSecond.Evaluate(caster, null, ctx.tier);
         var status = this.status; float statusSeconds = statusDuration; float life = seconds; Color poolColor = color; Color stainColor = stain;
+        var type = damageType;
         LobbedBlob.Throw(Supplies.ThrowOrigin(caster), target.transform.position, lobSeconds, poolColor, reach * 0.35f, at =>
         {
             // Six splat shapes and a random mirror stand in for rotation: a floor shape is flattened by
@@ -432,6 +434,7 @@ public class ZoneEffect : SpellEffect
             if (UnityEngine.Random.value < 0.5f) pool.flipY = true;
             var zone = pool.gameObject.AddComponent<Zone>();
             zone.Begin(caster, reach, life, dps, status, statusSeconds, stainColor);
+            zone.DamageType = type;
         });
     }
 
@@ -475,6 +478,9 @@ public class Zone : MonoBehaviour
     private Vector3 _fullScale; private SpriteRenderer _sr; private Color _color;
     private readonly HashSet<Entity> _stained = new HashSet<Entity>();
     private const float Tick = 0.5f, Spread = 0.25f, Fade = 1f;
+
+    /// <summary>What resists the ticks; the effect that made the pool says.</summary>
+    public DamageType DamageType = DamageType.Physical;
 
     public void Begin(Entity owner, float radius, float seconds, float damagePerSecond, Status status, float statusDuration, Color stain)
     {
@@ -540,7 +546,7 @@ public class Zone : MonoBehaviour
         _nextTick += Tick;
         foreach (var v in inside)
         {
-            v.TakeDamage(_dps * Tick, Owner, quiet: true);   // it ticks; the stain is the feedback
+            v.TakeDamage(_dps * Tick, Owner, quiet: true, type: DamageType);   // it ticks; the stain is the feedback
             if (_status != null && v.Statuses != null) v.Statuses.Apply(_status, _statusDuration, Owner);
         }
     }

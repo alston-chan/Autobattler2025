@@ -295,9 +295,18 @@ Writing them:
   `impactSpeed` nothing happens; a throw's `impactMultiplier` is the only thing that changes it, and
   `CombatPhysics.DescribeThrow` prints the rule on every verb from the live numbers. There is no mass
   any more (it was a stat the player had to weigh on every reward screen for an effect they could
-  barely see). Resistance rides on HeroEditor's unused `Resistance` property, as a percent in
-  `Properties.csv`, and is meant to be rare. Slams show as `SLAM n` in their own colour and have a
+  barely see). Knockback resistance is `PropertyId.KnockbackResist`, as a percent in
+  `Properties.csv`, and is meant to be rare. Slams are physical: armour reduces them like any hit. Slams show as `SLAM n` in their own colour and have a
   `slam` column in the telemetry, so "where did that damage come from" has an answer on screen.
+- **`PropertyId` is a serialization contract: append, never insert.** `ItemCollection.asset` stores
+  a property as its integer (`Id: 30`), so a member added anywhere but the end silently renumbers
+  every property on every item. `Armor`, `MagicResist` and `KnockbackResist` are appended after the
+  vendor's `Shock`; `PropertyIdContractTests` pins the numbers. Damage goes through one pipeline
+  (`Health.TakeDamage`): armour or magic resist by `DamageType` on the LoL curve
+  (`Mitigation.Reduce`, 100/(100+rating)), then statuses, then shields. Blocking is gone — it was a
+  flat, half-capped reduction whose worth depended on what was swinging — converted at x6 with a
+  60 cap (vest 3 → armour 18, shield 12 → 60). Effects, statuses and the projectile declare their
+  type; the wand and its verbs are magical.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this

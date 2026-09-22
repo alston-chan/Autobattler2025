@@ -8,10 +8,10 @@ using UnityEngine;
 /// doubled — the rig has a paired slash and a paired jab, so the pair leads with one and follows
 /// with the other.
 ///
-/// The interesting consequence is not the damage total but how it arrives. Blocking subtracts a flat
-/// amount from every hit that lands (see <see cref="Health.ApplyBlocking"/>), so splitting a swing
-/// in two pays that toll twice. Paired blades tear through anything unarmoured and struggle badly
-/// against a shield wall, which is the opposite of the greatsword's single heavy blow. Neither is
+/// The interesting consequence is not the damage total but how it arrives. Armour takes a fraction
+/// of every hit (see <see cref="Mitigation"/>), so two strikes and one strike of the same total are
+/// mitigated alike — the split's cost now is the minimum a hit always lands for, and everything that
+/// triggers per hit. Paired blades are for on-hit effects; the greatsword is for the one big number. Neither is
 /// better; they want different enemies.
 /// </summary>
 [CreateAssetMenu(menuName = "Spells/DualWieldAttackSpell")]
@@ -40,7 +40,7 @@ public class DualWieldAttackSpell : Spell
     // Basic weapon attack — its rate scales with the caster's AttackSpeed.
     public override bool ScalesWithAttackSpeed => true;
 
-    /// <summary>Per-strike, since that is what a single hit is worth and what Blocking is set against.</summary>
+    /// <summary>Per-strike, since that is what a single hit is worth and what mitigation is applied to.</summary>
     public override float BaseDamage => damage;
 
     private void Reset()
