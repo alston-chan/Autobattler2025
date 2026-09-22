@@ -209,6 +209,14 @@ Three things cost an afternoon to learn:
   The checks then share one session — `PlayHarness.ReachTheBell` works whether the game is in Setup,
   already fighting, or between fights — because a session per check would mean carrying the run's
   progress across a reload too.
+- **Because they share a session, a check's leftovers are the next check's fight.** The decoy checks
+  leave decoys alive for six seconds, decoys taunt, and the pacing check that runs next counted every
+  taunted unit walking past a kiter to reach one as "walking past a fight" — 43–47%, failing at
+  random, for an afternoon. A check that spawns something must either clean it up or the checks
+  after it must expect it; and a metric that stands in for a game rule must carry the rule's
+  exclusions (taunted, Relentless, kiting, thrown). Likewise a check about *where units start* must
+  watch for the Combat transition itself, not "is a fight happening" — mid-session that samples a
+  fight in progress. `PlayChecks` runs that one first for exactly this reason.
 
 ## Odin
 

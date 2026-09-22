@@ -26,7 +26,7 @@ public static class PlayChecks
     {
         // First, because it is the only check that needs an actual bell rather than a fight in
         // progress: the others tolerate joining one, and this one is about where units START.
-        new PlayCheck("nobody is being shoved by the wall at the bell", NobodyStartsInsideTheSoftWall),
+        new PlayCheck("nobody opens the fight shoved, or out of rank", NobodyStartsInsideTheSoftWall),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -93,6 +93,30 @@ public static class PlayChecks
                     (worst != null ? DisplayNames.Unit(worst) : "someone") + " opens the fight sliding " +
                     fastestDrift.ToString("0.00") + " units/sec toward the centre with no walk " +
                     "animation, because the soft wall is pushing a unit that has decided to stand still");
+
+        // And the company is in rank: whoever fights at range opens behind whoever fights up close.
+        // GridFormation.AutoPlace used to fill the front rank in list order, and in the four-verb
+        // playtest that seated both archers a lancer's reach from the enemy with the daggers behind
+        // them. Kiters back off and advancers step up from the first frame, so this can only get
+        // truer after the bell — a failure here is a seating failure, not a timing one.
+        if (BattleGrid.Instance != null)
+        {
+            float centre = BattleGrid.Instance.CentreLine;
+            float nearestRanged = float.MaxValue, furthestMelee = float.MinValue;
+            Entity rangedInFront = null, meleeBehind = null;
+            foreach (var unit in PlayHarness.Living())
+            {
+                if (!unit.isTeam) continue;
+                float depth = Mathf.Abs(unit.transform.position.x - centre);
+                if (unit.FightsAtRange) { if (depth < nearestRanged) { nearestRanged = depth; rangedInFront = unit; } }
+                else if (depth > furthestMelee) { furthestMelee = depth; meleeBehind = unit; }
+            }
+            if (rangedInFront != null && meleeBehind != null)
+                Assert.That(nearestRanged, Is.GreaterThanOrEqualTo(furthestMelee),
+                            DisplayNames.Unit(rangedInFront) + " (ranged) opens " + nearestRanged.ToString("0.0") +
+                            " from the centre line, in front of " + DisplayNames.Unit(meleeBehind) + " (melee) at " +
+                            furthestMelee.ToString("0.0") + " — the company was seated in list order, not by role");
+        }
     }
 
     /// <summary>
@@ -311,6 +335,12 @@ public static class PlayChecks
                 if (unit.EffectiveStance == Stance.Kite) continue;                       // kiters are meant to back off
                 if (unit.EffectiveCommitment == Commitment.Relentless) continue;         // and these never let go
                 if (unit.Knockback != null && !unit.Knockback.Steerable) continue;       // being thrown is not walking
+
+                // A taunted unit is meant to walk past everyone to reach what taunted it — the
+                // retarget rule this check measures skips it too. Without this the check failed
+                // at 43-47% whenever the decoy checks before it had left a decoy alive: every
+                // counted frame was one unit, taunted, walking past a kiter to reach the decoy.
+                if (unit.Statuses != null && unit.Statuses.TauntedBy != null) continue;
 
                 float reach = ai.AttackRange;
                 if (Vector3.Distance(unit.transform.position, ai.CurrentTarget.transform.position) <= reach) continue;

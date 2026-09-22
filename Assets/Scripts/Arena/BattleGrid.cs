@@ -45,11 +45,38 @@ public class BattleGrid : MonoBehaviour
         Vector2 origin = allySide ? allyFrontBottom : enemyFrontBottom;
         float dir = allySide ? -1f : 1f;   // allies stack backwards to the left, enemies to the right
 
+        float top = origin.y + (rows - 1) * cellSize.y;
         var cell = new Vector3(origin.x + dir * column * cellSize.x,
-                               origin.y + row * cellSize.y,
+                               FitRow(origin.y + row * cellSize.y, origin.y, top),
                                0f);
 
         return OffTheWall(cell);
+    }
+
+    /// <summary>
+    /// A row's height, squeezed evenly when the grid is taller than the arena will let it be.
+    ///
+    /// The grid is one authored thing and the arenas are several: the coliseum is 4.2 tall with a
+    /// 1.2 band top and bottom, which leaves 1.8 for a grid whose three rows span 3.0. Clamping each
+    /// cell on its own put the bottom and top rows on the band's edges and left the middle where it
+    /// was — gaps of 1.1 and 0.7, bodies overlapping, and a jostle at the bell as the scrum sorted
+    /// it out. Scaling the whole span into the band keeps the rows evenly spaced and in order, which
+    /// is what a formation is. Only the rectangle knows its band as two numbers; a round arena is
+    /// left to <see cref="OffTheWall"/>, which pulls along the radius and keeps ranks anyway.
+    /// </summary>
+    private static float FitRow(float y, float lowestRow, float highestRow)
+    {
+        var arena = ArenaBounds.Instance;
+        if (arena == null || arena.shape != ArenaShape.Rectangle) return y;
+
+        var physics = CombatPhysics.Active;
+        if (physics == null || !physics.enableBodies || physics.softWallPush <= 0f) return y;
+
+        float bandLow = arena.MinY + physics.softWall, bandHigh = arena.MaxY - physics.softWall;
+        float span = highestRow - lowestRow, band = bandHigh - bandLow;
+        if (span <= 0.0001f || band <= 0.0001f || span <= band) return y;
+
+        return bandLow + (y - lowestRow) / span * band;
     }
 
     /// <summary>
@@ -69,7 +96,7 @@ public class BattleGrid : MonoBehaviour
     /// <see cref="BackgroundCycler"/>, so a cell that was clear when the formation was set can be
     /// inside the band by the time the fight starts. The bell applies this again, and that is the
     /// one that actually holds.
-    /// </summary>
+    ///
     /// A unit will not sit exactly where this puts it: bodies push each other apart every frame, so
     /// the outermost of a packed formation is shoved back toward the band by its neighbours and
     /// settles a little inside it. Measured at the bell — seated on the line, units come to rest at

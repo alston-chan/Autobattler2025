@@ -146,8 +146,14 @@ public class GridFormation
     }
 
     /// <summary>
-    /// Give any unit without a cell one, filling the front rank first so a company that was never
-    /// arranged still starts in a sensible line rather than stacked on one tile.
+    /// Give any unit without a cell one, so a company that was never arranged still starts in a
+    /// sensible line rather than stacked on one tile.
+    ///
+    /// Sensible means by role: whoever fights up close fills the front rank first, whoever fights
+    /// at range fills the back rank first. It used to fill the front rank in list order, which put
+    /// the bow and the wand in the front rank whenever they were listed first — and in the four-verb
+    /// playtest the two front ranks are two units apart, so both archers opened every fight inside
+    /// a lancer's reach, kiting from the first frame, while the daggers stood behind them.
     /// </summary>
     public void AutoPlace(IEnumerable<Entity> units)
     {
@@ -158,9 +164,11 @@ public class GridFormation
         {
             if (unit == null || _cells.ContainsKey(unit)) continue;
 
+            bool ranged = unit.FightsAtRange;
             bool placed = false;
-            for (int c = 0; c < grid.columns && !placed; c++)
+            for (int i = 0; i < grid.columns && !placed; i++)
             {
+                int c = ranged ? grid.columns - 1 - i : i;   // back rank first for range, front for reach
                 for (int r = 0; r < grid.rows && !placed; r++)
                 {
                     if (At(c, r) != null) continue;
