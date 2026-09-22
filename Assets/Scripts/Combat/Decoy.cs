@@ -47,10 +47,18 @@ public static class Decoy
             }
         }
 
-        var entity = go.AddComponent<Entity>();     // Awake adds Health, CombatAI, Statuses… and initialises them
+        // Configured before it wakes, like an encounter's spawns are (EncounterSpawner). AddComponent
+        // on a live object runs Awake AND OnEnable there and then, which registers the entity — and
+        // UnitBarsManager reads isTeam at that moment to colour the bar. Setting the team on the next
+        // line was one line too late: every decoy took the ally green, including the ones an enemy
+        // left behind, so a scarecrow standing in for a Ninja read as one of yours.
+        go.SetActive(false);
+        var entity = go.AddComponent<Entity>();
         entity.isTeam = owner.isTeam;
         entity.isCharacter = false;
         entity.maxHealth = health;
+        go.SetActive(true);                          // Awake and OnEnable run here, with the data in place
+
         if (entity.Health != null)
         {
             entity.Health.maxHealth = health;
