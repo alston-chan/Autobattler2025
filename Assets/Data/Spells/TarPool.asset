@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TarPool
   m_EditorClassIdentifier: 
   spellName: Tar Pool
-  description: 'A pool 2 wide under the nearest enemy for 5 seconds: 0.5x weapon
+  description: 'A pool 4 across under the nearest enemy for 5 seconds: 0.5x weapon
     damage a second to enemies in it, and they deal 15% less while Tarred. They walk
     out; throw them back in.'
   cooldown: 0

@@ -85,12 +85,44 @@ public static class ShapeSprites
         return Sprite.Create(texture, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), size);
     }
 
+    /// <summary>
+    /// How much shorter a shape on the floor is than it is wide: the floor is seen at an angle, so a
+    /// circle lying on it is drawn as an ellipse this flat. What is drawn this way is also judged
+    /// this way (<see cref="OnFloorWithin"/>).
+    /// </summary>
+    public const float FloorDepth = 0.55f;
+
+    /// <summary>
+    /// Whether a unit standing at <paramref name="p"/> is inside a floor shape of this radius — the
+    /// ellipse <see cref="OnFloor(string, Vector3, float, Color, Sprite)"/> draws, not a circle.
+    ///
+    /// Arrow Rain and Tar Pool drew the ellipse and judged a circle, which reached 1.8 times as far
+    /// up and down as the ring on the floor: grid rows are 1.5 apart, so Arrow Rain's 2.5 hit the
+    /// rows above and below its target, standing visibly outside it, and units walked out of a pool
+    /// from floor that looked bare. The player reads the ring; the ring is the rule.
+    /// </summary>
+    public static bool OnFloorWithin(Vector3 centre, float radius, Vector3 p)
+    {
+        if (radius <= 0f) return false;
+        float dx = (p.x - centre.x) / radius, dy = (p.y - centre.y) / (radius * FloorDepth);
+        return dx * dx + dy * dy <= 1f;
+    }
+
+    /// <summary>Everything of the other side alive inside a floor shape: an area as it is drawn.</summary>
+    public static List<Entity> EnemiesOnFloor(Entity of, Vector3 centre, float radius)
+    {
+        var found = new List<Entity>();
+        foreach (var e in EntityRegistry.All)
+            if (e != null && !e.isDead && e.gameObject.activeInHierarchy && e.isTeam != of.isTeam && OnFloorWithin(centre, radius, e.transform.position)) found.Add(e);
+        return found;
+    }
+
     /// <summary>A ring, disc or splat on the floor at a point, sized to a radius, drawn under the units.</summary>
     public static SpriteRenderer OnFloor(string name, Vector3 at, float radius, Color color, Sprite sprite)
     {
         var go = new GameObject(name);
         go.transform.position = new Vector3(at.x, at.y, 0f);
-        go.transform.localScale = new Vector3(radius * 2f, radius * 2f * 0.55f, 1f);   // the floor is seen at an angle: shapes lie flat
+        go.transform.localScale = new Vector3(radius * 2f, radius * 2f * FloorDepth, 1f);   // the floor is seen at an angle: shapes lie flat
         var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = sprite;
         sr.color = color;
@@ -101,7 +133,7 @@ public static class ShapeSprites
     public static SpriteRenderer OnFloor(string name, Vector3 at, float radius, Color color, bool filled) =>
         OnFloor(name, at, radius, color, filled ? Disc() : ThinRing());
 
-    /// <summary>Everything of the other side alive within a radius of a point.</summary>
+    /// <summary>Everything of the other side alive within a radius of a point: a blade's edge, not an area on the floor.</summary>
     public static List<Entity> EnemiesWithin(Entity of, Vector3 point, float radius)
     {
         var found = new List<Entity>();
@@ -164,7 +196,7 @@ public class StrikeAtPointEffect : SpellEffect
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => $"after {delay:0.#} s, {damage.DescribeAt(tier)} damage to enemies within {radius * scale:0.#} of where the target stood" + (knockback > 0f ? $", flung outward (force {knockback * scale:0})" : "");
+    public override string Describe(int tier, float scale) => $"after {delay:0.#} s, {damage.DescribeAt(tier)} damage to enemies in a ring {radius * scale * 2f:0.#} across where the target stood" + (knockback > 0f ? $", flung outward (force {knockback * scale:0})" : "");
 }
 
 /// <summary>The strike's clock, on the ring it drew: the closing ring, the volley, the landing.</summary>
@@ -199,7 +231,7 @@ public class DelayedStrike : MonoBehaviour
         if (_closing != null)
         {
             float r = Mathf.Lerp(_radius * 1.6f, _radius, t);
-            _closing.transform.localScale = new Vector3(r * 2f, r * 2f * 0.55f, 1f);
+            _closing.transform.localScale = new Vector3(r * 2f, r * 2f * ShapeSprites.FloorDepth, 1f);
         }
 
         // The volley: loosed one by one through the last stretch, each timed to arrive with the strike.
@@ -209,7 +241,7 @@ public class DelayedStrike : MonoBehaviour
             while (_loosed < due)
             {
                 Vector2 spot = UnityEngine.Random.insideUnitCircle * _radius * 0.9f;
-                Vector3 land = _point + new Vector3(spot.x, spot.y * 0.55f, 0f);
+                Vector3 land = _point + new Vector3(spot.x, spot.y * ShapeSprites.FloorDepth, 0f);
                 FallingArrow.Drop(_arrowPrefab, land + Vector3.up * _fallHeight, land, _fallSpeed * UnityEngine.Random.Range(0.9f, 1.15f));
                 _loosed++;
             }
@@ -217,7 +249,7 @@ public class DelayedStrike : MonoBehaviour
 
         if (left > 0f) return;
         if (_caster != null)
-            foreach (var v in ShapeSprites.EnemiesWithin(_caster, _point, _radius))
+            foreach (var v in ShapeSprites.EnemiesOnFloor(_caster, _point, _radius))
             {
                 v.TakeDamage(_damage, _caster);
                 if (_force > 0f) { Vector3 dir = v.transform.position - _point; v.ApplyKnockback(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.right, _force, _caster); }
@@ -355,7 +387,7 @@ public class OrbitRunner : MonoBehaviour
     private readonly Dictionary<Entity, float> _nextHit = new Dictionary<Entity, float>();
 
     /// <summary>The ellipse the blades trace is flattened like the floor: rows read as depth in this side-on view.</summary>
-    public const float Depth = 0.55f;
+    public const float Depth = ShapeSprites.FloorDepth;
 
     /// <summary>
     /// Where a blade is on the ground at <paramref name="angleDegrees"/>, relative to the caster's
@@ -468,7 +500,7 @@ public class ZoneEffect : SpellEffect
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => $"a pool {radius * scale:0.#} wide under the target for {seconds:0.#} s: {damagePerSecond.DescribeAt(tier)} damage a second to enemies in it" + (status != null ? $", {status.DisplayName} while inside" : "") + "; they walk out";
+    public override string Describe(int tier, float scale) => $"a pool {radius * scale * 2f:0.#} across under the target for {seconds:0.#} s: {damagePerSecond.DescribeAt(tier)} damage a second to enemies in it" + (status != null ? $", {status.DisplayName} while inside" : "") + "; they walk out";
 }
 
 /// <summary>A blob in an arc from hand to floor; what it does when it lands is the caller's.</summary>
@@ -526,7 +558,10 @@ public class Zone : MonoBehaviour
     private void OnEnable() { All.Add(this); }
     private void OnDisable() { All.Remove(this); foreach (var e in _stained) Unstain(e); _stained.Clear(); }
 
-    public bool Contains(Entity e) => e != null && (e.transform.position - transform.position).magnitude <= Radius;
+    public bool Contains(Entity e) => e != null && Covers(e.transform.position);
+
+    /// <summary>Whether a point is on the pool as drawn, or within <paramref name="margin"/> of its rim.</summary>
+    public bool Covers(Vector3 p, float margin = 0f) => ShapeSprites.OnFloorWithin(transform.position, Radius + margin, p);
 
     /// <summary>The pool this unit is standing in that belongs to the other side, or null.</summary>
     public static Zone HostileAt(Entity e)
@@ -557,7 +592,7 @@ public class Zone : MonoBehaviour
         {
             _nextBubble = Time.time + UnityEngine.Random.Range(0.25f, 0.5f);
             Vector2 spot = UnityEngine.Random.insideUnitCircle * Radius * 0.7f;
-            var bubble = ShapeSprites.Floating("TarBubble", ShapeSprites.Disc(), transform.position + new Vector3(spot.x, spot.y * 0.55f, 0f), 0.12f, new Color(_color.r + 0.12f, _color.g + 0.08f, _color.b + 0.05f, 0.9f), -395);
+            var bubble = ShapeSprites.Floating("TarBubble", ShapeSprites.Disc(), transform.position + new Vector3(spot.x, spot.y * ShapeSprites.FloorDepth, 0f), 0.12f, new Color(_color.r + 0.12f, _color.g + 0.08f, _color.b + 0.05f, 0.9f), -395);
             bubble.gameObject.AddComponent<Bubble>();
         }
 

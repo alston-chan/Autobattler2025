@@ -13,8 +13,8 @@ public class SpaceVerbTests
     public void ArrowRainReachesFurtherAtTierThree()
     {
         var e = new StrikeAtPointEffect { delay = 1.2f, radius = 2.5f, knockback = 6f };
-        Assert.That(e.Describe(1, 1f), Does.Contain("after 1.2 s").And.Contain("within 2.5").And.Contain("force 6"));
-        Assert.That(e.Describe(3, 1.5f), Does.Contain("within 3.8").And.Contain("force 9"));
+        Assert.That(e.Describe(1, 1f), Does.Contain("after 1.2 s").And.Contain("a ring 5 across").And.Contain("force 6"));
+        Assert.That(e.Describe(3, 1.5f), Does.Contain("a ring 7.5 across").And.Contain("force 9"));
     }
 
     [Test]
@@ -47,11 +47,24 @@ public class SpaceVerbTests
     }
 
     [Test]
+    public void AnAreaOnTheFloorHitsWhatItDraws()
+    {
+        // The ring is drawn as an ellipse, FloorDepth as tall as it is wide, and was judged as a
+        // circle: Arrow Rain's 2.5 reached the rows above and below its target, 1.5 away, standing
+        // visibly outside the ring. The ring is the rule.
+        var centre = new Vector3(0f, -2f, 0f);
+        Assert.That(ShapeSprites.OnFloorWithin(centre, 2.5f, centre + new Vector3(2.4f, 0f, 0f)), Is.True, "along the floor, the full radius");
+        Assert.That(ShapeSprites.OnFloorWithin(centre, 2.5f, centre + new Vector3(0f, 1.3f, 0f)), Is.True, "up the floor, inside the drawn edge at 1.375");
+        Assert.That(ShapeSprites.OnFloorWithin(centre, 2.5f, centre + new Vector3(0f, 1.5f, 0f)), Is.False, "the next row up is outside the ring");
+        Assert.That(ShapeSprites.OnFloorWithin(centre, 2.5f, centre + new Vector3(1.5f, -1.2f, 0f)), Is.False, "nor a corner the circle took");
+    }
+
+    [Test]
     public void TarPoolSaysItsVictimsWalkOut()
     {
         var e = new ZoneEffect { radius = 2f, seconds = 5f };
-        Assert.That(e.Describe(1, 1f), Does.Contain("2 wide").And.Contain("5 s").And.EndWith("they walk out"));
-        Assert.That(e.Describe(2, 1.25f), Does.Contain("2.5 wide"));
+        Assert.That(e.Describe(1, 1f), Does.Contain("4 across").And.Contain("5 s").And.EndWith("they walk out"));
+        Assert.That(e.Describe(2, 1.25f), Does.Contain("5 across"));
     }
 
     [Test]

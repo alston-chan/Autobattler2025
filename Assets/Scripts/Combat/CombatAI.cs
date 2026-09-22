@@ -256,7 +256,7 @@ public class CombatAI : MonoBehaviour
                 // stays and finishes; that, and a throw back in, is what the pool is for.
                 var pool = Zone.HostileAt(_entity);
                 if (pool != null) { _fleeingPool = pool; _avoided = pool; }
-                else if (_fleeingPool != null && Vector3.Distance(transform.position, _fleeingPool.transform.position) > _fleeingPool.Radius + PoolMargin) _fleeingPool = null;
+                else if (_fleeingPool != null && !_fleeingPool.Covers(transform.position, PoolMargin)) _fleeingPool = null;
                 if (_fleeingPool != null)
                 {
                     // Keep going a little past the rim, or a unit whose target stands across the pool
@@ -317,8 +317,7 @@ public class CombatAI : MonoBehaviour
     {
         if (_avoided == null) return false;                       // destroyed pools read as null
         if (target == null) { _avoided = null; return false; }
-        return Vector3.Distance(target.transform.position, _avoided.transform.position)
-               <= _avoided.Radius + PoolMargin;
+        return _avoided.Covers(target.transform.position, PoolMargin);
     }
 
     // The chaser this unit has accepted it cannot outrun, and the retreat it is judging (Kiting).
