@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Arrow Rain
   description: A ring appears under the farthest enemy; 1.2 seconds later everything
     still inside takes 1.2x weapon damage and is flung outward at force 6. A diver
-    leaves it, a holder eats it, and a pull can put a body into it.
+    leaves it, a unit in a fight eats it, and a pull can put a body into it.
   cooldown: 0
   range: 12
   alwaysOn: 0

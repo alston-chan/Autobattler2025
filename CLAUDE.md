@@ -330,6 +330,13 @@ Writing them:
   running game has the rig's scale, so such a thing needs a play check
   (`AWhirlCutsTheEnemyBesideIt`) — and at a distance the broken version would miss: at 1.2 the
   shrunken ring still grazed a body, and that first version of the check passed on the bug.
+- **An area on the floor is judged as it is drawn.** `ShapeSprites.OnFloor` draws a circle flattened
+  to `FloorDepth` (0.55) because the floor is seen at an angle; `OnFloorWithin` / `EnemiesOnFloor` /
+  `Zone.Covers` judge that same ellipse. Arrow Rain and Tar Pool once drew the ellipse and judged a
+  circle, hitting the rows above and below the ring. Point-to-point reach (a swing, a body, a blade's
+  edge) stays a plain distance: nothing is drawn for it.
+- **`Stance` is serialized by number; 2 was Hold and stays retired.** A tactics item stores its
+  stance as an int; `NoItemAsksForTheStanceThatWasRemoved` fails on an asset still carrying it.
 - **A cell is where a unit stands, and the soft wall gives way to the grid.** `BattleGrid.CellToWorld`
   is the exact cell centre; `CombatPhysics.WallBand` is the authored `softWall` or the grid's nearest
   cell's room to the edge, whichever is less, so nobody opens a fight being slid. Squeezing the cells

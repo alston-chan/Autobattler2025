@@ -35,17 +35,9 @@ public class CombatAI : MonoBehaviour
     /// <summary>How many times any unit's leash has broken this session — for measuring the rule.</summary>
     public static int LeashBreaks;
 
-    // The stance's memory: when the bell rang and how hurt the unit was then, so Hold knows when
-    // its wait is over and whether it has been hurt since.
-    private float _fightStart;
-    private float _healthAtBell;
-
-    /// <summary>The bell. Stances that wait or hold measure from here.</summary>
+    /// <summary>The bell.</summary>
     public void OnFightStart()
     {
-        _fightStart = Time.time;
-        _healthAtBell = _entity != null && _entity.Health != null ? _entity.Health.currentHealth : 0f;
-
         // A new fight is a new question: whoever we could not outrun last time is not here, and
         // neither is the ground we were keeping off.
         _unescapable = null;
@@ -293,8 +285,7 @@ public class CombatAI : MonoBehaviour
     /// <summary>
     /// Where the stance says to go this frame, or nowhere. Advance closes on the target; Kite backs
     /// away from whatever is nearest when it comes inside the unit's reach, and otherwise closes
-    /// like anyone else; Hold stands its ground until hurt or until the wait runs out; Dive is
-    /// Advance with a different target. Docs/Combat.md, "Stances".
+    /// like anyone else; Dive is Advance with a different target. Docs/Combat.md, "Stances".
     /// </summary>
     /// <summary>The hostile pool this unit is walking out of, until it is clear of the rim by <see cref="PoolMargin"/>.</summary>
     private Zone _fleeingPool;
@@ -389,12 +380,6 @@ public class CombatAI : MonoBehaviour
                     }
                 }
                 _kiting = false;
-                break;
-            }
-            case Stance.Hold:
-            {
-                bool hurt = _entity.Health != null && _entity.Health.currentHealth < _healthAtBell - 0.5f;
-                if (distToTarget > _attackRange && !hurt && Time.time - _fightStart < s.holdSeconds) return Vector3.zero;
                 break;
             }
         }

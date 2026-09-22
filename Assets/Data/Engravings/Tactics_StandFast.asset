@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Tactics_StandFast
   m_EditorClassIdentifier: 
   engravingName: Stand Fast
-  description: The wearer holds its ground and fights whatever comes within reach
-    of it, the nearest first.
-  stance: 2
+  description: The wearer fights the nearest enemy and never lets go of it until
+    it falls.
+  stance: 0
   setsTarget: 1
   targetMode: 0
-  setsCommitment: 0
-  commitment: 1
+  setsCommitment: 1
+  commitment: 2

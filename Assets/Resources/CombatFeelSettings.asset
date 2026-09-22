@@ -85,7 +85,6 @@ MonoBehaviour:
     kiteHomeBias: 0
     kiteSpeed: 0.85
     kiteWallMargin: 1
-    holdSeconds: 4
   impactFx:
     bodyHit: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
     wallSlam: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}

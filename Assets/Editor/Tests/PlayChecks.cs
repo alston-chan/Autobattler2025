@@ -28,6 +28,7 @@ public static class PlayChecks
         // progress: the others tolerate joining one, and this one is about where units START.
         new PlayCheck("nobody opens the fight shoved, or out of rank", NobodyStartsInsideTheSoftWall),
         new PlayCheck("a whirl cuts the enemy beside it", AWhirlCutsTheEnemyBesideIt),
+        new PlayCheck("hold the line covers whoever is close", HoldTheLineCoversWhoeverIsClose),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -89,6 +90,46 @@ public static class PlayChecks
 
         Assert.That(struck, Is.GreaterThan(0), "Whirl spun on " + DisplayNames.Unit(caster) + " for two seconds and never touched " +
                     DisplayNames.Unit(foe) + ", standing 1.4 away — is the ring being drawn at the rig's scale?");
+    }
+
+    /// <summary>
+    /// Hold the Line covers an ally who stands close and lets go of one who walks away. It was a
+    /// line that held only while its wearer stood still, with a stance to keep it still; now it is
+    /// cover that goes where the fight goes, which only the running game can move units through.
+    /// </summary>
+    private static IEnumerator HoldTheLineCoversWhoeverIsClose()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var line = UnityEditor.AssetDatabase.LoadAssetAtPath<HoldTheLineEngraving>("Assets/Data/Engravings/HoldTheLine.asset");
+        Assert.That(line, Is.Not.Null);
+        Assert.That(line.heldLine, Is.Not.Null, "Hold the Line has no status to give");
+
+        Entity guard = null, ally = null;
+        foreach (var unit in PlayHarness.Living())
+        {
+            if (!unit.isTeam) continue;
+            if (guard == null) guard = unit; else if (ally == null) ally = unit;
+        }
+        Assert.That(ally, Is.Not.Null, "the company needs two living heroes for this");
+        bool hadIt = ally.Statuses.Has(line.heldLine);
+        Assert.That(hadIt, Is.False, DisplayNames.Unit(ally) + " already wears Held Line; this check cannot tell who gave it");
+
+        var cover = guard.gameObject.AddComponent<Bodyguard>();
+        try
+        {
+            cover.Begin(guard, line.heldLine, line.radius, 1);
+            ally.transform.position = guard.transform.position + Vector3.up * (line.radius * 0.6f);
+            yield return PlayHarness.Until(() => ally.Statuses.Has(line.heldLine), DisplayNames.Unit(ally) + " to be covered, standing " + (line.radius * 0.6f).ToString("0.0") + " from its guard", 2f);
+
+            ally.transform.position = guard.transform.position + Vector3.up * (line.radius + 2f);
+            yield return PlayHarness.Until(() => !ally.Statuses.Has(line.heldLine), DisplayNames.Unit(ally) + " to lose its cover, " + (line.radius + 2f).ToString("0.0") + " away", 2f);
+        }
+        finally
+        {
+            cover.End();
+            UnityEngine.Object.Destroy(cover);
+        }
     }
 
     /// <summary>

@@ -50,10 +50,10 @@ public class TacticsEngravingTests
     {
         var unit = Fresh();
         unit.commitment = Commitment.Opportunistic;   // what a kit authored
-        var helm = Item(Stance.Hold, TargetMode.LowestHealth, Commitment.Relentless);
+        var helm = Item(Stance.Dive, TargetMode.LowestHealth, Commitment.Relentless);
 
         helm.OnGranted(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Hold));
+        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Dive));
         Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.LowestHealth));
         Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Relentless));
         Assert.That(unit.TacticsSource, Is.SameAs(helm));
@@ -80,7 +80,7 @@ public class TacticsEngravingTests
     public void TheLastItemWornWinsAndLosingItFallsBackToTheOther()
     {
         var unit = Fresh();
-        var first = Item(Stance.Hold, commitment: Commitment.Relentless);
+        var first = Item(Stance.Dive, commitment: Commitment.Relentless);
         var second = Item(Stance.Kite);
         first.OnGranted(unit, 1);
         second.OnGranted(unit, 1);
@@ -88,15 +88,15 @@ public class TacticsEngravingTests
         Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Balanced), "the second item says nothing about commitment, so it is the authored one");
 
         second.OnRevoked(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Hold));
+        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Dive));
         Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Relentless));
     }
 
     [Test]
     public void TheDescriptionSaysWhatChanges()
     {
-        Assert.That(Item(Stance.Hold, TargetMode.LowestHealth, Commitment.Relentless).DescribeTier(1),
-                    Is.EqualTo("Holds · goes for the weakest · never lets go"));
+        Assert.That(Item(Stance.Dive, TargetMode.LowestHealth, Commitment.Relentless).DescribeTier(1),
+                    Is.EqualTo("Dives · goes for the weakest · never lets go"));
         Assert.That(Item(Stance.Kite).DescribeTier(1), Is.EqualTo("Kites"));
         Assert.That(Item().DescribeTier(1), Is.EqualTo("Changes nothing"));
     }
@@ -120,15 +120,28 @@ public class TacticsEngravingTests
     };
 
     [Test]
-    public void HoldTheLineHoldsTheLine()
+    public void HoldTheLineIsCoverNotAStance()
     {
+        // It carried the Hold stance so its wearer would not walk off and break it; Hold is gone and
+        // the line covers whoever stands near, so the wearer fights like anyone else.
         var unit = Fresh();
         var line = ScriptableObject.CreateInstance<HoldTheLineEngraving>();
         line.OnGranted(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Hold));
-        Assert.That(line.DescribeTier(1), Does.StartWith("Holds"));
-        line.OnRevoked(unit, 1);
         Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Advance));
+        Assert.That(line.DescribeTier(2), Is.EqualTo("Allies within 2 of you take 10% less."));
+        line.OnRevoked(unit, 1);
+    }
+
+    [Test]
+    public void NoItemAsksForTheStanceThatWasRemoved()
+    {
+        // Stance 2 was Hold. The number is never reused, and an asset still carrying it would read
+        // as a stance the AI has no case for.
+        foreach (var guid in AssetDatabase.FindAssets("t:TacticsEngraving"))
+        {
+            var item = AssetDatabase.LoadAssetAtPath<TacticsEngraving>(AssetDatabase.GUIDToAssetPath(guid));
+            Assert.That(System.Enum.IsDefined(typeof(Stance), item.stance), Is.True, item.name + " asks for stance " + (int)item.stance);
+        }
     }
 
     [Test]
@@ -136,6 +149,7 @@ public class TacticsEngravingTests
     {
         // A kit authors no stance of its own, so one of its items has to say how it fights, or it is
         // just a unit that advances. Every kit was written with a plan; this keeps the plan on an item.
+        // The Wall Keeper's plan is to guard whoever stands near it, which Hold the Line carries.
         var database = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>("Assets/Resources/ResonanceDatabase.asset");
         foreach (var guid in AssetDatabase.FindAssets("t:EnemyKit", new[] { "Assets/Data/EnemyKits" }))
         {

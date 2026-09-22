@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeldLine
   m_EditorClassIdentifier: 
   displayName: Held Line
-  description: 'Covered by a wall that has not moved: takes 5% less per stack.'
+  description: 'Covered by a Wall Keeper standing close: takes 5% less per stack.'
   glyph: "\u25AE"
   glyphColor: {r: 0.75, g: 0.8, b: 0.9, a: 1}
   isDebuff: 0
