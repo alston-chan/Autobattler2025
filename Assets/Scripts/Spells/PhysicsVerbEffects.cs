@@ -333,8 +333,12 @@ public class OrbitEffect : SpellEffect
     public override IEnumerator Run(SpellContext ctx)
     {
         var caster = ctx.caster; if (caster == null) yield break;
+        // Not parented to the caster. A child inherits the rig's scale — 0.5 on these characters —
+        // so the authored 1.6 was a 0.8 circle, inside the 1.1 at which two bodies touch: the
+        // blades passed through the space between the caster and its enemies and hit nobody, on
+        // every cast. The runner follows the caster instead, and every number here is in the world.
         var host = new GameObject("Whirl");
-        host.transform.SetParent(caster.transform, false); host.transform.localPosition = Vector3.zero;
+        host.transform.position = caster.transform.position;
         var runner = host.AddComponent<OrbitRunner>();
         int count = blades + bladesPerTier * Mathf.Max(0, ctx.tier - 1);
         runner.Begin(caster, count, seconds, radius * ctx.scale, spin, damage.Evaluate(caster, null, ctx.tier), force * ctx.scale, hitInterval, hitRadius, Supplies.FindSprite(caster, spriteName), spriteScale);
@@ -346,13 +350,32 @@ public class OrbitEffect : SpellEffect
 
 public class OrbitRunner : MonoBehaviour
 {
-    private Entity _caster; private float _until, _radius, _spin, _damage, _force, _interval, _hitRadius, _angle;
+    private Entity _caster; private float _until, _radius, _spin, _damage, _force, _interval, _hitRadius, _angle, _lift;
     private readonly List<Transform> _blades = new List<Transform>();
     private readonly Dictionary<Entity, float> _nextHit = new Dictionary<Entity, float>();
+
+    /// <summary>The ellipse the blades trace is flattened like the floor: rows read as depth in this side-on view.</summary>
+    public const float Depth = 0.55f;
+
+    /// <summary>
+    /// Where a blade is on the ground at <paramref name="angleDegrees"/>, relative to the caster's
+    /// feet. What it hits is judged here, at feet level, where every unit's position is; the sprite
+    /// is drawn a little higher, at the body, and was once judged there too, which took another
+    /// slice off a circle that was already too small to reach anyone.
+    /// </summary>
+    public static Vector3 GroundOffset(float angleDegrees, float radius)
+    {
+        float a = angleDegrees * Mathf.Deg2Rad;
+        return new Vector3(Mathf.Cos(a) * radius, Mathf.Sin(a) * radius * Depth, 0f);
+    }
 
     public void Begin(Entity caster, int count, float seconds, float radius, float spin, float damage, float force, float interval, float hitRadius, Sprite sprite, float spriteScale)
     {
         _caster = caster; _until = Time.time + seconds; _radius = radius; _spin = spin; _damage = damage; _force = force; _interval = interval; _hitRadius = hitRadius;
+
+        // The art is sized to the body, as it was when the blades rode on the rig.
+        float body = Mathf.Abs(caster.transform.lossyScale.y);
+        _lift = 0.6f * body;
         for (int i = 0; i < count; i++)
         {
             var go = new GameObject("Blade" + i);
@@ -360,7 +383,7 @@ public class OrbitRunner : MonoBehaviour
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = sprite != null ? sprite : ShapeSprites.Disc();
             sr.sortingOrder = Fx.SortingOrder;
-            go.transform.localScale = Vector3.one * (sprite != null ? spriteScale : 0.3f);
+            go.transform.localScale = Vector3.one * (sprite != null ? spriteScale : 0.3f) * body;
             _blades.Add(go.transform);
         }
         Place();
@@ -369,11 +392,13 @@ public class OrbitRunner : MonoBehaviour
     private void Update()
     {
         if (Time.time >= _until || _caster == null || _caster.isDead) { Destroy(gameObject); return; }
+        transform.position = _caster.transform.position;
         _angle += _spin * Time.deltaTime;
         Place();
-        foreach (var blade in _blades)
+        for (int i = 0; i < _blades.Count; i++)
         {
-            foreach (var v in ShapeSprites.EnemiesWithin(_caster, blade.position, _hitRadius))
+            Vector3 ground = transform.position + GroundOffset(BladeAngle(i), _radius);
+            foreach (var v in ShapeSprites.EnemiesWithin(_caster, ground, _hitRadius))
             {
                 float next; if (_nextHit.TryGetValue(v, out next) && Time.time < next) continue;
                 _nextHit[v] = Time.time + _interval;
@@ -384,12 +409,16 @@ public class OrbitRunner : MonoBehaviour
         }
     }
 
+    /// <summary>How many different enemies the blades have cut so far.</summary>
+    public int Struck => _nextHit.Count;
+
+    private float BladeAngle(int i) => _angle + 360f * i / _blades.Count;
+
     private void Place()
     {
         for (int i = 0; i < _blades.Count; i++)
         {
-            float a = (_angle + 360f * i / _blades.Count) * Mathf.Deg2Rad;
-            _blades[i].localPosition = new Vector3(Mathf.Cos(a) * _radius, Mathf.Sin(a) * _radius * 0.55f + 0.6f, -0.5f);
+            _blades[i].localPosition = GroundOffset(BladeAngle(i), _radius) + new Vector3(0f, _lift, -0.5f);
             _blades[i].localRotation = Quaternion.Euler(0f, 0f, _angle * 3f);
         }
     }

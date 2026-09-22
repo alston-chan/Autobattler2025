@@ -322,6 +322,18 @@ Writing them:
   without rows, so adding an item to a kit means designing it in the same commit. Random gear rolls
   draw only from authored items, so nobody is ever dealt a piece that does nothing. Re-import after
   editing the CSV; the importer replaces the collection.
+- **A child of a unit is drawn at the rig's scale — 0.5 on the characters — and its facing flip.**
+  Whirl's blades were parented to the caster, so its authored 1.6 circle was 0.8 in the world, inside
+  the 1.1 at which two bodies touch: every cast hit nobody, while the asset, the tooltip and an edit
+  mode test all read right. Anything with a reach in world units (a ring, an aura, a hit radius) is
+  a separate object that follows the unit; judge hits at the feet, where positions are. Only the
+  running game has the rig's scale, so such a thing needs a play check
+  (`AWhirlCutsTheEnemyBesideIt`) — and at a distance the broken version would miss: at 1.2 the
+  shrunken ring still grazed a body, and that first version of the check passed on the bug.
+- **A cell is where a unit stands, and the soft wall gives way to the grid.** `BattleGrid.CellToWorld`
+  is the exact cell centre; `CombatPhysics.WallBand` is the authored `softWall` or the grid's nearest
+  cell's room to the edge, whichever is less, so nobody opens a fight being slid. Squeezing the cells
+  off the wall instead put units beside their tiles and was reported as looking wrong.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this

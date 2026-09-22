@@ -27,6 +27,7 @@ public static class PlayChecks
         // First, because it is the only check that needs an actual bell rather than a fight in
         // progress: the others tolerate joining one, and this one is about where units START.
         new PlayCheck("nobody opens the fight shoved, or out of rank", NobodyStartsInsideTheSoftWall),
+        new PlayCheck("a whirl cuts the enemy beside it", AWhirlCutsTheEnemyBesideIt),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -36,6 +37,59 @@ public static class PlayChecks
         new PlayCheck("a body thrown into the wall loses the flat number, as a slam", AWallSlamIsFlatAndSaysSo),
         new PlayCheck("nobody stands a hand's width out of reach", NobodyStandsJustOutOfReach),
     };
+
+    /// <summary>
+    /// Whirl, cast for real on a real rig, touches an enemy standing beside the caster.
+    ///
+    /// Its blades were parented to the caster and inherited the character's 0.5 scale, so the
+    /// authored 1.6 circle was 0.8 in the world — inside the 1.1 at which two bodies touch. Every
+    /// cast passed between the caster and its enemies: measured, two casts in a fight, zero hits,
+    /// with numbers in the asset and the tooltip that all looked right. Only the running game has
+    /// the rig's scale, which is why this is a play check.
+    /// </summary>
+    private static IEnumerator AWhirlCutsTheEnemyBesideIt()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var whirl = UnityEditor.AssetDatabase.LoadAssetAtPath<CompositeSpell>("Assets/Data/Spells/Whirl.asset");
+        OrbitEffect orbit = null;
+        foreach (var e in whirl.effects) if (e is OrbitEffect o) orbit = o;
+        Assert.That(orbit, Is.Not.Null, "Whirl has no blades to test");
+
+        Entity caster = null, foe = null;
+        foreach (var unit in PlayHarness.Living())
+        {
+            if (unit.isTeam && unit.isCharacter && caster == null) caster = unit;
+            if (!unit.isTeam && foe == null) foe = unit;
+        }
+        Assert.That(caster, Is.Not.Null, "no living hero to spin the blades");
+        Assert.That(foe, Is.Not.Null, "no living enemy to cut");
+
+        // Where a melee enemy stands to swing: a 1.5 reach stops at 1.35 and swings out to 1.5. The
+        // shrunken ring still grazed a body pressed up against the caster, at 1.2 — this check
+        // passed on the broken code there — and missed everyone standing where fights happen.
+        foe.transform.position = caster.transform.position + Vector3.right * 1.4f;
+
+        var before = new HashSet<OrbitRunner>(UnityEngine.Object.FindObjectsOfType<OrbitRunner>());
+        var run = orbit.Run(new SpellContext { caster = caster, target = foe, tier = 1, scale = 1f });
+        while (run.MoveNext()) { }
+        OrbitRunner runner = null;
+        foreach (var r in UnityEngine.Object.FindObjectsOfType<OrbitRunner>()) if (!before.Contains(r)) runner = r;
+        Assert.That(runner, Is.Not.Null, "Whirl's effect made no blades");
+
+        // Three blades at 200 degrees a second: one passes any point every 0.6 s.
+        int struck = 0;
+        float until = Time.time + 2f;
+        yield return PlayHarness.Until(() =>
+        {
+            if (runner != null) struck = runner.Struck;
+            return struck > 0 || runner == null || Time.time >= until;
+        }, "a whirl to cut or end", 10f);
+        if (runner != null) UnityEngine.Object.Destroy(runner.gameObject);
+
+        Assert.That(struck, Is.GreaterThan(0), "Whirl spun on " + DisplayNames.Unit(caster) + " for two seconds and never touched " +
+                    DisplayNames.Unit(foe) + ", standing 1.4 away — is the ring being drawn at the rig's scale?");
+    }
 
     /// <summary>
     /// The deadlock: a unit whose target is just past its reach, standing still, not attacking.

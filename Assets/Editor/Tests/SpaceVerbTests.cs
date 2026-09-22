@@ -26,6 +26,27 @@ public class SpaceVerbTests
     }
 
     [Test]
+    public void WhirlsBladesPassThroughWhereTheEnemyStands()
+    {
+        // A melee enemy stands between touching (1.1, two bodies) and just inside reach (1.5).
+        // The blades were once drawn on the rig at half scale, a 0.8 circle that passed between the
+        // caster and everyone it faced: measured, two casts in a fight, zero hits. Judged at the
+        // feet, in world units, the ring must cross that whole band.
+        var whirl = AssetDatabase.LoadAssetAtPath<CompositeSpell>("Assets/Data/Spells/Whirl.asset");
+        OrbitEffect orbit = null;
+        foreach (var e in whirl.effects) if (e is OrbitEffect o) orbit = o;
+        Assert.That(orbit, Is.Not.Null);
+
+        foreach (float standing in new[] { 1.1f, 1.35f, 1.5f })
+        {
+            float nearest = float.MaxValue;
+            for (float angle = 0f; angle < 360f; angle += 2f)
+                nearest = Mathf.Min(nearest, Vector3.Distance(OrbitRunner.GroundOffset(angle, orbit.radius), new Vector3(standing, 0f, 0f)));
+            Assert.That(nearest, Is.LessThanOrEqualTo(orbit.hitRadius), "an enemy " + standing + " away is never touched");
+        }
+    }
+
+    [Test]
     public void TarPoolSaysItsVictimsWalkOut()
     {
         var e = new ZoneEffect { radius = 2f, seconds = 5f };
