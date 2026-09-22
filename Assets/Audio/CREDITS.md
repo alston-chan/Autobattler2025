@@ -36,21 +36,24 @@ recorded here rather than recorded wrongly. Read it and write the answer in this
 game ships — specifically whether attribution is required (if it is, this file has to reach players,
 not just the repo) and whether redistribution inside a game build is permitted.
 
-## Provenance not yet recorded
-
-| File | What it is | Where it plays |
-|---|---|---|
-| `backstab.wav` | a stab, with a sting | **Backstab** (`NinjaBackstab`) |
-
-`backstab.wav` arrived without a source. It is wired up and audible, so it will ship unless someone
-remembers: **write down where it came from, or replace it.** A clip that cannot be placed has to be
-cut, and the cheapest moment to answer this is now.
-
 ## Generated — ElevenLabs
 
-Nothing yet. When clips arrive, record the prompt alongside the file: a generated sound is only
-reproducible if the words that made it survive, and "make another one like that" is otherwise a
-re-roll from scratch. Keep the generation date — the model behind a prompt changes.
+| File | What it is | Where it plays | Generated |
+|---|---|---|---|
+| `backstab.wav` | a stab, with a sting | **Backstab** (`NinjaBackstab`) | 2026-09-22 |
+
+**Record the prompt next to each file.** A generated sound is only reproducible if the words that
+made it survive; without them, "one more like that" is a re-roll from scratch, and a set of
+variations that were supposed to match will not. Keep the date too — the model behind a prompt
+changes under it.
+
+`backstab.wav`'s prompt was not written down. The one suggested for it in the session that made it
+was *"a quiet sneak step then one sharp exaggerated stab with a cheeky sting, cartoon"* — confirm
+whether that is what was used, or replace this line with the real one.
+
+**Licence: confirm before shipping.** Commercial rights to ElevenLabs-generated audio depend on the
+plan the account was on when the clip was generated, so the answer is per-file and cannot be
+inferred from this repo. Check the terms for the account and write the answer here.
 
 ## How a clip gets used
 
