@@ -86,7 +86,10 @@ public static class PlayChecks
         if (withTarget < 200) yield break;   // too quiet a fight to say anything
         float share = justOutOfReach * 100f / withTarget;
         Debug.Log($"[PlayChecks] stood just out of reach in {share:0.0}% of frames ({justOutOfReach}/{withTarget})");
-        Assert.That(share, Is.LessThan(1f),
+        // Ten percent, not one: with the bug this reads 60%; healthy fights read 0 to 3%, the 3
+        // being a unit's few frames of noticing its target stepped away, which a 1% bar called a
+        // failure. The bar is for the deadlock, not for reaction time.
+        Assert.That(share, Is.LessThan(10f),
                     $"units stand a hand's width out of reach, neither walking nor attacking, in {share:0.0}% of frames" +
                     (worst != null ? " — worst: " + DisplayNames.Unit(worst) + " for " + worstFrames + " frames facing " + DisplayNames.Unit(worst.CombatAI.CurrentTarget) : ""));
     }
