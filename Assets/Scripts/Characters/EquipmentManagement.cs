@@ -23,9 +23,17 @@ public class EquipmentManagement : MonoBehaviour
     /// Pick a random enabled item of the given type from ItemCollection and equip it visually.
     /// Returns the picked Item (for inventory tracking), or null if none available.
     /// </summary>
+    /// <summary>
+    /// Whether a designer gave this piece any rows. There are no default stats: an item with none
+    /// grants nothing, and is cosmetic — never dealt by a random roll, never a fallback.
+    /// </summary>
+    public static bool Authored(ItemParams item) => item != null && item.Properties != null && item.Properties.Count > 0;
+
     public Item EquipRandomFromCollection(ItemType type)
     {
-        var candidates = ItemCollection.Active?.Items?.Where(i => i.Type == type).ToList();
+        // Only pieces a designer gave rows to. There are no default stats, so an item with none
+        // does nothing, and a random roll must never deal a hero a piece of gear that does nothing.
+        var candidates = ItemCollection.Active?.Items?.Where(i => i.Type == type && Authored(i)).ToList();
 
         if (candidates == null || candidates.Count == 0) return null;
 
@@ -110,7 +118,7 @@ public class EquipmentManagement : MonoBehaviour
         if (weaponClasses != null && weaponClasses.Length > 0)
         {
             var pool = ItemCollection.Active?.Items?
-                .Where(i => i.Type == ItemType.Weapon && System.Array.IndexOf(weaponClasses, i.Class) >= 0).ToList();
+                .Where(i => i.Type == ItemType.Weapon && System.Array.IndexOf(weaponClasses, i.Class) >= 0 && Authored(i)).ToList();
             if (pool != null && pool.Count > 0)
             {
                 var picked = pool[Random.Range(0, pool.Count)];

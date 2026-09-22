@@ -303,7 +303,8 @@ public partial class GameManager
         var oneHanded = ItemCollection.Active.Items
             .Where(i => i.Type == ItemType.Weapon && i.Class != ItemClass.Bow &&
                         i.Class != ItemClass.Firearm && i.Class != ItemClass.Wand &&
-                        !i.Tags.Contains(ItemTag.TwoHanded)).ToList();
+                        !i.Tags.Contains(ItemTag.TwoHanded) &&
+                        EquipmentManagement.Authored(i)).ToList();   // never a weapon nobody designed
 
         if (oneHanded.Count > 0)
             equippedItems.Add(new Item(oneHanded[Random.Range(0, oneHanded.Count)].Id));
