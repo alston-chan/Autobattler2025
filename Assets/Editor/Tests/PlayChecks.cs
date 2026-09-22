@@ -28,7 +28,50 @@ public static class PlayChecks
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
         new PlayCheck("nobody fights a body they cannot reach", NobodyWalksPastAFight),
+        new PlayCheck("a blow that lands reaches a voice", AHitIsHeard),
     };
+
+    /// <summary>
+    /// The audio path, end to end: the bus announces a hit, <see cref="CombatAudio"/> is listening,
+    /// and a clip ends up on a voice. Every part of that lives in OnEnable and in a static event —
+    /// the two places an edit-mode test cannot see. The failure this guards against is silent by
+    /// definition: a subscription that was never made sounds exactly like a library with no clips
+    /// in it yet, which is what the library will legitimately be for weeks.
+    /// </summary>
+    private static IEnumerator AHitIsHeard()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var audio = UnityEngine.Object.FindObjectOfType<CombatAudio>();
+        Assert.That(audio, Is.Not.Null, "nothing in the scene is listening to the fight");
+
+        var voices = audio.GetComponentsInChildren<AudioSource>(true);
+        Assert.That(voices.Length, Is.GreaterThan(0), "CombatAudio built no voices to play through");
+
+        // A second of silence, so this says nothing about how anything sounds — only about routing.
+        var probe = AudioClip.Create("SfxProbe", 8000, 1, 8000, false);
+
+        // The bank this particular unit is heard through — a bow and a hammer deliberately do not
+        // share one, so seeding a fixed bank would only be testing whoever happened to be first.
+        var unit = PlayHarness.Living()[0];
+        var bank = audio.BankFor(CombatAudio.Flavour(unit));
+        var hadClips = bank.clips;
+        bank.clips = new[] { probe };
+
+        try
+        {
+            CombatEvents.RaiseHit(new HitInfo(unit, unit, 1f, false, false));
+
+            bool onAVoice = false;
+            foreach (var voice in voices) if (voice.clip == probe) onAVoice = true;
+            Assert.That(onAVoice, Is.True,
+                        "a hit was announced and no voice picked it up — CombatAudio is not subscribed");
+        }
+        finally
+        {
+            bank.clips = hadClips;   // the library is a real asset; leave it exactly as found
+        }
+    }
 
     /// <summary>
     /// Bars, at the bell and right through a fight. Reported twice as disappearing, and never

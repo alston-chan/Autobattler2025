@@ -27,6 +27,7 @@ public partial class GameManager
     {
         SetupUnitBars();
         SetupDamageNumbers();
+        SetupCombatAudio();
 
         // Watches entity registration to record who does what. Here rather than later because it
         // has to be listening before the first unit is dressed, let alone the first blow.
@@ -183,6 +184,18 @@ public partial class GameManager
     {
         if (GetComponent<DamageNumbersManager>() == null)
             gameObject.AddComponent<DamageNumbersManager>();
+    }
+
+    /// <summary>
+    /// Adds <see cref="CombatAudio"/>, which hears the whole fight through <see cref="CombatEvents"/>
+    /// and needs nothing wired. The state machine is handed over so it can also ring the bell and
+    /// tell a won fight from a lost one; everything else it learns from the bus.
+    /// </summary>
+    private void SetupCombatAudio()
+    {
+        var audio = GetComponent<CombatAudio>();
+        if (audio == null) audio = gameObject.AddComponent<CombatAudio>();
+        audio.Listen(StateMachine);
     }
 
     public void ToggleCharacterInventories(CharacterInventory characterInventory)
