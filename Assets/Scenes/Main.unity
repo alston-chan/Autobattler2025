@@ -2569,8 +2569,8 @@ MonoBehaviour:
   columns: 4
   rows: 3
   cellSize: {x: 2, y: 1.5}
-  allyFrontBottom: {x: -2, y: -3.6}
-  enemyFrontBottom: {x: 2, y: -3.6}
+  allyFrontBottom: {x: -1, y: -3.6}
+  enemyFrontBottom: {x: 1, y: -3.6}
 --- !u!4 &1171582539
 Transform:
   m_ObjectHideFlags: 0
