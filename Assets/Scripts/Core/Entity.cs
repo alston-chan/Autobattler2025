@@ -135,6 +135,25 @@ public class Entity : MonoBehaviour
     /// <summary>This unit's body for collisions (<see cref="CombatPhysics"/>): its UnitData's radius, else the global one.</summary>
     public float BodyRadius => unitData != null && unitData.bodyRadius > 0f ? unitData.bodyRadius : CombatPhysics.Active.bodyRadius;
 
+    /// <summary>
+    /// How hard this unit is to move: its bare body plus the weight of what it wears, held inside
+    /// the physics settings' spread (<see cref="BodyMass"/>). Knockback divides by it, so a shield
+    /// knight travels about two thirds as far as a robed mage from the same throw.
+    /// </summary>
+    public float Mass
+    {
+        get
+        {
+            var s = CombatPhysics.Active;
+            float min = s != null ? s.minMass : 0.8f, max = s != null ? s.maxMass : 1.35f;
+            if (Stats == null || Stats.Mass == null) return Mathf.Clamp(1f, min, max);
+            return Mathf.Clamp(Stats.Mass.Value, min, max);
+        }
+    }
+
+    /// <summary>"Light", "Medium" or "Heavy" — what a card says instead of a number.</summary>
+    public string MassWord => BodyMass.Word(Mass);
+
     [Tooltip("How this unit chooses whom to fight, as authored (a worn tactics item overrides it). " +
              "Nearest is the ordinary front-line answer; LowestHealth makes a finisher; Furthest " +
              "reaches past the front rank; Attacker answers whoever is coming for it.")]

@@ -17,6 +17,13 @@ public class EntityStats : MonoBehaviour
     public CharacterStat Blocking { get; private set; }
     public CharacterStat AttackSpeed { get; private set; }
 
+    /// <summary>
+    /// How hard this unit is to move, summed from the Weight of what it wears (<see cref="BodyMass"/>).
+    /// A stat rather than a lookup so it arrives by the same route as Blocking: equip, unequip and
+    /// engrave all keep it right without a second code path.
+    /// </summary>
+    public CharacterStat Mass { get; private set; }
+
     // ── Inspector readout (read-only at runtime) ──
     [Header("Live Stats (read-only)")]
     [SerializeField] private float _damage;
@@ -54,6 +61,13 @@ public class EntityStats : MonoBehaviour
         Speed = new CharacterStat(_entity.unitData != null ? _entity.unitData.moveSpeed : 3f);
         Blocking = new CharacterStat(0f);
         AttackSpeed = new CharacterStat(_entity.attackSpeed);
+
+        // A unit's own mass wins when its data names one — a boss is a wall whatever it is wearing.
+        var physics = CombatPhysics.Active;
+        float bare = _entity.unitData != null && _entity.unitData.mass > 0f
+            ? _entity.unitData.mass
+            : (physics != null ? physics.bareBodyMass : 0.75f);
+        Mass = new CharacterStat(bare);
 
         RefreshInspector();
     }
@@ -107,6 +121,11 @@ public class EntityStats : MonoBehaviour
             }
         }
 
+        // Weight is on the item itself rather than among its properties, so it is read here rather
+        // than in the loop. Same source object, so unequipping takes it off again.
+        if (itemParams.Weight != 0)
+            Mass.AddModifier(new StatModifier(itemParams.Weight * BodyMass.PerWeightPoint, StatModType.Flat, source));
+
         RefreshInspector();
         OnStatsChanged?.Invoke();
     }
@@ -116,6 +135,7 @@ public class EntityStats : MonoBehaviour
     /// </summary>
     public void RemoveItemModifiers(object source)
     {
+        Mass.RemoveAllModifiersFromSource(source);
         Damage.RemoveAllModifiersFromSource(source);
         MaxHealth.RemoveAllModifiersFromSource(source);
         Speed.RemoveAllModifiersFromSource(source);

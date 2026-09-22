@@ -70,7 +70,11 @@ public class Knockback : MonoBehaviour
         // target that has stopped working with nothing on screen to explain it.
         if (force <= 0f) return;
 
-        _velocity += direction.normalized * force;
+        // Mass: the same throw moves a robed mage further than a shield knight. Division, so the
+        // median unit at mass 1 flies exactly as far as it did before mass existed and every force
+        // number already tuned stays tuned (BodyMass).
+        float mass = _entity != null ? _entity.Mass : 1f;
+        _velocity += direction.normalized * (force / Mathf.Max(0.01f, mass));
         Launcher = source;
         Charging = charging;
         if (!charging) _stunTimer = Mathf.Max(_stunTimer, stunTime);

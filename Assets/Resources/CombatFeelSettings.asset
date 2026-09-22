@@ -66,6 +66,9 @@ MonoBehaviour:
     softWallPush: 1.5
     restSpeed: 0.6
     steerSpeed: 2
+    bareBodyMass: 0.75
+    minMass: 0.8
+    maxMass: 1.35
     impactSpeed: 3
     impactPercentPerSpeed: 0.006
     wallPercentPerSpeed: 0.008

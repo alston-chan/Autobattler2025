@@ -39,6 +39,15 @@ public class CombatPhysics : MonoBehaviour
         public float softWallPush = 1.5f;
         [Tooltip("A throw is over once the body is slower than this (units/s). The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
         public float restSpeed = 0.6f;
+        [Header("Mass")]
+        [Tooltip("A bare body's mass, before anything it wears. Armour adds to this (BodyMass).")]
+        public float bareBodyMass = 0.75f;
+        [Tooltip("The lightest a unit can be. Mass divides knockback force, so the spread is kept narrow " +
+                 "on purpose: a wide one would delete the physics layer from fights between armoured teams.")]
+        public float minMass = 0.8f;
+        [Tooltip("The heaviest a unit can be.")]
+        public float maxMass = 1.35f;
+
         [Tooltip("A body slower than this may steer itself again, while the last of the slide carries it. " +
                  "Being thrown should cost a unit its feet, not a quarter of the fight: measured, a greatsword " +
                  "was locked out of its own movement 28% of a fight, and in 73% of those frames it was drifting " +
@@ -200,7 +209,11 @@ public class CombatPhysics : MonoBehaviour
         // still is. So a push never hurts the pusher's team; the damage of a throw is the enemy's.
         bool braced = source != null && struck.isTeam == source.isTeam;
 
-        BodyMath.Exchange(ref vm, ref vs, toStruck, closing, s.momentumTransfer, km.Charging ? s.chargeRetain : 0f, struckFixed);
+        // A thrown anchor bowls a mage over; a thrown mage bounces off the anchor. Without this,
+        // mass would only ever make heavy units better — this is what it costs them, and what makes
+        // throwing one a play rather than a waste.
+        float transfer = s.momentumTransfer * BodyMass.TransferRatio(mover.Mass, struck.Mass);
+        BodyMath.Exchange(ref vm, ref vs, toStruck, closing, transfer, km.Charging ? s.chargeRetain : 0f, struckFixed);
         km.SetVelocity(vm);
         if (!struckFixed) ks.Launch(vs, source);
         km.MarkImpact(); ks.MarkImpact();
