@@ -62,9 +62,12 @@ public static class PlayChecks
             if (u.Health == null || u.Knockback == null || !u.isCharacter) continue;
             if (!u.Knockback.Steerable) continue;
             if (u.Statuses != null && u.Statuses.Rooted) continue;
+            // Not a unit with knockback resistance: this is a check about the wall, and the Wall
+            // Keeper's 40% turned the throw into a shove that stopped short of it.
+            if (u.Stats != null && u.Stats.KnockbackResistance != null && u.Stats.KnockbackResistance.Value > 0f) continue;
             if (unit == null || u.transform.position.y < unit.transform.position.y) unit = u;
         }
-        Assert.That(unit, Is.Not.Null, "no free-standing character to throw");
+        Assert.That(unit, Is.Not.Null, "no free-standing, unresisting character to throw");
         Assert.That(GameManager.Instance.StateMachine.Current, Is.EqualTo(GameState.Combat), "nothing is hurt outside a fight");
         unit.Health.HealToFull();
         Vector3 before = unit.transform.position;

@@ -26,14 +26,4 @@ public static class Mitigation
     public static float Fraction(float rating) =>
         rating <= 0f ? 0f : rating / (Constant + rating);
 
-    /// <summary>
-    /// What the old flat Blocking became. Six armour per point matches the reduction on a median
-    /// weapon hit (three blocking on twenty damage was 15%; eighteen armour is 15%). Capped, because
-    /// a shield's twelve was half of any hit only by the old cap — seventy-two armour would have
-    /// been more than that against every hit, and a shield is meant to be a large armour item, not
-    /// a wall.
-    /// </summary>
-    public const float ArmorPerBlocking = 6f;
-    public const float ArmorFromBlockingCap = 60f;
-    public static float ArmorFromBlocking(float blocking) => Mathf.Min(Mathf.Max(0f, blocking) * ArmorPerBlocking, ArmorFromBlockingCap);
 }

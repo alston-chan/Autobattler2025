@@ -843,7 +843,7 @@ MonoBehaviour:
   _damage: 0
   _maxHealth: 0
   _speed: 0
-  _blocking: 0
+  _armor: 0
   _attackSpeed: 0
 --- !u!114 &8721460246520577659
 MonoBehaviour:

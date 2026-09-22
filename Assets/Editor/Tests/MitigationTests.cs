@@ -32,44 +32,97 @@ public class MitigationTests
             Assert.That(Mitigation.Reduce(100f, rating), Is.EqualTo(100f * (1f - Mitigation.Fraction(rating))).Within(0.001f), "at " + rating);
     }
 
-    // ---------- the migration ----------
-
-    [Test]
-    public void AVestReducesAMedianHitByAsMuchAsItsBlockingDid()
-    {
-        // Old: blocking 3 on a 20 hit took 3 (15%). New: the armour it became must take about that.
-        float armour = Mitigation.ArmorFromBlocking(3f);
-        Assert.That(armour, Is.EqualTo(18f));
-        float taken = 20f - Mitigation.Reduce(20f, armour);
-        Assert.That(taken / 20f, Is.EqualTo(0.15f).Within(0.02f), "the ladder must not quietly get harder or easier");
-    }
-
-    [Test]
-    public void AShieldIsALargeArmourItemNotAWall()
-    {
-        // Old: blocking 12 was half of every hit up to 24 — the cap, not the stat. New: capped at 60,
-        // which is 37.5% of everything: less than the old half on small hits, more on big ones.
-        float armour = Mitigation.ArmorFromBlocking(12f);
-        Assert.That(armour, Is.EqualTo(60f));
-        Assert.That(Mitigation.Fraction(armour), Is.EqualTo(0.375f).Within(0.001f));
-    }
+    // ---------- what a piece grants depends on what it is ----------
 
     [Test]
     public void NoItemStillGrantsBlocking()
     {
         foreach (var line in File.ReadAllLines("Assets/Data/Properties.csv"))
-            Assert.That(line, Does.Not.Contain(",Blocking,"), "a Blocking row survived the migration: " + line);
+            Assert.That(line, Does.Not.Contain(",Blocking,"), "a Blocking row survived: " + line);
     }
 
     [Test]
-    public void TheCollectionCarriesArmourWhereBlockingWas()
+    public void TheKitsClassifyWhereADesignerWouldPutThem()
     {
+        var V = DefensiveStatsAuthor.Slot.Vest; var H = DefensiveStatsAuthor.Slot.Helmet;
+        Assert.That(DefensiveStatsAuthor.Classify("Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Plate));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.DestroyerArmor.vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Plate));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Plate), "mail before light");
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.SiegeArcherArmor.vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Leather));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.ThiefArmor.vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Leather));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.NinjaOutfit.vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Leather));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.WarlockArmor.vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Cloth));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Armor.Cleric [Paint].vest", V), Is.EqualTo(DefensiveStatsAuthor.Tier.Cloth));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Helmet.WarlockHood", H), Is.EqualTo(DefensiveStatsAuthor.Tier.Cloth));
+        Assert.That(DefensiveStatsAuthor.Classify("Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm", H), Is.EqualTo(DefensiveStatsAuthor.Tier.Plate));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Helmet.BunnyEarsA1 [Paint] [FullHair]", H), Is.EqualTo(DefensiveStatsAuthor.Tier.Cosmetic));
+        Assert.That(DefensiveStatsAuthor.Classify("FantasyHeroes.Basic.Helmet.Horns3", H), Is.EqualTo(DefensiveStatsAuthor.Tier.Cosmetic));
+    }
+
+    [Test]
+    public void ATierGrantsWhatItIsAndNothingItIsNot()
+    {
+        var plate = DefensiveStatsAuthor.Grants(DefensiveStatsAuthor.Slot.Vest, DefensiveStatsAuthor.Tier.Plate);
+        var cloth = DefensiveStatsAuthor.Grants(DefensiveStatsAuthor.Slot.Vest, DefensiveStatsAuthor.Tier.Cloth);
+        Assert.That(Has(plate, PropertyId.Armor), Is.True, "plate is armour");
+        Assert.That(Has(plate, PropertyId.MagicResist), Is.False, "and not magic resist");
+        Assert.That(Has(cloth, PropertyId.MagicResist), Is.True, "cloth is magic resist");
+        Assert.That(Has(cloth, PropertyId.Armor), Is.False, "and not armour");
+        Assert.That(DefensiveStatsAuthor.Grants(DefensiveStatsAuthor.Slot.Helmet, DefensiveStatsAuthor.Tier.Cosmetic), Is.Empty, "a bunny ear is nothing");
+    }
+
+    private static bool Has((PropertyId id, string value)[] grants, PropertyId id)
+    {
+        foreach (var g in grants) if (g.id == id) return true;
+        return false;
+    }
+
+    [Test]
+    public void ArmourIsNotABaseValue()
+    {
+        // The rule behind the table: not every vest grants the same armour, some grant none, and
+        // some head pieces grant nothing at all. If every row reads alike again, this fails.
+        var byItem = new Dictionary<string, Dictionary<string, string>>();
+        foreach (var line in File.ReadAllLines("Assets/Data/Properties.csv"))
+        {
+            var cols = line.Split(',');
+            if (cols.Length != 3) continue;
+            if (!byItem.TryGetValue(cols[0], out var d)) byItem[cols[0]] = d = new Dictionary<string, string>();
+            d[cols[1]] = cols[2];
+        }
+        var armourValues = new HashSet<string>();
+        int vests = 0, vestsWithoutArmour = 0;
+        foreach (var kv in byItem)
+        {
+            if (!kv.Key.EndsWith(".vest")) continue;
+            vests++;
+            if (kv.Value.TryGetValue("Armor", out var a)) armourValues.Add(a); else vestsWithoutArmour++;
+        }
+        Assert.That(vests, Is.GreaterThan(200));
+        Assert.That(armourValues.Count, Is.GreaterThanOrEqualTo(3), "every vest reads the same armour again: " + string.Join(",", armourValues));
+        Assert.That(vestsWithoutArmour, Is.GreaterThan(0), "a robe should grant no armour");
+        Assert.That(byItem.ContainsKey("FantasyHeroes.Basic.Helmet.BunnyEarsA1 [Paint] [FullHair]"), Is.False, "a cosmetic grants nothing, so it has no rows");
+    }
+
+    [Test]
+    public void TheCollectionCarriesTheAuthoredRows()
+    {
+        // The collection is generated from the CSV by an importer that REPLACES the list; a row
+        // written and never imported is a line that does not exist.
         ItemCollection.Active = AssetDatabase.LoadAssetAtPath<ItemCollection>("Assets/Data/ItemCollection.asset");
-        var vest = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest");
+        var plate = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest");
+        var robe = ItemCollection.Active.Items.Find(i => i.Id == "FantasyHeroes.Basic.Armor.WarlockArmor.vest");
         var shield = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Shield.WallKeeperShield");
-        Assert.That(Of(vest, PropertyId.Armor), Is.EqualTo("18"), "a vest — re-import the CSV if this is null");
-        Assert.That(Of(shield, PropertyId.Armor), Is.EqualTo("60"), "a shield");
-        Assert.That(Of(shield, PropertyId.Blocking), Is.Null, "and nothing grants Blocking any more");
+        var hood = ItemCollection.Active.Items.Find(i => i.Id == "FantasyHeroes.Basic.Helmet.WarlockHood");
+        var helm = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm");
+        Assert.That(Of(plate, PropertyId.Armor), Is.EqualTo("24"), "plate — re-import the CSV if this is null");
+        Assert.That(Of(plate, PropertyId.MagicResist), Is.Null, "plate resists no magic");
+        Assert.That(Of(robe, PropertyId.MagicResist), Is.EqualTo("24"), "a robe");
+        Assert.That(Of(robe, PropertyId.Armor), Is.Null, "a robe is no armour");
+        Assert.That(Of(shield, PropertyId.Armor), Is.EqualTo("60"), "a wall keeper's shield");
+        Assert.That(Of(shield, PropertyId.KnockbackResist), Is.EqualTo("40"), "and its rare line survived the rewrite");
+        Assert.That(Of(hood, PropertyId.MagicResist), Is.EqualTo("30"), "a hood");
+        Assert.That(Of(helm, PropertyId.Armor), Is.EqualTo("8"), "a helm");
     }
 
     private static string Of(ItemParams item, PropertyId id)
@@ -77,54 +130,6 @@ public class MitigationTests
         Assert.That(item, Is.Not.Null);
         foreach (var p in item.Properties) if (p.Id == id) return p.Value;
         return null;
-    }
-
-    // ---------- magic resist lives on the head ----------
-
-    [Test]
-    public void EveryHelmetResistsMagicAndNothingElseDoes()
-    {
-        // The rule the player can hold: body armour for blades, the head for spells. A hood or a
-        // hat is 30, a helm is 12, and no vest or shield grants any — one stat, one slot.
-        var items = new Dictionary<string, string>();
-        foreach (var line in File.ReadAllLines("Assets/Data/Items.csv"))
-        {
-            var cols = line.Split(',');
-            if (cols.Length > 2 && cols[0] == "TRUE") items[cols[1]] = cols[2];
-        }
-
-        var resist = new Dictionary<string, int>();
-        foreach (var line in File.ReadAllLines("Assets/Data/Properties.csv"))
-        {
-            var cols = line.Split(',');
-            if (cols.Length == 3 && cols[1] == "MagicResist") resist[cols[0]] = int.Parse(cols[2]);
-        }
-
-        int helmets = 0;
-        foreach (var kv in items)
-        {
-            if (kv.Value == "Helmet")
-            {
-                helmets++;
-                Assert.That(resist.ContainsKey(kv.Key), Is.True, kv.Key + " is a helmet that resists nothing");
-                Assert.That(resist[kv.Key], Is.EqualTo(12).Or.EqualTo(30), kv.Key + " has an off-rule value");
-            }
-            else
-            {
-                Assert.That(resist.ContainsKey(kv.Key), Is.False, kv.Key + " is not a helmet and grants magic resist");
-            }
-        }
-        Assert.That(helmets, Is.GreaterThan(100), "the helmet set is missing");
-    }
-
-    [Test]
-    public void AHoodResistsMoreThanAHelmAndTheCollectionCarriesBoth()
-    {
-        ItemCollection.Active = AssetDatabase.LoadAssetAtPath<ItemCollection>("Assets/Data/ItemCollection.asset");
-        var hood = ItemCollection.Active.Items.Find(i => i.Id == "FantasyHeroes.Basic.Helmet.WarlockHood");
-        var helm = ItemCollection.Active.Items.Find(i => i.Id == "Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm");
-        Assert.That(Of(hood, PropertyId.MagicResist), Is.EqualTo("30"), "a warlock's hood — re-import the CSV if this is null");
-        Assert.That(Of(helm, PropertyId.MagicResist), Is.EqualTo("12"), "a wall keeper's helm");
     }
 
     // ---------- who is magical ----------

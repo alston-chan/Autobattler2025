@@ -304,11 +304,15 @@ Writing them:
   vendor's `Shock`; `PropertyIdContractTests` pins the numbers. Damage goes through one pipeline
   (`Health.TakeDamage`): armour or magic resist by `DamageType` on the LoL curve
   (`Mitigation.Reduce`, 100/(100+rating)), then statuses, then shields. Blocking is gone — it was a
-  flat, half-capped reduction whose worth depended on what was swinging — converted at x6 with a
-  60 cap (vest 3 → armour 18, shield 12 → 60). Effects, statuses and the projectile declare their
-  type; the wand and its verbs are magical. Magic resist is the helmet's stat and nothing else's —
-  hoods and hats 30, helms 12 — so body armour is for blades and the head is for spells;
-  `MitigationTests` holds both halves of that rule.
+  flat, half-capped reduction whose worth depended on what was swinging. Effects, statuses and the
+  projectile declare their type; the wand and its verbs are magical.
+- **Armour-slot rows in `Properties.csv` are authored by tier, not by hand and not uniformly.** The
+  vendor's example CSV gave every vest the same four numbers; `Tools > Item Database > Author Armour
+  Rows By Tier` (`DefensiveStatsAuthor`) rewrites vests, boots, helmets, shields and capes from a
+  tier read off the name — plate is armour and health, leather a little armour and speed, cloth is
+  magic resist, a cosmetic is nothing — then re-imports. The table is the one place to retune; the
+  rare `KnockbackResist` lines survive a rewrite; weapons are untouched. `MitigationTests` pins the
+  kits' tiers and that armour is not a base value.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
