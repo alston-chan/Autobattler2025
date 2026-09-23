@@ -640,9 +640,9 @@ public class UnitInspector : MonoBehaviour
             bool inert = !spell.MeetsWeaponRequirement(_selected);
 
             text.Append("<color=#BFC6D4>Ability</color>  ").Append(spell.DisplayName);
-            // A verb is held at a tier, and the tier is what attuning the weapon bought: say it.
+            // A verb is held at the rarity of the weapon that taught it: say it.
             if (_selected.Resonance != null && _selected.Resonance.GrantedVerbs().Contains(spell))
-                text.Append(' ').Append(CompositeSpell.Roman(_selected.Resonance.TierOfVerb(spell)));
+                text.Append(' ').Append(Rarity.Tag(_selected.Resonance.TierOfVerb(spell)));
             if (spell.IsUltimate)
                 text.Append("  <color=#5C9AF2>").Append(Mathf.RoundToInt(spell.manaCost))
                     .Append(" mana</color>");
@@ -712,19 +712,10 @@ public class UnitInspector : MonoBehaviour
 
     private static void Engraving(StringBuilder text, string name, int tier, bool worn)
     {
-        text.Append("<color=#FFD147>").Append(name).Append(' ').Append(Roman(tier))
-            .Append("</color>")
+        text.Append("<color=#FFD147>").Append(name).Append("</color> ").Append(Rarity.Tag(tier))
             .Append(worn ? "" : "  <color=#8A8F99>engraved</color>")
             .Append('\n');
     }
-
-    private static string Roman(int tier) => tier switch
-    {
-        1 => "I",
-        2 => "II",
-        3 => "III",
-        _ => ""
-    };
 
     /// <summary>
     /// The one name a unit is shown under, everywhere. The scoreboard used to trim "Hero_" and

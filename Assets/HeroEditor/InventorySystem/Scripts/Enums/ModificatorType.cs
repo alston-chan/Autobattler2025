@@ -23,6 +23,11 @@
         // keeps its shape but loses its substance: no stats, no engraving, still a weapon of
         // its class so the hero can go on using it. Numbered far above the vendor's range so
         // later additions upstream cannot collide with it.
-        Hollow = 100
+        Hollow = 100,
+
+        // Added for the shop loop (Docs/ShopLoop.md): an item copy's rarity, C to S, as Level 1 to 4.
+        // C is the plain item and carries no modifier at all. Kept beside Hollow, far above the
+        // vendor's range. See Rarity.
+        Rarity = 101
     }
 }

@@ -82,44 +82,18 @@ public class ResonanceDatabase : ScriptableObject
                  "a shield that counts blocked damage tells the player where to stand it.")]
         public ResonanceRequirement requirement = ResonanceRequirement.CombatsWorn;
 
-        [Tooltip("Attunement needed to reach Tier II and Tier III. Tier I costs nothing — an item's " +
-                 "engraving is its identity and works the moment it is worn. Attunement only makes it " +
-                 "stronger, and the second tier costs more than the first so each is a longer " +
-                 "commitment than the last.")]
-        public int tierIICost = 3;
-        public int tierIIICost = 6;
+        [Tooltip("The quest: how much of the requirement completes it. Wear the item until it has, and " +
+                 "its effect is engraved on the hero at the item's rarity when the fight ends; the item " +
+                 "is spent. One goal — the three tiers this used to climb are the item's rarity now, " +
+                 "decided in the shop (Docs/ShopLoop.md).")]
+        [UnityEngine.Serialization.FormerlySerializedAs("engraveCost")]
+        public int questGoal = 3;
 
-        [Tooltip("Attunement needed before the engraving can be banked permanently. Separate from the " +
-                 "worn tiers on purpose: wearing an item grants its engraving at once, but KEEPING it " +
-                 "forever has to be earned — otherwise cashing out costs nothing and the bank-or-press " +
-                 "decision disappears.")]
-        public int engraveCost = 3;
-
-        /// <summary>True once the engraving has been attuned enough to bank permanently.</summary>
-        public bool CanEngrave(float attunement) => attunement >= engraveCost;
+        /// <summary>True once enough has been done while wearing it to engrave it.</summary>
+        public bool IsComplete(float progress) => progress >= questGoal;
 
         private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
         private static bool KnownItem(string id) => Catalog.IsKnown(id);
-
-        /// <summary>
-        /// Tier reached at a given attunement: 1 through 3. Never 0 — a worn engraving is always at
-        /// least Tier I, so equipping an item is never a dead period waiting for it to switch on.
-        /// </summary>
-        public int TierAt(float attunement)
-        {
-            if (attunement >= tierIIICost) return 3;
-            if (attunement >= tierIICost) return 2;
-            return 1;
-        }
-
-        /// <summary>Attunement required for the next tier, or 0 once maxed.</summary>
-        public int NextTierCost(float attunement)
-        {
-            int tier = TierAt(attunement);
-            if (tier == 1) return tierIICost;
-            if (tier == 2) return tierIIICost;
-            return 0;
-        }
     }
 
     [TableList(AlwaysExpanded = true, DrawScrollView = false)]
@@ -137,9 +111,8 @@ public class ResonanceDatabase : ScriptableObject
         public Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemClass itemClass;
         [Required, AssetsOnly] public Engraving engraving;
         public ResonanceRequirement requirement = ResonanceRequirement.AbilitiesCast;
-        public int tierIICost = 6;
-        public int tierIIICost = 14;
-        public int engraveCost = 6;
+        [UnityEngine.Serialization.FormerlySerializedAs("engraveCost")]
+        public int questGoal = 6;
     }
 
     [Tooltip("What a weapon class teaches when no entry names the item. An item's own entry wins.")]
@@ -163,8 +136,7 @@ public class ResonanceDatabase : ScriptableObject
             if (d == null || d.engraving == null || d.itemClass != item.Params.Class) continue;
             var entry = new Entry
             {
-                itemId = item.Id, engraving = d.engraving, requirement = d.requirement,
-                tierIICost = d.tierIICost, tierIIICost = d.tierIIICost, engraveCost = d.engraveCost
+                itemId = item.Id, engraving = d.engraving, requirement = d.requirement, questGoal = d.questGoal
             };
             _classEntries[item.Id] = entry;
             return entry;
@@ -228,9 +200,9 @@ public enum ResonanceNotice
 {
     None = 0,
 
-    /// <summary>Crossed a tier. Already applied itself; the player is only being informed.</summary>
-    TierUp = 1,
-
-    /// <summary>Attuned enough to be banked permanently. Asks the player to make a choice.</summary>
-    EngraveReady = 2
+    /// <summary>
+    /// The item's quest completed and its effect was engraved on the hero; the item is spent. News,
+    /// not a decision — there is no cash-out to make any more (Docs/ShopLoop.md).
+    /// </summary>
+    Engraved = 1
 }

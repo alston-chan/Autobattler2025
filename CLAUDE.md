@@ -27,6 +27,12 @@ degrades the session further. This has produced several confident, completely wr
 
 ## Hot Reload: edit, re-probe, recompile only when you must
 
+**Checked 2026-09-23: Hot Reload is installed but NOT running.** Its server last logged on
+2026-09-03, "launch on editor start" is off, and no Hot Reload process exists. `Tools/dev.sh`
+compiles through Unity itself (`AssetDatabase.Refresh` + `RequestScriptCompilation`) and rewrites a
+generated constant so the compile is real even if Hot Reload is turned back on. Everything below
+applies only while its server runs.
+
 Hot Reload (`Packages/com.singularitygroup.hotreload`) patches **method bodies** into the running
 play session, so the stop → recompile → replay → re-setup cycle (about a minute of waiting each
 time) is only needed for changes it cannot patch: a new or changed field, a new type, a changed
@@ -355,6 +361,12 @@ Writing them:
   that same ellipse, and a tar pool ticks by it. Arrow Rain and Tar Pool once drew the ellipse and judged a
   circle, hitting the rows above and below the ring. Point-to-point reach (a swing, a body, a blade's
   edge) stays a plain distance: nothing is drawn for it.
+- **Rarity lives on the item copy, as `ItemModifier.Rarity` (Level 1–4 = C/B/A/S); C is the plain
+  item with no modifier.** Same trick as Hollow: it survives inventory moves, saves with the run, and
+  keys quest progress per copy. An item's effect works at its rarity while worn, its one quest
+  (`Entry.questGoal`) fills while it fights, and `EngraveCompletedQuests` engraves it at that rarity
+  when the fight ends and hollows the item (Docs/ShopLoop.md). There are no tiers to climb and no
+  cash-out. Slot backgrounds show rarity through the vendor's `GetBackgroundCustom` hook.
 - **Anything a fight puts in the world must be in `CombatDebris.Sweep`.** It runs at round end. The
   space verbs came after it and were never added, so a tar pool (five seconds by the clock, not by
   the fight) survived into the next bell and units walked out of a pool nobody had cast. A new

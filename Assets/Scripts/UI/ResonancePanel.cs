@@ -5,13 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Shows a hero's resonance in their character window: how far the selected item has attuned, what
-/// tier it has reached, a button to cash it out, and the engravings already banked.
+/// Shows a hero's resonance in their character window: the selected item's rarity and what its
+/// effect does at it, how far its quest has come, and the engravings the hero has kept.
 ///
-/// Resonance is otherwise invisible — attunement, tiers and banking all happen silently, and the
-/// bank-or-press decision the mechanic exists to create can't be made against numbers the player
-/// can't see. The panel follows the selection so the question is always about a specific item:
-/// "this one is at Tier II — cash it out and free the slot, or wear it longer?"
+/// There is nothing to decide here any more — a quest completes and is engraved on its own when the
+/// fight ends (Docs/ShopLoop.md) — so the panel reports rather than asks. It used to carry a tier bar
+/// and a cash-out button for the three-tier loop that rarity replaced.
 ///
 /// Built at runtime rather than authored into the window prefab, so the vendor inventory prefab is
 /// left untouched.
@@ -30,8 +29,6 @@ public class ResonancePanel : MonoBehaviour
     private TextMeshProUGUI _title;
     private TextMeshProUGUI _detail;
     private RectTransform _barFill;
-    private Button _resonateButton;
-    private Image _resonateBackground;
     private TextMeshProUGUI _bankedLabel;
 
     private Item _selected;
@@ -98,69 +95,26 @@ public class ResonancePanel : MonoBehaviour
 
         _block.SetActive(true);
 
-        // An item in the bag shows what it carries but no progress — deciding whether to equip it is
-        // exactly when the player needs to know what its engraving does, and only worn items attune.
-        bool worn = _inventory.Equipment.Items.Contains(_selected);
-        if (!worn)
-        {
-            _title.text = entry.engraving.DisplayName;
-            _detail.text = Keywords.Decorate(entry.engraving.DescribeTier(1) + "\nEquip to begin attuning.");
-            _barFill.anchorMax = new Vector2(0f, 1f);
-            _resonateButton.interactable = false;
-            _resonateBackground.color = ButtonBlocked;
-            _resonateButton.GetComponentInChildren<TextMeshProUGUI>().text = "Not equipped";
-            return;
-        }
-
-        float attunement = _hero.Resonance.AttunementFor(_selected);
-        int tier = entry.TierAt(attunement);
-        int next = entry.NextTierCost(attunement);
-
-        _title.text = entry.engraving.DisplayName + (tier > 0 ? "  " + Roman(tier) : "");
-
-        // What it does right now, in real numbers — and what another tier would buy. Comparing "+15%"
-        // against "+30%" is the whole basis for deciding whether more combats are worth it.
-        // Tier I comes with the item, so there is always an effect to state.
-        string effect = entry.engraving.DescribeTier(tier);
+        int rarity = Rarity.Of(_selected);
+        _title.text = entry.engraving.DisplayName + "  " + Rarity.Tag(rarity);
+        string effect = entry.engraving.DescribeTier(rarity);
 
         // Name what the counter counts. "525 / 900" alone doesn't say whether that's fights, kills or
         // damage, so the player can't tell how close they are or what to do to get there.
         string unit = ResonanceRequirements.Describe(entry.requirement);
-        string progress;
-        if (tier >= 3)
-        {
-            progress = "<b>Fully attuned</b> — resonate to bank it and free the slot.";
-        }
-        else
-        {
-            progress = $"{attunement:0} / {next} {unit}  →  <b>{Roman(tier + 1)}</b>";
 
-            // And what that tier buys, when it can be said in a breath. For a stat engraving it is
-            // "+30%" against the "+15%" above, which is the whole basis for deciding whether more
-            // fights are worth it. For a verb it is the entire verb restated with bigger numbers —
-            // seven lines that ran straight through the attune bar and the button under it, and
-            // that nobody could diff by eye anyway.
-            string buys = entry.engraving.DescribeTier(tier + 1);
-            if (!string.IsNullOrEmpty(buys) && buys.Length <= 64) progress += ": " + buys;
-        }
+        // An item in the bag shows what it carries and what its quest asks — deciding whether to equip
+        // it is exactly when the player needs both — with its progress paused where it was left.
+        bool worn = _inventory.Equipment.Items.Contains(_selected);
+        float progress = _hero.Resonance.AttunementFor(_selected);
+        bool complete = entry.IsComplete(progress);
 
-        _detail.text = Keywords.Decorate(effect + "\n" + progress);
+        string quest = !worn ? $"Quest: {progress:0} / {entry.questGoal} {unit} while worn (paused) — then engraved for good at {Rarity.Letter(rarity)}."
+                     : complete ? "<b>Quest complete</b> — engraved for good when this fight ends; the item is spent."
+                     : $"Quest: {progress:0} / {entry.questGoal} {unit} — then engraved for good at {Rarity.Letter(rarity)}.";
 
-        // Progress within the current tier band, so the bar restarts at each threshold. Tier I starts
-        // at zero because it costs nothing — it comes with the item.
-        int bandStart = tier == 1 ? 0 : entry.tierIICost;
-        float span = Mathf.Max(1f, next - bandStart);
-        float fill = tier >= 3 ? 1f : Mathf.Clamp01((attunement - bandStart) / span);
-        _barFill.anchorMax = new Vector2(fill, 1f);
-
-        // Wearing grants the engraving at once; banking it permanently has to be earned, so the
-        // button states the price rather than just refusing.
-        bool canResonate = entry.CanEngrave(attunement);
-        _resonateButton.interactable = canResonate;
-        _resonateBackground.color = canResonate ? ButtonReady : ButtonBlocked;
-        _resonateButton.GetComponentInChildren<TextMeshProUGUI>().text = canResonate
-            ? $"Engrave  {Roman(tier)}  (item is spent)"
-            : $"Engrave at {entry.engraveCost} {unit}";
+        _detail.text = Keywords.Decorate(effect + "\n" + quest);
+        _barFill.anchorMax = new Vector2(Mathf.Clamp01(progress / Mathf.Max(1f, entry.questGoal)), 1f);
     }
 
     private void UpdateBanked()
@@ -181,31 +135,12 @@ public class ResonancePanel : MonoBehaviour
         {
             if (mark == null || mark.engraving == null) continue;
             text.Append("\n<color=#FFD147>")
-                .Append(mark.engraving.DisplayName).Append(" ")
-                .Append(Roman(mark.tier)).Append("</color>  ")
+                .Append(mark.engraving.DisplayName).Append("</color> ")
+                .Append(Rarity.Tag(mark.tier)).Append("  ")
                 .Append(mark.engraving.DescribeTier(mark.tier));
         }
         _bankedLabel.text = Keywords.Decorate(text.ToString());
     }
-
-    private void Resonate()
-    {
-        if (_selected == null || _hero == null || _hero.Resonance == null) return;
-
-        if (!_hero.Resonance.Resonate(_selected)) return;
-
-        // The item is gone, so the selection it was showing no longer exists.
-        _selected = null;
-        Redraw();
-    }
-
-    private static string Roman(int tier) => tier switch
-    {
-        1 => "I",
-        2 => "II",
-        3 => "III",
-        _ => ""
-    };
 
     #region Construction
 
@@ -243,32 +178,6 @@ public class ResonancePanel : MonoBehaviour
         var fillImage = fill.AddComponent<Image>();
         fillImage.color = Gold;
         fillImage.raycastTarget = false;
-
-        BuildButton();
-    }
-
-    private void BuildButton()
-    {
-        var buttonObject = NewRect("ResonateButton", _block.transform, new Vector2(0.5f, 1f),
-                                   new Vector2(320f, 38f), new Vector2(0f, -134f));
-
-        _resonateBackground = buttonObject.AddComponent<Image>();
-        _resonateBackground.color = ButtonReady;
-
-        _resonateButton = buttonObject.AddComponent<Button>();
-        _resonateButton.targetGraphic = _resonateBackground;
-        _resonateButton.onClick.AddListener(Resonate);
-
-        // "Engrave at 6 abilities cast" is a long thing to say on a button; it wrapped to two lines
-        // and spilled out of it.
-        var label = NewText("Label", buttonObject.transform, 16f, Color.white, TextAlignmentOptions.Center);
-        label.enableWordWrapping = false;
-        label.overflowMode = TextOverflowModes.Ellipsis;
-        var rect = label.rectTransform;
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.offsetMin = Vector2.zero;
-        rect.offsetMax = Vector2.zero;
     }
 
     private void BuildBankedLabel()

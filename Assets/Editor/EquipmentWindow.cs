@@ -364,25 +364,11 @@ public class ItemPage
         set { _entry.requirement = value; Dirty(); }
     }
 
-    [BoxGroup("Resonance"), ShowInInspector, MinValue(0), LabelText("Tier II at")]
-    private int TierIICost
+    [BoxGroup("Resonance"), ShowInInspector, MinValue(0), LabelText("Quest goal")]
+    private int QuestGoal
     {
-        get => _entry.tierIICost;
-        set { _entry.tierIICost = value; Dirty(); }
-    }
-
-    [BoxGroup("Resonance"), ShowInInspector, MinValue(0), LabelText("Tier III at")]
-    private int TierIIICost
-    {
-        get => _entry.tierIIICost;
-        set { _entry.tierIIICost = value; Dirty(); }
-    }
-
-    [BoxGroup("Resonance"), ShowInInspector, MinValue(0), LabelText("Bankable at")]
-    private int EngraveCost
-    {
-        get => _entry.engraveCost;
-        set { _entry.engraveCost = value; Dirty(); }
+        get => _entry.questGoal;
+        set { _entry.questGoal = value; Dirty(); }
     }
 
     // ---- the engraving, edited here rather than found in the project

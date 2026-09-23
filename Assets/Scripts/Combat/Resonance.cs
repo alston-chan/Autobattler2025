@@ -3,18 +3,18 @@ using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using UnityEngine;
 
 /// <summary>
-/// A hero's resonance: how far each worn item has attuned, and which engravings they have banked
-/// permanently (Docs/Resonance.md).
+/// A hero's resonance: each worn item's quest progress, and the engravings the hero has kept for
+/// good (Docs/ShopLoop.md).
 ///
-/// The loop is <c>equip → attune while worn → cross tier thresholds → resonate (cash out) → the
-/// engraving is banked permanently and the item is hollowed — still worn, still a weapon of its
-/// class, but stripped of everything it gave</c>. Attunement is per
-/// (hero, item) and <b>pauses</b> when an item is unequipped rather than resetting, so swapping gear
-/// is never punishing — the item just idles while something else holds the slot.
+/// The loop is <c>buy an item at a rarity → wear it → its quest fills while it fights → when the
+/// fight that completes it ends, its effect is engraved on the hero at the item's rarity and the item
+/// is hollowed</c> — still worn, still a weapon of its class, but giving nothing further, so the slot
+/// is the player's to fill. Progress is per (hero, item copy) and <b>pauses</b> when an item comes
+/// off rather than resetting.
 ///
-/// Worn and banked engravings apply through the same path, so a worn Tier II engraving and a banked
-/// Tier II engraving behave identically. That equivalence is what makes cashing out feel like keeping
-/// the soul of the item rather than losing it.
+/// It used to be three tiers climbed by wearing, with a cash-out the player timed; the tiers are the
+/// item's rarity now, decided in the shop, and engraving is automatic. A worn effect and an engraved
+/// one still go through the same path, so a worn B and an engraved B behave identically.
 ///
 /// This component also owns each hero's private copies of the engravings affecting them — see
 /// <see cref="InstanceFor"/> — which is what lets an engraving be written with ordinary fields.
@@ -177,12 +177,8 @@ public class Resonance : MonoBehaviour
     public float AttunementFor(Item item) =>
         item != null && _attunement.TryGetValue(Descriptor(item), out float value) ? value : 0f;
 
-    /// <summary>Tier an item has currently reached (0–3), or 0 if it doesn't resonate.</summary>
-    public int TierFor(Item item)
-    {
-        var entry = EntryFor(item);
-        return entry == null ? 0 : entry.TierAt(AttunementFor(item));
-    }
+    /// <summary>The tier an item's effect works at while worn — its rarity — or 0 if it doesn't resonate.</summary>
+    public int TierFor(Item item) => EntryFor(item) == null ? 0 : Rarity.Of(item);
 
     /// <summary>Raised when any worn item's attunement changes, so UI can follow it live.</summary>
     public event System.Action OnAttunementChanged;
@@ -198,7 +194,6 @@ public class Resonance : MonoBehaviour
         if (amount <= 0f) return;
 
         bool changed = false;
-        bool crossedTier = false;
 
         foreach (var item in EquippedResonantItems())
         {
@@ -210,69 +205,70 @@ public class Resonance : MonoBehaviour
             if (!_credited.Add(key)) continue;
 
             _attunement.TryGetValue(key, out float current);
-            float updated = current + amount;
-            _attunement[key] = updated;
+            _attunement[key] = current + amount;
             changed = true;
-
-            if (entry.TierAt(updated) != entry.TierAt(current))
-            {
-                crossedTier = true;
-                Raise(key, ResonanceNotice.TierUp);
-            }
-
-            // Becoming bankable is the one that asks something of the player, so it outranks a tier.
-            if (!entry.CanEngrave(current) && entry.CanEngrave(updated))
-                Raise(key, ResonanceNotice.EngraveReady);
         }
         _credited.Clear();
 
-        // The kill that completes the quota is the moment the reward is earned, so it lands then
-        // rather than at the end of the fight. Reconciling is only worth doing when a threshold was
-        // actually crossed — this runs on every hit landed and every blow blocked, and nothing
-        // changes on the vast majority of them.
-        if (crossedTier) Refresh();
-
+        // Progress changes nothing about what the item does — its rarity decides that — so there is
+        // nothing to reconcile here. A completed quest is engraved when the fight ends
+        // (EngraveCompletedQuests): engraving hollows the item, and taking a hero's armour off in
+        // the middle of the fight that earned it would punish the moment of the reward.
         if (changed) OnAttunementChanged?.Invoke();
     }
 
-    /// <summary>Credit the fight to items counting combats. Called once a fight is over.</summary>
-    public void AccrueAfterCombat() => Accrue(ResonanceRequirement.CombatsWorn, 1f);
+    /// <summary>
+    /// The end of a fight: credit it to items counting combats, then engrave every quest that is
+    /// complete. Called once a fight is over.
+    /// </summary>
+    public void AccrueAfterCombat()
+    {
+        Accrue(ResonanceRequirement.CombatsWorn, 1f);
+        EngraveCompletedQuests();
+    }
 
     /// <summary>
-    /// Cash out: bank the item's engraving at the tier reached, then hollow the item — it stays
-    /// equipped and still counts as a weapon of its class, so an archer who spends their bow is
-    /// still an archer, but it gives nothing further. Refused unless the item is worn and has met
-    /// its engrave requirement — wearing grants the engraving immediately, but keeping it forever
-    /// has to be earned, or cashing out would be free and the bank-or-press decision would vanish.
+    /// Engrave every equipped item whose quest is complete: its effect is kept on the hero at the
+    /// item's rarity, and the item is hollowed. Heroes only — engraving goes through the inventory
+    /// window, and an enemy has none. A weapon on the rack rather than in hand waits until it is
+    /// equipped, since only an equipped item can be hollowed. Returns how many were engraved.
     /// </summary>
-    public bool Resonate(Item item)
+    public int EngraveCompletedQuests()
+    {
+        var inventory = _entity != null ? _entity.characterInventory : null;
+        if (inventory == null || inventory.Equipment == null) return 0;
+
+        // Collected first: hollowing changes what is worn.
+        var done = new List<Item>();
+        foreach (var item in EquippedResonantItems())
+        {
+            var entry = EntryFor(item);
+            if (entry == null || entry.engraving == null || !entry.IsComplete(AttunementFor(item))) continue;
+            if (inventory.Equipment.Items.Contains(item) && !done.Contains(item)) done.Add(item);
+        }
+
+        foreach (var item in done) Engrave(item, inventory);
+        return done.Count;
+    }
+
+    private void Engrave(Item item, CharacterInventory inventory)
     {
         var entry = EntryFor(item);
-        if (entry == null || entry.engraving == null) return false;
-
-        float attunement = AttunementFor(item);
-        if (!entry.CanEngrave(attunement)) return false;
-
-        int tier = entry.TierAt(attunement);
-
-        // Banking hollows the item through the inventory window, so it is a hero-only act.
-        var inventory = _entity != null ? _entity.characterInventory : null;
-        if (inventory == null || !inventory.Equipment.Items.Contains(item)) return false;
-
+        int tier = Rarity.Of(item);
         banked.Add(new Banked { engraving = entry.engraving, tier = tier });
 
         // Read the key BEFORE hollowing: hollowing changes the item's modifier, and so its
         // descriptor, and the progress being cleared is filed under the old one.
         string spentKey = Descriptor(item);
-
-        // The item is spent — its essence is engraved, and what stays equipped is the husk.
         inventory.HollowItem(item);
         _attunement.Remove(spentKey);
         _notices.Remove(spentKey);
+
+        // The news goes on the hollow item still in the slot, which is what the player will click.
+        Raise(Descriptor(item), ResonanceNotice.Engraved);
         OnAttunementChanged?.Invoke();
 
-        Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at tier {tier}.");
-        return true;
+        Debug.Log($"[Resonance] {_entity.name} engraved {entry.engraving.DisplayName} at {Rarity.Letter(tier)}.");
     }
 
     /// <summary>One engraving grant: which asset, at what tier.</summary>
@@ -289,8 +285,8 @@ public class Resonance : MonoBehaviour
     /// Two items carrying the same engraving are two grants and both apply. Keying by engraving
     /// collapsed them into one, so putting on a second Swift item moved nothing: measured at 1.25
     /// attacks/sec wearing a Swift bow, and still 1.25 after adding a Swift hat that was genuinely
-    /// equipped. Banking cannot double-count either way, because Resonate consumes the item — a
-    /// banked mark and a worn item of one engraving are always two things the hero went and got.
+    /// equipped. Engraving cannot double-count either way, because it hollows the item — an engraved
+    /// mark and a worn item of one engraving are always two things the hero went and got.
     /// </summary>
     private readonly Dictionary<string, Grant> _active = new Dictionary<string, Grant>();
 
@@ -376,12 +372,11 @@ public class Resonance : MonoBehaviour
             var entry = EntryFor(item);
             if (entry == null || entry.engraving == null) continue;
 
-            // Tier I is free — a worn engraving always applies. The item's identity is the reason to
-            // wear it, so it works from the moment it goes on; attunement only deepens it.
+            // A worn effect applies from the moment it goes on, at the item's rarity.
             desired["worn:" + Descriptor(item)] = new Grant
             {
                 asset = entry.engraving,
-                tier = entry.TierAt(AttunementFor(item))
+                tier = Rarity.Of(item)
             };
         }
 

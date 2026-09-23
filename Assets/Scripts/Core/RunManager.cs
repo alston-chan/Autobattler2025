@@ -257,7 +257,7 @@ public class RunManager : MonoBehaviour
     }
 
     /// <summary>Items currently on offer from the fight just won. Empty once one is taken.</summary>
-    public List<string> PendingRewards { get; } = new List<string>();
+    public List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> PendingRewards { get; } = new List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item>();
 
     /// <summary>Raised when a victory puts items on offer, and again when the offer is resolved.</summary>
     public event System.Action OnRewardsChanged;
@@ -269,8 +269,16 @@ public class RunManager : MonoBehaviour
 
         var pool = RewardPoolFor(cleared);
 
+        // Each offer is a copy at a rolled rarity, with better odds the further the run has come
+        // (Rarity.OddsAt). Until the shop exists this pick is where rarity enters a run. Rarity is the
+        // grade of an item's EFFECT, so an item with none is always a C: an S that does nothing more
+        // than a C would be a lie on the card.
         if (pool != null)
-            PendingRewards.AddRange(pool.Draw(Mathf.Max(1, runData.rewardChoices)));
+            foreach (var id in pool.Draw(Mathf.Max(1, runData.rewardChoices)))
+            {
+                bool hasEffect = ResonanceDatabase.Active != null && ResonanceDatabase.Active.FindFor(new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(id)) != null;
+                PendingRewards.Add(Rarity.Make(id, hasEffect ? Rarity.Roll(RunProgress) : Rarity.C));
+            }
 
         OnRewardsChanged?.Invoke();
     }
@@ -303,22 +311,26 @@ public class RunManager : MonoBehaviour
     /// Take one of the offered items into the shared bag, discarding the rest — the choice is the
     /// point, so the ones passed over are gone.
     /// </summary>
-    public bool TakeReward(string itemId)
+    /// <summary>How far through the run the company is: 0 at the first fight, 1 at the last.</summary>
+    public float RunProgress => State != null && State.TotalEncounters > 1
+        ? Mathf.Clamp01((float)State.EncounterIndex / (State.TotalEncounters - 1)) : 0f;
+
+    public bool TakeReward(Assets.HeroEditor.InventorySystem.Scripts.Data.Item offer)
     {
-        if (!PendingRewards.Contains(itemId)) return false;
+        if (offer == null || !PendingRewards.Contains(offer)) return false;
 
         var inventory = _company.Count > 0 && _company[0] != null
             ? _company[0].characterInventory : null;
         if (inventory == null || inventory.PlayerInventory == null) return false;
 
-        inventory.PlayerInventory.Items.Add(new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(itemId));
+        inventory.PlayerInventory.Items.Add(Rarity.Make(offer.Id, Rarity.Of(offer)));
         inventory.PlayerInventory.Refresh(null);
 
         PendingRewards.Clear();
         OnRewardsChanged?.Invoke();
         SaveIfSafe();
 
-        Debug.Log($"[RunManager] Took {itemId}.");
+        Debug.Log($"[RunManager] Took {offer.Id} at {Rarity.Letter(Rarity.Of(offer))}.");
         return true;
     }
 

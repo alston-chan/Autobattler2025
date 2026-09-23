@@ -62,6 +62,7 @@ public class CharacterInventory : ItemWorkspace
     public void Awake()
     {
         ItemCollection.Active = ItemCollection;
+        ItemCollection.Active.GetBackgroundCustom = Rarity.Background;   // every slot is drawn in its item's rarity
         ItemCollection.Active.SpriteCollections = new List<SpriteCollection> { SpriteCollection };
         ItemCollection.Active.IconCollections = new List<IconCollection> { IconCollection };
     }

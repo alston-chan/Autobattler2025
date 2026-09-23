@@ -273,7 +273,7 @@ public class CompositeSpell : Spell
     /// <summary>The tier this caster holds the verb at, else 1.</summary>
     public int TierFor(Entity caster) => caster != null && caster.Resonance != null ? caster.Resonance.TierOfVerb(this) : 1;
 
-    /// <summary>The sentence at a tier, numbers scaled: what the card shows a hero holding it at tier III.</summary>
+    /// <summary>The sentence at a tier, numbers scaled: what the card shows a hero holding it at a rarity above C.</summary>
     public string ReadsAt(int tier)
     {
         float scale = ScaleAt(tier);
@@ -284,11 +284,9 @@ public class CompositeSpell : Spell
     {
         int tier = TierFor(holder);
         if (tier <= 1) return FullDescription;
-        // The authored text says tier I; the tier's numbers follow it, from the parts.
-        return FullDescription + "\nTier " + Roman(tier) + ": " + ReadsAt(tier);
+        // The authored text says C; a rarer weapon's numbers follow it, from the parts.
+        return FullDescription + "\nAt " + Rarity.Letter(tier) + ": " + ReadsAt(tier);
     }
-
-    public static string Roman(int tier) => tier >= 3 ? "III" : tier == 2 ? "II" : "I";
     [BoxGroup("How it plays"), Tooltip("Seeds the unit's Damage stat when this is the weapon attack. Zero for anything else.")]
     public float baseDamage = 0f;
 

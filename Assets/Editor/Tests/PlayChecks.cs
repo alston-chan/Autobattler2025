@@ -31,6 +31,7 @@ public static class PlayChecks
         new PlayCheck("hold the line covers whoever is close", HoldTheLineCoversWhoeverIsClose),
         new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
         new PlayCheck("the round-end sweep clears the ground", TheRoundEndSweepClearsTheGround),
+        new PlayCheck("a finished quest is engraved at its rarity", AFinishedQuestIsEngravedAtItsRarity),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -192,6 +193,53 @@ public static class PlayChecks
         Assert.That(pool == null, Is.True, "a tar pool outlived the round-end sweep");
         Assert.That(decoy == null, Is.True, "a decoy outlived the round-end sweep, and its taunt with it");
         Assert.That(Zone.All.Exists(z => z != null && z.name == "SweepCheckPool"), Is.False);
+    }
+
+    /// <summary>
+    /// The shop loop's one rule about items (Docs/ShopLoop.md): a worn item works at its rarity, its
+    /// quest fills while it fights, and when the fight that completes it ends, its effect is engraved
+    /// on the hero at that rarity and the item is hollowed. Needs a hero's real inventory, since
+    /// engraving goes through it. Leaves the hero with one engraved mark and a hollow item — a real
+    /// outcome of the rule, which the checks after this one tolerate like any other.
+    /// </summary>
+    private static IEnumerator AFinishedQuestIsEngravedAtItsRarity()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        Entity hero = null;
+        Assets.HeroEditor.InventorySystem.Scripts.Data.Item item = null;
+        foreach (var unit in PlayHarness.Living())
+        {
+            if (!unit.isTeam || unit.characterInventory == null || unit.Resonance == null) continue;
+            foreach (var worn in unit.characterInventory.Equipment.Items)
+                if (unit.Resonance.EntryFor(worn) != null) { hero = unit; item = worn; break; }
+            if (hero != null) break;
+        }
+        Assert.That(item, Is.Not.Null, "no living hero wears anything with a quest");
+
+        var resonance = hero.Resonance;
+        var entry = resonance.EntryFor(item);
+        int bankedBefore = resonance.banked.Count;
+
+        // Make it a B, as a shop would have sold it.
+        item.Modifier = new Assets.HeroEditor.InventorySystem.Scripts.Data.Modifier(
+            Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemModifier.Rarity, Rarity.B);
+        resonance.Refresh();
+        Assert.That(resonance.TierFor(item), Is.EqualTo(Rarity.B), "a worn B works at B from the moment it is on");
+
+        resonance.Accrue(entry.requirement, entry.questGoal);
+        Assert.That(entry.IsComplete(resonance.AttunementFor(item)), Is.True, "the quest should be complete");
+        Assert.That(resonance.TierFor(item), Is.EqualTo(Rarity.B), "progress does not change what the item does");
+        Assert.That(resonance.banked.Count, Is.EqualTo(bankedBefore),
+                    "engraved mid-fight — engraving waits for the fight to end, or a hero loses its armour in the fight that earned it");
+
+        int engraved = resonance.EngraveCompletedQuests();
+        Assert.That(engraved, Is.GreaterThanOrEqualTo(1), "a completed quest was not engraved at the fight's end");
+        var mark = resonance.banked[resonance.banked.Count - 1];
+        Assert.That(mark.engraving, Is.SameAs(entry.engraving));
+        Assert.That(mark.tier, Is.EqualTo(Rarity.B), "engraved at a different grade than the item was");
+        Assert.That(HollowItems.IsHollow(item), Is.True, "the item was not spent");
+        Assert.That(resonance.NoticeFor(item), Is.EqualTo(ResonanceNotice.Engraved), "nothing tells the player it happened");
     }
 
     /// <summary>

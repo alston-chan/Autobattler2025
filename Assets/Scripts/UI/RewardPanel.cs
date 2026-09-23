@@ -19,7 +19,6 @@ using UnityEngine.UI;
 public class RewardPanel : MonoBehaviour
 {
     private static readonly Color Gold = new Color(1f, 0.82f, 0.28f, 1f);
-    private static readonly Color CardFace = new Color(0.18f, 0.15f, 0.11f, 0.96f);
     private static readonly Color Backdrop = new Color(0f, 0f, 0f, 0.55f);
 
     private RunManager _runManager;
@@ -60,12 +59,14 @@ public class RewardPanel : MonoBehaviour
         foreach (var card in _cards) Destroy(card);
         _cards.Clear();
 
-        foreach (var id in offers) _cards.Add(BuildCard(id));
+        foreach (var offer in offers) _cards.Add(BuildCard(offer));
     }
 
     /// <summary>One offered item: its icon, name, and the engraving it carries if any.</summary>
-    private GameObject BuildCard(string itemId)
+    private GameObject BuildCard(Item offer)
     {
+        string itemId = offer.Id;
+        int rarity = Rarity.Of(offer);
         var card = new GameObject("Reward_" + itemId, typeof(RectTransform));
         card.transform.SetParent(_cardRow, false);
 
@@ -78,13 +79,13 @@ public class RewardPanel : MonoBehaviour
         layoutElement.preferredWidth = 240f;
         layoutElement.preferredHeight = 300f;
 
+        // The card is the rarity's colour, as its slot will be once it is taken.
         var face = card.AddComponent<Image>();
-        face.color = CardFace;
+        face.color = Rarity.CardColorOf(rarity);
 
         var button = card.AddComponent<Button>();
         button.targetGraphic = face;
-        string captured = itemId;
-        button.onClick.AddListener(() => _runManager.TakeReward(captured));
+        button.onClick.AddListener(() => _runManager.TakeReward(offer));
 
         var itemParams = ItemCollection.Active != null
             ? ItemCollection.Active.Items.Find(i => i.Id == itemId) : null;
@@ -104,7 +105,7 @@ public class RewardPanel : MonoBehaviour
 
         var name = NewText("Name", card.transform, 20f, Gold);
         Place(name.rectTransform, new Vector2(0.5f, 1f), new Vector2(220f, 50f), new Vector2(0f, -160f));
-        name.text = Readable(itemParams, itemId);
+        name.text = Readable(itemParams, itemId) + "  " + Rarity.Tag(rarity);
 
         // The engraving is the reason to want this item, so it gets said plainly.
         var entry = ResonanceDatabase.Active != null ? ResonanceDatabase.Active.Find(itemId) : null;
@@ -112,10 +113,11 @@ public class RewardPanel : MonoBehaviour
                              entry != null ? Gold : new Color(0.75f, 0.75f, 0.75f, 1f));
         Place(detail.rectTransform, new Vector2(0.5f, 0f), new Vector2(220f, 90f), new Vector2(0f, 60f));
         // Real numbers, not prose. Choosing between three items is a comparison of magnitudes, and
-        // "attacks faster" gives the player nothing to compare. Tier I is quoted because that is what
-        // the item is worth on the fight after it's taken.
+        // "attacks faster" gives the player nothing to compare. Quoted at this copy's rarity, which is
+        // what it will do on the fight after it's taken — and what its quest will engrave.
         detail.text = entry != null && entry.engraving != null
-            ? Keywords.Decorate($"<b>{entry.engraving.DisplayName}</b>\n{entry.engraving.DescribeTier(1)}")
+            ? Keywords.Decorate($"<b>{entry.engraving.DisplayName}</b>\n{entry.engraving.DescribeTier(rarity)}\n" +
+                                $"<size=80%>Quest: {entry.questGoal} {ResonanceRequirements.Describe(entry.requirement)}</size>")
             : "No engraving.";
 
         return card;

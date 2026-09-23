@@ -117,17 +117,13 @@ public class SetPage
         foreach (var row in _rows) row.Counts = _allRequirement;
     }
 
-    [BoxGroup("For every piece"), PropertyOrder(4), ShowInInspector, HorizontalGroup("For every piece/costs"), LabelText("Tier II at"), LabelWidth(70), MinValue(0)]
-    private int _allTierII = 3;
-    [BoxGroup("For every piece"), PropertyOrder(4), ShowInInspector, HorizontalGroup("For every piece/costs"), LabelText("Tier III at"), LabelWidth(70), MinValue(0)]
-    private int _allTierIII = 6;
-    [BoxGroup("For every piece"), PropertyOrder(4), ShowInInspector, HorizontalGroup("For every piece/costs"), LabelText("Bankable at"), LabelWidth(80), MinValue(0)]
-    private int _allEngrave = 3;
+    [BoxGroup("For every piece"), PropertyOrder(4), ShowInInspector, HorizontalGroup("For every piece/costs"), LabelText("Quest goal"), LabelWidth(80), MinValue(0)]
+    private int _allGoal = 3;
 
     [BoxGroup("For every piece"), PropertyOrder(4), Button, HorizontalGroup("For every piece/costs")]
     private void ApplyCostsToAll()
     {
-        foreach (var row in _rows) { row.TierII = _allTierII; row.TierIII = _allTierIII; row.Bankable = _allEngrave; }
+        foreach (var row in _rows) row.Goal = _allGoal;
     }
 
     // ---- what is not designed yet
@@ -206,25 +202,11 @@ public class SetPage
             set { _entry.requirement = value; Dirty(); }
         }
 
-        [TableColumnWidth(60), ShowInInspector, LabelText("II"), LabelWidth(16), MinValue(0)]
-        public int TierII
+        [TableColumnWidth(70), ShowInInspector, LabelText("Goal"), LabelWidth(32), MinValue(0)]
+        public int Goal
         {
-            get => _entry.tierIICost;
-            set { _entry.tierIICost = value; Dirty(); }
-        }
-
-        [TableColumnWidth(60), ShowInInspector, LabelText("III"), LabelWidth(20), MinValue(0)]
-        public int TierIII
-        {
-            get => _entry.tierIIICost;
-            set { _entry.tierIIICost = value; Dirty(); }
-        }
-
-        [TableColumnWidth(70), ShowInInspector, LabelText("Bank"), LabelWidth(32), MinValue(0)]
-        public int Bankable
-        {
-            get => _entry.engraveCost;
-            set { _entry.engraveCost = value; Dirty(); }
+            get => _entry.questGoal;
+            set { _entry.questGoal = value; Dirty(); }
         }
 
         [TableColumnWidth(60, Resizable = false), Button("Open")]

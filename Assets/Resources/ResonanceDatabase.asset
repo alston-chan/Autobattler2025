@@ -16,217 +16,145 @@ MonoBehaviour:
   - itemId: FantasyHeroes.Basic.Shield.AdvancedKnightShield
     engraving: {fileID: 11400000, guid: 2456309d292822a44b82c2f49b37cc95, type: 2}
     requirement: 3
-    tierIICost: 900
-    tierIIICost: 2400
-    engraveCost: 600
+    questGoal: 600
   - itemId: Extensions.Epic.Shield.BlazeShield
     engraving: {fileID: 11400000, guid: 8e4be88e2e7c4de4a846dd25b590991e, type: 2}
     requirement: 1
-    tierIICost: 4
-    tierIIICost: 10
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Knights.MeleeWeapon1H.BalancedSword [Paint]
     engraving: {fileID: 11400000, guid: 8a2c3f8940e76bb4589e8c24beea3807, type: 2}
     requirement: 2
-    tierIICost: 1500
-    tierIIICost: 4000
-    engraveCost: 1000
+    questGoal: 1000
   - itemId: FantasyHeroes.Basic.Helmet.AmateurDodgeHat
     engraving: {fileID: 11400000, guid: e5796675bd685f94bb465b5b8b97e3c8, type: 2}
     requirement: 4
-    tierIICost: 12
-    tierIIICost: 30
-    engraveCost: 8
+    questGoal: 8
   - itemId: FantasyHeroes.Basic.Bow.BattleBow
     engraving: {fileID: 11400000, guid: e5796675bd685f94bb465b5b8b97e3c8, type: 2}
     requirement: 5
-    tierIICost: 15
-    tierIIICost: 40
-    engraveCost: 8
+    questGoal: 8
   - itemId: FantasyHeroes.Basic.Armor.BanditArmor.vest
     engraving: {fileID: 11400000, guid: 2b3c4d5e6f7a4b8c9d0e1f2a3b4c5d6e, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Samurai.Helmet.NinjaHelm1 [Paint]
     engraving: {fileID: 11400000, guid: f5f83002b9dc07142b4dd4678b770d39, type: 2}
     requirement: 0
-    tierIICost: 2
-    tierIIICost: 5
-    engraveCost: 2
+    questGoal: 2
   - itemId: FantasyHeroes.Basic.Armor.NinjaOutfit.vest
     engraving: {fileID: 11400000, guid: 21820c8910c61d2499d08ebab48eacf6, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Basic.Armor.NinjaOutfit.boots
     engraving: {fileID: 11400000, guid: 6edc570fe25527e4fb7a470ba348823a, type: 2}
     requirement: 5
-    tierIICost: 20
-    tierIIICost: 50
-    engraveCost: 20
+    questGoal: 20
   - itemId: FantasyHeroes.Basic.MeleeWeapon1H.AssassinDagger [Paint]
     engraving: {fileID: 11400000, guid: 9e728e19141d17e46b61badc0a074af2, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemId: FantasyHeroes.Basic.MeleeWeapon1H.ShortDagger [Paint]
     engraving: {fileID: 11400000, guid: e4e51f3e48c33d048b6ab252e6c46dc5, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemId: FantasyHeroes.Samurai.Shield.NinjaShield
     engraving: {fileID: 11400000, guid: fdaa7f123d7e62b46bbd75b593e973ab, type: 2}
     requirement: 4
-    tierIICost: 5
-    tierIIICost: 12
-    engraveCost: 5
+    questGoal: 5
   - itemId: Extensions.AbandonedWorkshop.Helmet.WallKeeperHelm
     engraving: {fileID: 11400000, guid: 9e53c421befc6ec469ff7e0da768a2fe, type: 2}
     requirement: 3
-    tierIICost: 300
-    tierIIICost: 800
-    engraveCost: 300
+    questGoal: 300
   - itemId: Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.vest
     engraving: {fileID: 11400000, guid: 7da5082e255020b49af96873d5bed910, type: 2}
     requirement: 3
-    tierIICost: 400
-    tierIIICost: 1000
-    engraveCost: 400
+    questGoal: 400
   - itemId: Extensions.AbandonedWorkshop.Armor.WallKeeperArmor.boots
     engraving: {fileID: 11400000, guid: bf843fba000c2e64485b496e542aa27a, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: Extensions.AbandonedWorkshop.Shield.WallKeeperShield
     engraving: {fileID: 11400000, guid: 22a962a98c239b94bbe79959f8480a24, type: 2}
     requirement: 4
-    tierIICost: 5
-    tierIIICost: 12
-    engraveCost: 5
+    questGoal: 5
   - itemId: FantasyHeroes.Basic.Shield.TowerShield
     engraving: {fileID: 11400000, guid: 9e472ea1b2a8b674e8e73c900c78d776, type: 2}
     requirement: 4
-    tierIICost: 5
-    tierIIICost: 12
-    engraveCost: 5
+    questGoal: 5
   - itemId: FantasyHeroes.Basic.Helmet.AssassinHood [Paint]
     engraving: {fileID: 11400000, guid: af1cacd152c21324192d0080d899cf9c, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Basic.Helmet.BerserkHelm
     engraving: {fileID: 11400000, guid: 770aa3d27ac829549911b1eca62e22ad, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Basic.Helmet.SpearmanHelm1
     engraving: {fileID: 11400000, guid: af1cacd152c21324192d0080d899cf9c, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Knights.Helmet.EliteKnightHelm
     engraving: {fileID: 11400000, guid: 59738851517c96744bff5b716422c900, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood
     engraving: {fileID: 11400000, guid: cd7102f8c95bccd4ca513c5920255e63, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Basic.Armor.Cleric [Paint].vest
     engraving: {fileID: 11400000, guid: cd7102f8c95bccd4ca513c5920255e63, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Basic.Helmet.WarlockHood
     engraving: {fileID: 11400000, guid: cd7102f8c95bccd4ca513c5920255e63, type: 2}
     requirement: 0
-    tierIICost: 3
-    tierIIICost: 6
-    engraveCost: 3
+    questGoal: 3
   - itemId: FantasyHeroes.Basic.Bow.RangerBow
     engraving: {fileID: 11400000, guid: 2f2a1a7f903726b42bff2a3edc0e79aa, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemId: FantasyHeroes.Basic.MeleeWeapon1H.WarHammer
     engraving: {fileID: 11400000, guid: fdb4b0e966ca959479a34234fb868cc7, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemId: FantasyHeroes.Basic.MeleeWeapon1H.FireWizardWand
     engraving: {fileID: 11400000, guid: c84c3d1a49dfd39429cf40f812725c1e, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemId: FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint]
     engraving: {fileID: 11400000, guid: e47d3c080ff9271429b99e49bc4145b7, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   classDefaults:
   - itemClass: 2
     engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 4
     engraving: {fileID: 11400000, guid: c157896ac6abe0c4fbb9063f4a585ef9, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 3
     engraving: {fileID: 11400000, guid: 2539d24eb5841504ab6dc978b374dcf7, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 5
     engraving: {fileID: 11400000, guid: 93793686c3f28ea43b5ef49e60a04c9c, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 1
     engraving: {fileID: 11400000, guid: 93793686c3f28ea43b5ef49e60a04c9c, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 6
     engraving: {fileID: 11400000, guid: 1f8253fa5ef2e844588586ea7b351e7e, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 7
     engraving: {fileID: 11400000, guid: 3b19c089ee3ae044a854973fd655c9e2, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
   - itemClass: 21
     engraving: {fileID: 11400000, guid: 3b19c089ee3ae044a854973fd655c9e2, type: 2}
     requirement: 4
-    tierIICost: 6
-    tierIIICost: 14
-    engraveCost: 6
+    questGoal: 6
