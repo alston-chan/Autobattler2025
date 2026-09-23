@@ -339,6 +339,7 @@ public static class PlayChecks
     private static IEnumerator NobodyStartsInsideTheSoftWall()
     {
         yield return PlayHarness.Until(() => GameManager.Instance != null, "the game to wake up");
+        yield return PlayHarness.PastARunEnd();
 
         // A real bell, not "a fight is happening". Mid-fight a unit near the edge has usually been
         // kited or thrown there, which is allowed; this check is about where units are SEATED, and

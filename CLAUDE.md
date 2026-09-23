@@ -216,6 +216,11 @@ Three things cost an afternoon to learn:
   that is really in the reach dead band reads as "holding" if stance is checked before distance —
   that misattribution hid the actual bug (two melee units facing each other 1.55 apart, both with
   1.5 reach, neither walking nor able to hit) under a plausible label for a whole run.
+- **A lost run is a dead end unless the harness starts over.** `ReachTheBell` (and the bell check)
+  go through `PlayHarness.PastARunEnd`, which reloads the scene like `GameManager.RestartRun` but
+  never deletes the run save — that file is the player's, in `persistentDataPath`. Before it, a
+  wiped company made every later check wait ninety seconds for a bell that could not ring, and
+  thirteen checks read as seven failures.
 - **Because they share a session, a check's leftovers are the next check's fight.** The decoy checks
   leave decoys alive for six seconds, decoys taunt, and the pacing check that runs next counted every
   taunted unit walking past a kiter to reach one as "walking past a fight" — 43–47%, failing at
@@ -331,8 +336,8 @@ Writing them:
   (`AWhirlCutsTheEnemyBesideIt`) — and at a distance the broken version would miss: at 1.2 the
   shrunken ring still grazed a body, and that first version of the check passed on the bug.
 - **An area on the floor is judged as it is drawn.** `ShapeSprites.OnFloor` draws a circle flattened
-  to `FloorDepth` (0.55) because the floor is seen at an angle; `OnFloorWithin` / `EnemiesOnFloor` /
-  `Zone.Covers` judge that same ellipse. Arrow Rain and Tar Pool once drew the ellipse and judged a
+  to `FloorDepth` (0.55) because the floor is seen at an angle; `OnFloorWithin` / `EnemiesOnFloor` judge
+  that same ellipse, and a tar pool ticks by it. Arrow Rain and Tar Pool once drew the ellipse and judged a
   circle, hitting the rows above and below the ring. Point-to-point reach (a swing, a body, a blade's
   edge) stays a plain distance: nothing is drawn for it.
 - **Anything a fight puts in the world must be in `CombatDebris.Sweep`.** It runs at round end. The

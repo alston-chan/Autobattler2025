@@ -30,6 +30,7 @@ public static class PlayHarness
     public static IEnumerator ReachTheBell()
     {
         yield return Until(() => GameManager.Instance != null, "the game to wake up");
+        yield return PastARunEnd();
         if (GameManager.Instance.StateMachine.Current == GameState.Combat) yield break;
 
         // The bell is what the player presses; the telemetry harness presses it for an unattended
@@ -44,6 +45,31 @@ public static class PlayHarness
         // And then stop, so the ladder does not run on underneath the check.
         telemetry = UnityEngine.Object.FindObjectOfType<CombatTelemetry>();
         if (telemetry != null) telemetry.autoAdvance = false;
+    }
+
+    /// <summary>
+    /// A lost run ends on the run-end screen, and nothing gets from there to a fight but the
+    /// player's "start over". The harness used to assume the company would never be wiped: when it
+    /// was, every check after that waited ninety seconds for a bell that could not ring, and a run
+    /// of thirteen checks read as seven failures (measured twice, 2026-09-22, both times after a
+    /// loss). This is GameManager.RestartRun without its one line that matters outside a test: it
+    /// does NOT delete the run save, which lives in the player's data folder, not in the project.
+    /// </summary>
+    /// <summary>If the last fight lost the run, start a fresh one; otherwise nothing.</summary>
+    public static IEnumerator PastARunEnd()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.StateMachine.Current == GameState.RunEnd) yield return StartOver();
+    }
+
+    private static IEnumerator StartOver()
+    {
+        var old = GameManager.Instance;
+        EntityRegistry.Clear();
+        CombatTelemetry.Reset();
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        yield return Until(() => GameManager.Instance != null && GameManager.Instance != old &&
+                                 GameManager.Instance.StateMachine.Current != GameState.RunEnd,
+                           "a fresh run after the company was wiped", 60f);
     }
 
     /// <summary>
