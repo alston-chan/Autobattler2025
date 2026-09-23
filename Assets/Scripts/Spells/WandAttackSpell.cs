@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// The wand's basic attack: a bolt, thrown without a wind-up.
@@ -33,7 +34,8 @@ public class WandAttackSpell : Spell
     public float damage = 6f;
     [Tooltip("Zero by default: a bolt of light should not shove people. Knockback also carries a " +
              "stun, so leaving it on a fast weapon quietly locks the target down.")]
-    public float knockbackForce = 0f;
+    [FormerlySerializedAs("knockbackForce")]
+    public float critKnockbackForce = 0f;
 
     [Tooltip("How fast the bolt travels. Deliberately slower than an arrow (18.75) so a wand's " +
              "damage is seen to cross the gap rather than arriving the instant it is cast.")]
@@ -114,7 +116,7 @@ public class WandAttackSpell : Spell
 
         projectile.critChance = critChance;
         projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
-        projectile.knockbackForce = knockbackForce;
+        projectile.critKnockbackForce = critKnockbackForce;
         projectile.shooter = caster;
         projectile.target = target;
         projectile.damageType = DamageType.Magical;   // a bolt of light is resisted by magic resist, not armour

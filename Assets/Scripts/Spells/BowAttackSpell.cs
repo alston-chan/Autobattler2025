@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Spells/BowAttackSpell")]
 public class BowAttackSpell : Spell
@@ -11,7 +12,8 @@ public class BowAttackSpell : Spell
     public float critChance = 0.15f;
 
     public float damage = 10f;
-    public float knockbackForce = 3.5f;
+    [FormerlySerializedAs("knockbackForce")]
+    public float critKnockbackForce = 3.5f;
     public float chargeTime = 0.5f;
     public AnimationClip clipCharge;
 
@@ -56,7 +58,7 @@ public class BowAttackSpell : Spell
             {
                 projectile.critChance = critChance;
             projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
-                projectile.knockbackForce = knockbackForce;
+                projectile.critKnockbackForce = critKnockbackForce;
                 projectile.shooter = caster;
                 projectile.target = target;
             }

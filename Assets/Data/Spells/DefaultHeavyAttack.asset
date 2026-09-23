@@ -21,7 +21,6 @@ MonoBehaviour:
   weaponRequirement: 1
   damage: 20
   critChance: 0.2
-  knockbackForce: 1.2
   critKnockbackForce: 2.8
   hitDelayFallback: 0.45
   maxHitWait: 1.5

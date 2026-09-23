@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// The paired-blade basic attack: two strikes to a swing, one from each hand.
@@ -23,9 +24,10 @@ public class DualWieldAttackSpell : Spell
 
     public float critChance = 0.15f;
 
-    [Tooltip("Zero by default. Two light blades should not shove people, and knockback would push " +
-             "the target out of reach between the first strike and the second.")]
-    public float knockbackForce = 0f;
+    [Tooltip("Only a crit shoves; an ordinary strike stands. Small: knockback would push the target " +
+             "out of reach between the first strike and the second.")]
+    [FormerlySerializedAs("knockbackForce")]
+    public float critKnockbackForce = 0f;
 
     [Header("Hit Timing")]
     [Tooltip("Fallback delay per strike if a clip has no contact event. Both paired clips do have " +
@@ -90,9 +92,9 @@ public class DualWieldAttackSpell : Spell
         float finalDamage = AttackRoll.DamageOf(caster, damage);
         target.TakeDamage(finalDamage, caster, isCrit);
 
-        if (knockbackForce <= 0f || target == null || target.isDead) yield break;
+        if (!isCrit || critKnockbackForce <= 0f || target == null || target.isDead) yield break;
 
         Vector3 direction = (target.transform.position - caster.transform.position).normalized;
-        target.ApplyKnockback(direction, knockbackForce, caster);
+        target.ApplyKnockback(direction, critKnockbackForce, caster);
     }
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
   manaCost: 0
   weaponRequirement: 0
   damage: 22
-  knockbackForce: 0
+  critKnockbackForce: 0
   projectilePrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
   projectileSpeed: 26
   maxShotWait: 2.5

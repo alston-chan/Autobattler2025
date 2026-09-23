@@ -5,12 +5,12 @@ using UnityEngine;
 /// The two-handed basic attack: a wound-up blow, played on the rig's <c>ChargeAttack2H</c>.
 ///
 /// Greatswords and mauls shared the one-handed swing, so carrying one changed the numbers and
-/// nothing else. This gives them their own shape — fewer, heavier blows that shove what they hit.
+/// nothing else. This gives them their own shape — fewer, heavier blows, and a crit that throws.
 ///
-/// The knockback is the interesting part of the trade rather than a bonus on top. A shoved target is
-/// a target out of reach, and a two-handed fighter has to close the distance again before the next
-/// swing, so the damage on paper is not the damage in practice. That is the cost of the big weapon,
-/// and it is what stops "slower but harder" from being a strictly better melee attack.
+/// Every blow used to shove, as the cost of the big weapon: a shoved target is out of reach and has
+/// to be walked to again. What a player saw was two units stepping back and forth after every swing,
+/// which read as indecision, so an ordinary hit now stands and only a crit moves anyone — the same
+/// rule as every other basic attack.
 /// </summary>
 [CreateAssetMenu(menuName = "Spells/HeavyAttackSpell")]
 public class HeavyAttackSpell : Spell
@@ -19,9 +19,7 @@ public class HeavyAttackSpell : Spell
     public float damage = 20f;
     public float critChance = 0.2f;
 
-    [Tooltip("Applied on every hit, not only on crits. A two-handed blow that failed to move anyone " +
-             "would just be a slow sword.")]
-    public float knockbackForce = 3.5f;
+    [Tooltip("Only a crit shoves; an ordinary hit stands.")]
     public float critKnockbackForce = 6f;
 
     [Header("Hit Timing")]
@@ -79,11 +77,10 @@ public class HeavyAttackSpell : Spell
 
         if (target == null || target.isDead) yield break;
 
-        float force = isCrit ? critKnockbackForce : knockbackForce;
-        if (force > 0f)
+        if (isCrit && critKnockbackForce > 0f)
         {
             Vector3 direction = (target.transform.position - caster.transform.position).normalized;
-            target.ApplyKnockback(direction, force, caster);
+            target.ApplyKnockback(direction, critKnockbackForce, caster);
         }
     }
 }

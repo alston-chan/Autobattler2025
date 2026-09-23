@@ -27,8 +27,8 @@ public class MeleeAttackSpell : Spell
 
     public float damage = 10f;
     public float critChance = 0.2f;
+    [Tooltip("Only a crit shoves. An ordinary hit used to, and a melee unit stops 0.15 inside its reach, so almost every swing pushed the pair out of reach and both stepped back in: the back-and-forth that read as indecision.")]
     public float critKnockbackForce = 3.5f;
-    public float normalKnockbackForce = 0f;
 
     [Header("Hit Timing")]
     [Tooltip("Fallback delay before damage lands when the attack animation has no hit event.")]
@@ -85,11 +85,10 @@ public class MeleeAttackSpell : Spell
         // May have died from this hit — nothing left to knock back.
         if (target == null || target.isDead) yield break;
 
-        float knockbackForce = isCrit ? critKnockbackForce : normalKnockbackForce;
-        if (knockbackForce > 0f)
+        if (isCrit && critKnockbackForce > 0f)
         {
             Vector3 knockbackDir = (target.transform.position - caster.transform.position).normalized;
-            target.ApplyKnockback(knockbackDir, knockbackForce, caster);
+            target.ApplyKnockback(knockbackDir, critKnockbackForce, caster);
         }
     }
 }

@@ -112,4 +112,28 @@ public class PhysicsRuleTests
         Assert.That(hit.kind, Is.EqualTo(DamageKind.Hit), "the default is the ordinary number");
         Assert.That(slam.kind, Is.EqualTo(DamageKind.Slam));
     }
+
+    [Test]
+    public void OnlyACritShovesOnABasicAttack()
+    {
+        // An ordinary hit that shoved pushed a melee pair just out of reach after nearly every swing
+        // (a unit stops 0.15 inside its reach), and both stepped back in: measured as the largest
+        // source of units reversing direction. So a basic attack has no ordinary-hit force at all —
+        // not a zero that someone can raise in an asset, but no field to raise.
+        var basics = new[] { typeof(MeleeAttackSpell), typeof(HeavyAttackSpell), typeof(DualWieldAttackSpell),
+                             typeof(BowAttackSpell), typeof(WandAttackSpell), typeof(FirearmAttackSpell),
+                             typeof(Assets.HeroEditor.Common.Scripts.ExampleScripts.Projectile) };
+        foreach (var type in basics)
+        {
+            Assert.That(type.GetField("knockbackForce"), Is.Null, type.Name + " still shoves on every hit");
+            Assert.That(type.GetField("normalKnockbackForce"), Is.Null, type.Name + " still shoves on an ordinary hit");
+            Assert.That(type.GetField("critKnockbackForce"), Is.Not.Null, type.Name + " has no crit shove");
+        }
+
+        // And the crits kept what they had: a mace still throws on a crit.
+        var blunt = AssetDatabase.LoadAssetAtPath<MeleeAttackSpell>("Assets/Data/Spells/BluntAttack.asset");
+        Assert.That(blunt.critKnockbackForce, Is.EqualTo(3.2f).Within(0.001f));
+        var bow = AssetDatabase.LoadAssetAtPath<BowAttackSpell>("Assets/Data/Spells/DefaultBowAttack.asset");
+        Assert.That(bow.critKnockbackForce, Is.EqualTo(0.8f).Within(0.001f), "the bow's old every-hit number is its crit number");
+    }
 }

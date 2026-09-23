@@ -19,7 +19,10 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
         // nobody chose. Set by whichever spell fires this, rolled per hit in Bang below.
         public float critChance;
 
-        public float knockbackForce = 3.5f;
+        // Project edit: was knockbackForce, applied on every hit. Only a crit shoves now, as with every
+        // basic attack in the game; an ordinary hit that shoved kept pairs stepping in and out of reach.
+        [UnityEngine.Serialization.FormerlySerializedAs("knockbackForce")]
+        public float critKnockbackForce = 0f;
         // Project edit: what resists this projectile's hit. A bow's arrow is physical; a wand's bolt
         // is magical, and WandAttackSpell says so when it launches one.
         public DamageType damageType = DamageType.Physical;
@@ -84,9 +87,13 @@ namespace Assets.HeroEditor.Common.Scripts.ExampleScripts
             Entity entity = other.GetComponent<Entity>();
             if (entity != null && target != null && entity == target)
             {
-                entity.TakeDamage(damage, shooter, AttackRoll.IsCrit(critChance), type: damageType);
-                Vector3 direction = (other.transform.position - transform.position).normalized;
-                entity.ApplyKnockback(direction, knockbackForce);
+                bool crit = AttackRoll.IsCrit(critChance);
+                entity.TakeDamage(damage, shooter, crit, type: damageType);
+                if (crit && critKnockbackForce > 0f)
+                {
+                    Vector3 direction = (other.transform.position - transform.position).normalized;
+                    entity.ApplyKnockback(direction, critKnockbackForce);
+                }
 
                 ReplaceImpactSound(other);
                 Impact.SetActive(true);

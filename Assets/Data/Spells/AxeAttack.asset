@@ -24,6 +24,5 @@ MonoBehaviour:
   damage: 14
   critChance: 0.35
   critKnockbackForce: 2.8
-  normalKnockbackForce: 1.2
   hitDelayFallback: 0.2
   maxHitWait: 1

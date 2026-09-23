@@ -21,7 +21,7 @@ MonoBehaviour:
   weaponRequirement: 3
   boltPrefab: {fileID: 5858267466996162301, guid: 9105d03ace1c04f49be4db52e54740e2, type: 3}
   damage: 6
-  knockbackForce: 0.8
+  critKnockbackForce: 0.8
   boltSpeed: 11
   critChance: 0.15
   releaseDelay: 0.25

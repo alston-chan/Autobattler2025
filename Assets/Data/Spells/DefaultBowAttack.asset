@@ -22,6 +22,6 @@ MonoBehaviour:
   arrowPrefab: {fileID: 1846010953453456, guid: 0297d80b899b2de478c6b92e20d96baa, type: 3}
   critChance: 0.15
   damage: 10
-  knockbackForce: 0.8
+  critKnockbackForce: 0.8
   chargeTime: 0.5
   clipCharge: {fileID: 7400000, guid: 20538db717b94efeaa004e68d9284e3f, type: 2}

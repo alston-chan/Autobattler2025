@@ -4,6 +4,7 @@ using Assets.HeroEditor.Common.Scripts.CharacterScripts.Firearms.Enums;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts;
 using Assets.HeroEditor.Common.Scripts.CharacterScripts.Firearms;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// The firearm basic attack: pull the trigger and let the gun do the rest.
@@ -34,7 +35,8 @@ public class FirearmAttackSpell : Spell
 
     [Tooltip("Zero by default. A bullet's stopping power is damage, not shove, and knocking the " +
              "target away only lengthens the next reload's walk.")]
-    public float knockbackForce = 0f;
+    [FormerlySerializedAs("knockbackForce")]
+    public float critKnockbackForce = 0f;
 
     [Header("Projectile")]
     [Tooltip("The 2D projectile actually fired — the arrow/bolt prefab. HeroEditor's own bullet is " +
@@ -138,7 +140,7 @@ public class FirearmAttackSpell : Spell
         projectile.target = target;
         projectile.critChance = critChance;
         projectile.damage = caster.Stats != null ? caster.Stats.Damage.Value : damage;
-        projectile.knockbackForce = knockbackForce;
+        projectile.critKnockbackForce = critKnockbackForce;
         projectile.homingSpeed = projectileSpeed;
 
         // Launched aimed, so it still travels if the target dies before it arrives.
