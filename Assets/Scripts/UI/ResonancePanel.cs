@@ -133,7 +133,8 @@ public class ResonancePanel : MonoBehaviour
         _bank.gameObject.SetActive(worn && complete);
         _bank.interactable = canBank;
         _bankFace.color = canBank ? ButtonReady : ButtonBlocked;
-        _bankLabel.text = canBank ? "Bank at " + Rarity.Letter(rarity) : "Bank after the fight";
+        bool full = _selected.IsWeapon && entry.engraving is GrantSpellEngraving && _hero.Resonance.AbilitySlotsFull;
+        _bankLabel.text = canBank ? "Bank at " + Rarity.Letter(rarity) : full ? "Ability slots full" : "Bank after the fight";
     }
 
     private void BankSelected()
@@ -146,19 +147,19 @@ public class ResonancePanel : MonoBehaviour
     {
         if (_bankedLabel == null) return;
 
-        var banked = _hero.Resonance.banked;
-        if (banked == null || banked.Count == 0)
+        // Banked verbs have their own row under the Worn panel (BankedAbilityBar); this lists the rest.
+        var effects = _hero.Resonance.banked.FindAll(m => m != null && m.engraving != null && !(m.engraving is GrantSpellEngraving));
+        if (effects.Count == 0)
         {
-            _bankedLabel.text = "Banked: —";
+            _bankedLabel.text = "Banked effects: —";
             return;
         }
 
         // Each mark with what it actually does — a list of names alone doesn't tell the player what
         // their hero has become, which is the whole point of banking them.
-        var text = new StringBuilder("<b>Banked</b>");
-        foreach (var mark in banked)
+        var text = new StringBuilder("<b>Banked effects</b>");
+        foreach (var mark in effects)
         {
-            if (mark == null || mark.engraving == null) continue;
             text.Append("\n<color=#FFD147>")
                 .Append(mark.engraving.DisplayName).Append("</color> ")
                 .Append(Rarity.Tag(mark.tier)).Append("  ")

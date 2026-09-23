@@ -247,6 +247,7 @@ public static class PlayChecks
         var mark = resonance.banked[resonance.banked.Count - 1];
         Assert.That(mark.engraving, Is.SameAs(entry.engraving));
         Assert.That(mark.tier, Is.EqualTo(Rarity.B), "banked at a different grade than the weapon was");
+        Assert.That(mark.itemId, Is.EqualTo(weapon.Id), "the Abilities row cannot draw a weapon it was not told");
         Assert.That(HollowItems.IsHollow(weapon), Is.True, "the weapon was not spent");
         Assert.That(resonance.NoticeFor(weapon), Is.EqualTo(ResonanceNotice.None), "the ready mark outlived the banking");
         if (verb != null) Assert.That(hero.spellSlots, Has.Member(verb), "the banked verb is not in the slots");
@@ -276,6 +277,21 @@ public static class PlayChecks
         window.SelectItem(back);
         window.Equip();
         Assert.That(other.spellSlots, Has.Member(taught), "putting the weapon back on did not bring its verb back");
+
+        // Three banked verbs fill the Abilities row: a fourth weapon waits.
+        var wornAgain = window.Equipment.Items.Find(i => i.Id == held.Id);
+        var quest = other.Resonance.QuestOf(wornAgain);
+        other.Resonance.Accrue(quest.requirement, quest.questGoal);
+        var fillers = new System.Collections.Generic.List<Resonance.Banked>();
+        while (!other.Resonance.AbilitySlotsFull)
+        {
+            var filler = new Resonance.Banked { engraving = quest.engraving, tier = Rarity.C, itemId = held.Id };
+            other.Resonance.banked.Add(filler);
+            fillers.Add(filler);
+        }
+        try { Assert.That(other.Resonance.Bank(wornAgain), Is.False, "banked a fourth ability past the row's three slots"); }
+        finally { foreach (var filler in fillers) other.Resonance.banked.Remove(filler); }
+        Assert.That(other.Resonance.CanBank(wornAgain), Is.True, "with room in the row, the complete weapon should bank");
     }
 
     /// <summary>

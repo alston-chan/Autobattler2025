@@ -301,7 +301,11 @@ public class Entity : MonoBehaviour
     [Tooltip("Which slot (0-based) is the one cast in combat.")]
     public int activeSpellSlot = 0;
 
-    public const int MaxSpellSlots = 3;
+    /// <summary>The verbs a hero can pick between: the hand weapon's and up to <see cref="MaxBankedAbilities"/> banked.</summary>
+    public const int MaxSpellSlots = 4;
+
+    /// <summary>Banked weapon verbs a hero can hold — the Abilities row under the Worn panel.</summary>
+    public const int MaxBankedAbilities = 3;
 
     /// <summary>The single learnable spell cast in combat — the active slot's spell, or null.</summary>
     public Spell ActiveSpell =>

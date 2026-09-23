@@ -713,7 +713,7 @@ public class UnitInspector : MonoBehaviour
     private static void Engraving(StringBuilder text, string name, int tier, bool worn)
     {
         text.Append("<color=#FFD147>").Append(name).Append("</color> ").Append(Rarity.Tag(tier))
-            .Append(worn ? "" : "  <color=#8A8F99>engraved</color>")
+            .Append(worn ? "" : "  <color=#8A8F99>banked</color>")
             .Append('\n');
     }
 

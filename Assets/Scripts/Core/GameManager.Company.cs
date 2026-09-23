@@ -94,6 +94,9 @@ public partial class GameManager
             var resonancePanel = characterInventory.gameObject.AddComponent<ResonancePanel>();
             resonancePanel.Initialize(characterInventory, characterEntity);
 
+            // Banked weapon verbs, drawn as the weapons they came from, under the Worn panel.
+            characterInventory.gameObject.AddComponent<BankedAbilityBar>().Initialize(characterInventory, characterEntity);
+
             // A doll of this character inside its own window. Added before the window is deactivated
             // so its OnEnable runs the first time the player opens it with the number keys.
             if (previewBodyPrefab != null)

@@ -373,7 +373,10 @@ Writing them:
   (`Entry.questGoal`) fills while it fights, and once it is complete the player may bank it between
   fights (`Resonance.Bank`, the Bank button in the item panel): the effect is kept at that rarity and
   the item hollowed (Docs/ShopLoop.md). Banking is never automatic and never mid-fight. A banked
-  weapon's verb joins the hero's slots, to pick between. Slot backgrounds show rarity through the
+  weapon's verb joins the hero's slots, to pick between, and is drawn as that weapon in the
+  Abilities row under the Worn panel (`BankedAbilityBar`; `Banked.itemId` remembers the weapon). At
+  most `Entity.MaxBankedAbilities` (3) — a fourth weapon cannot bank — so a hero picks from up to
+  four verbs: the hand weapon's and three banked. Slot backgrounds show rarity through the
   vendor's `GetBackgroundCustom` hook.
 - **A hero holds one weapon.** The rack (three carried weapons, each teaching its verb, drawn for its
   cast) was removed 2026-09-23: taking a weapon off left its verb behind, and a racked weapon's quest

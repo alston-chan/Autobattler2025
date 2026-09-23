@@ -29,6 +29,8 @@ public class Resonance : MonoBehaviour
         [Tooltip("The engraving ASSET. Applying goes through this hero's private copy of it.")]
         public Engraving engraving;
         public int tier;
+        [Tooltip("The item it was banked from, so the Abilities row can draw the weapon.")]
+        public string itemId;
     }
 
     /// <summary>
@@ -234,6 +236,21 @@ public class Resonance : MonoBehaviour
         if (changed) OnAttunementChanged?.Invoke();
     }
 
+    /// <summary>
+    /// The banked marks that are verbs — a weapon's, banked — in the order they were banked. These fill
+    /// the Abilities row and the skill slots after the hand weapon's verb.
+    /// </summary>
+    public List<Banked> BankedAbilities()
+    {
+        var abilities = new List<Banked>();
+        foreach (var mark in banked)
+            if (mark != null && mark.engraving is GrantSpellEngraving grant && grant.spell != null) abilities.Add(mark);
+        return abilities;
+    }
+
+    /// <summary>Whether the Abilities row is full; a weapon cannot be banked while it is.</summary>
+    public bool AbilitySlotsFull => BankedAbilities().Count >= Entity.MaxBankedAbilities;
+
     /// <summary>The end of a fight: credit it to quests counting combats.</summary>
     public void AccrueAfterCombat() => Accrue(ResonanceRequirement.CombatsWorn, 1f);
 
@@ -247,6 +264,7 @@ public class Resonance : MonoBehaviour
     {
         var entry = QuestOf(item);
         if (entry == null || _inCombat || !entry.IsComplete(AttunementFor(item))) return false;
+        if (entry.engraving is GrantSpellEngraving && AbilitySlotsFull) return false;
         var inventory = _entity != null ? _entity.characterInventory : null;
         return inventory != null && inventory.Equipment != null && inventory.Equipment.Items.Contains(item);
     }
@@ -263,7 +281,7 @@ public class Resonance : MonoBehaviour
 
         var entry = QuestOf(item);
         int tier = Rarity.Of(item);
-        banked.Add(new Banked { engraving = entry.engraving, tier = tier });
+        banked.Add(new Banked { engraving = entry.engraving, tier = tier, itemId = item.Id });
 
         // Read the key BEFORE hollowing: hollowing changes the item's modifier, and so its
         // descriptor, and the progress being cleared is filed under the old one.
@@ -605,6 +623,7 @@ public class Resonance : MonoBehaviour
     public class BankedRecord
     {
         public string engravingName;
+        public string itemId;
         public int tier;
     }
 
@@ -630,7 +649,7 @@ public class Resonance : MonoBehaviour
         foreach (var mark in banked)
         {
             if (mark == null || mark.engraving == null) continue;
-            state.banked.Add(new BankedRecord { engravingName = mark.engraving.name, tier = mark.tier });
+            state.banked.Add(new BankedRecord { engravingName = mark.engraving.name, tier = mark.tier, itemId = mark.itemId });
         }
 
         return state;
@@ -671,7 +690,7 @@ public class Resonance : MonoBehaviour
                     continue;
                 }
 
-                banked.Add(new Banked { engraving = engraving, tier = record.tier });
+                banked.Add(new Banked { engraving = engraving, tier = record.tier, itemId = record.itemId });
             }
         }
 
