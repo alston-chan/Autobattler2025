@@ -256,11 +256,26 @@ break this: asmdef assemblies cannot reference the predefined `Assembly-CSharp`,
 code that way would mean moving the whole game into an asmdef, and HeroEditor with it, since the
 game depends on it.
 
-Run them:
+Run them — and the play checks — through the dev loop, which recompiles only when a script
+changed, waits for the new code to be loaded (not a fixed sleep), and prints only failures:
 
 ```bash
-npx unity-mcp-cli run-tool tests-run . --input '{"testMode":"EditMode"}'
+tools/dev.sh test            # edit-mode tests
+tools/dev.sh play whirl      # only the play checks whose name contains "whirl"
+tools/dev.sh all             # tests, then every play check: do this before committing
 ```
+
+It waits on two files: `Library/ScriptAssemblies/Assembly-CSharp-Editor.dll` newer than every
+`.cs` means compiled, and `Temp/CompileStamp.txt` (written by `CompileStamp` on each domain load)
+newer than that means loaded. Before it, every cycle slept 55 s after a recompile and 30 s before
+reading play results. Measured 2026-09-22: 95% of a day's tool time was waiting on Unity. It
+retries through the plugin's 503s while it reconnects after a reload. The raw call is still
+`npx unity-mcp-cli run-tool tests-run . --input '{"testMode":"EditMode"}'`.
+
+**If entering play mode takes minutes, look for `mdb reader table full` in `Editor.log`.** After a
+long editor session the asset database's reader table fills; measured 2026-09-22, ten hours in,
+421 of those messages and seven minutes to enter play mode for a one-second check. Restarting the
+editor clears it; no amount of waiting does.
 
 About a second for the current suite. In the editor it is Window → General → Test Runner →
 EditMode → Run All. Note that `tests-run` reports compilation errors clearly and reliably, which

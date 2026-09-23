@@ -31,6 +31,19 @@ public static class PlayTestRunner
     public const string ResultsPath = "Temp/PlayTests.txt";
 
     private const string PendingKey = "Autobattler.PlayChecksPending";
+    private const string OnlyKey = "Autobattler.PlayChecksOnly";
+
+    /// <summary>
+    /// Run only the checks whose names contain <paramref name="only"/> (any case). The whole list
+    /// is half a minute, and one check in it watches a full fight for 21 seconds by design; while
+    /// iterating on one thing, run that one, and run everything once before committing.
+    /// tools/dev.sh play &lt;filter&gt; calls this.
+    /// </summary>
+    public static void RunOnly(string only)
+    {
+        EditorPrefs.SetString(OnlyKey, only ?? "");
+        Run();
+    }
 
     static PlayTestRunner() => EditorApplication.delayCall += AfterReload;
 
@@ -62,7 +75,18 @@ public static class PlayTestRunner
         if (!EditorApplication.isPlaying) return;      // the reload on the way out, not the way in
 
         EditorPrefs.SetBool(PendingKey, false);
-        Drive(PlayChecks.All());
+        string only = EditorPrefs.GetString(OnlyKey, "");
+        EditorPrefs.DeleteKey(OnlyKey);                  // one run only; the next plain Run is the whole list
+        var checks = PlayChecks.All();
+        if (!string.IsNullOrEmpty(only))
+            checks = checks.FindAll(c => c.Name.IndexOf(only, StringComparison.OrdinalIgnoreCase) >= 0);
+        if (checks.Count == 0)
+        {
+            Write("PLAY done: passed=0 failed=0 (no check matches '" + only + "')" + Environment.NewLine);
+            EditorApplication.ExitPlaymode();
+            return;
+        }
+        Drive(checks);
     }
 
     private static void Drive(System.Collections.Generic.List<PlayCheck> checks)
