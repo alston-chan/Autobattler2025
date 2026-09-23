@@ -64,6 +64,7 @@ public class RunSnapshot
 
     public List<SavedHero> heroes = new List<SavedHero>();
     public List<SavedItem> bag = new List<SavedItem>();
+    public int gold;
 }
 
 /// <summary>

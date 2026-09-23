@@ -33,6 +33,7 @@ public static class PlayChecks
         new PlayCheck("the round-end sweep clears the ground", TheRoundEndSweepClearsTheGround),
         new PlayCheck("a finished quest is engraved at its rarity", AFinishedQuestIsEngravedAtItsRarity),
         new PlayCheck("a unit at the wall is drawn on screen", AUnitAtTheWallIsDrawnOnScreen),
+        new PlayCheck("a won fight opens the shop", AWonFightOpensTheShop),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -287,6 +288,59 @@ public static class PlayChecks
         yield return null;
         }
         Assert.That(worstOver, Is.LessThanOrEqualTo(0.05f), worst + " is drawn " + worstOver.ToString("0.00") + " past the edge of the screen");
+    }
+
+    /// <summary>
+    /// A won fight opens the shop with that fight's gold, and the shop sells into the bag, rerolls
+    /// and closes (Docs/ShopLoop.md). End to end: a real fight is fought (at speed) and won, since the
+    /// shop is opened by the run's own handling of a victory. A lost fight, or a won last fight (which
+    /// ends the run and has nothing to shop for), is tried again, three times at most.
+    /// </summary>
+    private static IEnumerator AWonFightOpensTheShop()
+    {
+        for (int attempt = 0; attempt < 3; attempt++)
+        {
+            yield return PlayHarness.ReachTheBell();
+            var run = GameManager.Instance.runManager;
+            int before = run.Gold;
+            var rules = run.runData.shop;
+
+            Time.timeScale = 4f;
+            try { yield return PlayHarness.Until(() => GameManager.Instance.StateMachine.Current != GameState.Combat, "the fight to end", 120f); }
+            finally { Time.timeScale = 1f; }
+            yield return PlayHarness.Until(() => run.ShopOpen || GameManager.Instance.StateMachine.Current == GameState.RunEnd, "the shop, or the run's end", 10f);
+            if (!run.ShopOpen) continue;
+
+            Assert.That(run.Gold, Is.EqualTo(before + rules.goldPerFight + rules.winBonus), "a won fight pays its gold");
+            Assert.That(run.ShopOffers.Count, Is.EqualTo(rules.slots), "the shop has a full row");
+
+            var bag = run.Company[0].characterInventory.PlayerInventory.Items;
+            int cheapest = -1;
+            for (int i = 0; i < run.ShopOffers.Count; i++)
+                if (cheapest < 0 || run.PriceOf(run.ShopOffers[i]) < run.PriceOf(run.ShopOffers[cheapest])) cheapest = i;
+            var offer = run.ShopOffers[cheapest];
+            int price = run.PriceOf(offer), gold = run.Gold;
+            Assert.That(run.Buy(cheapest), Is.True, "could not buy a " + price + "-gold item with " + gold);
+            Assert.That(run.Gold, Is.EqualTo(gold - price));
+            Assert.That(run.ShopOffers[cheapest], Is.Null, "a bought offer is still on the shelf");
+            Assert.That(bag.Exists(i => i.Id == offer.Id && Rarity.Of(i) == Rarity.Of(offer)), Is.True,
+                        "the bag did not get " + offer.Id + " at " + Rarity.Letter(Rarity.Of(offer)));
+            Assert.That(run.Buy(cheapest), Is.False, "the same slot sold twice");
+
+            if (run.Gold >= run.RerollCost)
+            {
+                gold = run.Gold;
+                Assert.That(run.Reroll(), Is.True);
+                Assert.That(run.Gold, Is.EqualTo(gold - run.RerollCost));
+                Assert.That(run.ShopOffers.TrueForAll(o => o != null), Is.True, "a reroll refills the sold slots too");
+            }
+
+            run.LeaveShop();
+            Assert.That(run.ShopOpen, Is.False);
+            Assert.That(run.ShopOffers, Is.Empty, "what was not bought is gone");
+            yield break;
+        }
+        Assert.Fail("three fights without a won fight that had another after it");
     }
 
     private static bool IsWeaponArt(string rendererName) =>

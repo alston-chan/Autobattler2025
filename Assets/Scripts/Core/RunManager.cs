@@ -114,7 +114,8 @@ public class RunManager : MonoBehaviour
             State.ResumeAt(resume.encounterIndex);
         }
 
-        Debug.Log($"[RunSave] Resumed {State.Progress} (saved {resume.savedAt}).");
+        Gold = resume.gold;
+        Debug.Log($"[RunSave] Resumed {State.Progress} with {Gold} gold (saved {resume.savedAt}).");
     }
 
     /// <summary>Everything a save needs, as the run stands right now.</summary>
@@ -159,19 +160,20 @@ public class RunManager : MonoBehaviour
         var bag = _company.Count > 0 && _company[0] != null && _company[0].characterInventory != null
             ? _company[0].characterInventory.PlayerInventory : null;
         if (bag != null) snapshot.bag = RunSave.FromItems(bag.Items);
+        snapshot.gold = Gold;
 
         return snapshot;
     }
 
     /// <summary>
-    /// Write the save if this is a safe point: a run in progress, between fights, with nothing on
-    /// offer. Not during a fight — a fight interrupted is fought again — and not while spoils wait,
-    /// since the choice is the point and a save made before it would replay the offer.
+    /// Write the save if this is a safe point: a run in progress, between fights, with the shop
+    /// closed. Not during a fight — a fight interrupted is fought again — and not while the shop is
+    /// open, since its offers are not saved and a reload would roll them again.
     /// </summary>
     public void SaveIfSafe()
     {
         if (runData == null || !runData.persist) return;
-        if (!IsRunning || PendingRewards.Count > 0) return;
+        if (!IsRunning || ShopOpen) return;
         var game = GameManager.Instance;
         if (game != null && game.StateMachine.Current != GameState.Setup) return;
 
@@ -209,9 +211,10 @@ public class RunManager : MonoBehaviour
             return false;
         }
 
-        // Offer the spoils of the fight just won, before the next one is staged — the reward is for
-        // the encounter that was cleared, not the one coming up.
-        OfferRewards(State.Current);
+        // The shop is stocked from the encounter that was cleared, not the one coming up.
+        var cleared = State.Current;
+        var shopPool = RewardPoolFor(cleared);
+        var rules = ShopRules;
 
         if (!State.AdvanceAfterVictory())
         {
@@ -222,9 +225,13 @@ public class RunManager : MonoBehaviour
 
         RestoreCompany();
 
+        // A shop after every won fight that has another after it: the last fight's gold would have
+        // nothing to buy.
+        OpenShop(shopPool, rules.goldPerFight + rules.winBonus);
+
         if (State.AwaitingPath)
         {
-            // The next fight is the player's to pick. The map shows itself once the spoils are taken.
+            // The next fight is the player's to pick. The map shows itself once the shop is left.
             OnPathChanged?.Invoke();
             return true;
         }
@@ -240,14 +247,14 @@ public class RunManager : MonoBehaviour
     public event System.Action OnPathChanged;
 
     /// <summary>
-    /// Take the path to <paramref name="node"/> and stage the fight there. Refused while spoils are
-    /// still on offer — the reward is for the fight just won and is settled before the next is
-    /// chosen — and for any node the current one does not lead to.
+    /// Take the path to <paramref name="node"/> and stage the fight there. Refused while the shop is
+    /// open — it is the fight just won's, and is left before the next is chosen — and for any node
+    /// the current one does not lead to.
     /// </summary>
     public bool ChoosePath(MapNode node)
     {
         if (!IsRunning || !AwaitingPath) return false;
-        if (PendingRewards.Count > 0) return false;
+        if (ShopOpen) return false;
         if (!State.Choose(node)) return false;
 
         OnPathChanged?.Invoke();
@@ -256,31 +263,101 @@ public class RunManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>Items currently on offer from the fight just won. Empty once one is taken.</summary>
-    public List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> PendingRewards { get; } = new List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item>();
+    /// <summary>The heroes of this run, as it was begun.</summary>
+    public IReadOnlyList<Entity> Company => _company;
 
-    /// <summary>Raised when a victory puts items on offer, and again when the offer is resolved.</summary>
-    public event System.Action OnRewardsChanged;
+    // ---- the shop (Docs/ShopLoop.md): gold per fight, items at rolled rarities, a reroll
 
-    /// <summary>Roll the choice of drops for a cleared encounter.</summary>
-    private void OfferRewards(EncounterData cleared)
+    /// <summary>Gold the company holds. Earned per fight, spent in the shop, kept in the save.</summary>
+    public int Gold { get; private set; }
+
+    /// <summary>True from a won fight until the player leaves the shop. The next fight waits.</summary>
+    public bool ShopOpen { get; private set; }
+
+    /// <summary>What the shop has on offer, one entry per slot; a null entry has been bought.</summary>
+    public List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> ShopOffers { get; } = new List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item>();
+
+    /// <summary>Raised whenever the shop opens, closes, sells, rerolls, or the gold changes.</summary>
+    public event System.Action OnShopChanged;
+
+    private RewardPool _shopPool;
+    private ShopSettings ShopRules => runData != null && runData.shop != null ? runData.shop : new ShopSettings();
+
+    /// <summary>What an offer costs: its rarity's price.</summary>
+    public int PriceOf(Assets.HeroEditor.InventorySystem.Scripts.Data.Item item) => item == null ? 0 : ShopRules.PriceOf(Rarity.Of(item));
+
+    /// <summary>What a reroll costs.</summary>
+    public int RerollCost => ShopRules.rerollCost;
+
+    /// <summary>
+    /// Pay for the fight just won and open the shop on the pool that fight names. Public so a check
+    /// can open one without winning a fight first; the run itself opens it from ResolveEncounter.
+    /// </summary>
+    public void OpenShop(RewardPool pool, int income)
     {
-        PendingRewards.Clear();
+        Gold += Mathf.Max(0, income);
+        _shopPool = pool != null ? pool : runData != null ? runData.defaultRewardPool : null;
+        RollOffers();
+        ShopOpen = true;
+        OnShopChanged?.Invoke();
+    }
 
-        var pool = RewardPoolFor(cleared);
+    /// <summary>
+    /// Fill every slot afresh. Each offer is a copy at a rolled rarity, with better odds the further
+    /// the run has come (Rarity.OddsAt). Rarity is the grade of an item's EFFECT, so an item with none
+    /// is always a C: an S that does nothing more than a C would be a lie on the card.
+    /// </summary>
+    private void RollOffers()
+    {
+        ShopOffers.Clear();
+        if (_shopPool == null) return;
+        foreach (var id in _shopPool.Draw(Mathf.Max(1, ShopRules.slots)))
+        {
+            bool hasEffect = ResonanceDatabase.Active != null && ResonanceDatabase.Active.FindFor(new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(id)) != null;
+            ShopOffers.Add(Rarity.Make(id, hasEffect ? Rarity.Roll(RunProgress) : Rarity.C));
+        }
+    }
 
-        // Each offer is a copy at a rolled rarity, with better odds the further the run has come
-        // (Rarity.OddsAt). Until the shop exists this pick is where rarity enters a run. Rarity is the
-        // grade of an item's EFFECT, so an item with none is always a C: an S that does nothing more
-        // than a C would be a lie on the card.
-        if (pool != null)
-            foreach (var id in pool.Draw(Mathf.Max(1, runData.rewardChoices)))
-            {
-                bool hasEffect = ResonanceDatabase.Active != null && ResonanceDatabase.Active.FindFor(new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(id)) != null;
-                PendingRewards.Add(Rarity.Make(id, hasEffect ? Rarity.Roll(RunProgress) : Rarity.C));
-            }
+    /// <summary>Buy the offer in <paramref name="slot"/> into the company's bag, if the gold is there.</summary>
+    public bool Buy(int slot)
+    {
+        if (!ShopOpen || slot < 0 || slot >= ShopOffers.Count || ShopOffers[slot] == null) return false;
+        var offer = ShopOffers[slot];
+        int price = PriceOf(offer);
+        if (Gold < price) return false;
 
-        OnRewardsChanged?.Invoke();
+        var inventory = _company.Count > 0 && _company[0] != null ? _company[0].characterInventory : null;
+        if (inventory == null || inventory.PlayerInventory == null) return false;
+
+        Gold -= price;
+        inventory.PlayerInventory.Items.Add(Rarity.Make(offer.Id, Rarity.Of(offer)));
+        inventory.PlayerInventory.Refresh(null);
+        ShopOffers[slot] = null;
+        OnShopChanged?.Invoke();
+
+        Debug.Log($"[RunManager] Bought {offer.Id} at {Rarity.Letter(Rarity.Of(offer))} for {price}; {Gold} gold left.");
+        return true;
+    }
+
+    /// <summary>Replace everything on offer, bought slots included, if the gold is there.</summary>
+    public bool Reroll()
+    {
+        if (!ShopOpen || Gold < RerollCost) return false;
+        Gold -= RerollCost;
+        RollOffers();
+        OnShopChanged?.Invoke();
+        return true;
+    }
+
+    /// <summary>Close the shop. What was not bought is gone; the next fight, or the map, is next.</summary>
+    public void LeaveShop()
+    {
+        if (!ShopOpen) return;
+        ShopOpen = false;
+        ShopOffers.Clear();
+        OnShopChanged?.Invoke();
+        if (AwaitingPath) OnPathChanged?.Invoke();
+        SaveIfSafe();
     }
 
     /// <summary>
@@ -307,32 +384,9 @@ public class RunManager : MonoBehaviour
         return cleared != null && cleared.rewardPool != null ? cleared.rewardPool : runData.defaultRewardPool;
     }
 
-    /// <summary>
-    /// Take one of the offered items into the shared bag, discarding the rest — the choice is the
-    /// point, so the ones passed over are gone.
-    /// </summary>
     /// <summary>How far through the run the company is: 0 at the first fight, 1 at the last.</summary>
     public float RunProgress => State != null && State.TotalEncounters > 1
         ? Mathf.Clamp01((float)State.EncounterIndex / (State.TotalEncounters - 1)) : 0f;
-
-    public bool TakeReward(Assets.HeroEditor.InventorySystem.Scripts.Data.Item offer)
-    {
-        if (offer == null || !PendingRewards.Contains(offer)) return false;
-
-        var inventory = _company.Count > 0 && _company[0] != null
-            ? _company[0].characterInventory : null;
-        if (inventory == null || inventory.PlayerInventory == null) return false;
-
-        inventory.PlayerInventory.Items.Add(Rarity.Make(offer.Id, Rarity.Of(offer)));
-        inventory.PlayerInventory.Refresh(null);
-
-        PendingRewards.Clear();
-        OnRewardsChanged?.Invoke();
-        SaveIfSafe();
-
-        Debug.Log($"[RunManager] Took {offer.Id} at {Rarity.Letter(Rarity.Of(offer))}.");
-        return true;
-    }
 
     /// <summary>
     /// Patch the company up between fights: the fallen are revived, the survivors healed, and

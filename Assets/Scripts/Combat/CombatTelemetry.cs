@@ -301,10 +301,14 @@ public class CombatTelemetry : MonoBehaviour
         if (game == null || game.isGameStarted) return;
 
         var run = game.runManager;
-        if (run != null && run.PendingRewards.Count > 0)
+        if (run != null && run.ShopOpen)
         {
-            run.TakeReward(run.PendingRewards[0]);
-            return;                            // let the claim settle before starting the fight
+            // Buy the first thing it can afford and leave: a real choice made arbitrarily, like the
+            // rest of this harness's choices.
+            for (int i = 0; i < run.ShopOffers.Count; i++)
+                if (run.ShopOffers[i] != null && run.PriceOf(run.ShopOffers[i]) <= run.Gold) { run.Buy(i); break; }
+            run.LeaveShop();
+            return;                            // let the purchase settle before starting the fight
         }
 
         // On a map the harness always takes the first path offered. Like the reward above, that is a

@@ -36,11 +36,11 @@ public class RunData : ScriptableObject
              "nodes with the same fights in them — which is what makes a progression run repeatable.")]
     public int mapSeed;
 
-    [Header("Spoils")]
-    [Tooltip("Items dropped by any fight that doesn't name its own pool.")]
+    [Header("Shop")]
+    [Tooltip("What the shop stocks after any fight that doesn't name its own pool.")]
     public RewardPool defaultRewardPool;
-    [Tooltip("How many items a victory offers to choose between.")]
-    public int rewardChoices = 3;
+    [Tooltip("Gold, prices, slots and the reroll (Docs/ShopLoop.md). The starting numbers, to tune.")]
+    public ShopSettings shop = new ShopSettings();
 
     [Header("Starting gear")]
     public StartingGear startingGear = StartingGear.Randomized;
@@ -63,4 +63,30 @@ public class RunData : ScriptableObject
 
     /// <summary>Whether there is anything here to run at all.</summary>
     public bool HasContent => act != null || (encounters != null && encounters.Count > 0);
+}
+
+/// <summary>
+/// The shop's numbers (Docs/ShopLoop.md). A shop opens after every won fight that has another after
+/// it; it offers <see cref="slots"/> items at rolled rarities, priced by rarity, and a reroll.
+/// </summary>
+[System.Serializable]
+public class ShopSettings
+{
+    [Tooltip("Gold for every fight fought.")]
+    public int goldPerFight = 6;
+    [Tooltip("And this much more for winning it.")]
+    public int winBonus = 2;
+    [Tooltip("Items on offer at once.")]
+    public int slots = 5;
+    [Tooltip("Gold to replace everything on offer.")]
+    public int rerollCost = 2;
+    [Tooltip("The price of a C, B, A and S item, in that order.")]
+    public int[] prices = { 3, 5, 8, 12 };
+
+    public int PriceOf(int rarity)
+    {
+        if (prices == null || prices.Length == 0) return 0;
+        int index = Mathf.Clamp(rarity, Rarity.C, Rarity.S) - 1;
+        return prices[Mathf.Min(index, prices.Length - 1)];
+    }
 }

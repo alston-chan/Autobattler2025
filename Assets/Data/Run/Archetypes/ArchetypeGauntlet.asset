@@ -20,7 +20,16 @@ MonoBehaviour:
   act: {fileID: 0}
   mapSeed: 0
   defaultRewardPool: {fileID: 11400000, guid: e416c813a24646e47a64a20f352ce5b8, type: 2}
-  rewardChoices: 3
+  shop:
+    goldPerFight: 6
+    winBonus: 2
+    slots: 5
+    rerollCost: 2
+    prices:
+    - 3
+    - 5
+    - 8
+    - 12
   startingGear: 1
   fallbackKitItemIds:
   - FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest

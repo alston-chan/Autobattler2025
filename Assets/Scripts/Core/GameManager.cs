@@ -142,8 +142,8 @@ public partial class GameManager : Singleton<GameManager>
         runManager.BeginRun(allyCharacters, _resume);
         runManager.SaveIfSafe();                     // the first safe point: a run exists
 
-        var rewards = gameObject.AddComponent<RewardPanel>();
-        rewards.Initialize(runManager, canvas != null ? canvas.transform : null);
+        var shop = gameObject.AddComponent<ShopPanel>();
+        shop.Initialize(runManager, canvas != null ? canvas.transform : null);
 
         // The verdict when the run is over, won or lost, with the way back to a new one.
         var ending = gameObject.AddComponent<RunEndPanel>();
@@ -191,10 +191,10 @@ public partial class GameManager : Singleton<GameManager>
 
         if (!isGameStarted && Input.GetKeyDown(KeyCode.Space))
         {
-            // An unclaimed reward blocks the next fight. Starting anyway would silently discard the
-            // spoils of the fight just won, and the choice is the reason they were offered.
-            if (runManager != null && runManager.PendingRewards.Count > 0)
-                Debug.Log("[GameManager] Choose your spoils before the next fight.");
+            // An open shop blocks the next fight: it is left with its own button, so a Space meant
+            // for something else cannot walk past it.
+            if (runManager != null && runManager.ShopOpen)
+                Debug.Log("[GameManager] Leave the shop before the next fight.");
             else if (runManager != null && runManager.AwaitingPath)
                 // With no destination there are no enemies staged, and a fight with nobody in it
                 // would resolve as an instant victory.

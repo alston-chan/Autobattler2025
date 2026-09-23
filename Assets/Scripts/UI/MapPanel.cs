@@ -42,7 +42,7 @@ public class MapPanel : MonoBehaviour
 
         Build(canvas);
         _runManager.OnPathChanged += Redraw;
-        _runManager.OnRewardsChanged += Redraw;
+        _runManager.OnShopChanged += Redraw;
         Redraw();
     }
 
@@ -50,14 +50,14 @@ public class MapPanel : MonoBehaviour
     {
         if (_runManager == null) return;
         _runManager.OnPathChanged -= Redraw;
-        _runManager.OnRewardsChanged -= Redraw;
+        _runManager.OnShopChanged -= Redraw;
     }
 
     private void Redraw()
     {
         if (_root == null) return;
 
-        bool show = _runManager.AwaitingPath && _runManager.PendingRewards.Count == 0;
+        bool show = _runManager.AwaitingPath && !_runManager.ShopOpen;
         _root.SetActive(show);
         if (!show) return;
 

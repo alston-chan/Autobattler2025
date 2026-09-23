@@ -85,4 +85,18 @@ public class RarityTests
         Assert.That(database.entries[0].IsComplete(database.entries[0].questGoal), Is.True);
         Assert.That(database.entries[0].IsComplete(database.entries[0].questGoal - 1), Is.False);
     }
+
+    [Test]
+    public void AnItemCostsItsRaritysPrice()
+    {
+        var shop = new ShopSettings();
+        Assert.That(new[] { shop.PriceOf(Rarity.C), shop.PriceOf(Rarity.B), shop.PriceOf(Rarity.A), shop.PriceOf(Rarity.S) },
+                    Is.EqualTo(new[] { 3, 5, 8, 12 }));
+        Assert.That(shop.PriceOf(0), Is.EqualTo(3), "below C reads as C");
+        Assert.That(shop.PriceOf(9), Is.EqualTo(12), "above S reads as S");
+
+        var run = AssetDatabase.LoadAssetAtPath<RunData>("Assets/Data/Run/DemoRun.asset");
+        Assert.That(run.shop.PriceOf(Rarity.S), Is.EqualTo(12), "the demo run's asset carries the prices");
+        Assert.That(run.defaultRewardPool.itemIds.Count, Is.GreaterThanOrEqualTo(run.shop.slots), "the pool cannot fill the shop");
+    }
 }

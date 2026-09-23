@@ -15,5 +15,14 @@ MonoBehaviour:
   encounters:
   - {fileID: 11400000, guid: 6df8ec1772acd204298a76d5e1d40cbb, type: 2}
   defaultRewardPool: {fileID: 0}
-  rewardChoices: 0
+  shop:
+    goldPerFight: 6
+    winBonus: 2
+    slots: 5
+    rerollCost: 2
+    prices:
+    - 3
+    - 5
+    - 8
+    - 12
   persist: 0

@@ -278,6 +278,12 @@ reading play results. Measured 2026-09-22: 95% of a day's tool time was waiting 
 retries through the plugin's 503s while it reconnects after a reload. The raw call is still
 `npx unity-mcp-cli run-tool tests-run . --input '{"testMode":"EditMode"}'`.
 
+**Never call `tests-run` while the editor is in play mode.** The run never finishes, and the MCP
+plugin leases it for ten minutes in SessionState (it survives a domain reload), answering every later
+run with "another test run is already in progress". `Tools/dev.sh` leaves play mode first, and if it
+meets the message it releases the lease through the plugin's internal `Tool_Tests.ClearActiveTestRun`
+by reflection and retries. Measured 2026-09-23: stuck for over six minutes until released that way.
+
 **If entering play mode takes minutes, look for `mdb reader table full` in `Editor.log`.** After a
 long editor session the asset database's reader table fills; measured 2026-09-22, ten hours in,
 421 of those messages and seven minutes to enter play mode for a one-second check. Restarting the
@@ -367,6 +373,11 @@ Writing them:
   (`Entry.questGoal`) fills while it fights, and `EngraveCompletedQuests` engraves it at that rarity
   when the fight ends and hollows the item (Docs/ShopLoop.md). There are no tiers to climb and no
   cash-out. Slot backgrounds show rarity through the vendor's `GetBackgroundCustom` hook.
+- **A shop opens after every won fight that has another after it** (`RunManager.OpenShop` / `Buy` /
+  `Reroll` / `LeaveShop`, drawn by `ShopPanel`; numbers in `RunData.shop`). It replaced the pick-one
+  reward; `ShopOpen` blocks the next fight, the map and the save. The batch harness
+  (`CombatTelemetry.autoAdvance`) buys the first offer it can afford and leaves, so a run measured that
+  way is a run where nobody shopped well.
 - **Anything a fight puts in the world must be in `CombatDebris.Sweep`.** It runs at round end. The
   space verbs came after it and were never added, so a tar pool (five seconds by the clock, not by
   the fight) survived into the next bell and units walked out of a pool nobody had cast. A new
