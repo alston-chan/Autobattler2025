@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: ThirdWall
   m_EditorClassIdentifier: 
   engravingName: Third Wall
-  description: Every third hit on you rings off a wall of light and knocks the attacker
-    back.
+  description: 'Every third hit on you rings off a wall of light: the damage is given
+    back.'
   hitsPerWall: 3
-  knockback: 6

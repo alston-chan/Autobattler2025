@@ -164,5 +164,19 @@ public class PhysicsRuleTests
             Assert.That(movers, Has.Member(name), name + " shoves, but moving bodies is not what it is for");
         foreach (var name in movers)
             Assert.That(shoving, Has.Member(name), name + " is a displacement verb that no longer moves anyone");
+
+        // And no item line shoves: Third Wall knocked every third attacker back, and after the verbs
+        // were cut it was the largest source of shoving left (60 of 232 in 94 s).
+        foreach (var guid in AssetDatabase.FindAssets("t:Engraving", new[] { "Assets/Data/Engravings" }))
+        {
+            var engraving = AssetDatabase.LoadAssetAtPath<Engraving>(AssetDatabase.GUIDToAssetPath(guid));
+            if (engraving == null) continue;
+            foreach (var name in new[] { "force", "knockback" })
+            {
+                var field = engraving.GetType().GetField(name);
+                Assert.That(field != null && field.FieldType == typeof(float) && (float)field.GetValue(engraving) > 0f, Is.False,
+                            engraving.name + " shoves (" + name + "), and no item line should");
+            }
+        }
     }
 }
