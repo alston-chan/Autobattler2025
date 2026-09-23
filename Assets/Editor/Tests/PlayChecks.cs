@@ -284,13 +284,14 @@ public static class PlayChecks
         other.Resonance.Accrue(quest.requirement, quest.questGoal);
         // Fillers teach something else, so the replacement is told apart from them.
         GrantSpellEngraving elsewhere = null;
+        string elsewhereId = null;
         foreach (var e in ResonanceDatabase.Active.entries)
-            if (e.engraving is GrantSpellEngraving g && g.spell != null && g.spell != taught) { elsewhere = g; break; }
+            if (e.engraving is GrantSpellEngraving g && g.spell != null && g.spell != taught) { elsewhere = g; elsewhereId = e.itemId; break; }
         Assert.That(elsewhere, Is.Not.Null, "no second verb in the database to fill the row with");
         var fillers = new System.Collections.Generic.List<Resonance.Banked>();
         while (!other.Resonance.AbilitySlotsFull)
         {
-            var filler = new Resonance.Banked { engraving = elsewhere, tier = Rarity.C, itemId = "filler" };
+            var filler = new Resonance.Banked { engraving = elsewhere, tier = Rarity.C, itemId = elsewhereId };
             other.Resonance.banked.Add(filler);
             fillers.Add(filler);
         }
@@ -303,7 +304,17 @@ public static class PlayChecks
             var abilities = other.Resonance.BankedAbilities();
             var replaced = abilities[1];
             int at = other.Resonance.banked.IndexOf(replaced);
-            Assert.That(other.Resonance.Bank(wornAgain, replaced), Is.True, "clicking a full slot did not replace it");
+            // Through the row when the game is between fights, as the player does it: the first click
+            // only arms the slot, the second replaces. After a lost run there is no Setup to click in.
+            if (GameManager.Instance.StateMachine.Current == GameState.Setup)
+            {
+                var row = window.GetComponent<BankedAbilityBar>();
+                window.SelectItem(wornAgain);
+                Assert.That(row.ClickToReplace(replaced), Is.False, "one click replaced an ability without a confirm");
+                Assert.That(other.Resonance.banked, Has.Member(replaced), "the first click threw the ability away");
+                Assert.That(row.ClickToReplace(replaced), Is.True, "the confirming click did not replace it");
+            }
+            else Assert.That(other.Resonance.Bank(wornAgain, replaced), Is.True, "clicking a full slot did not replace it");
             Assert.That(other.Resonance.BankedAbilities().Count, Is.EqualTo(Entity.MaxBankedAbilities), "replacing changed how many are banked");
             Assert.That(other.Resonance.banked, Has.No.Member(replaced), "the replaced ability is still banked");
             Assert.That(other.Resonance.banked[at].itemId, Is.EqualTo(held.Id), "the new ability did not take the replaced one's slot");

@@ -14,8 +14,10 @@ using UnityEngine.UI;
 /// active one is framed in green, as a selected item is.
 ///
 /// When the row is full and the selected weapon is ready to bank, the row turns to replacing: every
-/// slot is framed orange and says Replace, and clicking one banks the weapon in that slot, the old
-/// verb gone for good (<see cref="Resonance.Bank(Item, Resonance.Banked)"/>).
+/// slot is framed orange and says Replace. The first click arms a slot (red, Confirm, and the title
+/// names what would be lost); a second click on it banks the weapon in that slot, the old verb gone
+/// for good (<see cref="Resonance.Bank(Item, Resonance.Banked)"/>). Clicking another slot arms that
+/// one instead; selecting anything else disarms.
 ///
 /// Built at runtime from the window's own panel, title and slot art, so the vendor prefab is untouched.
 /// </summary>
@@ -24,6 +26,7 @@ public class BankedAbilityBar : MonoBehaviour
     private static readonly Color FrameIdle = new Color(0.408f, 0.373f, 0.31f, 1f);
     private static readonly Color FrameActive = new Color(0.62f, 0.86f, 0.25f, 1f);
     private static readonly Color FrameReplace = new Color(1f, 0.55f, 0.2f, 1f);
+    private static readonly Color FrameArmed = new Color(1f, 0.3f, 0.25f, 1f);
     private static readonly Color Gold = new Color(1f, 0.82f, 0.28f, 1f);
     private static readonly Color Light = new Color(0.9f, 0.88f, 0.82f, 1f);
     private static readonly Color Muted = new Color(0.55f, 0.52f, 0.47f, 1f);
@@ -45,6 +48,10 @@ public class BankedAbilityBar : MonoBehaviour
     private Item _drawnSelection;
     private bool _drawnReplacing;
 
+    /// <summary>The slot clicked once while replacing, waiting for the confirming click.</summary>
+    private Resonance.Banked _armed;
+    private Item _armedFor;
+
     public void Initialize(CharacterInventory inventory, Entity hero)
     {
         _inventory = inventory;
@@ -63,6 +70,7 @@ public class BankedAbilityBar : MonoBehaviour
         bool replacing = Replacing;
         if (count == _drawnCount && active == _drawnActive && setup == _drawnSetup &&
             selection == _drawnSelection && replacing == _drawnReplacing) return;
+        if (selection != _armedFor) _armed = null;   // a confirm is for the weapon it was armed with
         _drawnCount = count;
         _drawnActive = active;
         _drawnSetup = setup;
@@ -86,7 +94,11 @@ public class BankedAbilityBar : MonoBehaviour
     private void Redraw()
     {
         bool replacing = Replacing;
-        if (_title != null) _title.text = replacing ? "Abilities — click one to replace" : "Abilities";
+        if (!replacing || !_hero.Resonance.banked.Contains(_armed)) _armed = null;
+        if (_title != null)
+            _title.text = _armed != null ? $"Click {NameOf(_armed)} again to replace it"
+                        : replacing ? "Abilities — click one to replace"
+                        : "Abilities";
 
         foreach (var slot in _slots) Destroy(slot);
         _slots.Clear();
@@ -119,7 +131,9 @@ public class BankedAbilityBar : MonoBehaviour
         }
 
         bool replacing = Replacing;
-        var frame = NewImage(slot.transform, "Frame", _frameSprite, replacing ? FrameReplace : active ? FrameActive : FrameIdle, 0f);
+        bool armed = replacing && mark == _armed;
+        var frame = NewImage(slot.transform, "Frame", _frameSprite,
+                             armed ? FrameArmed : replacing ? FrameReplace : active ? FrameActive : FrameIdle, 0f);
         if (_frameSprite != null) frame.type = UnityEngine.UI.Image.Type.Sliced;
 
         var grade = Text(slot.transform, "Grade", Rarity.Letter(mark.tier), 15f, Color.white, TextAlignmentOptions.TopLeft);
@@ -137,9 +151,10 @@ public class BankedAbilityBar : MonoBehaviour
             // Along the bottom edge, so the weapon it would throw away is still seen.
             var band = NewRect("Replace", slot.transform, new Vector2(0.5f, 0f), new Vector2(SlotSize - 6f, 18f), new Vector2(0f, 12f));
             var bandFace = band.AddComponent<Image>();
-            bandFace.color = new Color(0.1f, 0.05f, 0f, 0.8f);
+            bandFace.color = armed ? new Color(0.45f, 0.05f, 0.03f, 0.92f) : new Color(0.1f, 0.05f, 0f, 0.8f);
             bandFace.raycastTarget = false;
-            var bandText = Text(band.transform, "Label", "Replace", 13f, FrameReplace, TextAlignmentOptions.Center);
+            var bandText = Text(band.transform, "Label", armed ? "Confirm" : "Replace", 13f,
+                                armed ? Color.white : FrameReplace, TextAlignmentOptions.Center);
             bandText.fontStyle = FontStyles.Bold;
             Fill(bandText.rectTransform, 0f);
         }
@@ -153,7 +168,7 @@ public class BankedAbilityBar : MonoBehaviour
         var colors = button.colors;
         colors.disabledColor = Color.white;   // mid-fight the row is read-only, not greyed out
         button.colors = colors;
-        if (replacing) button.onClick.AddListener(() => Replace(mark));
+        if (replacing) button.onClick.AddListener(() => ClickToReplace(mark));
         else button.onClick.AddListener(() => Pick(spell));
         return slot;
     }
@@ -170,12 +185,27 @@ public class BankedAbilityBar : MonoBehaviour
         return slot;
     }
 
-    private void Replace(Resonance.Banked mark)
+    /// <summary>
+    /// A click on a slot while replacing: the first arms it, a second on the same slot banks the
+    /// selected weapon over it. Returns whether it banked. Public for the play check.
+    /// </summary>
+    public bool ClickToReplace(Resonance.Banked mark)
     {
         var weapon = _inventory.SelectedItem;
-        if (!InSetup || weapon == null) return;
-        _hero.Resonance.Bank(weapon, mark);
+        if (!InSetup || weapon == null || mark == null || !Replacing) return false;
+        if (_armed != mark)
+        {
+            _armed = mark;
+            _armedFor = weapon;
+            Redraw();
+            return false;
+        }
+        _armed = null;
+        return _hero.Resonance.Bank(weapon, mark);
     }
+
+    private static string NameOf(Resonance.Banked mark) =>
+        mark.engraving is GrantSpellEngraving grant && grant.spell != null ? grant.spell.DisplayName : mark.engraving.DisplayName;
 
     private void Pick(Spell spell)
     {
@@ -218,7 +248,16 @@ public class BankedAbilityBar : MonoBehaviour
             var copy = Instantiate(title.gameObject, _panel, false);
             copy.name = "PanelTitle";
             _title = copy.GetComponentInChildren<TMP_Text>();
-            if (_title != null) _title.text = "Abilities";
+            if (_title != null)
+            {
+                // One line whatever it says: the confirm prompt names an ability, and wrapped it ran
+                // down into the slots.
+                _title.enableWordWrapping = false;
+                _title.enableAutoSizing = true;
+                _title.fontSizeMax = _title.fontSize;
+                _title.fontSizeMin = 12f;
+                _title.text = "Abilities";
+            }
         }
 
         var frameSource = _inventory.transform.Find("ItemInfo/SelectedItem/Frame");
