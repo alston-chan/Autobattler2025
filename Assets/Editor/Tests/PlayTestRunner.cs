@@ -37,7 +37,7 @@ public static class PlayTestRunner
     /// Run only the checks whose names contain <paramref name="only"/> (any case). The whole list
     /// is half a minute, and one check in it watches a full fight for 21 seconds by design; while
     /// iterating on one thing, run that one, and run everything once before committing.
-    /// tools/dev.sh play &lt;filter&gt; calls this.
+    /// Tools/dev.sh play &lt;filter&gt; calls this.
     /// </summary>
     public static void RunOnly(string only)
     {

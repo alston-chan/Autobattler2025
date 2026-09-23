@@ -6,7 +6,7 @@ using UnityEditor;
 /// Touches <c>Temp/CompileStamp.txt</c> every time the editor's domain loads, so a script outside
 /// Unity can wait for a recompile to have landed instead of sleeping for one.
 ///
-/// The dev loop (tools/dev.sh) used to sleep a flat 55 seconds after asking Hot Reload to
+/// The dev loop (Tools/dev.sh) used to sleep a flat 55 seconds after asking Hot Reload to
 /// recompile, on every cycle, whether the compile took ten seconds or never started. Two files say
 /// what actually happened: the editor assembly in Library/ScriptAssemblies is rewritten when the
 /// compile finishes (it depends on everything, so any script change rebuilds it), and this stamp is

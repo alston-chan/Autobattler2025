@@ -1,0 +1,108 @@
+#!/bin/bash
+# The dev loop in one command: recompile only if a script changed, wait for it to land, run the
+# edit-mode tests and/or the play checks, and print only what failed.
+#
+#   Tools/dev.sh compile          recompile if needed and wait until the new code is loaded
+#   Tools/dev.sh test             compile, then the edit-mode tests
+#   Tools/dev.sh play [filter]    compile, then the play checks (only those whose name contains filter)
+#   Tools/dev.sh all [filter]     compile, tests, then play checks
+#
+# Waits on files, not on the clock. It used to be a flat 55 s after every recompile and 30 s before
+# looking at the play results, about 85 s of padding per cycle whatever the work took.
+#   compiled  = Library/ScriptAssemblies/Assembly-CSharp-Editor.dll is newer than every .cs under
+#               Assets (it depends on everything, so any script change rebuilds it)
+#   reloaded  = Temp/CompileStamp.txt (written by CompileStamp on every domain load) is newer still
+# Exit status is non-zero when anything failed, so it can be chained.
+set -u
+cd "$(dirname "$0")/.." || exit 2
+
+DLL=Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+STAMP=Temp/CompileStamp.txt
+RESULTS=Temp/PlayTests.txt
+MCP="npx unity-mcp-cli run-tool"
+
+mtime() { [ -e "$1" ] && stat -c %Y "$1" || echo 0; }
+newest_cs() { find Assets -name '*.cs' -newer "$DLL" -print -quit 2>/dev/null; }
+say() { printf '%s\n' "$*"; }
+
+exec_cs() {   # run a C# method body in the editor; quiet unless it fails
+  local out try
+  for try in 1 2 3 4 5 6; do   # a 503 means the plugin is reconnecting after a reload: wait it out
+    out=$($MCP script-execute . --input "{\"isMethodBody\": true, \"csharpCode\": \"$1\"}" 2>&1)
+    grep -q 'HTTP 503' <<<"$out" || break
+    sleep 5
+  done
+  if ! grep -q '"status": "success"' <<<"$out"; then say "script-execute failed: $(grep -o 'HTTP [0-9]*\|error[^"]*' <<<"$out" | head -2 | tr '\n' ' ')"; return 1; fi
+}
+
+playing() { $MCP editor-application-get-state . 2>/dev/null | grep -q '"IsPlaying": true'; }
+
+compile() {
+  if [ -z "$(newest_cs)" ] && [ "$(mtime "$STAMP")" -ge "$(mtime "$DLL")" ]; then say "compile: up to date"; return 0; fi
+  if playing; then exec_cs 'UnityEditor.EditorApplication.ExitPlaymode();' >/dev/null; sleep 3; fi
+  local start=$SECONDS
+  exec_cs 'UnityEditor.EditorApplication.ExecuteMenuItem(\"Window/Hot Reload/Recompile\");' || return 1
+  # Compiled: no script newer than the editor assembly.
+  while [ -n "$(newest_cs)" ]; do
+    if [ $((SECONDS - start)) -gt 240 ]; then
+      say "compile: no new assembly after 240 s — compile errors? running the tests to show them:"
+      tests; return 1
+    fi
+    sleep 1
+  done
+  # Loaded: the domain has reloaded since the assembly was written.
+  while [ "$(mtime "$STAMP")" -lt "$(mtime "$DLL")" ]; do
+    if [ $((SECONDS - start)) -gt 300 ]; then say "compile: assembly built but the domain never reloaded"; return 1; fi
+    sleep 1
+  done
+  say "compile: loaded in $((SECONDS - start)) s"
+}
+
+tests() {
+  local out try
+  # Straight after a reload the plugin answers 503 for a few seconds while it reconnects.
+  for try in 1 2 3 4 5 6; do
+    out=$(timeout 300 $MCP tests-run . --input '{"testMode":"EditMode"}' 2>&1)
+    grep -qE '"TotalTests"|error CS' <<<"$out" && break
+    sleep 5
+  done
+  python - "$out" <<'PY'
+import json, re, sys
+raw = sys.argv[1]
+errors = re.findall(r'error CS\d+[^"\\]*', raw)
+if errors:
+    print("tests: COMPILE ERRORS"); [print("  " + e) for e in dict.fromkeys(errors)]; sys.exit(1)
+m = lambda k: (re.search(r'"%s": (\d+)' % k, raw) or [None, "?"])[1]
+total, passed, failed = m("TotalTests"), m("PassedTests"), m("FailedTests")
+print("tests: %s/%s passed" % (passed, total))
+# Name each failure with its message: every result object that carries a non-empty message.
+for obj in re.findall(r'\{[^{}]*"Message": "(?:[^"\\]|\\.)+"[^{}]*\}', raw):
+    name = (re.search(r'"(?:FullName|Name)": "([^"]+)"', obj) or [None, "?"])[1]
+    msg = re.search(r'"Message": "((?:[^"\\]|\\.)*)"', obj).group(1)
+    print("  FAIL %s: %s" % (name, msg.replace('\\r\\n', ' ').replace('\\n', ' ').strip()[:300]))
+sys.exit(0 if failed == "0" else 1)
+PY
+}
+
+play() {
+  local filter="${1:-}"
+  if playing; then exec_cs 'UnityEditor.EditorApplication.ExitPlaymode();' >/dev/null; sleep 3; fi
+  rm -f "$RESULTS"
+  exec_cs "PlayTestRunner.RunOnly(\\\"${filter}\\\");" || return 1
+  local start=$SECONDS last=""
+  until grep -q "PLAY done" "$RESULTS" 2>/dev/null; do
+    if [ $((SECONDS - start)) -gt 600 ]; then say "play: no verdict after 600 s; last state:"; cat "$RESULTS" 2>/dev/null; return 1; fi
+    sleep 2
+  done
+  grep -v "^PLAY PASSED" "$RESULTS"
+  say "play: $((SECONDS - start)) s"
+  grep -q "failed=0" "$RESULTS"
+}
+
+case "${1:-}" in
+  compile) compile ;;
+  test)    compile && tests ;;
+  play)    compile && play "${2:-}" ;;
+  all)     compile && tests && play "${2:-}" ;;
+  *) sed -n '2,8p' "$0"; exit 2 ;;
+esac

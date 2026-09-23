@@ -260,9 +260,9 @@ Run them — and the play checks — through the dev loop, which recompiles only
 changed, waits for the new code to be loaded (not a fixed sleep), and prints only failures:
 
 ```bash
-tools/dev.sh test            # edit-mode tests
-tools/dev.sh play whirl      # only the play checks whose name contains "whirl"
-tools/dev.sh all             # tests, then every play check: do this before committing
+Tools/dev.sh test            # edit-mode tests
+Tools/dev.sh play whirl      # only the play checks whose name contains "whirl"
+Tools/dev.sh all             # tests, then every play check: do this before committing
 ```
 
 It waits on two files: `Library/ScriptAssemblies/Assembly-CSharp-Editor.dll` newer than every
