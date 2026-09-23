@@ -115,3 +115,7 @@ Tools/EquipmentDesigner.html
 
 # Telemetry output from the combat harness — a measurement, not a source file.
 /Telemetry.txt
+
+# Tools/dev.sh rewrites this to force a real compile past Hot Reload
+Assets/Editor/Tests/CompileNonce.cs
+Assets/Editor/Tests/CompileNonce.cs.meta
