@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Ricochet
   m_EditorClassIdentifier: 
   spellName: Ricochet
-  description: A thrown star for 0.9x weapon damage that shoves its victim along
-    its flight (force 4) and bounces to the nearest enemy within 4, twice. A clump
-    is a chain of hits.
+  description: A thrown star for 0.9x weapon damage that bounces to the nearest
+    enemy within 4, twice. A clump is a chain of hits.
   cooldown: 0
   range: 7
   alwaysOn: 0
@@ -51,7 +50,7 @@ MonoBehaviour:
           ofSubjectMaxHealth: 0
           ofCasterMaxHealth: 0
           perTier: 0.25
-        force: 4
+        force: 0
         speed: 14
         hitRadius: 0.6
         spin: 720

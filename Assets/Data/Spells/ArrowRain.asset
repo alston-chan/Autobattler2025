@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellName: Arrow Rain
   description: A ring appears under the farthest enemy; 1.2 seconds later everything
-    still inside takes 1.2x weapon damage and is flung outward at force 6. A diver
-    leaves it, a unit in a fight eats it, and a pull can put a body into it.
+    still inside takes 1.2x weapon damage. A diver leaves it, a unit in a fight eats
+    it, and a pull can put a body into it.
   cooldown: 0
   range: 12
   alwaysOn: 0
@@ -50,7 +50,7 @@ MonoBehaviour:
           ofSubjectMaxHealth: 0
           ofCasterMaxHealth: 0
           perTier: 0.25
-        knockback: 6
+        knockback: 0
         ringColor: {r: 1, g: 0.25, b: 0.2, a: 0.55}
         landingPrefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
         landingScale: 1.2

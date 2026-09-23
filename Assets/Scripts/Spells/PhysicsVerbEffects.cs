@@ -377,7 +377,7 @@ public class OrbitEffect : SpellEffect
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => $"{blades + bladesPerTier * Mathf.Max(0, tier - 1)} blades circle you for {seconds:0.#} s at {radius * scale:0.#}: {damage.DescribeAt(tier)} damage a pass, shoved outward (force {force * scale:0})";
+    public override string Describe(int tier, float scale) => $"{blades + bladesPerTier * Mathf.Max(0, tier - 1)} blades circle you for {seconds:0.#} s at {radius * scale:0.#}: {damage.DescribeAt(tier)} damage a pass" + (force > 0f ? $", shoved outward (force {force * scale:0})" : "");
 }
 
 public class OrbitRunner : MonoBehaviour
@@ -652,7 +652,7 @@ public class BounceProjectileEffect : SpellEffect
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => $"a star for {damage.DescribeAt(tier)} damage that shoves (force {force * scale:0}) and bounces to the nearest enemy within {bounceRange * scale:0.#}, {bounces + bouncesPerTier * Mathf.Max(0, tier - 1)} times";
+    public override string Describe(int tier, float scale) => $"a star for {damage.DescribeAt(tier)} damage" + (force > 0f ? $" that shoves (force {force * scale:0})" : "") + $" and bounces to the nearest enemy within {bounceRange * scale:0.#}, {bounces + bouncesPerTier * Mathf.Max(0, tier - 1)} times";
 }
 
 public class BouncingStar : MonoBehaviour

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spellName: Whirl
   description: Three blades circle you for 4 seconds at reach 1.6, each pass dealing
-    0.5x weapon damage and shoving the victim outward at force 5. Pull them in first.
+    0.5x weapon damage. Pull them in first.
   cooldown: 0
   range: 2.5
   alwaysOn: 0
@@ -53,7 +53,7 @@ MonoBehaviour:
           ofSubjectMaxHealth: 0
           ofCasterMaxHealth: 0
           perTier: 0.25
-        force: 5
+        force: 0
         hitInterval: 0.6
         hitRadius: 0.55
         spriteName: ThrowingStar

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using Assets.HeroEditor.InventorySystem.Scripts;
 using Assets.HeroEditor.InventorySystem.Scripts.Data;
@@ -135,5 +136,33 @@ public class PhysicsRuleTests
         Assert.That(blunt.critKnockbackForce, Is.EqualTo(3.2f).Within(0.001f));
         var bow = AssetDatabase.LoadAssetAtPath<BowAttackSpell>("Assets/Data/Spells/DefaultBowAttack.asset");
         Assert.That(bow.critKnockbackForce, Is.EqualTo(0.8f).Within(0.001f), "the bow's old every-hit number is its crit number");
+    }
+
+    [Test]
+    public void OnlyTheVerbsThatMoveBodiesShove()
+    {
+        // A verb shoves when moving bodies is what it is for: a throw, a pull, a push, a charge.
+        // Whirl, Arrow Rain and Ricochet shoved too, as a side effect of doing damage, and with
+        // ordinary hits no longer shoving they were most of the shoving left: Whirl alone was 38
+        // knockbacks in 42 seconds of a four-a-side, each one a small stun and a walk back in.
+        var movers = new HashSet<string> { "Cannonball", "ChainWhip", "Singularity", "RepulsionNova", "BullRush" };
+        var shoving = new List<string>();
+        foreach (var guid in AssetDatabase.FindAssets("t:CompositeSpell", new[] { "Assets/Data/Spells" }))
+        {
+            var spell = AssetDatabase.LoadAssetAtPath<CompositeSpell>(AssetDatabase.GUIDToAssetPath(guid));
+            foreach (var effect in spell.effects)
+            {
+                if (effect == null) continue;
+                foreach (var name in new[] { "force", "knockback" })
+                {
+                    var field = effect.GetType().GetField(name);
+                    if (field != null && field.FieldType == typeof(float) && (float)field.GetValue(effect) > 0f) { shoving.Add(spell.name); break; }
+                }
+            }
+        }
+        foreach (var name in shoving)
+            Assert.That(movers, Has.Member(name), name + " shoves, but moving bodies is not what it is for");
+        foreach (var name in movers)
+            Assert.That(shoving, Has.Member(name), name + " is a displacement verb that no longer moves anyone");
     }
 }
