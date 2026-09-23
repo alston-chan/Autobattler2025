@@ -113,7 +113,6 @@ public class TacticsEngravingTests
     {
         "FantasyHeroes.Basic.Helmet.BerserkHelm",
         "FantasyHeroes.Basic.Helmet.SpearmanHelm1",
-        "FantasyHeroes.Knights.Helmet.EliteKnightHelm",
         "Extensions.AbandonedWorkshop.Helmet.ElegantArcherHood",
         "FantasyHeroes.Basic.Helmet.AssassinHood [Paint]",
         "FantasyHeroes.Basic.Armor.Cleric [Paint].vest",
@@ -133,6 +132,35 @@ public class TacticsEngravingTests
     }
 
     [Test]
+    public void StandFastTauntsTheRowItFacesForLongerEachTier()
+    {
+        var stand = AssetDatabase.LoadAssetAtPath<StandFastEngraving>("Assets/Data/Engravings/StandFast.asset");
+        Assert.That(stand, Is.Not.Null, "the Elite Knight Helm's engraving is missing");
+        Assert.That(stand.taunted, Is.Not.Null);
+        Assert.That(stand.taunted.tauntsToSource, Is.True, "Stand Fast's status must pull its victims onto the wearer");
+        Assert.That(stand.DescribeTier(1), Is.EqualTo("At the bell, every enemy in your row is Taunted to you for 3 s."));
+        Assert.That(stand.DescribeTier(3), Does.EndWith("for 5 s."));
+
+        var database = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>("Assets/Resources/ResonanceDatabase.asset");
+        var entry = database.entries.Find(e => e.itemId == "FantasyHeroes.Knights.Helmet.EliteKnightHelm");
+        Assert.That(entry != null ? entry.engraving : null, Is.SameAs(stand), "the Elite Knight Helm carries Stand Fast");
+    }
+
+    [Test]
+    public void FacingIsTheWholeEnemyRowFrontFirst()
+    {
+        var board = new Board<string>(4, 3);
+        board.Place("knight", true, 0, 1);
+        board.Place("back", false, 3, 1);
+        board.Place("front", false, 0, 1);
+        board.Place("middle", false, 1, 1);
+        board.Place("otherRow", false, 0, 2);
+        board.Place("friend", true, 1, 1);
+        Assert.That(board.Facing("knight"), Is.EqualTo(new[] { "front", "middle", "back" }));
+        Assert.That(board.Facing("front"), Is.EqualTo(new[] { "knight", "friend" }), "and it reads the same from the other side");
+    }
+
+    [Test]
     public void NoItemAsksForTheStanceThatWasRemoved()
     {
         // Stance 2 was Hold. The number is never reused, and an asset still carrying it would read
@@ -149,7 +177,8 @@ public class TacticsEngravingTests
     {
         // A kit authors no stance of its own, so one of its items has to say how it fights, or it is
         // just a unit that advances. Every kit was written with a plan; this keeps the plan on an item.
-        // The Wall Keeper's plan is to guard whoever stands near it, which Hold the Line carries.
+        // The Wall Keeper's plan is to guard whoever stands near it, which Hold the Line carries; the
+        // Knight's is to take the row facing it onto itself, which Stand Fast does.
         var database = AssetDatabase.LoadAssetAtPath<ResonanceDatabase>("Assets/Resources/ResonanceDatabase.asset");
         foreach (var guid in AssetDatabase.FindAssets("t:EnemyKit", new[] { "Assets/Data/EnemyKits" }))
         {
@@ -158,7 +187,7 @@ public class TacticsEngravingTests
             foreach (var id in kit.itemIds)
             {
                 var entry = database.entries.Find(e => e.itemId == id);
-                if (entry != null && (entry.engraving is TacticsEngraving || entry.engraving is HoldTheLineEngraving)) tactics = true;
+                if (entry != null && (entry.engraving is TacticsEngraving || entry.engraving is HoldTheLineEngraving || entry.engraving is StandFastEngraving)) tactics = true;
             }
             Assert.That(tactics, Is.True, kit.name + " wears nothing that says how it fights");
         }

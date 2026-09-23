@@ -64,6 +64,8 @@ public static class BoardSnapshot
     public static List<Entity> Lane(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Lane(unit) : None;
     /// <summary>The first enemy in this unit's lane at the bell, or null.</summary>
     public static Entity Across(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Across(unit) : null;
+    /// <summary>Every enemy in this unit's lane at the bell, front first.</summary>
+    public static List<Entity> Facing(Entity unit) => Last != null && unit != null && Last.TryGet(unit, out _) ? Last.Facing(unit) : None;
     /// <summary>Allies this unit stands in front of: same lane, further from the enemy.</summary>
     public static List<Entity> Covered(Entity unit)
     {

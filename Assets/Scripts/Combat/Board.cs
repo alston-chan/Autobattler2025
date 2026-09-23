@@ -120,6 +120,24 @@ public class Board<T> where T : class
     /// <summary>The first enemy in this unit's lane, or null. Not a mirror: cover blocks it on both sides.</summary>
     public T Across(T unit) => TryGet(unit, out var p) ? FirstInLane(!p.allySide, p.row) : null;
 
+    /// <summary>Every enemy in this unit's lane, front to back: the whole row it faces.</summary>
+    public List<T> Facing(T unit)
+    {
+        var result = new List<T>();
+        if (!TryGet(unit, out var p)) return result;
+        var columns = new List<int>();
+        foreach (var pair in _at)
+            if (pair.Value.allySide != p.allySide && pair.Value.row == p.row) { result.Add(pair.Key); columns.Add(pair.Value.column); }
+        // Front first, so a reader that wants "the nearest few" can take them in order.
+        for (int i = 1; i < result.Count; i++)
+            for (int j = i; j > 0 && columns[j] < columns[j - 1]; j--)
+            {
+                (columns[j], columns[j - 1]) = (columns[j - 1], columns[j]);
+                (result[j], result[j - 1]) = (result[j - 1], result[j]);
+            }
+        return result;
+    }
+
     private List<T> SameSide(T unit, Func<Placement, Placement, bool> match)
     {
         var result = new List<T>();

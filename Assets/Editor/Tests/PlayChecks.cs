@@ -29,6 +29,7 @@ public static class PlayChecks
         new PlayCheck("nobody opens the fight shoved, or out of rank", NobodyStartsInsideTheSoftWall),
         new PlayCheck("a whirl cuts the enemy beside it", AWhirlCutsTheEnemyBesideIt),
         new PlayCheck("hold the line covers whoever is close", HoldTheLineCoversWhoeverIsClose),
+        new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -130,6 +131,40 @@ public static class PlayChecks
             cover.End();
             UnityEngine.Object.Destroy(cover);
         }
+    }
+
+    /// <summary>
+    /// Stand Fast turns the row a unit faces onto it: every enemy in its lane on the board frozen at
+    /// the bell wears Taunted from it, and fights it. The board, the statuses and the targeting are
+    /// three systems, and only a running fight has all three.
+    /// </summary>
+    private static IEnumerator StandFastTurnsTheRowOntoItsWearer()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var stand = UnityEditor.AssetDatabase.LoadAssetAtPath<StandFastEngraving>("Assets/Data/Engravings/StandFast.asset");
+        Assert.That(stand, Is.Not.Null);
+
+        // A hero facing a row nobody has taunted yet, so whose taunt it is cannot be in doubt.
+        Entity wearer = null; List<Entity> row = null;
+        foreach (var unit in PlayHarness.Living())
+        {
+            if (!unit.isTeam) continue;
+            var facing = BoardSnapshot.Facing(unit).FindAll(e => e != null && !e.isDead && e.gameObject.activeInHierarchy);
+            if (facing.Count == 0 || facing.Exists(e => e.Statuses.TauntedBy != null)) continue;
+            wearer = unit; row = facing; break;
+        }
+        Assert.That(wearer, Is.Not.Null, "no living hero faces a living, untaunted enemy row on the frozen board");
+
+        stand.OnCombatStart(wearer, 1);
+        foreach (var enemy in row)
+            Assert.That(enemy.Statuses.TauntedBy, Is.SameAs(wearer), DisplayNames.Unit(enemy) + " stands in " + DisplayNames.Unit(wearer) + "'s row and was not taunted to it");
+
+        var first = row[0];
+        yield return PlayHarness.Until(() => first.isDead || first.CombatAI == null || first.CombatAI.CurrentTarget == wearer,
+                                       DisplayNames.Unit(first) + " to turn on " + DisplayNames.Unit(wearer), 2f);
+
+        foreach (var enemy in row) if (enemy != null && enemy.Statuses != null) enemy.Statuses.Remove(stand.taunted);   // leave nothing for the next check
     }
 
     /// <summary>

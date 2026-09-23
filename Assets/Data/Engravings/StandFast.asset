@@ -9,14 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a55726abc1dbfd141a086a73a8c093e0, type: 3}
-  m_Name: Tactics_StandFast
+  m_Script: {fileID: 11500000, guid: ed05a1ed415c4fc785f5f7e4c4152a03, type: 3}
+  m_Name: StandFast
   m_EditorClassIdentifier: 
   engravingName: Stand Fast
-  description: The wearer fights the nearest enemy and never lets go of it until
-    it falls.
-  stance: 0
-  setsTarget: 1
-  targetMode: 0
-  setsCommitment: 1
-  commitment: 2
+  description: At the bell, every enemy in your row is Taunted to you for a few seconds.
+  taunted: {fileID: 11400000, guid: a93c3080249ecae46b52213590787d9a, type: 2}
+  seconds: 3
+  secondsPerTier: 1
