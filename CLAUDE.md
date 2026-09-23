@@ -370,12 +370,18 @@ Writing them:
 - **Rarity lives on the item copy, as `ItemModifier.Rarity` (Level 1–4 = C/B/A/S); C is the plain
   item with no modifier.** Same trick as Hollow: it survives inventory moves, saves with the run, and
   keys quest progress per copy. An item's effect works at its rarity while worn, its one quest
-  (`Entry.questGoal`) fills while it fights, and `EngraveCompletedQuests` engraves it at that rarity
-  when the fight ends and hollows the item (Docs/ShopLoop.md). There are no tiers to climb and no
-  cash-out. Slot backgrounds show rarity through the vendor's `GetBackgroundCustom` hook.
+  (`Entry.questGoal`) fills while it fights, and once it is complete the player may bank it between
+  fights (`Resonance.Bank`, the Bank button in the item panel): the effect is kept at that rarity and
+  the item hollowed (Docs/ShopLoop.md). Banking is never automatic and never mid-fight. A banked
+  weapon's verb joins the hero's slots, to pick between. Slot backgrounds show rarity through the
+  vendor's `GetBackgroundCustom` hook.
+- **A hero holds one weapon.** The rack (three carried weapons, each teaching its verb, drawn for its
+  cast) was removed 2026-09-23: taking a weapon off left its verb behind, and a racked weapon's quest
+  could never bank. A weapon's verb goes with it; banking is how a hero keeps more than one.
 - **A shop opens after every won fight that has another after it** (`RunManager.OpenShop` / `Buy` /
-  `Reroll` / `LeaveShop`, drawn by `ShopPanel`; numbers in `RunData.shop`). It replaced the pick-one
-  reward; `ShopOpen` blocks the next fight, the map and the save. The batch harness
+  `Reroll` / `ToggleFreeze` / `LeaveShop`, drawn by `ShopPanel`; numbers in `RunData.shop`). A
+  frozen shelf's unsold offers open the next shop at the same rarity (saved with the run); a freeze
+  holds for one shop and a reroll lets it go. It replaced the pick-one reward; `ShopOpen` blocks the next fight, the map and the save. The batch harness
   (`CombatTelemetry.autoAdvance`) buys the first offer it can afford and leaves, so a run measured that
   way is a run where nobody shopped well.
 - **Anything a fight puts in the world must be in `CombatDebris.Sweep`.** It runs at round end. The

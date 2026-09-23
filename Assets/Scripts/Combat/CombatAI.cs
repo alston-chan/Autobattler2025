@@ -310,7 +310,6 @@ public class CombatAI : MonoBehaviour
 
         StopAllCoroutines();
         _isAttacking = false;
-        WeaponDraw.End(_entity);   // a cast cut short still puts the drawn weapon away
 
         var animator = _entity.character != null ? _entity.character.Animator
                      : _entity.monster != null ? _entity.monster.Animator
@@ -339,7 +338,6 @@ public class CombatAI : MonoBehaviour
         StopAllCoroutines();
         _isAttacking = false;
         CurrentTarget = null;
-        WeaponDraw.End(_entity);
 
         var animator = _entity.character != null ? _entity.character.Animator
                      : _entity.monster != null ? _entity.monster.Animator
@@ -454,11 +452,7 @@ public class CombatAI : MonoBehaviour
         CombatEvents.RaiseCast(_entity, spell);
         _refundRequested = false;
 
-        // A racked weapon's verb is cast with that weapon: drawn now, after the last swing has
-        // finished, and put away once the cast is done, so the hand weapon is back for the next swing.
-        WeaponDraw.Begin(_entity, spell);
         yield return StartCoroutine(spell.Cast(_entity, target));
-        WeaponDraw.End(_entity);
 
         // A spell that earned its cooldown back (a Backstab that killed) is ready again at once.
         if (_refundRequested && spellIndex < _spellCooldowns.Length) _spellCooldowns[spellIndex] = 0f;

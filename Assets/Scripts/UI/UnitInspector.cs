@@ -525,7 +525,7 @@ public class UnitInspector : MonoBehaviour
             _slotButtons[i].gameObject.SetActive(filled);
             if (!filled) continue;
             bool lit = i == _selected.activeSpellSlot;
-            // The hand weapon's verb is marked; a racked weapon's is drawn for the cast.
+            // The hand weapon's verb is marked; the rest are banked.
             var from = _selected.Resonance != null ? _selected.Resonance.WeaponTeaching(slots[i]) : null;
             bool inHand = from != null && _selected.HandWeapon != null && from.Id == _selected.HandWeapon.Id;
             _slotLabels[i].text = (inHand ? "• " : "") + slots[i].DisplayName;   // a bullet: the font has no sword

@@ -31,7 +31,7 @@ public static class PlayChecks
         new PlayCheck("hold the line covers whoever is close", HoldTheLineCoversWhoeverIsClose),
         new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
         new PlayCheck("the round-end sweep clears the ground", TheRoundEndSweepClearsTheGround),
-        new PlayCheck("a finished quest is engraved at its rarity", AFinishedQuestIsEngravedAtItsRarity),
+        new PlayCheck("a weapon banks only when asked, and its verb goes with it", AWeaponBanksOnlyWhenAsked),
         new PlayCheck("a unit at the wall is drawn on screen", AUnitAtTheWallIsDrawnOnScreen),
         new PlayCheck("a won fight opens the shop", AWonFightOpensTheShop),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
@@ -198,50 +198,84 @@ public static class PlayChecks
     }
 
     /// <summary>
-    /// The shop loop's one rule about items (Docs/ShopLoop.md): a worn item works at its rarity, its
-    /// quest fills while it fights, and when the fight that completes it ends, its effect is engraved
-    /// on the hero at that rarity and the item is hollowed. Needs a hero's real inventory, since
-    /// engraving goes through it. Leaves the hero with one engraved mark and a hollow item — a real
-    /// outcome of the rule, which the checks after this one tolerate like any other.
+    /// The shop loop's rule about banking (Docs/ShopLoop.md), on a weapon: a worn item works at its rarity, its
+    /// quest fills while it fights, and a complete quest waits for the player — nothing banks on its
+    /// own, and nothing banks mid-fight. Banked, the verb stays on the hero at that rarity and the
+    /// weapon is hollowed. And a weapon's verb goes with it: taking the weapon off takes the verb out
+    /// of the slots (a rack used to keep it). Needs a hero's real inventory. Leaves the hero with one
+    /// banked mark and a hollow weapon — a real outcome, which later checks tolerate.
     /// </summary>
-    private static IEnumerator AFinishedQuestIsEngravedAtItsRarity()
+    private static IEnumerator AWeaponBanksOnlyWhenAsked()
     {
         yield return PlayHarness.ReachTheBell();
 
         Entity hero = null;
-        Assets.HeroEditor.InventorySystem.Scripts.Data.Item item = null;
+        Assets.HeroEditor.InventorySystem.Scripts.Data.Item weapon = null;
         foreach (var unit in PlayHarness.Living())
         {
             if (!unit.isTeam || unit.characterInventory == null || unit.Resonance == null) continue;
             foreach (var worn in unit.characterInventory.Equipment.Items)
-                if (unit.Resonance.EntryFor(worn) != null) { hero = unit; item = worn; break; }
+                if (worn.IsWeapon && unit.Resonance.HasQuest(worn)) { hero = unit; weapon = worn; break; }
             if (hero != null) break;
         }
-        Assert.That(item, Is.Not.Null, "no living hero wears anything with a quest");
+        Assert.That(weapon, Is.Not.Null, "no living hero holds a weapon with a quest");
 
         var resonance = hero.Resonance;
-        var entry = resonance.EntryFor(item);
+        var entry = resonance.QuestOf(weapon);
+        var verb = (entry.engraving as GrantSpellEngraving)?.spell;
         int bankedBefore = resonance.banked.Count;
 
         // Make it a B, as a shop would have sold it.
-        item.Modifier = new Assets.HeroEditor.InventorySystem.Scripts.Data.Modifier(
+        weapon.Modifier = new Assets.HeroEditor.InventorySystem.Scripts.Data.Modifier(
             Assets.HeroEditor.InventorySystem.Scripts.Enums.ItemModifier.Rarity, Rarity.B);
         resonance.Refresh();
-        Assert.That(resonance.TierFor(item), Is.EqualTo(Rarity.B), "a worn B works at B from the moment it is on");
+        Assert.That(resonance.TierFor(weapon), Is.EqualTo(Rarity.B), "a worn B works at B from the moment it is on");
 
         resonance.Accrue(entry.requirement, entry.questGoal);
-        Assert.That(entry.IsComplete(resonance.AttunementFor(item)), Is.True, "the quest should be complete");
-        Assert.That(resonance.TierFor(item), Is.EqualTo(Rarity.B), "progress does not change what the item does");
-        Assert.That(resonance.banked.Count, Is.EqualTo(bankedBefore),
-                    "engraved mid-fight — engraving waits for the fight to end, or a hero loses its armour in the fight that earned it");
+        Assert.That(entry.IsComplete(resonance.AttunementFor(weapon)), Is.True, "the quest should be complete");
+        Assert.That(resonance.NoticeFor(weapon), Is.EqualTo(ResonanceNotice.Bankable), "nothing tells the player it is ready");
+        Assert.That(resonance.Bank(weapon), Is.False, "banked mid-fight — a hero would lose its weapon in the fight that earned it");
 
-        int engraved = resonance.EngraveCompletedQuests();
-        Assert.That(engraved, Is.GreaterThanOrEqualTo(1), "a completed quest was not engraved at the fight's end");
+        Time.timeScale = 4f;
+        try { yield return PlayHarness.Until(() => GameManager.Instance.StateMachine.Current != GameState.Combat, "the fight to end", 120f); }
+        finally { Time.timeScale = 1f; }
+
+        Assert.That(resonance.banked.Count, Is.EqualTo(bankedBefore), "banked on its own when the fight ended; banking is the player's call");
+        Assert.That(HollowItems.IsHollow(weapon), Is.False, "the weapon was spent without being asked");
+
+        Assert.That(resonance.Bank(weapon), Is.True, "a complete quest could not be banked between fights");
         var mark = resonance.banked[resonance.banked.Count - 1];
         Assert.That(mark.engraving, Is.SameAs(entry.engraving));
-        Assert.That(mark.tier, Is.EqualTo(Rarity.B), "engraved at a different grade than the item was");
-        Assert.That(HollowItems.IsHollow(item), Is.True, "the item was not spent");
-        Assert.That(resonance.NoticeFor(item), Is.EqualTo(ResonanceNotice.Engraved), "nothing tells the player it happened");
+        Assert.That(mark.tier, Is.EqualTo(Rarity.B), "banked at a different grade than the weapon was");
+        Assert.That(HollowItems.IsHollow(weapon), Is.True, "the weapon was not spent");
+        Assert.That(resonance.NoticeFor(weapon), Is.EqualTo(ResonanceNotice.None), "the ready mark outlived the banking");
+        if (verb != null) Assert.That(hero.spellSlots, Has.Member(verb), "the banked verb is not in the slots");
+
+        // A weapon's verb goes with it: another hero takes its weapon off, then puts it back.
+        Entity other = null;
+        Assets.HeroEditor.InventorySystem.Scripts.Data.Item held = null;
+        foreach (var unit in GameManager.Instance.runManager.Company)
+        {
+            if (unit == null || unit == hero || unit.characterInventory == null || unit.Resonance == null) continue;
+            foreach (var worn in unit.characterInventory.Equipment.Items)
+                if (unit.Resonance.QuestOf(worn)?.engraving is GrantSpellEngraving) { other = unit; held = worn; break; }
+            if (other != null) break;
+        }
+        Assert.That(other, Is.Not.Null, "no second hero holds a weapon that teaches a verb");
+
+        var taught = ((GrantSpellEngraving)other.Resonance.QuestOf(held).engraving).spell;
+        bool bankedToo = other.Resonance.banked.Exists(m => m != null && m.engraving is GrantSpellEngraving g && g.spell == taught);
+        var window = other.characterInventory;
+        window.SelectItem(held);
+        window.Remove();
+        Assert.That(window.Equipment.Items.Exists(i => i.Id == held.Id), Is.False, "the weapon is still worn");
+        Assert.That(window.PlayerInventory.Items.Exists(i => i.Id == held.Id), Is.True, "the weapon did not go back to the bag");
+        if (!bankedToo) Assert.That(other.spellSlots, Has.No.Member(taught), "the verb stayed after its weapon came off");
+
+        var back = window.PlayerInventory.Items.Find(i => i.Id == held.Id);
+        window.SelectItem(back);
+        window.Equip();
+        Assert.That(other.spellSlots, Has.Member(taught), "putting the weapon back on did not bring its verb back");
     }
 
     /// <summary>
@@ -335,8 +369,32 @@ public static class PlayChecks
                 Assert.That(run.ShopOffers.TrueForAll(o => o != null), Is.True, "a reroll refills the sold slots too");
             }
 
+            // Freeze: what is left on the shelf opens the next shop, at the same rarity; a freeze
+            // holds for one shop.
+            Assert.That(run.ToggleFreeze(), Is.True);
+            Assert.That(run.ShopFrozen, Is.True);
+            if (run.Gold >= run.RerollCost)
+            {
+                run.Reroll();
+                Assert.That(run.ShopFrozen, Is.False, "a reroll should let a frozen shelf go");
+                run.ToggleFreeze();
+            }
+            Assert.That(run.Buy(0) || run.ShopOffers[0] == null || run.Gold < run.PriceOf(run.ShopOffers[0]), Is.True);
+            var kept = run.ShopOffers.FindAll(o => o != null);
             run.LeaveShop();
             Assert.That(run.ShopOpen, Is.False);
+            Assert.That(run.ShopOffers, Is.Empty, "the shelf is still up after leaving");
+
+            run.OpenShop(null, 0);
+            Assert.That(run.ShopOffers.Count, Is.EqualTo(rules.slots), "a frozen shop's sold slots are not refilled");
+            for (int i = 0; i < kept.Count; i++)
+            {
+                Assert.That(run.ShopOffers[i].Id, Is.EqualTo(kept[i].Id), "frozen offer " + i + " did not carry over");
+                Assert.That(Rarity.Of(run.ShopOffers[i]), Is.EqualTo(Rarity.Of(kept[i])), "frozen offer " + i + " changed rarity");
+            }
+            Assert.That(run.ShopFrozen, Is.False, "a freeze holds for one shop");
+
+            run.LeaveShop();
             Assert.That(run.ShopOffers, Is.Empty, "what was not bought is gone");
             yield break;
         }

@@ -125,8 +125,13 @@ public partial class GameManager
 
             var kit = Playtest.Scenario != null ? Playtest.Scenario.KitFor(characterEntity.name) : null;
 
-            // The rack: a saved hero carries what it carried; a fresh one carries nothing yet.
-            characterEntity.carriedWeapons = saved != null ? RunSave.ToItems(saved.carried) : new List<Item>();
+            // A save from before the weapon rack was removed may still list racked weapons: they go
+            // back to the bag rather than vanish.
+            if (saved != null && saved.carried != null && saved.carried.Count > 0)
+            {
+                characterInventory.PlayerInventory.Items.AddRange(RunSave.ToItems(saved.carried));
+                saved.carried.Clear();
+            }
 
             // The hero's signature item — where their identity comes from. Added before the random
             // roll is committed so it can't be crowded out of its slot. A playtest kit is the whole

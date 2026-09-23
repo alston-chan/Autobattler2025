@@ -115,6 +115,8 @@ public class RunManager : MonoBehaviour
         }
 
         Gold = resume.gold;
+        _frozen.Clear();
+        if (resume.frozenOffers != null) _frozen.AddRange(RunSave.ToItems(resume.frozenOffers));
         Debug.Log($"[RunSave] Resumed {State.Progress} with {Gold} gold (saved {resume.savedAt}).");
     }
 
@@ -151,7 +153,6 @@ public class RunManager : MonoBehaviour
             var inventory = hero.characterInventory;
             if (inventory != null && inventory.Equipment != null)
                 saved.equipped = RunSave.FromItems(inventory.Equipment.Items);
-            saved.carried = RunSave.FromItems(hero.carriedWeapons);
             if (hero.Resonance != null) saved.resonance = hero.Resonance.CaptureState();
 
             snapshot.heroes.Add(saved);
@@ -161,6 +162,7 @@ public class RunManager : MonoBehaviour
             ? _company[0].characterInventory.PlayerInventory : null;
         if (bag != null) snapshot.bag = RunSave.FromItems(bag.Items);
         snapshot.gold = Gold;
+        snapshot.frozenOffers = RunSave.FromItems(_frozen);
 
         return snapshot;
     }
@@ -277,8 +279,17 @@ public class RunManager : MonoBehaviour
     /// <summary>What the shop has on offer, one entry per slot; a null entry has been bought.</summary>
     public List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> ShopOffers { get; } = new List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item>();
 
-    /// <summary>Raised whenever the shop opens, closes, sells, rerolls, or the gold changes.</summary>
+    /// <summary>Raised whenever the shop opens, closes, sells, rerolls, freezes, or the gold changes.</summary>
     public event System.Action OnShopChanged;
+
+    /// <summary>
+    /// Whether the offers on the shelf will still be there in the next shop. Set by the player
+    /// (<see cref="ToggleFreeze"/>); a freeze holds for one shop, and a reroll lets it go.
+    /// </summary>
+    public bool ShopFrozen { get; private set; }
+
+    /// <summary>Unsold offers carried from a frozen shop to the next one.</summary>
+    private readonly List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> _frozen = new List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item>();
 
     private RewardPool _shopPool;
     private ShopSettings ShopRules => runData != null && runData.shop != null ? runData.shop : new ShopSettings();
@@ -297,21 +308,29 @@ public class RunManager : MonoBehaviour
     {
         Gold += Mathf.Max(0, income);
         _shopPool = pool != null ? pool : runData != null ? runData.defaultRewardPool : null;
-        RollOffers();
+        RollOffers(_frozen);
+        _frozen.Clear();
+        ShopFrozen = false;
         ShopOpen = true;
         OnShopChanged?.Invoke();
     }
 
     /// <summary>
-    /// Fill every slot afresh. Each offer is a copy at a rolled rarity, with better odds the further
-    /// the run has come (Rarity.OddsAt). Rarity is the grade of an item's EFFECT, so an item with none
-    /// is always a C: an S that does nothing more than a C would be a lie on the card.
+    /// Fill the shelf: <paramref name="kept"/> first (a frozen shop's leftovers, at the rarity they
+    /// were), then fresh offers for the rest. Each fresh offer is a copy at a rolled rarity, with
+    /// better odds the further the run has come (Rarity.OddsAt). Rarity is the grade of an item's
+    /// EFFECT, so an item with none is always a C: an S that does nothing more than a C would be a lie
+    /// on the card.
     /// </summary>
-    private void RollOffers()
+    private void RollOffers(List<Assets.HeroEditor.InventorySystem.Scripts.Data.Item> kept = null)
     {
         ShopOffers.Clear();
-        if (_shopPool == null) return;
-        foreach (var id in _shopPool.Draw(Mathf.Max(1, ShopRules.slots)))
+        int slots = Mathf.Max(1, ShopRules.slots);
+        if (kept != null)
+            foreach (var item in kept)
+                if (item != null && ShopOffers.Count < slots) ShopOffers.Add(Rarity.Make(item.Id, Rarity.Of(item)));
+        if (_shopPool == null || ShopOffers.Count >= slots) return;
+        foreach (var id in _shopPool.Draw(slots - ShopOffers.Count))
         {
             bool hasEffect = ResonanceDatabase.Active != null && ResonanceDatabase.Active.FindFor(new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(id)) != null;
             ShopOffers.Add(Rarity.Make(id, hasEffect ? Rarity.Roll(RunProgress) : Rarity.C));
@@ -339,21 +358,43 @@ public class RunManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>Replace everything on offer, bought slots included, if the gold is there.</summary>
+    /// <summary>
+    /// Replace everything on offer, bought slots included, if the gold is there. A frozen shelf is
+    /// let go: the reroll is the player saying they want something else.
+    /// </summary>
     public bool Reroll()
     {
         if (!ShopOpen || Gold < RerollCost) return false;
         Gold -= RerollCost;
+        ShopFrozen = false;
         RollOffers();
         OnShopChanged?.Invoke();
         return true;
     }
 
-    /// <summary>Close the shop. What was not bought is gone; the next fight, or the map, is next.</summary>
+    /// <summary>
+    /// Freeze or thaw the shelf. Frozen, what is still unsold when the shop closes opens the next
+    /// shop at the same rarity and price, and fresh offers fill the slots that were bought. Free:
+    /// the cost is the gold held back for it.
+    /// </summary>
+    public bool ToggleFreeze()
+    {
+        if (!ShopOpen) return false;
+        ShopFrozen = !ShopFrozen;
+        OnShopChanged?.Invoke();
+        return true;
+    }
+
+    /// <summary>
+    /// Close the shop. What was not bought is gone unless the shelf is frozen; the next fight, or
+    /// the map, is next.
+    /// </summary>
     public void LeaveShop()
     {
         if (!ShopOpen) return;
         ShopOpen = false;
+        _frozen.Clear();
+        if (ShopFrozen) foreach (var offer in ShopOffers) if (offer != null) _frozen.Add(offer);
         ShopOffers.Clear();
         OnShopChanged?.Invoke();
         if (AwaitingPath) OnPathChanged?.Invoke();

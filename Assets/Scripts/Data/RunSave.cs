@@ -36,7 +36,7 @@ public class SavedHero
     public int column;
     public int row;
     public List<SavedItem> equipped = new List<SavedItem>();
-    /// <summary>The weapon rack: carried, not in hand.</summary>
+    /// <summary>Only in saves from before the weapon rack was removed; read once, into the bag.</summary>
     public List<SavedItem> carried = new List<SavedItem>();
     public Resonance.State resonance = new Resonance.State();
 }
@@ -65,6 +65,8 @@ public class RunSnapshot
     public List<SavedHero> heroes = new List<SavedHero>();
     public List<SavedItem> bag = new List<SavedItem>();
     public int gold;
+    /// <summary>Offers the player froze in the last shop, waiting for the next one.</summary>
+    public List<SavedItem> frozenOffers = new List<SavedItem>();
 }
 
 /// <summary>

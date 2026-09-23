@@ -201,8 +201,8 @@ public enum ResonanceNotice
     None = 0,
 
     /// <summary>
-    /// The item's quest completed and its effect was engraved on the hero; the item is spent. News,
-    /// not a decision — there is no cash-out to make any more (Docs/ShopLoop.md).
+    /// The weapon's quest is complete and it can be banked — a decision waiting on the player, who
+    /// banks it from the weapon's panel between fights (Docs/ShopLoop.md).
     /// </summary>
-    Engraved = 1
+    Bankable = 1
 }

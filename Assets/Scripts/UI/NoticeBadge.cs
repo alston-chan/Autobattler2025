@@ -57,7 +57,7 @@ public class NoticeBadge : MonoBehaviour
 
         bool visible = notice != ResonanceNotice.None;
         _image.enabled = visible;
-        _pulse = notice == ResonanceNotice.Engraved;
+        _pulse = notice == ResonanceNotice.Bankable;
 
         if (!visible) return;
 
@@ -200,7 +200,7 @@ public class HeroNoticeMarker : MonoBehaviour
 
         var notice = _resonance.MostUrgentNotice;
         _renderer.enabled = notice != ResonanceNotice.None;
-        _pulse = notice == ResonanceNotice.Engraved;
+        _pulse = notice == ResonanceNotice.Bankable;
         _renderer.color = _pulse ? Ready : TierUp;
     }
 

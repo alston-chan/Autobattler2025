@@ -300,97 +300,18 @@ public class CharacterInventory : ItemWorkspace
     {
         if (CharacterEntity == null) return;
         UpdateActiveSpellLabel();
-        RefreshRackStrip();
     }
 
-    // The rack strip: one row per racked weapon under the active label, with the two things a
-    // player does with a racked weapon — draw it into the hand, or put it back in the bag.
-    private readonly List<GameObject> _rackRows = new List<GameObject>();
-
-    private void RefreshRackStrip()
-    {
-        foreach (var row in _rackRows) if (row != null) Destroy(row);
-        _rackRows.Clear();
-        if (Equipment == null || CharacterEntity == null) return;
-
-        for (int i = 0; i < CharacterEntity.carriedWeapons.Count; i++)
-        {
-            var weapon = CharacterEntity.carriedWeapons[i];
-            if (weapon == null) continue;
-            var row = new GameObject("Rack" + i, typeof(RectTransform));
-            row.transform.SetParent(Equipment.transform, false);
-            var rect = row.GetComponent<RectTransform>();
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 1f);
-            rect.sizeDelta = new Vector2(400f, 26f);
-            rect.anchoredPosition = new Vector2(0f, -66f - i * 30f);
-
-            string verb = "";
-            if (ResonanceDatabase.Active != null)
-            {
-                var entry = ResonanceDatabase.Active.FindFor(weapon);
-                if (entry != null && entry.engraving is GrantSpellEngraving grant && grant.spell != null) verb = grant.spell.DisplayName;
-            }
-            RackText(row.transform, Catalog.ShortName(weapon.Id) + (verb != "" ? "  ·  " + verb : ""), new Vector2(-80f, 0f), new Vector2(236f, 26f), TextAlignmentOptions.Left);
-            var captured = weapon;
-            RackButton(row.transform, "Hand", new Vector2(78f, 0f), () => DrawToHand(captured));
-            RackButton(row.transform, "Bag", new Vector2(140f, 0f), () => DropFromRack(captured));
-            _rackRows.Add(row);
-        }
-    }
-
-    private static TextMeshProUGUI RackText(Transform parent, string text, Vector2 at, Vector2 size, TextAlignmentOptions align)
-    {
-        var go = new GameObject("Label", typeof(RectTransform));
-        go.transform.SetParent(parent, false);
-        var tmp = go.AddComponent<TextMeshProUGUI>();
-        tmp.text = text; tmp.fontSize = 17; tmp.alignment = align; tmp.color = new Color(0.92f, 0.92f, 0.92f, 1f); tmp.raycastTarget = false;
-        tmp.enableWordWrapping = false; tmp.overflowMode = TextOverflowModes.Ellipsis;
-        var rt = tmp.rectTransform; rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f); rt.pivot = new Vector2(0.5f, 0.5f); rt.sizeDelta = size; rt.anchoredPosition = at;
-        return tmp;
-    }
-
-    private static void RackButton(Transform parent, string label, Vector2 at, UnityEngine.Events.UnityAction onClick)
-    {
-        var go = new GameObject(label, typeof(RectTransform));
-        go.transform.SetParent(parent, false);
-        var rt = go.GetComponent<RectTransform>(); rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f); rt.pivot = new Vector2(0.5f, 0.5f); rt.sizeDelta = new Vector2(56f, 24f); rt.anchoredPosition = at;
-        var back = go.AddComponent<Image>(); back.color = new Color(0.2f, 0.32f, 0.55f, 1f);
-        var button = go.AddComponent<Button>(); button.targetGraphic = back; button.onClick.AddListener(onClick);
-        RackText(go.transform, label, Vector2.zero, new Vector2(56f, 24f), TextAlignmentOptions.Center).fontSize = 15;
-    }
-
-    /// <summary>Draw a racked weapon into the hand; the hand weapon takes its place on the rack.</summary>
-    public void DrawToHand(Item racked)
-    {
-        if (CharacterEntity == null || racked == null || !CharacterEntity.carriedWeapons.Remove(racked)) return;
-        PlayerInventory.Items.Add(racked);
-        SelectItem(racked);
-        Equip();   // racks the weapon that was in hand, and resyncs slots
-    }
-
-    /// <summary>Put a racked weapon back in the bag; its verb leaves the slots.</summary>
-    public void DropFromRack(Item racked)
-    {
-        if (CharacterEntity == null || racked == null || !CharacterEntity.carriedWeapons.Remove(racked)) return;
-        PlayerInventory.Items.Add(racked);
-        PlayerInventory.Refresh(racked, true);
-        if (CharacterEntity.Resonance != null) CharacterEntity.Resonance.Refresh();
-        SelectItem(racked);
-        SyncSpellSlots();
-    }
-
-    /// <summary>The active verb and the weapon it comes from, and what else is on the rack.</summary>
+    /// <summary>The active verb and the weapon it comes from, or that it is banked.</summary>
     private void UpdateActiveSpellLabel()
     {
         if (activeSpellLabel == null) return;
 
         var spell = CharacterEntity.ActiveSpell;
         var from = spell != null && CharacterEntity.Resonance != null ? CharacterEntity.Resonance.WeaponTeaching(spell) : null;
-        string rack = "";
-        foreach (var w in CharacterEntity.carriedWeapons) if (w != null) rack += (rack.Length > 0 ? ", " : "") + Name(w.Id);
-        activeSpellLabel.text = (spell != null ? "Active: " + spell.DisplayName + (from != null ? " (" + Name(from.Id) + ")" : "") : "Active: —")
-                              + (rack.Length > 0 ? "\nRack: " + rack : "");
+        activeSpellLabel.text = spell != null
+            ? "Active: " + spell.DisplayName + (from != null ? " (" + Name(from.Id) + ")" : " (banked)")
+            : "Active: —";
     }
 
     /// <summary>An item id as a name: the catalogue's tail, with the spaces its sprite name lost.</summary>
@@ -403,20 +324,6 @@ public class CharacterInventory : ItemWorkspace
         var equipped = SelectedItem.IsFirearm
             ? Equipment.Items.Where(i => i.IsFirearm).ToList()
             : Equipment.Items.Where(i => i.Params.Type == SelectedItem.Params.Type && !i.IsFirearm).ToList();
-
-        // A new weapon goes to the hand and the old one to the rack, so a hero keeps every verb it
-        // has picked up until the rack is full; then the oldest racked weapon goes back to the bag.
-        if (SelectedItem.IsWeapon && !SelectedItem.IsFirearm && CharacterEntity != null)
-        {
-            foreach (var old in equipped)
-            {
-                if (!old.IsWeapon) continue;
-                Equipment.Items.Remove(old);
-                var evicted = WeaponRack.Push(CharacterEntity.carriedWeapons, old, Entity.RackSize - 1);
-                if (evicted != null) PlayerInventory.Items.Add(evicted);
-            }
-            equipped.RemoveAll(i => i.IsWeapon);
-        }
 
         if (equipped.Any())
         {
@@ -479,25 +386,11 @@ public class CharacterInventory : ItemWorkspace
 
     public void Remove()
     {
-        var removed = SelectedItem;
         MoveItem(SelectedItem, Equipment, PlayerInventory);
         SelectItem(SelectedItem);
         AudioSource.PlayOneShot(EquipSound, SfxVolume);
 
         UnequipStats();
-
-        // The hand emptied: the first racked weapon steps into it, so a hero is never left swinging
-        // nothing while it still carries something.
-        if (removed != null && removed.IsWeapon && CharacterEntity != null && CharacterEntity.carriedWeapons.Count > 0)
-        {
-            var next = CharacterEntity.carriedWeapons[0];
-            CharacterEntity.carriedWeapons.RemoveAt(0);
-            PlayerInventory.Items.Add(next);
-            SelectItem(next);
-            Equip();
-            return;
-        }
-
         SyncSpellSlots();
     }
 
@@ -559,8 +452,8 @@ public class CharacterInventory : ItemWorkspace
     /// Rebuild the character's spell slots from the verbs its weapons teach (Docs/Spells.md), apply
     /// the weapon loadout, clamp the active slot, and refresh CombatAI so the change takes effect.
     ///
-    /// The rule for who calls this: the equipment paths in this class (equip, remove, hollow, the
-    /// rack), because the hand changed; and the resonance books through
+    /// The rule for who calls this: the equipment paths in this class (equip, remove, hollow),
+    /// because the hand changed; and the resonance books through
     /// <see cref="SyncSpellSlotsIfVerbsChanged"/>, because the verbs changed. Nobody else. It
     /// interrupts a cast in progress, so a caller that only wants a different active slot uses
     /// <see cref="SetActiveSlot"/> and a caller that only granted a verb does nothing — the books
@@ -576,14 +469,12 @@ public class CharacterInventory : ItemWorkspace
 
         ApplyWeaponLoadout();
 
-        // The slots are verbs: the hand weapon's first, then the rack's, then any banked. Weapons are
+        // The slots are verbs: the hand weapon's first, then any banked. Weapons are
         // verbs (Docs/Spells.md); there is no other ability system.
         var spells = new List<Spell>();
         if (CharacterEntity.Resonance != null)
             foreach (var verb in CharacterEntity.Resonance.GrantedVerbs())
                 if (!spells.Contains(verb) && spells.Count < Entity.MaxSpellSlots) spells.Add(verb);
-
-        CharacterEntity.HandShield = Equipment.Items.FirstOrDefault(i => i != null && i.IsShield);
 
         CharacterEntity.spellSlots = spells;
         if (CharacterEntity.activeSpellSlot >= spells.Count)

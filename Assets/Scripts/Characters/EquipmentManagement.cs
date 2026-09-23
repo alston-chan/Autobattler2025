@@ -70,11 +70,10 @@ public class EquipmentManagement : MonoBehaviour
                 continue;
             }
             var item = new Item(id);
-            // The first weapon is the hand; the rest go on the rack, carried and teaching their verbs.
+            // A unit holds one weapon: the first. A second in a kit is skipped, not swapped in.
             if (item.IsWeapon && weapon != null)
             {
-                var owner = GetComponent<Entity>();
-                if (owner != null && owner.carriedWeapons.Count < Entity.RackSize - 1) owner.carriedWeapons.Add(item);
+                Debug.LogWarning($"[EquipmentManagement] Kit weapon '{id}' skipped: a unit holds one weapon.");
                 continue;
             }
             Character.Equip(item);
@@ -84,7 +83,6 @@ public class EquipmentManagement : MonoBehaviour
 
         var entity = GetComponent<Entity>();
         if (entity != null && weapon != null) Loadout.ApplyTo(entity, weapon);
-        if (entity != null) entity.HandShield = equipped.Find(i => i.IsShield);
 
         Appearance.Refresh();
         return equipped;
@@ -180,8 +178,6 @@ public class EquipmentManagement : MonoBehaviour
         {
             var shield = EquipRandomFromCollection(ItemType.Shield);
             if (shield != null) equipped.Add(shield);
-            var owner = GetComponent<Entity>();
-            if (owner != null) owner.HandShield = shield;
         }
 
         Appearance.Refresh();

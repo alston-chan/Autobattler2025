@@ -6,11 +6,10 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Shows a hero's resonance in their character window: the selected item's rarity and what its
-/// effect does at it, how far its quest has come, and the engravings the hero has kept.
+/// effect does at it, its quest and its Bank button, and what the hero has banked.
 ///
-/// There is nothing to decide here any more — a quest completes and is engraved on its own when the
-/// fight ends (Docs/ShopLoop.md) — so the panel reports rather than asks. It used to carry a tier bar
-/// and a cash-out button for the three-tier loop that rarity replaced.
+/// Banking is the player's decision (Docs/ShopLoop.md): a complete quest waits until the player banks
+/// the item between fights. A banked weapon's verb joins the hero's slots, to pick between.
 ///
 /// Built at runtime rather than authored into the window prefab, so the vendor inventory prefab is
 /// left untouched.
@@ -29,6 +28,9 @@ public class ResonancePanel : MonoBehaviour
     private TextMeshProUGUI _title;
     private TextMeshProUGUI _detail;
     private RectTransform _barFill;
+    private Button _bank;
+    private Image _bankFace;
+    private TextMeshProUGUI _bankLabel;
     private TextMeshProUGUI _bankedLabel;
 
     private Item _selected;
@@ -45,13 +47,18 @@ public class ResonancePanel : MonoBehaviour
         _inventory.OnSelectionChanged += HandleSelection;
         _inventory.Equipment.OnRefresh += Redraw;
         _hero.Resonance.OnAttunementChanged += MarkDirty;
+        _hero.Resonance.OnGrantsChanged += MarkDirty;
 
         Redraw();
     }
 
     private void OnDestroy()
     {
-        if (_hero != null && _hero.Resonance != null) _hero.Resonance.OnAttunementChanged -= MarkDirty;
+        if (_hero != null && _hero.Resonance != null)
+        {
+            _hero.Resonance.OnAttunementChanged -= MarkDirty;
+            _hero.Resonance.OnGrantsChanged -= MarkDirty;
+        }
         if (_inventory == null) return;
         _inventory.OnSelectionChanged -= HandleSelection;
         _inventory.Equipment.OnRefresh -= Redraw;
@@ -62,8 +69,13 @@ public class ResonancePanel : MonoBehaviour
     private bool _dirty;
     private void MarkDirty() => _dirty = true;
 
+    // Whether a fight is on decides whether Bank is live, and nothing announces the bell.
+    private bool _wasInCombat;
+
     private void LateUpdate()
     {
+        bool inCombat = _hero != null && _hero.Resonance != null && _hero.Resonance.InCombat;
+        if (inCombat != _wasInCombat) { _wasInCombat = inCombat; _dirty = true; }
         if (!_dirty) return;
         _dirty = false;
         Redraw();
@@ -103,18 +115,31 @@ public class ResonancePanel : MonoBehaviour
         // damage, so the player can't tell how close they are or what to do to get there.
         string unit = ResonanceRequirements.Describe(entry.requirement);
 
-        // An item in the bag shows what it carries and what its quest asks — deciding whether to equip
-        // it is exactly when the player needs both — with its progress paused where it was left.
+        // An item in the bag shows what it carries and what its quest asks — deciding whether to
+        // equip it is exactly when the player needs both — with its progress paused where it was left.
         bool worn = _inventory.Equipment.Items.Contains(_selected);
         float progress = _hero.Resonance.AttunementFor(_selected);
         bool complete = entry.IsComplete(progress);
+        bool canBank = _hero.Resonance.CanBank(_selected);
 
-        string quest = !worn ? $"Quest: {progress:0} / {entry.questGoal} {unit} while worn (paused) — then engraved for good at {Rarity.Letter(rarity)}."
-                     : complete ? "<b>Quest complete</b> — engraved for good when this fight ends; the item is spent."
-                     : $"Quest: {progress:0} / {entry.questGoal} {unit} — then engraved for good at {Rarity.Letter(rarity)}.";
+        string quest = !worn ? $"Quest: {progress:0} / {entry.questGoal} {unit} while worn (paused)."
+                     : complete ? $"<b>Quest complete.</b> Bank it to keep this for good at {Rarity.Letter(rarity)}{(_selected.IsWeapon ? ", as a skill to pick between" : "")}; the item is spent."
+                     : $"Quest: {progress:0} / {entry.questGoal} {unit}, then it can be banked.";
 
         _detail.text = Keywords.Decorate(effect + "\n" + quest);
         _barFill.anchorMax = new Vector2(Mathf.Clamp01(progress / Mathf.Max(1f, entry.questGoal)), 1f);
+
+        // Shown once the quest is done; greyed while a fight is on, since banking waits for the break.
+        _bank.gameObject.SetActive(worn && complete);
+        _bank.interactable = canBank;
+        _bankFace.color = canBank ? ButtonReady : ButtonBlocked;
+        _bankLabel.text = canBank ? "Bank at " + Rarity.Letter(rarity) : "Bank after the fight";
+    }
+
+    private void BankSelected()
+    {
+        if (_hero == null || _hero.Resonance == null || _selected == null) return;
+        if (_hero.Resonance.Bank(_selected)) Redraw();
     }
 
     private void UpdateBanked()
@@ -124,13 +149,13 @@ public class ResonancePanel : MonoBehaviour
         var banked = _hero.Resonance.banked;
         if (banked == null || banked.Count == 0)
         {
-            _bankedLabel.text = "Engraved: —";
+            _bankedLabel.text = "Banked: —";
             return;
         }
 
         // Each mark with what it actually does — a list of names alone doesn't tell the player what
         // their hero has become, which is the whole point of banking them.
-        var text = new StringBuilder("<b>Engraved</b>");
+        var text = new StringBuilder("<b>Banked</b>");
         foreach (var mark in banked)
         {
             if (mark == null || mark.engraving == null) continue;
@@ -178,6 +203,19 @@ public class ResonancePanel : MonoBehaviour
         var fillImage = fill.AddComponent<Image>();
         fillImage.color = Gold;
         fillImage.raycastTarget = false;
+
+        // The bank button, under the bar: the one decision this panel asks for.
+        var bank = NewRect("Bank", _block.transform, new Vector2(0.5f, 1f), new Vector2(200f, 30f), new Vector2(0f, -134f));
+        _bankFace = bank.AddComponent<Image>();
+        _bankFace.color = ButtonReady;
+        _bank = bank.AddComponent<Button>();
+        _bank.targetGraphic = _bankFace;
+        _bank.onClick.AddListener(BankSelected);
+        _bankLabel = NewText("Label", bank.transform, 16f, Color.white, TextAlignmentOptions.Center);
+        var labelRect = _bankLabel.rectTransform;
+        labelRect.anchorMin = Vector2.zero; labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = Vector2.zero; labelRect.offsetMax = Vector2.zero;
+        bank.SetActive(false);
     }
 
     private void BuildBankedLabel()

@@ -6,15 +6,16 @@ using UnityEngine;
 /// A hero's resonance: each worn item's quest progress, and the engravings the hero has kept for
 /// good (Docs/ShopLoop.md).
 ///
-/// The loop is <c>buy an item at a rarity → wear it → its quest fills while it fights → when the
-/// fight that completes it ends, its effect is engraved on the hero at the item's rarity and the item
-/// is hollowed</c> — still worn, still a weapon of its class, but giving nothing further, so the slot
-/// is the player's to fill. Progress is per (hero, item copy) and <b>pauses</b> when an item comes
-/// off rather than resetting.
+/// The loop is <c>buy an item at a rarity → wear it → its quest fills while it fights → once it is
+/// complete, the player may bank it between fights: its effect is kept on the hero at the item's
+/// rarity and the item is hollowed</c> — still worn, still of its class, but giving nothing further,
+/// so the slot is the player's to fill. Progress is per (hero, item copy) and <b>pauses</b> when an
+/// item comes off rather than resetting.
 ///
-/// It used to be three tiers climbed by wearing, with a cash-out the player timed; the tiers are the
-/// item's rarity now, decided in the shop, and engraving is automatic. A worn effect and an engraved
-/// one still go through the same path, so a worn B and an engraved B behave identically.
+/// Banking is the player's decision, never automatic: it spends the item. Any item with an effect
+/// banks; a weapon's effect is its verb, so a banked weapon puts one more verb in the hero's slots to
+/// choose between. A weapon's verb otherwise goes with the weapon. A worn effect and a banked one go
+/// through the same path, so a worn B and a banked B behave identically.
 ///
 /// This component also owns each hero's private copies of the engravings affecting them — see
 /// <see cref="InstanceFor"/> — which is what lets an engraving be written with ordinary fields.
@@ -111,12 +112,15 @@ public class Resonance : MonoBehaviour
 
     /// <summary>
     /// Acknowledge an item's news. Called when the player selects it, which is the moment they have
-    /// actually seen what it had to say.
+    /// actually seen what it had to say. An item ready to bank keeps its mark until it is banked:
+    /// that is a decision still waiting, not news.
     /// </summary>
     public void MarkSeen(Item item)
     {
         if (item == null) return;
-        if (_notices.Remove(Descriptor(item))) OnNoticesChanged?.Invoke();
+        string key = Descriptor(item);
+        if (_notices.TryGetValue(key, out var notice) && notice == ResonanceNotice.Bankable) return;
+        if (_notices.Remove(key)) OnNoticesChanged?.Invoke();
     }
 
     /// <summary>
@@ -184,10 +188,22 @@ public class Resonance : MonoBehaviour
     public event System.Action OnAttunementChanged;
 
     /// <summary>
-    /// Credit <paramref name="amount"/> toward every worn item whose requirement is
+    /// Whether this item has a quest: it carries an effect and is not yet spent.
+    /// </summary>
+    public bool HasQuest(Item item) => QuestOf(item) != null;
+
+    /// <summary>The item's entry when it has a quest (<see cref="HasQuest"/>), else null.</summary>
+    public ResonanceDatabase.Entry QuestOf(Item item)
+    {
+        var entry = EntryFor(item);
+        return entry != null && entry.engraving != null ? entry : null;
+    }
+
+    /// <summary>
+    /// Credit <paramref name="amount"/> toward every worn item whose quest counts
     /// <paramref name="requirement"/>. Items counting something else are untouched, so a hero wearing
-    /// a kill-counting blade and a block-counting shield advances each on its own terms during the
-    /// same fight.
+    /// a kill-counting blade and a block-counting shield advances each on its own terms. A quest that
+    /// completes here raises <see cref="ResonanceNotice.Bankable"/>, so the player sees it is ready.
     /// </summary>
     public void Accrue(ResonanceRequirement requirement, float amount)
     {
@@ -195,9 +211,9 @@ public class Resonance : MonoBehaviour
 
         bool changed = false;
 
-        foreach (var item in EquippedResonantItems())
+        foreach (var item in WornItems())
         {
-            var entry = EntryFor(item);
+            var entry = QuestOf(item);
             if (entry == null || entry.requirement != requirement) continue;
 
             // Two worn copies of one item share a key, so credit it once rather than twice.
@@ -207,68 +223,58 @@ public class Resonance : MonoBehaviour
             _attunement.TryGetValue(key, out float current);
             _attunement[key] = current + amount;
             changed = true;
+
+            if (!entry.IsComplete(current) && entry.IsComplete(current + amount))
+                Raise(key, ResonanceNotice.Bankable);
         }
         _credited.Clear();
 
-        // Progress changes nothing about what the item does — its rarity decides that — so there is
-        // nothing to reconcile here. A completed quest is engraved when the fight ends
-        // (EngraveCompletedQuests): engraving hollows the item, and taking a hero's armour off in
-        // the middle of the fight that earned it would punish the moment of the reward.
+        // Progress changes nothing about what the item does — its rarity decides that — so there
+        // is nothing to reconcile here.
         if (changed) OnAttunementChanged?.Invoke();
     }
 
-    /// <summary>
-    /// The end of a fight: credit it to items counting combats, then engrave every quest that is
-    /// complete. Called once a fight is over.
-    /// </summary>
-    public void AccrueAfterCombat()
-    {
-        Accrue(ResonanceRequirement.CombatsWorn, 1f);
-        EngraveCompletedQuests();
-    }
+    /// <summary>The end of a fight: credit it to quests counting combats.</summary>
+    public void AccrueAfterCombat() => Accrue(ResonanceRequirement.CombatsWorn, 1f);
 
     /// <summary>
-    /// Engrave every equipped item whose quest is complete: its effect is kept on the hero at the
-    /// item's rarity, and the item is hollowed. Heroes only — engraving goes through the inventory
-    /// window, and an enemy has none. A weapon on the rack rather than in hand waits until it is
-    /// equipped, since only an equipped item can be hollowed. Returns how many were engraved.
+    /// Whether the player can bank this item now: its quest is complete, it is worn, and no fight is
+    /// on. Heroes only — banking hollows the item through the inventory window, and an enemy has
+    /// none. Between fights only, because hollowing a weapon mid-swing or armour mid-hit would take
+    /// it away in the fight that earned it.
     /// </summary>
-    public int EngraveCompletedQuests()
+    public bool CanBank(Item item)
     {
+        var entry = QuestOf(item);
+        if (entry == null || _inCombat || !entry.IsComplete(AttunementFor(item))) return false;
         var inventory = _entity != null ? _entity.characterInventory : null;
-        if (inventory == null || inventory.Equipment == null) return 0;
-
-        // Collected first: hollowing changes what is worn.
-        var done = new List<Item>();
-        foreach (var item in EquippedResonantItems())
-        {
-            var entry = EntryFor(item);
-            if (entry == null || entry.engraving == null || !entry.IsComplete(AttunementFor(item))) continue;
-            if (inventory.Equipment.Items.Contains(item) && !done.Contains(item)) done.Add(item);
-        }
-
-        foreach (var item in done) Engrave(item, inventory);
-        return done.Count;
+        return inventory != null && inventory.Equipment != null && inventory.Equipment.Items.Contains(item);
     }
 
-    private void Engrave(Item item, CharacterInventory inventory)
+    /// <summary>
+    /// Bank an item whose quest is complete: its effect is kept on the hero for good at the item's
+    /// rarity — a weapon's, its verb — and the item is hollowed. The player's decision, never
+    /// automatic: keeping a complete item worn keeps its stats, and banking spends them. Returns
+    /// whether it banked.
+    /// </summary>
+    public bool Bank(Item item)
     {
-        var entry = EntryFor(item);
+        if (!CanBank(item)) return false;
+
+        var entry = QuestOf(item);
         int tier = Rarity.Of(item);
         banked.Add(new Banked { engraving = entry.engraving, tier = tier });
 
         // Read the key BEFORE hollowing: hollowing changes the item's modifier, and so its
         // descriptor, and the progress being cleared is filed under the old one.
         string spentKey = Descriptor(item);
-        inventory.HollowItem(item);
+        _entity.characterInventory.HollowItem(item);
         _attunement.Remove(spentKey);
-        _notices.Remove(spentKey);
-
-        // The news goes on the hollow item still in the slot, which is what the player will click.
-        Raise(Descriptor(item), ResonanceNotice.Engraved);
+        if (_notices.Remove(spentKey)) OnNoticesChanged?.Invoke();
         OnAttunementChanged?.Invoke();
 
-        Debug.Log($"[Resonance] {_entity.name} engraved {entry.engraving.DisplayName} at {Rarity.Letter(tier)}.");
+        Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at {Rarity.Letter(tier)}.");
+        return true;
     }
 
     /// <summary>One engraving grant: which asset, at what tier.</summary>
@@ -423,6 +429,9 @@ public class Resonance : MonoBehaviour
     }
 
     private bool _inCombat;
+
+    /// <summary>Whether a fight is on for this hero — banking waits for it to end.</summary>
+    public bool InCombat => _inCombat;
     private bool _listening;
 
     // ---- the bus, routed to what this hero holds. One subscription per hero per fight; the
@@ -695,20 +704,15 @@ public class Resonance : MonoBehaviour
     /// </summary>
     public void SetWorn(List<Item> items) => _wornOverride = items;
 
-    /// <summary>
-    /// What the unit wears: its inventory's items, else the list handed to it, else nothing — and
-    /// the weapons on its rack either way, since a racked weapon teaches its verb like the one in hand.
-    /// </summary>
+    /// <summary>What the unit wears: its inventory's items, else the list handed to it, else nothing.</summary>
     private IEnumerable<Item> WornItems()
     {
         var inventory = _entity != null ? _entity.characterInventory : null;
-        IEnumerable<Item> worn = inventory != null && inventory.Equipment != null ? inventory.Equipment.Items
-                               : _wornOverride ?? (IEnumerable<Item>)System.Array.Empty<Item>();
-        var rack = _entity != null ? _entity.carriedWeapons : null;
-        return rack != null && rack.Count > 0 ? System.Linq.Enumerable.Concat(worn, rack) : worn;
+        return inventory != null && inventory.Equipment != null ? inventory.Equipment.Items
+             : _wornOverride ?? (IEnumerable<Item>)System.Array.Empty<Item>();
     }
 
-    /// <summary>The worn or racked weapon that teaches this verb, or null (a banked verb, or not a verb).</summary>
+    /// <summary>The worn weapon that teaches this verb, or null (a banked verb, or not a verb).</summary>
     public Item WeaponTeaching(Spell spell)
     {
         if (spell == null) return null;
