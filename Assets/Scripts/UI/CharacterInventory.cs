@@ -50,6 +50,9 @@ public class CharacterInventory : ItemWorkspace
     private TMP_Text _prefabStatKeys;
     private TMP_Text _prefabStatValues;
 
+    // What the Hero panel shows instead of those labels: icon and number, as TFT or League do.
+    private StatGrid _statGrid;
+
     // Created at runtime under the equipment panel — shows the active spell's name (B).
     private TextMeshProUGUI activeSpellLabel;
 
@@ -57,7 +60,11 @@ public class CharacterInventory : ItemWorkspace
     /// The window is built once and then shown and hidden, so opening it is not a Refresh: with
     /// nothing selected, nothing ran and the item panel opened blank.
     /// </summary>
-    private void OnEnable() => UpdateEmptyItemHint();
+    private void OnEnable()
+    {
+        UpdateEmptyItemHint();
+        if (_statGrid != null && CharacterEntity != null) _statGrid.Show(CharacterEntity);
+    }
 
     public void Awake()
     {
@@ -106,6 +113,18 @@ public class CharacterInventory : ItemWorkspace
             var values = statsPanel.Find("Values");
             if (keys != null) _prefabStatKeys = keys.GetComponent<TMP_Text>();
             if (values != null) _prefabStatValues = values.GetComponent<TMP_Text>();
+
+            // The grid takes the labels' place; they stay in the prefab, switched off.
+            if (keys != null) keys.gameObject.SetActive(false);
+            if (values != null) values.gameObject.SetActive(false);
+            _statGrid = StatGrid.Build(statsPanel,
+                new[] { StatKind.Health, StatKind.Mana, StatKind.Damage, StatKind.AttackSpeed, StatKind.Armor,
+                        StatKind.MagicResist, StatKind.MoveSpeed, StatKind.Range, StatKind.KnockbackResist },
+                2, new Vector2(180f, 36f), 32f, 24f);
+            var gridRect = (RectTransform)_statGrid.transform;
+            gridRect.anchorMin = gridRect.anchorMax = new Vector2(0.5f, 1f);
+            gridRect.pivot = new Vector2(0f, 1f);
+            gridRect.anchoredPosition = new Vector2(-180f, -54f);
         }
 
         CreateActiveSpellLabel();
@@ -300,6 +319,9 @@ public class CharacterInventory : ItemWorkspace
     {
         if (CharacterEntity == null) return;
         UpdateActiveSpellLabel();
+
+        // Mana is the active verb's cost, so picking a verb changes a number in the grid.
+        if (_statGrid != null) _statGrid.Show(CharacterEntity);
     }
 
     /// <summary>The active verb and the weapon it comes from, or that it is banked.</summary>
@@ -535,6 +557,7 @@ public class CharacterInventory : ItemWorkspace
         // The window's own labels, which are legacy UI.Text and were showing hardcoded placeholders.
         if (_prefabStatKeys != null) _prefabStatKeys.text = keys.ToString();
         if (_prefabStatValues != null) _prefabStatValues.text = vals.ToString();
+        if (_statGrid != null) _statGrid.Show(CharacterEntity);
     }
 
     public void Craft()

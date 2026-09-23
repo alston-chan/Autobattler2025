@@ -63,8 +63,6 @@ public class UnitInspector : MonoBehaviour
     /// <summary>A card shorter than this reads as a tooltip that failed rather than a small unit.</summary>
     private const float MinCardHeight = 220f;
 
-    /// <summary>Five stat lines at the stat block's font.</summary>
-    private const float StatsHeight = 110f;
     private static readonly Color Ally = new Color(1f, 0.82f, 0.28f, 1f);
     private static readonly Color Enemy = new Color(0.95f, 0.42f, 0.36f, 1f);
     private static readonly Color Muted = new Color(0.72f, 0.72f, 0.75f, 1f);
@@ -105,8 +103,7 @@ public class UnitInspector : MonoBehaviour
     private readonly TextMeshProUGUI[] _slotLabels = new TextMeshProUGUI[Entity.MaxSpellSlots];
     private readonly Button[] _slotButtons = new Button[Entity.MaxSpellSlots];
     private RectTransform _manaFill;
-    private TextMeshProUGUI _statKeys;
-    private TextMeshProUGUI _statValues;
+    private StatGrid _statGrid;
     private TextMeshProUGUI _kit;
 
     // The card is re-stacked for every unit it describes, so these are kept rather than positioned
@@ -478,10 +475,7 @@ public class UnitInspector : MonoBehaviour
         Stack(_tactics.rectTransform, Measure(_tactics, inner, 20f), 6f);
         if (_slotRow.activeSelf) Stack((RectTransform)_slotRow.transform, 22f, 10f);
 
-        float statsTop = _cursor;
-        Stack(_statKeys.rectTransform, StatsHeight, 0f);
-        _cursor = statsTop;
-        Stack(_statValues.rectTransform, StatsHeight, 10f);
+        StackGrid(_statGrid, 12f);
 
         Stack(_kit.rectTransform, Measure(_kit, inner, 0f), 0f);
 
@@ -547,42 +541,7 @@ public class UnitInspector : MonoBehaviour
         Repaint();
     }
 
-    private void PaintStats()
-    {
-        var stats = _selected.Stats;
-        if (stats == null)
-        {
-            _statKeys.text = _statValues.text = "";
-            return;
-        }
-
-        // Max Health is deliberately absent — the bar above already carries it, in more detail.
-        var keys = new StringBuilder();
-        var values = new StringBuilder();
-
-        Line(keys, values, "Damage", stats.Damage.Value.ToString("0.##"));
-        Line(keys, values, "Attacks / sec", stats.AttacksPerSecond.ToString("0.##"));
-        Line(keys, values, "Move Speed", stats.Speed.Value.ToString("0.##"));
-        // The rating, and what it means: "Armour 18" tells a player nothing, "15% less" tells them
-        // why the knight is still standing. Magic resist only when something grants it.
-        Line(keys, values, "Armour", stats.Armor.Value.ToString("0") + "  (" + (Mitigation.Fraction(stats.Armor.Value) * 100f).ToString("0") + "% less physical)");
-        if (stats.MagicResist.Value > 0f)
-            Line(keys, values, "Magic resist", stats.MagicResist.Value.ToString("0") + "  (" + (Mitigation.Fraction(stats.MagicResist.Value) * 100f).ToString("0") + "% less magical)");
-
-        // Only when something grants it: a line that reads 0% on every unit is noise, and the whole
-        // point of the item line is that it is rare.
-        float resist = stats.KnockbackResistance != null ? stats.KnockbackResistance.Value : 0f;
-        if (resist > 0f) Line(keys, values, "Knockback resist", (resist * 100f).ToString("0") + "%");
-
-        _statKeys.text = keys.ToString();
-        _statValues.text = values.ToString();
-    }
-
-    private static void Line(StringBuilder keys, StringBuilder values, string key, string value)
-    {
-        keys.AppendLine(key);
-        values.AppendLine(value);
-    }
+    private void PaintStats() => _statGrid.Show(_selected);
 
     /// <summary>
     /// What this unit is carrying into the fight: the abilities it can cast and the engravings
@@ -764,16 +723,13 @@ public class UnitInspector : MonoBehaviour
         Stack(_tactics.rectTransform, 36f, 6f);
         _slotRow = BuildSlotRow();
 
-        // Keys and values are two full-width blocks sharing one row, left- and right-aligned, so the
-        // numbers line up on the right edge without a layout group.
-        float statsTop = _cursor;
-        _statKeys = NewText("StatKeys", _card.transform, 16f, Muted, TextAlignmentOptions.TopLeft);
-        Stack(_statKeys.rectTransform, StatsHeight, 0f);
-
-        _cursor = statsTop;
-        _statValues = NewText("StatValues", _card.transform, 16f, Color.white,
-                              TextAlignmentOptions.TopRight);
-        Stack(_statValues.rectTransform, StatsHeight, 10f);
+        // Icon and number, two to a row, as TFT's unit card has them; the name and meaning on hover.
+        // Health and mana are the bars above, so they are not repeated here.
+        _statGrid = StatGrid.Build(_card.transform,
+            new[] { StatKind.Damage, StatKind.AttackSpeed, StatKind.Armor, StatKind.MagicResist,
+                    StatKind.MoveSpeed, StatKind.Range, StatKind.KnockbackResist },
+            2, new Vector2((cardSize.x - 28f) / 2f, 30f), 24f, 18f);
+        StackGrid(_statGrid, 12f);
 
         _kit = NewText("Kit", _card.transform, 15f, Color.white, TextAlignmentOptions.TopLeft);
         _kit.enableWordWrapping = true;
@@ -785,6 +741,16 @@ public class UnitInspector : MonoBehaviour
     /// here are centre-pivoted, so the half-height offset is what actually puts the top where the
     /// cursor says — without it every block creeps upward into the one above.
     /// </summary>
+    /// <summary>Stack the stat grid, whose rect is placed by its top-left corner.</summary>
+    private void StackGrid(StatGrid grid, float gap)
+    {
+        var rect = (RectTransform)grid.transform;
+        rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 1f);
+        rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = new Vector2(-(cardSize.x - 28f) / 2f, _cursor);
+        _cursor -= grid.Height + gap;
+    }
+
     private void Stack(RectTransform rect, float height, float gap)
     {
         Anchor(rect, new Vector2(0.5f, 1f), new Vector2(cardSize.x - 28f, height),

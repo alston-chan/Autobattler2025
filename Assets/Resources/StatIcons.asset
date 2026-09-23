@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7c3e91d2b84f60a1e9c4d7b3f2a810, type: 3}
+  m_Name: StatIcons
+  m_EditorClassIdentifier: 
+  health: {fileID: 21300000, guid: 5b95d8859c15b594cbd5a606bc13fd6e, type: 3}
+  mana: {fileID: 21300000, guid: 62ad0c5e1af91b6479533f3f072b182b, type: 3}
+  manaTint: {r: 0.4, g: 0.62, b: 1, a: 1}
+  damage: {fileID: 21300000, guid: 751ca05076224dd58e47369a4ef7150b, type: 3}
+  attackSpeed: {fileID: 21300000, guid: 5b0ea44b843a488dad702e7ad9ae0ffe, type: 3}
+  armor: {fileID: 21300000, guid: 4082d5629b0349a0acd7ef04001d84ab, type: 3}
+  magicResist: {fileID: 21300000, guid: 00a9adb0a62d8df43831bca2b1e6307a, type: 3}
+  moveSpeed: {fileID: 21300000, guid: b67df06b557326d41a54558f7f33ac65, type: 3}
+  range: {fileID: 21300000, guid: 14c4f70fd65d5e746a58329b5c969b5d, type: 3}
+  knockbackResist: {fileID: 21300000, guid: 4e44568a046156a4d8347e377ab87e95, type: 3}
+  tile: {fileID: 21300000, guid: cc8dd888598786f4cb8f80736794bef4, type: 3}
+  tileColor: {r: 0, g: 0, b: 0, a: 0.45}
