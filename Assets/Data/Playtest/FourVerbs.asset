@@ -34,7 +34,7 @@ MonoBehaviour:
     - FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint]
     - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
     activeSlot: 0
-  heroHealthScale: 0.35
+  heroHealthScale: 0.7
   encounter: {fileID: 11400000, guid: ae63ea282664f074cb27e99ef1d668af, type: 2}
   loadout: {fileID: 0}
   enemyKits:
@@ -46,6 +46,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 66e353e617e67814dadaffc33413a39c, type: 2}
   - {fileID: 11400000, guid: a94768e7790962e47aedcf3e80f0f84a, type: 2}
   randomEnemyKits: 1
-  notes: 'The four space verbs, one per hero, against four gladiators drawn from
+  notes: 'The four space verbs, one per hero, against three gladiators drawn from
     the enemy kits: Arrow Rain on the bow, Whirl on the hammer, Tar Pool on the wand,
-    Ricochet on the dagger.'
+    Ricochet on the dagger. Three at 0.7 hero health won 15 of 16 fights (2026-09-23);
+    four won 9 of 12 even at full health, so a run rarely reached the shop.'
