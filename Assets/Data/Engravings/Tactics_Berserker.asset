@@ -13,10 +13,5 @@ MonoBehaviour:
   m_Name: Tactics_Berserker
   m_EditorClassIdentifier: 
   engravingName: Berserker's Grip
-  description: The wearer never lets go of its target and goes for the weakest enemy
-    on the field.
-  stance: 0
-  setsTarget: 1
+  description: The wearer goes for the weakest enemy on the field.
   targetMode: 1
-  setsCommitment: 1
-  commitment: 2

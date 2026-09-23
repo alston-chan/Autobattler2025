@@ -55,7 +55,7 @@ public class EnemyLoadout : ScriptableObject
         return kinds[kinds.Count - 1].kind;
     }
 
-    /// <summary>Whether a kind fights from range: a bow or a wand. Where it musters and whether it kites.</summary>
+    /// <summary>Whether a kind fights from range: a bow or a wand. Where it musters.</summary>
     public static bool IsRangedKind(EnemyKind kind) => kind == EnemyKind.Bow || kind == EnemyKind.Wand;
 
     /// <summary>The weapon classes a kind draws its weapon from.</summary>

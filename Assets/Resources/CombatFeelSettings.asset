@@ -65,8 +65,6 @@ MonoBehaviour:
     bodyRadius: 0.55
     allyPush: 0.35
     damping: 4
-    softWall: 1.2
-    softWallPush: 1.5
     restSpeed: 0.6
     steerSpeed: 2
     impactSpeed: 3
@@ -79,12 +77,6 @@ MonoBehaviour:
     impactStun: 0.25
     impactHitstop: 0.1
     impactCooldown: 0.15
-    kiteOnlyWhenTargeted: 1
-    kiteFraction: 0.6
-    kiteHysteresis: 1.5
-    kiteHomeBias: 0
-    kiteSpeed: 0.85
-    kiteWallMargin: 1
   impactFx:
     bodyHit: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
     wallSlam: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}

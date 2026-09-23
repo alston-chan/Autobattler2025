@@ -40,28 +40,15 @@ public class BattleGrid : MonoBehaviour
     /// World position of a cell centre. Columns run away from the centre line on each side, so
     /// column 0 is always the rank closest to the enemy.
     ///
-    /// The centre, exactly, and nothing else. It used to be squeezed into the arena's soft-wall
-    /// band and pulled off the walls, so a unit stood beside its tile rather than on it, and the
-    /// tiles themselves overlapped. The wall now keeps out of the grid instead
-    /// (<see cref="CombatPhysics.WallBand"/>), which is the same promise — nobody opens the fight
-    /// being shoved — kept by the side that can afford to give.
+    /// The centre, exactly, and nothing else. It used to be squeezed off the arena's walls, away
+    /// from a soft wall that has since been removed, so a unit stood beside its tile rather than on
+    /// it and the tiles overlapped.
     /// </summary>
     public Vector3 CellToWorld(bool allySide, int column, int row)
     {
         Vector2 origin = allySide ? allyFrontBottom : enemyFrontBottom;
         float dir = allySide ? -1f : 1f;   // allies stack backwards to the left, enemies to the right
         return new Vector3(origin.x + dir * column * cellSize.x, origin.y + row * cellSize.y, 0f);
-    }
-
-    /// <summary>The least room any cell has to the arena's edge: how deep the soft wall may reach.</summary>
-    public float Clearance(ArenaBounds arena)
-    {
-        float least = float.MaxValue;
-        for (int side = 0; side < 2; side++)
-        for (int c = 0; c < columns; c++)
-        for (int r = 0; r < rows; r++)
-            least = Mathf.Min(least, arena.EdgeRoom(CellToWorld(side == 0, c, r)));
-        return least;
     }
 
     /// <summary>

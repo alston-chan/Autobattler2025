@@ -96,36 +96,6 @@ public class ArenaBounds : MonoBehaviour
     public static Vector3 ClampToArena(Vector3 p) => Instance != null ? Instance.Clamp(p) : p;
 
     /// <summary>
-    /// How far a point is from the edge, in world units: zero on or outside it. For the ellipse an
-    /// approximation along the radius, which is what a unit deciding whether it has room wants.
-    /// </summary>
-    public float EdgeRoom(Vector3 p)
-    {
-        if (shape == ArenaShape.Rectangle)
-            return Mathf.Max(0f, Mathf.Min(Mathf.Min(p.x - MinX, MaxX - p.x), Mathf.Min(p.y - MinY, MaxY - p.y)));
-
-        float rx = size.x * 0.5f, ry = size.y * 0.5f;
-        if (rx <= 0.0001f || ry <= 0.0001f) return 0f;
-        float dx = (p.x - center.x) / rx, dy = (p.y - center.y) / ry;
-        float d = Mathf.Sqrt(dx * dx + dy * dy);
-        if (d >= 1f) return 0f;
-        if (d < 0.0001f) return Mathf.Min(rx, ry);   // at the centre: the short radius is the honest answer
-
-        // Distance from p to the edge along the ray from the centre through p. The ellipse's radius
-        // in that direction, in world units, is |p - centre| / d, so the room is that radius times
-        // (1 - d). It used to be (1 - d) * min(rx, ry), which on a 17 x 4 arena told a unit sitting
-        // 2.6 units from the side wall that it had 0.6 — the soft wall then herded both formations
-        // into the middle at the bell, and the enemy front rank opened the fight standing inside
-        // the company's. The short radius was right on the short axis and four times too small
-        // everywhere else.
-        float worldRadius = Mathf.Sqrt((p.x - center.x) * (p.x - center.x) + (p.y - center.y) * (p.y - center.y)) / d;
-        return worldRadius * (1f - d);
-    }
-
-    /// <summary>Room to the edge from a point, against the active bounds; unbounded when there are none.</summary>
-    public static float RoomToEdge(Vector3 p) => Instance != null ? Instance.EdgeRoom(p) : float.MaxValue;
-
-    /// <summary>
     /// Set the global bounds, creating the instance if none exists yet. Lets a per-map driver (e.g.
     /// <see cref="BackgroundCycler"/>) push a map's play area without caring about script order.
     /// </summary>

@@ -156,7 +156,7 @@ public class EncounterSpawner : MonoBehaviour
     /// unit's Damage stat, and CombatAI takes its attack range from the same spell, so a unit armed
     /// afterwards would wake up doing zero damage from the wrong distance.
     /// </summary>
-    /// <summary>The kind a kit's weapon makes its wearer: what musters it and what it kites with.</summary>
+    /// <summary>The kind a kit's weapon makes its wearer: where it musters.</summary>
     private static EnemyKind KindOfKit(EnemyKit kit)
     {
         if (kit == null || kit.itemIds == null || ItemCollection.Active == null) return EnemyKind.Melee;

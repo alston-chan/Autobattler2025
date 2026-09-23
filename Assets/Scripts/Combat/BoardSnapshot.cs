@@ -119,15 +119,17 @@ public static class BoardSnapshot
 
     /// <summary>
     /// Whom a unit on this board will engage at the bell, by the same rule targeting uses: the
-    /// unit's own target rule (a diver goes for the farthest, whatever its rule says), scored as
-    /// <see cref="Targeting.ScoreFor"/> scores it, with the lane bonus the opening pick gets. Until
-    /// 2026-09-18 this was the nearest with a lane bonus for everyone, so the arrow on the setup
-    /// screen disagreed with the fight for any unit whose gear said otherwise.
+    /// unit's own target mode, scored exactly as <see cref="Targeting.ScoreFor"/> scores it, from
+    /// where the units stand. There used to be a same-lane bonus in both, so units charged their
+    /// rows; it went with the rest of the targeting knobs (2026-09-22). Plain distance on this grid
+    /// still picks the unit straight ahead whenever the enemy's front rank is filled — 2.0 across
+    /// against 2.5 on the diagonal — and when it is not, the arrow and the fight agree on the
+    /// diagonal instead.
     /// </summary>
     public static Entity PredictOpening(Board<Entity> board, Entity chooser)
     {
         if (board == null || chooser == null || !board.TryGet(chooser, out var from)) return null;
-        var mode = chooser.EffectiveStance == Stance.Dive ? TargetMode.Furthest : chooser.EffectiveTarget;
+        var mode = chooser.EffectiveTarget;
 
         Entity best = null;
         float bestScore = float.MaxValue;
@@ -135,9 +137,8 @@ public static class BoardSnapshot
         {
             if (candidate == null || candidate == chooser || !board.TryGet(candidate, out var to) || to.allySide == from.allySide) continue;
             // Nobody is coming for anyone before the bell, so an Attacker reads as plain distance —
-            // exactly what Targeting.Choose does with its attacker flag at the opening pick.
-            bool bonus = mode != TargetMode.Attacker && to.row == from.row;
-            float score = Targeting.ScoreFor(mode, WorldDistance(from, to), Targeting.HealthFraction(candidate), bonus);
+            // exactly what Targeting does at the opening pick.
+            float score = Targeting.ScoreFor(mode, WorldDistance(from, to), Targeting.HealthFraction(candidate));
             if (score < bestScore) { bestScore = score; best = candidate; }
         }
         return best;

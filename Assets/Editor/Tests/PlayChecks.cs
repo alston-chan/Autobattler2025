@@ -26,7 +26,7 @@ public static class PlayChecks
     {
         // First, because it is the only check that needs an actual bell rather than a fight in
         // progress: the others tolerate joining one, and this one is about where units START.
-        new PlayCheck("nobody opens the fight shoved, or out of rank", NobodyStartsInsideTheSoftWall),
+        new PlayCheck("everyone opens on their cell, in rank", EveryoneOpensOnTheirCell),
         new PlayCheck("a whirl cuts the enemy beside it", AWhirlCutsTheEnemyBesideIt),
         new PlayCheck("hold the line covers whoever is close", HoldTheLineCoversWhoeverIsClose),
         new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
@@ -223,9 +223,8 @@ public static class PlayChecks
                 q.Enqueue(p); if (q.Count > 12) q.Dequeue();
                 bool moved = q.Count < 12 || (q.Peek() - p).sqrMagnitude > 0.01f;
 
-                // Only a unit that has every reason to act: walking stances, free to move, not held
-                // by a taunt, a stun, a throw or a root, and not mid-swing.
-                if (unit.EffectiveStance != Stance.Advance && unit.EffectiveStance != Stance.Dive) continue;
+                // Only a unit that has every reason to act: free to move, not held by a taunt, a
+                // stun, a throw or a root, and not mid-swing.
                 if (unit.Knockback == null || !unit.Knockback.Steerable || unit.Knockback.IsStunned) continue;
                 if (unit.Statuses != null && (unit.Statuses.Rooted || unit.Statuses.TauntedBy != null)) continue;
                 if (ai.IsAttacking) continue;
@@ -328,21 +327,15 @@ public static class PlayChecks
     }
 
     /// <summary>
-    /// Where units stand when the bell rings, against the soft wall that pushes them in.
-    ///
-    /// The soft wall moves a body by writing its position (CombatPhysics), and the walk animation is
-    /// driven by what the AI <i>decided</i> to do. A unit that has decided to stand still while the
-    /// wall slides it is therefore an idle sprite gliding across the ground — which reads as a
-    /// pathing bug and was reported as one. The fix is for nobody to be inside the band at the bell,
-    /// so this asserts the formation and the arena agree about where the field is.
+    /// Where units stand when the bell rings: on the centres of their cells, ranged behind melee.
     /// </summary>
-    private static IEnumerator NobodyStartsInsideTheSoftWall()
+    private static IEnumerator EveryoneOpensOnTheirCell()
     {
         yield return PlayHarness.Until(() => GameManager.Instance != null, "the game to wake up");
         yield return PlayHarness.PastARunEnd();
 
         // A real bell, not "a fight is happening". Mid-fight a unit near the edge has usually been
-        // kited or thrown there, which is allowed; this check is about where units are SEATED, and
+        // thrown there, which is allowed; this check is about where units are SEATED, and
         // sampling a fight in progress made it fail at random on units that had every right to be
         // in the corner. So watch for the transition itself and sample on the frame it happens.
         // The seats are read inside the state change itself: by the check's next tick a diver may
@@ -369,10 +362,11 @@ public static class PlayChecks
             if (telemetry != null) telemetry.autoAdvance = false;
         }
 
-        // Everyone stands on the centre of a cell. The first fix for the gliding below moved units
-        // off their cells and away from the wall, and a unit standing beside its tile looked wrong
-        // enough to be reported; the wall gives way now instead. Enemies are seated by the spawner
-        // and the company by the formation, and both go through CellToWorld.
+        // Everyone stands on the centre of a cell. Units were once moved off their cells to keep them
+        // clear of a soft wall (since removed), and a unit standing beside its tile looked wrong
+        // enough to be reported. Enemies are seated by the spawner and the company by the
+        // formation, and both go through CellToWorld.
+        Assert.That(seats, Is.Not.Empty, "no living units at the bell");
         if (BattleGrid.Instance != null)
         {
             var grid = BattleGrid.Instance;
@@ -387,36 +381,11 @@ public static class PlayChecks
             }
         }
 
-        var physics = CombatPhysics.Active;
-        float band = CombatPhysics.WallBand;
-        if (physics == null || !physics.enableBodies || band <= 0f || physics.softWallPush <= 0f)
-            yield break;     // the wall is off; there is nothing to be shoved by
-        if (ArenaBounds.Instance == null) yield break;
-
-        // Measured as the speed a unit would be slid, because the speed is what the player sees.
-        // The reported bug ran at about 1.0 units/sec. With the wall kept out of the grid this
-        // reads zero; the bar leaves room for a neighbour's nudge at the bell.
-        Entity worst = null;
-        float fastestDrift = 0f;
-        foreach (var seat in seats)
-        {
-            float room = ArenaBounds.Instance.EdgeRoom(seat.Value);
-            if (room >= band) continue;
-            float drift = (1f - room / band) * physics.softWallPush;
-            if (drift > fastestDrift) { fastestDrift = drift; worst = seat.Key; }
-        }
-
-        Assert.That(seats, Is.Not.Empty, "no living units at the bell");
-        Assert.That(fastestDrift, Is.LessThan(0.25f),
-                    (worst != null ? DisplayNames.Unit(worst) : "someone") + " opens the fight sliding " +
-                    fastestDrift.ToString("0.00") + " units/sec toward the centre with no walk " +
-                    "animation, because the soft wall is pushing a unit that has decided to stand still");
-
         // And the company is in rank: whoever fights at range opens behind whoever fights up close.
         // GridFormation.AutoPlace used to fill the front rank in list order, and in the four-verb
         // playtest that seated both archers a lancer's reach from the enemy with the daggers behind
-        // them. Kiters back off and advancers step up from the first frame, so this can only get
-        // truer after the bell — a failure here is a seating failure, not a timing one.
+        // them. Melee steps up from the first frame, so this can only get truer after the bell — a
+        // failure here is a seating failure, not a timing one.
         if (BattleGrid.Instance != null)
         {
             float centre = BattleGrid.Instance.CentreLine;
@@ -691,11 +660,11 @@ public static class PlayChecks
                 if (ai == null || ai.CurrentTarget == null) continue;
 
                 // The same exclusions as the rule this measures (CombatAI, "take the fight that is
-                // already here"): a kiter is meant to back off, Relentless never lets go, a thrown
-                // body is not walking, a taunted one walks past everyone by design, and a unit
-                // mid-swing at a target that just stepped out of reach is finishing its swing.
-                if (unit.EffectiveStance == Stance.Kite) continue;
-                if (unit.EffectiveCommitment == Commitment.Relentless) continue;
+                // already here"): only a unit that picks the nearest takes it — one whose gear picked
+                // the weakest, the farthest or its attacker goes on by design — a thrown body is not
+                // walking, a taunted one walks past everyone by design, and a unit mid-swing at a
+                // target that just stepped out of reach is finishing its swing.
+                if (unit.EffectiveTarget != TargetMode.Nearest) continue;
                 if (unit.Knockback != null && !unit.Knockback.Steerable) continue;
                 if (unit.Statuses != null && unit.Statuses.TauntedBy != null) continue;
                 if (ai.IsAttacking) continue;
@@ -709,7 +678,7 @@ public static class PlayChecks
                     if (other == unit || other == ai.CurrentTarget || other.isTeam == unit.isTeam) continue;
                     if (Vector3.Distance(unit.transform.position, other.transform.position) > reach * 0.8f) continue;
                     walkingPastSomeone++;
-                    string who = DisplayNames.Unit(unit) + " [" + unit.EffectiveStance + "] -> " +
+                    string who = DisplayNames.Unit(unit) + " -> " +
                                  DisplayNames.Unit(ai.CurrentTarget) + " past " + DisplayNames.Unit(other);
                     offenders[who] = offenders.TryGetValue(who, out int n) ? n + 1 : 1;
                     break;

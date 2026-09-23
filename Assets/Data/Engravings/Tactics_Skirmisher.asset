@@ -13,10 +13,5 @@ MonoBehaviour:
   m_Name: Tactics_Skirmisher
   m_EditorClassIdentifier: 
   engravingName: Skirmisher
-  description: The wearer kites, answers whoever comes for it, and turns on anything
-    in reach the moment its target is not.
-  stance: 3
-  setsTarget: 1
+  description: The wearer answers whoever comes for it.
   targetMode: 3
-  setsCommitment: 1
-  commitment: 0

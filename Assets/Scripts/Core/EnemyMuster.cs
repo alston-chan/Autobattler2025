@@ -3,7 +3,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Where an enemy stands once it is known how it fights. An encounter authors a cell per spawn, but
 /// whether a spawn is an archer is rolled at spawn time, and an archer in the front rank is a bad
-/// fight: it is the first thing the company reaches, it never gets to kite, and the melee behind it
+/// fight: it is the first thing the company reaches, it never gets to shoot from safety, and the melee behind it
 /// stand around. So archers muster at the rear of their lane and brawlers keep the front, the way
 /// the player arranges their own company. Pure, so it can be tested without a scene.
 /// </summary>

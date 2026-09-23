@@ -25,8 +25,6 @@ public class UnitData : ScriptableObject
     public float damageMultiplier = 1f;
 
     [Header("Combat")]
-    [Tooltip("How this unit uses the space: Auto lets ranged units kite and the rest advance.")]
-    public Stance stance = Stance.Auto;
     [Tooltip("Body radius in world units for collisions; 0 uses the physics default.")]
     public float bodyRadius = 0f;
     public float separationDistance = 1.0f;

@@ -104,49 +104,4 @@ public class BoardTests
         Assert.That(board.IsCovered("sniper"), Is.True);
     }
 
-    // ---- the opening
-
-    private static float Manhattan(Placement a, Placement b)
-    {
-        // Two sides face each other: distance grows with column on either side plus the gap between.
-        int across = a.allySide == b.allySide ? Math.Abs(a.column - b.column) : a.column + b.column + 1;
-        return across + Math.Abs(a.row - b.row);
-    }
-
-    [Test]
-    public void ALaneBonusMakesTheUnitEngageItsOwnLane()
-    {
-        var board = new Board<string>();
-        board.Place("hero", true, 0, 1);
-        board.Place("straightAhead", false, 1, 1);   // one column deeper, same lane
-        board.Place("diagonal", false, 0, 0);        // front rank, next lane over — equally far
-
-        // Without a preference the tie could go either way; with one cell of lane bonus it cannot.
-        Assert.That(board.PredictOpening("hero", Manhattan, laneBonus: 1f), Is.EqualTo("straightAhead"));
-    }
-
-    [Test]
-    public void AClearlyCloserEnemyStillWins()
-    {
-        var board = new Board<string>();
-        board.Place("hero", true, 0, 1);
-        board.Place("farInLane", false, 2, 1);       // back rank of my lane
-        board.Place("nextDoor", false, 0, 0);        // front rank, adjacent lane
-
-        // The lane bonus is a preference, not a leash. Here the lane-mate is 3 away and the neighbour
-        // 2; half a cell of bonus does not close that gap, so the neighbour wins.
-        Assert.That(board.PredictOpening("hero", Manhattan, laneBonus: 0.5f), Is.EqualTo("nextDoor"));
-        // A full cell of bonus makes them tie, and a bonus of two makes the lane win outright.
-        Assert.That(board.PredictOpening("hero", Manhattan, laneBonus: 2f), Is.EqualTo("farInLane"));
-    }
-
-    [Test]
-    public void AnEmptyLaneMeansFreeChoice()
-    {
-        var board = new Board<string>();
-        board.Place("hero", true, 0, 2);
-        board.Place("near", false, 0, 1);
-        board.Place("far", false, 2, 0);
-        Assert.That(board.PredictOpening("hero", Manhattan, laneBonus: 1f), Is.EqualTo("near"));
-    }
 }

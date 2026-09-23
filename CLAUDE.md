@@ -226,7 +226,7 @@ Three things cost an afternoon to learn:
   taunted unit walking past a kiter to reach one as "walking past a fight" — 43–47%, failing at
   random, for an afternoon. A check that spawns something must either clean it up or the checks
   after it must expect it; and a metric that stands in for a game rule must carry the rule's
-  exclusions (taunted, Relentless, kiting, thrown). Likewise a check about *where units start* must
+  exclusions (taunted, thrown, a unit whose gear picks someone other than the nearest). Likewise a check about *where units start* must
   watch for the Combat transition itself, not "is a fight happening" — mid-session that samples a
   fight in progress. `PlayChecks` runs that one first for exactly this reason.
 
@@ -360,8 +360,12 @@ Writing them:
   the fight) survived into the next bell and units walked out of a pool nobody had cast. A new
   lingering effect, projectile or summoned body goes on that list in the same commit;
   `TheRoundEndSweepClearsTheGround` covers pools and decoys.
-- **`Stance` is serialized by number; 2 was Hold and stays retired.** A tactics item stores its
-  stance as an int; `NoItemAsksForTheStanceThatWasRemoved` fails on an asset still carrying it.
+- **Targeting is one rule, and movement is walking to the target.** Taunted → the taunter; else keep
+  the current target until it dies; else pick by `TargetMode` (nearest, weakest, farthest, attacker).
+  A unit that picks the nearest also turns on an enemy inside its reach when its own target is out
+  of it. Stances (Advance/Hold/Kite/Dive), commitment, the leash, stickiness, the lane bonus and the
+  soft wall were all removed 2026-09-22 (Dive is `TargetMode.Furthest`); a tactics item sets only
+  `targetMode`. Before adding a movement or targeting rule, ask whether removing one would do.
 - **A cell is where a unit stands, and the soft wall gives way to the grid.** `BattleGrid.CellToWorld`
   is the exact cell centre; `CombatPhysics.WallBand` is the authored `softWall` or the grid's nearest
   cell's room to the edge, whichever is less, so nobody opens a fight being slid. Squeezing the cells

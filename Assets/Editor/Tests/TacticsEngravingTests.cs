@@ -26,22 +26,18 @@ public class TacticsEngravingTests
         return go.AddComponent<Entity>();
     }
 
-    private static TacticsEngraving Item(Stance stance = Stance.Auto, TargetMode? target = null, Commitment? commitment = null)
+    private static TacticsEngraving Item(TargetMode target)
     {
         var e = ScriptableObject.CreateInstance<TacticsEngraving>();
-        e.stance = stance;
-        e.setsTarget = target.HasValue; if (target.HasValue) e.targetMode = target.Value;
-        e.setsCommitment = commitment.HasValue; if (commitment.HasValue) e.commitment = commitment.Value;
+        e.targetMode = target;
         return e;
     }
 
     [Test]
-    public void AUnitFightsAsAuthoredUntilAnItemSaysOtherwise()
+    public void AUnitGoesForTheNearestUntilAnItemSaysOtherwise()
     {
         var unit = Fresh();
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Advance), "Auto on a melee unit is Advance");
         Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.Nearest));
-        Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Balanced));
         Assert.That(unit.TacticsSource, Is.Null);
     }
 
@@ -49,64 +45,47 @@ public class TacticsEngravingTests
     public void AWornTacticsItemHasTheLastWordAndComingOffGivesItBack()
     {
         var unit = Fresh();
-        unit.commitment = Commitment.Opportunistic;   // what a kit authored
-        var helm = Item(Stance.Dive, TargetMode.LowestHealth, Commitment.Relentless);
+        unit.targetMode = TargetMode.Attacker;   // what a kit authored
+        var helm = Item(TargetMode.LowestHealth);
 
         helm.OnGranted(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Dive));
         Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.LowestHealth));
-        Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Relentless));
         Assert.That(unit.TacticsSource, Is.SameAs(helm));
 
         helm.OnRevoked(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Advance));
-        Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.Nearest));
-        Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Opportunistic), "back to what was authored, not to the default");
+        Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.Attacker), "back to what was authored, not to the default");
         Assert.That(unit.TacticsSource, Is.Null);
-    }
-
-    [Test]
-    public void AnItemThatOnlySetsTheStanceLeavesTheRestAlone()
-    {
-        var unit = Fresh();
-        unit.targetMode = TargetMode.Furthest;
-        Item(Stance.Dive).OnGranted(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Dive));
-        Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.Furthest));
-        Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Balanced));
     }
 
     [Test]
     public void TheLastItemWornWinsAndLosingItFallsBackToTheOther()
     {
         var unit = Fresh();
-        var first = Item(Stance.Dive, commitment: Commitment.Relentless);
-        var second = Item(Stance.Kite);
+        var first = Item(TargetMode.Furthest);
+        var second = Item(TargetMode.LowestHealth);
         first.OnGranted(unit, 1);
         second.OnGranted(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Kite));
-        Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Balanced), "the second item says nothing about commitment, so it is the authored one");
-
+        Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.LowestHealth));
         second.OnRevoked(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Dive));
-        Assert.That(unit.EffectiveCommitment, Is.EqualTo(Commitment.Relentless));
+        Assert.That(unit.EffectiveTarget, Is.EqualTo(TargetMode.Furthest));
     }
 
     [Test]
-    public void TheDescriptionSaysWhatChanges()
+    public void TheDescriptionAndTheCardSayWhomItGoesFor()
     {
-        Assert.That(Item(Stance.Dive, TargetMode.LowestHealth, Commitment.Relentless).DescribeTier(1),
-                    Is.EqualTo("Dives · goes for the weakest · never lets go"));
-        Assert.That(Item(Stance.Kite).DescribeTier(1), Is.EqualTo("Kites"));
-        Assert.That(Item().DescribeTier(1), Is.EqualTo("Changes nothing"));
-    }
-
-    [Test]
-    public void TheCardLineReadsTheTacticsInForce()
-    {
+        Assert.That(Item(TargetMode.LowestHealth).DescribeTier(1), Is.EqualTo("Goes for the weakest"));
         var unit = Fresh();
-        Item(Stance.Dive, TargetMode.Attacker, Commitment.Opportunistic).OnGranted(unit, 1);
-        Assert.That(Tactics.Line(unit), Is.EqualTo("Dives · the farthest · opportunist"), "a diver goes for the farthest whatever its target rule says, as the AI has it");
+        Item(TargetMode.Furthest).OnGranted(unit, 1);
+        Assert.That(Tactics.Line(unit), Is.EqualTo("Goes for the farthest"));
+    }
+
+    [Test]
+    public void TheDiversCrestGoesForTheFarthest()
+    {
+        // Dive was a stance until stances went; what it did was pick the farthest enemy, so the crest
+        // says that now, and the asset must carry it or the diver is an ordinary unit.
+        var crest = AssetDatabase.LoadAssetAtPath<TacticsEngraving>("Assets/Data/Engravings/Tactics_Diver.asset");
+        Assert.That(crest.targetMode, Is.EqualTo(TargetMode.Furthest));
     }
 
     private static readonly string[] TacticsItems =
@@ -119,14 +98,14 @@ public class TacticsEngravingTests
     };
 
     [Test]
-    public void HoldTheLineIsCoverNotAStance()
+    public void HoldTheLineIsCoverNotATactic()
     {
         // It carried the Hold stance so its wearer would not walk off and break it; Hold is gone and
         // the line covers whoever stands near, so the wearer fights like anyone else.
         var unit = Fresh();
         var line = ScriptableObject.CreateInstance<HoldTheLineEngraving>();
         line.OnGranted(unit, 1);
-        Assert.That(unit.EffectiveStance, Is.EqualTo(Stance.Advance));
+        Assert.That(unit.TacticsSource, Is.Null, "no tactics from a bodyguard");
         Assert.That(line.DescribeTier(2), Is.EqualTo("Allies within 2 of you take 10% less."));
         line.OnRevoked(unit, 1);
     }
@@ -158,18 +137,6 @@ public class TacticsEngravingTests
         board.Place("friend", true, 1, 1);
         Assert.That(board.Facing("knight"), Is.EqualTo(new[] { "front", "middle", "back" }));
         Assert.That(board.Facing("front"), Is.EqualTo(new[] { "knight", "friend" }), "and it reads the same from the other side");
-    }
-
-    [Test]
-    public void NoItemAsksForTheStanceThatWasRemoved()
-    {
-        // Stance 2 was Hold. The number is never reused, and an asset still carrying it would read
-        // as a stance the AI has no case for.
-        foreach (var guid in AssetDatabase.FindAssets("t:TacticsEngraving"))
-        {
-            var item = AssetDatabase.LoadAssetAtPath<TacticsEngraving>(AssetDatabase.GUIDToAssetPath(guid));
-            Assert.That(System.Enum.IsDefined(typeof(Stance), item.stance), Is.True, item.name + " asks for stance " + (int)item.stance);
-        }
     }
 
     [Test]

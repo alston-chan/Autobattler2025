@@ -20,27 +20,9 @@ public class CombatAI : MonoBehaviour
     /// <summary>The reach of this unit's weapon attack.</summary>
     public float AttackRange => _attackRange;
 
-    // Whether a kiting unit is mid-retreat: it starts backing at one distance and stops at a
-    // longer one, so it does not shuffle on the line between the two.
-    private bool _kiting;
-
-    // The leash (see Targeting.LeashSeconds): when progress toward the target was last made, and
-    // the target a broken leash keeps off the table for a moment.
-    private float _lastProgressTime;
-    private Entity _leashed;
-    private float _leashedUntil;
-    private const float LeashHoldoffSeconds = 2f;
-
-    /// <summary>How many times any unit's leash has broken this session — for measuring the rule.</summary>
-    public static int LeashBreaks;
-
     /// <summary>The bell.</summary>
     public void OnFightStart()
     {
-        // A new fight is a new question: whoever we could not outrun last time is not here, and
-        // neither is the ground we were keeping off.
-        _unescapable = null;
-        _kiting = false;
         _closing = false;
     }
     private float[] _spellCooldowns;
@@ -143,14 +125,10 @@ public class CombatAI : MonoBehaviour
 
     private void HandleAI()
     {
-        // Whom to fight is its own question now, asked of Targeting, which knows about modes and
-        // about not flip-flopping between two enemies a hair apart. A target the leash just broke
-        // on is kept out of the running for a moment, or it would be chosen straight back.
-        Entity avoid = Time.time < _leashedUntil ? _leashed : null;
-        // A diver goes for the back line: the farthest enemy, whatever the unit's own mode says.
-        var mode = _entity.EffectiveStance == Stance.Dive ? TargetMode.Furthest : _entity.EffectiveTarget;
-        Entity closestEnemy = Targeting.Choose(_entity, mode, CurrentTarget,
-                                               _entity.targetStickiness, avoid);
+        // Whom to fight: taunted, the taunter; else the target already chosen, until it dies; else
+        // a fresh pick by the unit's mode (Targeting, where the whole rule is written down).
+        var mode = _entity.EffectiveTarget;
+        Entity chosen = Targeting.Choose(_entity, mode, CurrentTarget);
 
         // Keeping clear of the neighbours is a separate concern and stays here.
         var allEntities = EntityRegistry.All;
@@ -178,14 +156,9 @@ public class CombatAI : MonoBehaviour
 
         Vector3 move = Vector3.zero;
 
-        if (closestEnemy != null)
+        if (chosen != null)
         {
-            if (closestEnemy != CurrentTarget)
-            {
-                // A fresh target: the leash starts now.
-                CurrentTarget = closestEnemy;
-                _lastProgressTime = Time.time;
-            }
+            CurrentTarget = chosen;
             float distToTarget = Vector3.Distance(transform.position, CurrentTarget.transform.position);
 
             // Take the fight that is already here. Measured over a fight: melee units spent about
@@ -194,14 +167,11 @@ public class CombatAI : MonoBehaviour
             // that a knockback had just flung across the arena. Walking past a fight to get to one
             // that keeps moving is what reads as a unit that will not commit.
             //
-            // The leash reaches the same conclusion — "something in reach is the better fight right
-            // now" — but only after two and a half seconds without progress, so it fired about once
-            // a fight. This asks the question every frame instead, and only when the answer costs
-            // nothing: our target is out of reach and someone else is comfortably inside it.
-            // Relentless never lets go; that is what the commitment means.
+            // Only for a unit that picks the nearest: it asked for the closest fight, and this is it.
+            // A unit whose gear picked on purpose — the weakest, the farthest, its attacker — goes
+            // on to the one it chose; a taunt holds anyone.
             bool taunted = _entity.Statuses != null && _entity.Statuses.TauntedBy != null;
-            if (distToTarget > _attackRange && !_isAttacking && !taunted &&
-                _entity.EffectiveCommitment != Commitment.Relentless)
+            if (distToTarget > _attackRange && !_isAttacking && !taunted && mode == TargetMode.Nearest)
             {
                 var here = ThreatInReach(_attackRange * WellInsideReach);
                 if (here != null)
@@ -215,34 +185,13 @@ public class CombatAI : MonoBehaviour
             // from here, whatever the weapon's reach is.
             bool acted = Attack(CurrentTarget, distToTarget);
 
-            // The leash is reach: a target that has been out of reach for longer than the unit's
-            // commitment allows is let go. Closing the distance no longer counts as progress — a unit
-            // knocked away and walking back closes the distance every frame and never reached anyone,
-            // which is the pinball the leash was meant to end. Relentless never lets go.
-            bool inReach = distToTarget <= _attackRange || _isAttacking;
-            if (acted || inReach) _lastProgressTime = Time.time;
-            float leash = Targeting.LeashFor(_entity.EffectiveCommitment);
-            if (Targeting.LockOn && !inReach && !taunted && Time.time - _lastProgressTime > leash)
-            {
-                // Something in reach that is coming for us, or anything in reach at all, is the
-                // better fight right now; failing that, pick again without this one.
-                var threat = ThreatInReach();
-                LeashBreaks++;
-                _leashed = CurrentTarget;
-                _leashedUntil = Time.time + LeashHoldoffSeconds;
-                _lastProgressTime = Time.time;
-                if (threat != null) { Retarget(threat); }
-                else { CurrentTarget = null; SetAnimState(false); return; }   // pick again next frame, without this one
-            }
-
-
             if (!acted && !_isAttacking)
             {
                 // Ground does not steer anyone: a unit walks to its target through a tar pool if that
                 // is where the target is. Units used to walk out of hostile pools, stand off at their
                 // rims and then route around them — three rules, each added to fix the pacing the one
                 // before it caused. A pool is damage and a status now, nothing more.
-                move = StanceMove(distToTarget);
+                move = Close(distToTarget);
                 SetAnimState(move.sqrMagnitude > 0.0001f);
             }
             else
@@ -268,13 +217,6 @@ public class CombatAI : MonoBehaviour
         }
     }
 
-    // The chaser this unit has accepted it cannot outrun, and the retreat it is judging (Kiting).
-    // Held until that chaser leaves or gives up on us, so the decision is made once rather than
-    // retaken every frame — which is what turned a failed retreat into a shuffle on the spot.
-    private Entity _unescapable;
-    private float _retreatStarted;
-    private float _retreatStartDistance;
-
     // Walking in, as opposed to standing and fighting.
     //
     // A unit sets off the moment its target is out of reach, and stops a little INSIDE reach — never
@@ -294,57 +236,15 @@ public class CombatAI : MonoBehaviour
     private const float WellInsideReach = 0.8f;
 
     /// <summary>
-    /// Where the stance says to go this frame, or nowhere. Advance closes on the target; Kite backs
-    /// away from whatever is nearest when it comes inside the unit's reach, and otherwise closes
-    /// like anyone else; Dive is Advance with a different target. Docs/Combat.md, "Stances".
+    /// Where to walk this frame, or nowhere: toward the target while it is out of reach, and not at
+    /// all once it is in. Everyone moves this way, archers included — a bow simply has the reach to
+    /// stand still. Units used to have stances: Kite backed an archer away from whatever came for it
+    /// (sixteen directions scored, a chaser it had given up outrunning, a margin off the walls), and
+    /// it was the most complicated movement in the game and the source of three pacing bugs. It was
+    /// removed 2026-09-22 with Hold and Dive (Dive is a target mode now).
     /// </summary>
-    private Vector3 StanceMove(float distToTarget)
+    private Vector3 Close(float distToTarget)
     {
-        var s = CombatPhysics.Active;
-        switch (_entity.EffectiveStance)
-        {
-            case Stance.Kite:
-            {
-                // Kiting the way a player micros an archer: back off from the brawler coming for you,
-                // not from every enemy on the field; keep going once you have started, until it is
-                // clearly out of reach; fall back toward your own line; and when the wall is at
-                // your back, stop running and shoot.
-                var threat = NearestThreat(s, out float threatDist);
-                float start = _attackRange * s.kiteFraction;
-                float stop = start + s.kiteHysteresis;
-
-                // Whoever we gave up running from stops counting once they are off us, so a chaser
-                // that turns away, dies, or is thrown clear can be kited again.
-                if (_unescapable != null && (threat != _unescapable || _unescapable.isDead ||
-                                             !_unescapable.gameObject.activeInHierarchy || threatDist >= stop))
-                    _unescapable = null;
-
-                bool retreat = threat != null && threat != _unescapable &&
-                               (threatDist < start || (_kiting && threatDist < stop));
-                if (retreat)
-                {
-                    if (!_kiting) { _retreatStarted = Time.time; _retreatStartDistance = threatDist; }
-
-                    Vector3 dir = KiteDirection(threat, s);
-                    // Cornered — nothing scored — or running that is not opening the gap. Either
-                    // way the retreat has failed, and a unit that keeps trying it paces on the spot
-                    // (Kiting). Accept the fight: with the chaser inside our reach we shoot it from
-                    // here, which is a worse position and a better answer than the shuffle.
-                    if (dir.sqrMagnitude <= 0.0001f ||
-                        !Kiting.Escaping(Time.time - _retreatStarted, _retreatStartDistance, threatDist))
-                    {
-                        _unescapable = threat;
-                    }
-                    else
-                    {
-                        _kiting = true;
-                        return dir * moveSpeed * s.kiteSpeed;
-                    }
-                }
-                _kiting = false;
-                break;
-            }
-        }
         // Close the moment the target is out of reach; stop a little INSIDE reach, so the scrum's
         // shoves do not pop the unit back out — but never inside the body wall, where the two bodies
         // would push apart every frame and the unit would walk forever (the bug before this one).
@@ -373,75 +273,6 @@ public class CombatAI : MonoBehaviour
     }
 
     /// <summary>
-    /// The nearest enemy worth running from: one that is fighting this unit and cannot shoot back
-    /// from where it stands (its reach is shorter than ours). Another archer is not a reason to run;
-    /// nor is a brawler busy with someone else. With the setting off, simply the nearest enemy.
-    /// </summary>
-    private Entity NearestThreat(CombatPhysics.Settings s, out float distance)
-    {
-        if (!s.kiteOnlyWhenTargeted) return NearestEnemy(out distance);
-        Entity best = null; distance = float.MaxValue;
-        var all = EntityRegistry.All;
-        for (int i = 0; i < all.Count; i++)
-        {
-            var e = all[i];
-            if (e == null || e.isDead || e.isTeam == _entity.isTeam || !e.gameObject.activeInHierarchy || e.CombatAI == null) continue;
-            if (e.CombatAI.CurrentTarget != _entity) continue;
-            if (e.CombatAI.AttackRange >= _attackRange) continue;
-            float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d < distance) { distance = d; best = e; }
-        }
-        return best;
-    }
-
-    /// <summary>
-    /// Which way to back off. Sixteen directions are scored: a step must open distance from the
-    /// threat and land at least the wall margin inside the arena; among those, the one that opens
-    /// the most, leans most toward our own back line, and keeps the most room from the edge wins.
-    /// So a unit with the wall at its back curves around the threat instead of pressing into the
-    /// wall, and one that is already inside the margin walks back out before it thinks about the
-    /// threat. Nothing scores: cornered, the unit stands and shoots.
-    /// </summary>
-    private Vector3 KiteDirection(Entity threat, CombatPhysics.Settings s)
-    {
-        Vector3 here = transform.position;
-        Vector3 away = here - threat.transform.position; away.z = 0f;
-        if (away.sqrMagnitude < 0.0001f) away = _entity.isTeam ? Vector3.left : Vector3.right;
-        away.Normalize();
-        Vector3 home = _entity.isTeam ? Vector3.left : Vector3.right;
-
-        float step = Mathf.Max(0.5f, moveSpeed * s.kiteSpeed * 0.25f);
-        float margin = Mathf.Max(0f, s.kiteWallMargin);
-        float roomHere = ArenaBounds.RoomToEdge(here);
-        bool insideMargin = roomHere < margin;
-
-        Vector3 best = Vector3.zero; float bestScore = float.MinValue;
-        for (int k = 0; k < 16; k++)
-        {
-            float a = k * Mathf.PI * 2f / 16f;
-            Vector3 dir = new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f);
-            Vector3 to = here + dir * step;
-            float roomTo = ArenaBounds.RoomToEdge(to);
-            float gain = Vector3.Dot(dir, away);
-
-            // Already too near the wall: any step that gets us back out is allowed, even sideways
-            // past the threat, as long as it does not walk straight into it.
-            if (insideMargin) { if (roomTo <= roomHere || gain < -0.3f) continue; }
-            else if (roomTo < margin || gain < 0.15f) continue;
-
-            float score = gain + Vector3.Dot(dir, home) * s.kiteHomeBias + Mathf.Clamp01(roomTo / (margin * 2f + 0.01f)) * 0.5f;
-            if (score > bestScore) { bestScore = score; best = dir; }
-        }
-        return best;
-    }
-
-    /// <summary>
-    /// An enemy within this unit's reach worth turning on: one that is targeting us first, else the
-    /// nearest. What a unit swings at when the one it wanted cannot be reached.
-    /// </summary>
-    private Entity ThreatInReach() => ThreatInReach(_attackRange);
-
-    /// <summary>
     /// The best enemy already within <paramref name="within"/>: one that is coming for us if there
     /// is one, else the closest. Never the current target.
     /// </summary>
@@ -458,20 +289,6 @@ public class CombatAI : MonoBehaviour
             if (d > within) continue;
             bool coming = e.CombatAI != null && e.CombatAI.CurrentTarget == _entity;
             if (coming && !bestComing || (coming == bestComing && d < bestD)) { best = e; bestD = d; bestComing = coming; }
-        }
-        return best;
-    }
-
-    private Entity NearestEnemy(out float distance)
-    {
-        Entity best = null; distance = float.MaxValue;
-        var all = EntityRegistry.All;
-        for (int i = 0; i < all.Count; i++)
-        {
-            var e = all[i];
-            if (e == null || e.isDead || e.isTeam == _entity.isTeam || !e.gameObject.activeInHierarchy) continue;
-            float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d < distance) { distance = d; best = e; }
         }
         return best;
     }
@@ -663,7 +480,6 @@ public class CombatAI : MonoBehaviour
     {
         if (target == null || target.isDead) return;
         CurrentTarget = target;
-        _leashed = null; _leashedUntil = 0f; _lastProgressTime = Time.time;
         _entity.OpeningPending = false;
     }
 

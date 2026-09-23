@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using UnityEngine;
 
 /// <summary>
 /// How a unit ranks the enemies in front of it, and when it changes its mind.
@@ -50,64 +53,31 @@ public class TargetingTests
         }
     }
 
-    [Test]
-    public void AMarginallyBetterRivalDoesNotStealTheTarget()
-    {
-        // Two enemies a hair apart used to trade the unit back and forth every frame, so it closed
-        // on neither and the player saw dithering.
-        Assert.That(Targeting.BeatsIncumbent(bestScore: 4.9f, incumbentScore: 5f, stickiness: 0.25f),
-                    Is.False, "a 2% improvement must not be worth turning around for");
-    }
-
-    [Test]
-    public void AClearlyBetterRivalDoesStealTheTarget()
-    {
-        Assert.That(Targeting.BeatsIncumbent(bestScore: 2f, incumbentScore: 5f, stickiness: 0.25f),
-                    Is.True, "a target 60% better is worth turning to");
-    }
-
-    [Test]
-    public void ALaneMateCountsCloserByTheBonus()
-    {
-        float plain = Targeting.ScoreFor(TargetMode.Nearest, 5f, 1f, sameLane: false);
-        float lane = Targeting.ScoreFor(TargetMode.Nearest, 5f, 1f, sameLane: true);
-        Assert.That(plain - lane, Is.EqualTo(Targeting.LaneBonus).Within(0.0001f));
-    }
-
-    [Test]
-    public void TheLaneBonusNeverMakesAScoreNegative()
-    {
-        Assert.That(Targeting.ScoreFor(TargetMode.Nearest, 0.5f, 1f, sameLane: true), Is.GreaterThanOrEqualTo(0f));
-    }
-
-    [Test]
-    public void OnlyNearestHonoursTheLane()
-    {
-        // The other modes are a deliberate choice of whom to fight; a lane preference would second-guess it.
-        Assert.That(Targeting.ScoreFor(TargetMode.LowestHealth, 5f, 0.4f, true),
-                    Is.EqualTo(Targeting.ScoreFor(TargetMode.LowestHealth, 5f, 0.4f, false)));
-        Assert.That(Targeting.ScoreFor(TargetMode.Furthest, 5f, 1f, true),
-                    Is.EqualTo(Targeting.ScoreFor(TargetMode.Furthest, 5f, 1f, false)));
-    }
-
-    [Test]
-    public void ZeroStickinessTakesAnyImprovement()
-    {
-        Assert.That(Targeting.BeatsIncumbent(4.99f, 5f, 0f), Is.True,
-                    "an ability that picks its own target asks with no stickiness at all");
-    }
-
     // ---- the leash
 
+
     [Test]
-    public void TheLeashBreaksOnlyOutOfReachAndOnlyAfterItsTime()
+    public void ATargetIsKeptUntilItDiesAndATauntOverridesIt()
     {
-        float leash = Targeting.LeashSeconds;
-        // Within reach, no amount of waiting breaks it: the unit is fighting, not chasing.
-        Assert.That(Targeting.LeashBroke(leash * 10f, inReach: true), Is.False);
-        // Out of reach but still making progress recently: not yet.
-        Assert.That(Targeting.LeashBroke(leash * 0.5f, inReach: false), Is.False);
-        // Out of reach and no progress for longer than the leash: it breaks.
-        Assert.That(Targeting.LeashBroke(leash + 0.01f, inReach: false), Is.True);
+        var made = new List<GameObject>();
+        Entity Unit(bool team, float x)
+        {
+            var go = new GameObject("u"); made.Add(go);
+            var e = go.AddComponent<Entity>(); e.isTeam = team; go.transform.position = new Vector3(x, 0f, 0f);
+            if (!EntityRegistry.All.Contains(e)) EntityRegistry.Register(e);   // edit mode runs no OnEnable
+            return e;
+        }
+        try
+        {
+            var chooser = Unit(true, 0f);
+            var far = Unit(false, 6f);
+            // Nothing closer turns it: "far" was chosen, and a nearer enemy is not a reason to leave.
+            var near = Unit(false, 1f);
+            Assert.That(Targeting.Choose(chooser, TargetMode.Nearest, far), Is.SameAs(far), "kept until it dies");
+            Assert.That(Targeting.Choose(chooser, TargetMode.Nearest, null), Is.SameAs(near), "a fresh pick is the nearest");
+            far.gameObject.SetActive(false);   // gone from the fight, as the dead are
+            Assert.That(Targeting.Choose(chooser, TargetMode.Nearest, far), Is.SameAs(near), "and when it dies, the next pick");
+        }
+        finally { foreach (var go in made) { var e = go.GetComponent<Entity>(); if (e != null) EntityRegistry.Unregister(e); Object.DestroyImmediate(go); } }
     }
 }

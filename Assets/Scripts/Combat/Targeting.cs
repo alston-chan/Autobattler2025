@@ -1,15 +1,15 @@
 using UnityEngine;
 
-/// <summary>How a unit decides whom to fight.</summary>
+/// <summary>Whom a unit picks when it picks. The one thing about targeting an item can change.</summary>
 public enum TargetMode
 {
-    /// <summary>Whoever is closest. What every unit did before there was a choice.</summary>
+    /// <summary>Whoever is closest. What every unit does unless its gear says otherwise.</summary>
     Nearest = 0,
 
     /// <summary>Whoever is nearest to death, wherever they are. A finisher.</summary>
     LowestHealth = 1,
 
-    /// <summary>Whoever is furthest away — reaching past the front rank at the line behind it.</summary>
+    /// <summary>Whoever is furthest away — past the front rank, at the line behind it. A diver.</summary>
     Furthest = 2,
 
     /// <summary>Whoever is coming for this unit; else the nearest. The archer's answer to an assassin.</summary>
@@ -17,136 +17,70 @@ public enum TargetMode
 }
 
 /// <summary>
-/// How long a unit stays on a target it cannot reach (Eslabong calls this commitment). Opportunistic
-/// turns on whatever is in reach the moment its target is not; Balanced gives the target a short
-/// leash; Relentless never lets go of it — the berserker's lock, and what a taunt still overrides.
-/// </summary>
-public enum Commitment
-{
-    Opportunistic = 0,
-    Balanced = 1,
-    Relentless = 2,
-}
-
-/// <summary>
-/// Choosing whom to fight, which used to be one hardcoded line inside the movement loop: the
-/// closest living enemy, recomputed from scratch every tick.
+/// Choosing whom to fight. The whole rule, in the order it is asked:
 ///
-/// Two things were wrong with that. A unit standing between two enemies at almost equal distance
-/// flickered between them as they shuffled, so it never closed on either — the players sees
-/// dithering and cannot tell why. And "closest" is the only question anyone could ask, which rules
-/// out assassins, taunts, focus fire, and anything that reaches for the back line.
+///   1. Taunted? Fight whoever taunted you.
+///   2. Your target is alive and in sight? Keep it — until it dies.
+///   3. Otherwise pick by your mode (nearest, weakest, farthest, your attacker), preferring
+///      whatever a hunt or an opener item asks for.
 ///
-/// Scores are all "lower is better" and all positive, so the stickiness margin below can be a
-/// single relative number that means the same thing in every mode.
+/// And one exception, asked by <see cref="CombatAI"/> because it needs reach: a unit that picks
+/// the NEAREST, whose target has stepped out of reach while another enemy stands inside it, turns
+/// on that one. Walking past a fight to reach one that keeps moving read as a unit that would not
+/// commit. A unit that picked on purpose — the weakest, the farthest, its attacker — keeps going.
+///
+/// This replaced, on 2026-09-22, a stance for each unit (advance, kite, dive), a commitment
+/// (opportunistic, balanced, relentless), a leash timer per commitment, a stickiness margin that
+/// the lock made dead code, a same-lane bonus and a lock-on switch: thirty-six combinations of
+/// knobs a player could not see, for behaviour a player reads as "who is it fighting".
 /// </summary>
 public static class Targeting
 {
-    /// <summary>
-    /// How much closer a unit in the same lane counts, in world units. Lanes are a preference, not
-    /// a leash: at the bell, when everyone stands in their cells, one cell's worth is enough to make
-    /// the lane's first unit the target every time — so the setup screen can draw the opening as a
-    /// threat line and be right — while mid-fight a clearly closer enemy still wins, so nobody ever
-    /// marches past the unit that is hitting them. Zero is plain Nearest.
-    /// </summary>
-    public static float LaneBonus = 1.9f;
-
     /// <summary>How much nearer an enemy that is targeting the chooser counts, for the Attacker mode.</summary>
     public static float AttackerBonus = 20f;
 
-    /// <summary>The leash, by commitment: how long a target may stay out of reach before the lock breaks.</summary>
-    public static float LeashFor(Commitment commitment) =>
-        commitment == Commitment.Opportunistic ? 0.75f : commitment == Commitment.Balanced ? LeashSeconds : float.PositiveInfinity;
-
-    /// <summary>
-    /// Pick a target, preferring to keep the one already being fought.
-    ///
-    /// <paramref name="stickiness"/> is how much better a rival must be before the unit turns away:
-    /// 0.25 means a quarter better. Without it, two enemies a hair apart trade the unit back and
-    /// forth every frame and it closes on neither.
-    /// </summary>
-    public static Entity Choose(Entity chooser, TargetMode mode, Entity current, float stickiness) =>
-        Choose(chooser, mode, current, stickiness, null);
-
-    /// <summary>
-    /// Lock on: a target, once chosen, is kept until it dies or drops out of sight — the TFT rule.
-    /// Nothing closer, weaker or louder turns a unit away; only an ability that says so, or the
-    /// leash. With it off, the old rule applies: nearest, with <c>stickiness</c> as the margin.
-    /// </summary>
-    public static bool LockOn = true;
-
-    /// <summary>
-    /// The leash: how long a locked unit may go without reaching or hitting its target before the
-    /// lock breaks and it picks again. TFT's hex grid guarantees a melee unit stands beside its
-    /// target; here bodies block and targets drift, and a unit chasing what it cannot reach while
-    /// others hit it reads as broken.
-    /// </summary>
-    public static float LeashSeconds = 2.5f;
-
-    /// <summary>Whether the leash has run out: out of reach, and no progress for longer than it allows.</summary>
-    public static bool LeashBroke(float secondsWithoutProgress, bool inReach) =>
-        !inReach && secondsWithoutProgress > LeashSeconds;
-
-    /// <summary>
-    /// As above, with one enemy the chooser will not pick — the target its leash just broke on,
-    /// which it would otherwise choose right back and fail to reach again.
-    /// </summary>
-    public static Entity Choose(Entity chooser, TargetMode mode, Entity current, float stickiness, Entity avoid)
+    /// <summary>The target to fight now, given the one already being fought.</summary>
+    public static Entity Choose(Entity chooser, TargetMode mode, Entity current)
     {
         if (chooser == null) return null;
 
-        // A taunt is the one thing that turns a locked unit: whoever taunted you is your target while it lasts.
         var taunter = chooser.Statuses != null ? chooser.Statuses.TauntedBy : null;
         if (taunter != null && IsEnemyOf(chooser, taunter)) return taunter;
 
-        // Locked on: the current target stands until it dies or vanishes.
-        if (LockOn && current != null && current != avoid && IsEnemyOf(chooser, current)) return current;
+        if (current != null && IsEnemyOf(chooser, current)) return current;
 
-        Entity best = null;
-        float bestScore = float.MaxValue;
-        bool anyTargetable = false;
+        return Pick(chooser, mode);
+    }
+
+    /// <summary>
+    /// A fresh pick by <paramref name="mode"/>, ignoring what the unit is fighting now. What an
+    /// ability that chooses its own target uses too.
+    /// </summary>
+    public static Entity Pick(Entity chooser, TargetMode mode)
+    {
+        if (chooser == null) return null;
 
         // A hunt or an opener narrows the field to what it wants, when anything qualifies.
         var filter = chooser.OpeningPending && chooser.Opener != null ? chooser.Opener : chooser.Hunt;
-        bool anyPass = false;
         var all = EntityRegistry.All;
+        bool anyPass = false;
         if (filter != null)
             for (int i = 0; i < all.Count; i++)
-                if (IsEnemyOf(chooser, all[i]) && all[i] != avoid && filter(all[i])) { anyPass = true; break; }
+                if (IsEnemyOf(chooser, all[i]) && filter(all[i])) { anyPass = true; break; }
 
+        Entity best = null;
+        float bestScore = float.MaxValue;
         for (int i = 0; i < all.Count; i++)
         {
             var candidate = all[i];
             if (!IsEnemyOf(chooser, candidate)) continue;
-            if (candidate == avoid) continue;
-
-            anyTargetable = true;
             if (anyPass && !filter(candidate)) continue;
-
             float score = Score(chooser, candidate, mode);
-            if (score >= bestScore) continue;
-
-            bestScore = score;
-            best = candidate;
+            if (score < bestScore) { bestScore = score; best = candidate; }
         }
 
-        // Nobody left to fight, or everyone worth fighting has slipped out of sight. The one the
-        // leash broke on still counts if it is the only one there is.
-        if (!anyTargetable) return avoid != null && IsEnemyOf(chooser, avoid) ? avoid : FallbackWhenAllHidden(chooser, mode);
-
-        // A target that has vanished from view is dropped at once — that is the whole point of
-        // dropping aggro, and honouring stickiness here would leave the assassin still being chased.
-        if (current == null || !IsEnemyOf(chooser, current)) return best;
-
-        float currentScore = Score(chooser, current, mode);
-        return BeatsIncumbent(bestScore, currentScore, stickiness) ? best : current;
+        return best != null ? best : FallbackWhenAllHidden(chooser, mode);
     }
-
-    /// <summary>
-    /// Pick a target for a single ability, ignoring both what the unit is currently fighting and
-    /// how sticky it is. An assassin's dive answers its own question, not the AI's.
-    /// </summary>
-    public static Entity Pick(Entity chooser, TargetMode mode) => Choose(chooser, mode, null, 0f);
 
     /// <summary>Whether one unit may fight another at all right now.</summary>
     public static bool IsEnemyOf(Entity chooser, Entity candidate)
@@ -168,7 +102,6 @@ public static class Targeting
     {
         Entity best = null;
         float bestScore = float.MaxValue;
-
         var all = EntityRegistry.All;
         for (int i = 0; i < all.Count; i++)
         {
@@ -176,14 +109,9 @@ public static class Targeting
             if (candidate == null || candidate == chooser || candidate.isDead) continue;
             if (!candidate.gameObject.activeInHierarchy) continue;
             if (candidate.isTeam == chooser.isTeam) continue;
-
             float score = Score(chooser, candidate, mode);
-            if (score >= bestScore) continue;
-
-            bestScore = score;
-            best = candidate;
+            if (score < bestScore) { bestScore = score; best = candidate; }
         }
-
         return best;
     }
 
@@ -191,20 +119,14 @@ public static class Targeting
         ScoreFor(mode,
                  Vector3.Distance(chooser.transform.position, candidate.transform.position),
                  HealthFraction(candidate),
-                 mode == TargetMode.Attacker
-                     ? candidate.CombatAI != null && candidate.CombatAI.CurrentTarget == chooser
-                     : chooser.OpeningPending && chooser.DeployedLane >= 0 && chooser.DeployedLane == candidate.DeployedLane);
-
-    public static float ScoreFor(TargetMode mode, float distance, float healthFraction) =>
-        ScoreFor(mode, distance, healthFraction, sameLane: false);
+                 mode == TargetMode.Attacker && candidate.CombatAI != null && candidate.CombatAI.CurrentTarget == chooser);
 
     /// <summary>
-    /// Rank a candidate: lower is better, and always positive, so one relative margin fits every
-    /// mode. Kept free of Entity so the ranking can be tested without a battlefield. Only Nearest
-    /// honours the lane: the other modes are a deliberate choice of whom to fight, and a lane
-    /// preference would second-guess it.
+    /// Rank a candidate: lower is better, and never negative. Kept free of Entity so the ranking can
+    /// be tested without a battlefield, and so the setup screen's arrow (BoardSnapshot.PredictOpening)
+    /// ranks exactly as the fight does.
     /// </summary>
-    public static float ScoreFor(TargetMode mode, float distance, float healthFraction, bool sameLane)
+    public static float ScoreFor(TargetMode mode, float distance, float healthFraction, bool comingForChooser = false)
     {
         switch (mode)
         {
@@ -217,27 +139,17 @@ public static class Targeting
 
             case TargetMode.Attacker:
                 // Distance, with whoever is coming for the chooser counted as if it stood far closer.
-                return Mathf.Max(0f, distance - (sameLane ? AttackerBonus : 0f));
+                return Mathf.Max(0f, distance - (comingForChooser ? AttackerBonus : 0f));
 
             default:
-                return Mathf.Max(0f, distance - (sameLane ? LaneBonus : 0f));
+                return Mathf.Max(0f, distance);
         }
     }
-
-    /// <summary>
-    /// Whether a rival is enough better to be worth turning away from the current target.
-    ///
-    /// The margin is relative so it means the same in every mode: 0.25 is "a quarter better",
-    /// whether better is measured in metres or in fractions of a health bar.
-    /// </summary>
-    public static bool BeatsIncumbent(float bestScore, float incumbentScore, float stickiness) =>
-        bestScore < incumbentScore * (1f - Mathf.Clamp01(stickiness));
 
     public static float HealthFraction(Entity entity)
     {
         var health = entity.Health;
         if (health == null || health.maxHealth <= 0f) return 1f;
-
         return Mathf.Clamp01(health.currentHealth / health.maxHealth);
     }
 }

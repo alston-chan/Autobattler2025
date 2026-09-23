@@ -77,49 +77,32 @@ public class Entity : MonoBehaviour
     }
 
     [Header("Tactics")]
-    [Tooltip("How this unit uses the space between it and the enemy (Docs/Combat.md), as authored: by " +
-             "its UnitData, an enemy kit or a playtest scenario. Auto: ranged units Kite, everyone else " +
-             "Advances. A worn tactics item has the last word (EffectiveStance).")]
-    public Stance stance = Stance.Auto;
-
-    /// <summary>
-    /// The stance in force: what a worn tactics item says, else the authored one. Auto resolves by
-    /// reach: a unit whose weapon attack reaches four units or more (a bow, a wand) kites, and
-    /// everyone else advances. Reach rather than the ranged flag, because that flag also means
-    /// "aims a bow arm", which a wand does not.
-    /// </summary>
-    public Stance EffectiveStance
-    {
-        get
-        {
-            var chosen = _tactics.Count > 0 && _tactics[_tactics.Count - 1].stance != Stance.Auto ? _tactics[_tactics.Count - 1].stance : stance;
-            return chosen == Stance.Auto ? (FightsAtRange ? Stance.Kite : Stance.Advance) : chosen;
-        }
-    }
+    [Tooltip("Whom this unit picks when it picks, as authored (a worn tactics item overrides it). " +
+             "Nearest is the ordinary answer; LowestHealth makes a finisher; Furthest a diver; " +
+             "Attacker answers whoever is coming for it. Once picked, a target is kept until it dies " +
+             "(Targeting).")]
+    public TargetMode targetMode = TargetMode.Nearest;
 
     /// <summary>Whom this unit goes for: what a worn tactics item says, else the authored rule.</summary>
-    public TargetMode EffectiveTarget => _tactics.Count > 0 && _tactics[_tactics.Count - 1].target.HasValue ? _tactics[_tactics.Count - 1].target.Value : targetMode;
-
-    /// <summary>How long it stays on a target it cannot reach: what a worn tactics item says, else the authored one.</summary>
-    public Commitment EffectiveCommitment => _tactics.Count > 0 && _tactics[_tactics.Count - 1].commitment.HasValue ? _tactics[_tactics.Count - 1].commitment.Value : commitment;
+    public TargetMode EffectiveTarget => _tactics.Count > 0 ? _tactics[_tactics.Count - 1].target : targetMode;
 
     /// <summary>The item engraving whose tactics are in force, or null when the unit fights as authored.</summary>
     public Engraving TacticsSource => _tactics.Count > 0 ? _tactics[_tactics.Count - 1].source : null;
 
-    private struct TacticsGrant { public Engraving source; public Stance stance; public TargetMode? target; public Commitment? commitment; }
+    private struct TacticsGrant { public Engraving source; public TargetMode target; }
 
     // What worn items say, in the order they were granted; the last one worn wins. Not serialized:
     // Resonance grants it again from the gear on every refresh, so nothing here outlives the item.
     [System.NonSerialized] private readonly List<TacticsGrant> _tactics = new List<TacticsGrant>();
 
-    /// <summary>A worn item's tactics, over the authored ones. Auto and null mean "leave that part alone".</summary>
-    public void SetTactics(Engraving source, Stance stance, TargetMode? target, Commitment? commitment)
+    /// <summary>A worn item's target rule, over the authored one.</summary>
+    public void SetTactics(Engraving source, TargetMode target)
     {
         ClearTactics(source);
-        _tactics.Add(new TacticsGrant { source = source, stance = stance, target = target, commitment = commitment });
+        _tactics.Add(new TacticsGrant { source = source, target = target });
     }
 
-    /// <summary>The item came off: back to the authored tactics, or to the next item still worn.</summary>
+    /// <summary>The item came off: back to the authored rule, or to the next item still worn.</summary>
     public void ClearTactics(Engraving source) => _tactics.RemoveAll(t => t.source == source);
 
     /// <summary>Whether this unit's weapon attack is a ranged one: reach of four or more, else the ranged flag.</summary>
@@ -135,21 +118,6 @@ public class Entity : MonoBehaviour
     /// <summary>This unit's body for collisions (<see cref="CombatPhysics"/>): its UnitData's radius, else the global one.</summary>
     public float BodyRadius => unitData != null && unitData.bodyRadius > 0f ? unitData.bodyRadius : CombatPhysics.Active.bodyRadius;
 
-    [Tooltip("How this unit chooses whom to fight, as authored (a worn tactics item overrides it). " +
-             "Nearest is the ordinary front-line answer; LowestHealth makes a finisher; Furthest " +
-             "reaches past the front rank; Attacker answers whoever is coming for it.")]
-    public TargetMode targetMode = TargetMode.Nearest;
-
-    [Tooltip("How long this unit stays on a target it cannot reach, as authored (a worn tactics item " +
-             "overrides it): Opportunistic turns on whatever is in reach at once, Balanced after a " +
-             "short leash, Relentless never (a taunt still turns it).")]
-    public Commitment commitment = Commitment.Balanced;
-
-    [Tooltip("How much better a rival target must be before this unit turns away from the one it " +
-             "is already fighting, as a fraction: 0.25 means a quarter better. Zero makes a unit " +
-             "flip between two equally close enemies every frame and close on neither.")]
-    [Range(0f, 0.9f)] public float targetStickiness = 0.25f;
-
     /// <summary>
     /// The lane (row) and column this unit was deployed in, stamped at the bell by
     /// BoardSnapshot.Freeze and read by targeting for the rest of the fight. -1 off the board.
@@ -160,11 +128,8 @@ public class Entity : MonoBehaviour
     [System.NonSerialized] public int DeployedColumn = -1;
 
     /// <summary>
-    /// True from the bell until this unit's first swing. The lane preference applies while it is
-    /// set — units charge their lanes — and not afterwards: once the board has dissolved into a
-    /// brawl, a preference for a row nobody stands in any more is noise. It has to last the whole
-    /// charge, not just the first pick: a lane target a third further than the neighbour beats the
-    /// stickiness margin, so a one-frame preference would be undone on the second frame.
+    /// True from the bell until this unit's first swing: while it is set, an opener item's
+    /// preference (<see cref="Opener"/>) decides the pick instead of a hunt's.
     /// </summary>
     [System.NonSerialized] public bool OpeningPending;
 
@@ -426,7 +391,6 @@ public class Entity : MonoBehaviour
             maxHealth = unitData.maxHealth;
             attackSpeed = unitData.attackSpeed;
             healthBarOffset = unitData.healthBarOffset;
-            if (unitData.stance != Stance.Auto) stance = unitData.stance;
             if (unitData.spells != null && unitData.spells.Count > 0)
                 spells = new List<Spell>(unitData.spells);
         }

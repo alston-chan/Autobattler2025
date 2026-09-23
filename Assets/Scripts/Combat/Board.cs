@@ -167,28 +167,4 @@ public class Board<T> where T : class
 
     // ---- the opening
 
-    /// <summary>
-    /// Whom <paramref name="chooser"/> will engage at the bell: the nearest enemy, with a unit in the
-    /// same lane counting <paramref name="laneBonus"/> closer than it is. Lanes are a preference,
-    /// not a leash — a clearly closer enemy still wins — which is what lets the setup screen draw
-    /// this as a threat line and be right.
-    /// </summary>
-    public T PredictOpening(T chooser, Func<Placement, Placement, float> distance, float laneBonus)
-    {
-        if (!TryGet(chooser, out var from)) return null;
-
-        T best = null;
-        float bestScore = float.MaxValue;
-        foreach (var pair in _at)
-        {
-            if (pair.Value.allySide == from.allySide) continue;
-            float score = distance(from, pair.Value) - (pair.Value.row == from.row ? laneBonus : 0f);
-            if (score < bestScore)
-            {
-                bestScore = score;
-                best = pair.Key;
-            }
-        }
-        return best;
-    }
 }

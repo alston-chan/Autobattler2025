@@ -59,7 +59,7 @@ public class CastOnEventEngraving : Engraving
     {
         if (owner == null || owner.isDead || !owner.IsFighting || spell == null) return;
         if (Time.time < _readyAt) return;
-        var target = Targeting.Pick(owner, TargetMode.Nearest);
+        var target = Targeting.Choose(owner, TargetMode.Nearest, null);
         if (target == null || !spell.CanCast(owner, target)) return;
 
         _readyAt = Time.time + cooldown * (1f - 0.2f * (Mathf.Max(1, tier) - 1));

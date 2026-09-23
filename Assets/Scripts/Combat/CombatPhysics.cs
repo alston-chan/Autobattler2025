@@ -43,10 +43,6 @@ public class CombatPhysics : MonoBehaviour
         public float allyPush = 0.35f;
         [Tooltip("How fast a knockback dies out. A throw travels about force / damping units.")]
         public float damping = 4f;
-        [Tooltip("The soft wall: a body this close to the arena's edge is nudged back toward the field, so the scrum forms a body's width off the wall and a knocked unit rolls back in. 0 turns it off.")]
-        public float softWall = 1.2f;
-        [Tooltip("How hard the soft wall pushes, in units per second at the edge itself, fading to nothing at the soft wall's distance.")]
-        public float softWallPush = 1.5f;
         [Tooltip("A throw is over once the body is slower than this (units/s). The decay's tail is invisible drift; without a floor a unit stood still for nearly two seconds after a hard throw.")]
         public float restSpeed = 0.6f;
         [Tooltip("A body slower than this may steer itself again, while the last of the slide carries it. " +
@@ -77,19 +73,6 @@ public class CombatPhysics : MonoBehaviour
         [Tooltip("A body cannot impact again for this long, so one collision is one hit.")]
         public float impactCooldown = 0.15f;
 
-        [Header("Stances")]
-        [Tooltip("A kiting unit only backs away from an enemy that is coming for it: one whose target it is and whose reach is shorter than its own. Off, it backs away from whatever is nearest.")]
-        public bool kiteOnlyWhenTargeted = true;
-        [Range(0.1f, 1f), Tooltip("A kiting unit starts backing away when the threat is closer than this fraction of its reach.")]
-        public float kiteFraction = 0.6f;
-        [Tooltip("Once backing away, it keeps going until the threat is this much further than where it started, so it does not flicker at the line.")]
-        public float kiteHysteresis = 1.5f;
-        [Range(0f, 1f), Tooltip("How much a retreat leans toward the unit's own back line rather than straight away from the threat, so it falls back behind its friends instead of into a corner.")]
-        public float kiteHomeBias = 0.5f;
-        [Range(0.1f, 1.5f), Tooltip("Backing away, as a fraction of walking speed.")]
-        public float kiteSpeed = 0.85f;
-        [Tooltip("A kiting unit keeps this much room between itself and the arena's edge: it curves around the threat rather than backing into the wall, and when no direction opens distance it stands and shoots.")]
-        public float kiteWallMargin = 1.5f;
     }
 
     public static Settings Active => CombatFeelSettings.Active.physics;
@@ -132,29 +115,6 @@ public class CombatPhysics : MonoBehaviour
         if (_instance.GetComponent<ImpactFx>() == null) _instance.gameObject.AddComponent<ImpactFx>();
     }
 
-    /// <summary>
-    /// How far in from the edge the soft wall reaches in this arena: its authored depth, or less
-    /// where the deployment grid comes closer to the edge than that.
-    ///
-    /// The wall shoves by writing positions, and the walk animation follows what a unit decided,
-    /// so a unit seated inside the band opens the fight gliding across the ground in its idle pose.
-    /// The grid's rows span 3.0 and the coliseum is 4.2 tall, so a 1.2 band covered the top and
-    /// bottom rows. That was first fixed by moving the units off their cells, which left them
-    /// standing beside their tiles; a cell is a promise about where a unit stands, so the wall
-    /// gives way instead. Recomputed on every read, because the arena is resized per map.
-    /// </summary>
-    public static float WallBand
-    {
-        get
-        {
-            var s = Active;
-            if (s == null || s.softWall <= 0f) return 0f;
-            var arena = ArenaBounds.Instance; var grid = BattleGrid.Instance;
-            if (arena == null || grid == null) return s.softWall;
-            return Mathf.Max(0f, Mathf.Min(s.softWall, grid.Clearance(arena) - 0.05f));
-        }
-    }
-
     public static void OnFightStart()
     {
         Collisions = 0; WallSlams = 0; ImpactDamage = 0f; DeepOverlaps = 0;
@@ -177,25 +137,11 @@ public class CombatPhysics : MonoBehaviour
             if (e != null && !e.isDead && e.IsFighting && e.gameObject.activeInHierarchy && e.Knockback != null) _bodies.Add(e);
         }
 
-        // The soft wall: everyone near the edge drifts back toward the field a little each frame,
-        // before the bodies are resolved against each other, so the fight lives a body's width in.
-        float band = WallBand;
-        if (band > 0f && s.softWallPush > 0f && ArenaBounds.Instance != null)
-        {
-            var arena = ArenaBounds.Instance;
-            for (int i = 0; i < _bodies.Count; i++)
-            {
-                var e = _bodies[i];
-                if (IsFixed(e)) continue;
-                Vector3 p = e.transform.position;
-                float room = arena.EdgeRoom(p);
-                if (room >= band) continue;
-                Vector3 inward = new Vector3(arena.center.x, arena.center.y, 0f) - new Vector3(p.x, p.y, 0f);
-                if (inward.sqrMagnitude < 0.0001f) continue;
-                float strength = (1f - room / band) * s.softWallPush * Time.deltaTime;
-                e.transform.position = arena.Clamp(p + inward.normalized * strength);
-            }
-        }
+        // There was a soft wall here: bodies near the edge drifted back toward the field every frame.
+        // It moved units by writing their positions while their animation followed what they had
+        // decided, so it read as gliding; it took three fixes to keep it off the grid, and by then it
+        // reached 0.35 into the coliseum and did almost nothing. The arena's hard edge and the wall
+        // slam are the edge now.
 
         for (int i = 0; i < _bodies.Count; i++)
         for (int j = i + 1; j < _bodies.Count; j++)
