@@ -108,18 +108,6 @@ public static class ShapeSprites
         return dx * dx + dy * dy <= 1f;
     }
 
-    /// <summary>
-    /// The direction straight out of a floor shape through its nearest rim, from a point in or near it.
-    /// On a flattened shape that is mostly up or down, not away from the centre: a unit fleeing a
-    /// pool radially from near its middle crossed the long way, 2 units of tar instead of 1.1.
-    /// </summary>
-    public static Vector3 FloorOutward(Vector3 centre, float radius, Vector3 p)
-    {
-        float ry = radius * FloorDepth;
-        Vector3 n = new Vector3((p.x - centre.x) / (radius * radius), (p.y - centre.y) / (ry * ry), 0f);
-        return n.sqrMagnitude > 1e-8f ? n.normalized : Vector3.up;
-    }
-
     /// <summary>Everything of the other side alive inside a floor shape: an area as it is drawn.</summary>
     public static List<Entity> EnemiesOnFloor(Entity of, Vector3 centre, float radius)
     {
@@ -474,9 +462,8 @@ public class OrbitRunner : MonoBehaviour
 
 /// <summary>
 /// A blob lobbed from the caster; where it lands a pool spreads and lives a few seconds. Enemies
-/// inside take damage every half second, wear a status and are stained dark; they walk out when
-/// they can (CombatAI leaves hostile ground before it does anything else), which is what a pull, a
-/// throw or a charge into the pool is for.
+/// inside take damage every half second, wear a status and are stained dark. Nobody steers around
+/// it or walks out of it on purpose: it hurts whoever the fight puts there.
 /// </summary>
 [Serializable]
 public class ZoneEffect : SpellEffect
@@ -512,7 +499,7 @@ public class ZoneEffect : SpellEffect
     }
 
     public override string Describe() => Describe(1, 1f);
-    public override string Describe(int tier, float scale) => $"a pool {radius * scale * 2f:0.#} across under the target for {seconds:0.#} s: {damagePerSecond.DescribeAt(tier)} damage a second to enemies in it" + (status != null ? $", {status.DisplayName} while inside" : "") + "; they walk out";
+    public override string Describe(int tier, float scale) => $"a pool {radius * scale * 2f:0.#} across under the target for {seconds:0.#} s: {damagePerSecond.DescribeAt(tier)} damage a second to enemies in it" + (status != null ? $", {status.DisplayName} while inside" : "");
 }
 
 /// <summary>A blob in an arc from hand to floor; what it does when it lands is the caller's.</summary>
@@ -540,7 +527,7 @@ public class LobbedBlob : MonoBehaviour
     }
 }
 
-/// <summary>A live pool. The AI asks <see cref="HostileAt"/> before it moves anywhere else.</summary>
+/// <summary>A live pool: it ticks whoever of the other side stands in it.</summary>
 public class Zone : MonoBehaviour
 {
     public static readonly List<Zone> All = new List<Zone>();
@@ -570,26 +557,6 @@ public class Zone : MonoBehaviour
     private void OnEnable() { All.Add(this); }
     private void OnDisable() { All.Remove(this); foreach (var e in _stained) Unstain(e); _stained.Clear(); }
 
-    public bool Contains(Entity e) => e != null && Covers(e.transform.position);
-
-    /// <summary>Whether a point is on the pool as drawn, or within <paramref name="margin"/> of its rim.</summary>
-    public bool Covers(Vector3 p, float margin = 0f) => ShapeSprites.OnFloorWithin(transform.position, Radius + margin, p);
-
-    /// <summary>The quickest way off the pool from a point: straight out through the nearest rim.</summary>
-    public Vector3 Outward(Vector3 p) => ShapeSprites.FloorOutward(transform.position, Radius, p);
-
-    /// <summary>The pool this unit is standing in that belongs to the other side, or null.</summary>
-    public static Zone HostileAt(Entity e)
-    {
-        if (e == null) return null;
-        for (int i = 0; i < All.Count; i++)
-        {
-            var z = All[i];
-            if (z == null || z.Owner == null || z.Owner.isTeam == e.isTeam) continue;
-            if (z.Contains(e)) return z;
-        }
-        return null;
-    }
 
     private void Update()
     {

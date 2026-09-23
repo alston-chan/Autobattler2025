@@ -42,8 +42,6 @@ public class CombatAI : MonoBehaviour
         _unescapable = null;
         _kiting = false;
         _closing = false;
-        _fleeingPool = null;
-        _avoided = null;
     }
     private float[] _spellCooldowns;
 
@@ -240,20 +238,11 @@ public class CombatAI : MonoBehaviour
 
             if (!acted && !_isAttacking)
             {
-                // Hostile ground first: a unit standing in the enemy's pool leaves it before it does
-                // anything its stance would have it do, straight away from the centre. Mid-swing it
-                // stays and finishes; that, and a throw back in, is what the pool is for.
-                var pool = Zone.HostileAt(_entity);
-                if (pool != null) { _fleeingPool = pool; _avoided = pool; }
-                else if (_fleeingPool != null && !_fleeingPool.Covers(transform.position, PoolMargin)) _fleeingPool = null;
-                if (_fleeingPool != null)
-                {
-                    // Keep going a little past the rim, or a unit whose target stands across the pool
-                    // steps out, steps back in, and shivers on the edge for the pool's whole life.
-                    // Out through the NEAREST rim: the pool is flat, so that is mostly up or down.
-                    move = _fleeingPool.Outward(transform.position) * moveSpeed;
-                }
-                else move = StanceMove(distToTarget);
+                // Ground does not steer anyone: a unit walks to its target through a tar pool if that
+                // is where the target is. Units used to walk out of hostile pools, stand off at their
+                // rims and then route around them — three rules, each added to fix the pacing the one
+                // before it caused. A pool is damage and a status now, nothing more.
+                move = StanceMove(distToTarget);
                 SetAnimState(move.sqrMagnitude > 0.0001f);
             }
             else
@@ -277,35 +266,6 @@ public class CombatAI : MonoBehaviour
             float stepped = finalMove.magnitude;
             if (stepped > 0f) CombatEvents.RaiseMoved(_entity, stepped);
         }
-    }
-
-    /// <summary>
-    /// Where the stance says to go this frame, or nowhere. Advance closes on the target; Kite backs
-    /// away from whatever is nearest when it comes inside the unit's reach, and otherwise closes
-    /// like anyone else; Dive is Advance with a different target. Docs/Combat.md, "Stances".
-    /// </summary>
-    /// <summary>The hostile pool this unit is walking out of, until it is clear of the rim by <see cref="PoolMargin"/>.</summary>
-    private Zone _fleeingPool;
-    private const float PoolMargin = 0.6f;
-
-    /// <summary>Ground this unit has walked out of and will not walk back into while it lives.</summary>
-    private Zone _avoided;
-
-    /// <summary>
-    /// Whether the fight this unit wants is standing in ground it just left. Measured as the single
-    /// largest source of a melee unit backing away: more than half of one greatsword's back-off
-    /// frames were a tar pool. It walked out, walked straight back in because its target was still
-    /// in there, took the tick, and walked out again — across the rim, for the pool's whole life.
-    ///
-    /// A pool is a cost to pay once, not a place to pace across. So the unit holds at the edge
-    /// instead, where the rule above ("take the fight that is already here") will hand it anything
-    /// that comes out, and the pool's own five seconds resolve the standoff.
-    /// </summary>
-    private bool StandingOffFrom(Entity target)
-    {
-        if (_avoided == null) return false;                       // destroyed pools read as null
-        if (target == null) { _avoided = null; return false; }
-        return _avoided.Covers(target.transform.position, PoolMargin);
     }
 
     // The chaser this unit has accepted it cannot outrun, and the retreat it is judging (Kiting).
@@ -333,6 +293,11 @@ public class CombatAI : MonoBehaviour
     /// <summary>A free fight has to be comfortably inside reach, not balanced on its edge.</summary>
     private const float WellInsideReach = 0.8f;
 
+    /// <summary>
+    /// Where the stance says to go this frame, or nowhere. Advance closes on the target; Kite backs
+    /// away from whatever is nearest when it comes inside the unit's reach, and otherwise closes
+    /// like anyone else; Dive is Advance with a different target. Docs/Combat.md, "Stances".
+    /// </summary>
     private Vector3 StanceMove(float distToTarget)
     {
         var s = CombatPhysics.Active;
@@ -393,8 +358,6 @@ public class CombatAI : MonoBehaviour
         if (_closing) { if (distToTarget <= stopAt) _closing = false; }
         else if (distToTarget > _attackRange) _closing = true;
 
-        // But never back into the ground we just walked out of.
-        if (_closing && StandingOffFrom(CurrentTarget)) return Vector3.zero;
         return _closing ? Approach(distToTarget) : Vector3.zero;
     }
 
@@ -406,33 +369,7 @@ public class CombatAI : MonoBehaviour
         Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
         float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
         Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
-        return AroundPools((dir + lateralOffset).normalized, dir) * moveSpeed;
-    }
-
-    /// <summary>
-    /// A step toward the target, turned along the rim of any hostile pool it would walk into.
-    ///
-    /// Measured: a Berserker chasing a scarecrow on the far side of a tar pool reversed four times in
-    /// a second and a half. It walked in, <see cref="Zone.HostileAt"/> sent it out, and the next step
-    /// toward its target walked it straight back in. The standoff rule only held a unit whose TARGET
-    /// stood in the pool; a target beyond it was reached through it. Now the pool is ground to go
-    /// around: within the rim's margin, the part of a step that points into the pool is taken out,
-    /// and a step aimed dead at the centre goes round on the target's side.
-    /// </summary>
-    private Vector3 AroundPools(Vector3 step, Vector3 toTarget)
-    {
-        var zones = Zone.All;
-        Vector3 here = transform.position;
-        for (int i = 0; i < zones.Count; i++)
-        {
-            var z = zones[i];
-            if (z == null || z.Owner == null || z.Owner.isTeam == _entity.isTeam) continue;
-            if (!z.Covers(here, PoolMargin)) continue;   // not at its rim
-            // A target inside the pool is StandingOffFrom's case: hold at the edge, do not circle.
-            if (CurrentTarget != null && z.Covers(CurrentTarget.transform.position, PoolMargin)) continue;
-            step = PoolSteer.Around(step, z.Outward(here), toTarget);
-        }
-        return step;
+        return (dir + lateralOffset).normalized * moveSpeed;
     }
 
     /// <summary>
