@@ -44,3 +44,39 @@ public class BattleGridTests
     }
 
 }
+
+/// <summary>
+/// The side walls stand inside what the camera shows, so a unit knocked to one is drawn whole.
+/// </summary>
+public class ArenaScreenFitTests
+{
+    [Test]
+    public void AWallAuthoredPastTheViewIsPulledInsideIt()
+    {
+        // The coliseum: walls at ±8.6, a 16:9 camera showing ±8.9, and the 1.75 margin: ±7.14, which
+        // still clears the back column's cells at ±7.
+        var arena = new GameObject("ArenaForFit").AddComponent<ArenaBounds>();
+        try { Assert.That(ArenaBounds.FitHalfWidth(8.6f, 8.889f, 0f, arena.screenMargin), Is.EqualTo(7.139f).Within(0.01f)); }
+        finally { Object.DestroyImmediate(arena.gameObject); }
+    }
+
+    [Test]
+    public void AnArenaAlreadyInsideTheViewIsLeftAlone()
+    {
+        Assert.That(ArenaBounds.FitHalfWidth(6f, 8.889f, 0f, 1.3f), Is.EqualTo(6f));
+    }
+
+    [Test]
+    public void ANarrowerScreenPullsTheWallsInFurther()
+    {
+        // 16:10 shows ±8.0: the same arena's walls come in to ±6.7, and the back column (±7) is
+        // then outside them — worth knowing before anyone ships a 16:10 build.
+        Assert.That(ArenaBounds.FitHalfWidth(8.6f, 8.0f, 0f, 1.3f), Is.EqualTo(6.7f).Within(0.01f));
+    }
+
+    [Test]
+    public void ACameraOffTheMiddleCostsTheNearerSide()
+    {
+        Assert.That(ArenaBounds.FitHalfWidth(8.6f, 8.889f, 0.5f, 1.3f), Is.EqualTo(7.089f).Within(0.01f));
+    }
+}

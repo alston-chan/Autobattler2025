@@ -32,6 +32,7 @@ public static class PlayChecks
         new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
         new PlayCheck("the round-end sweep clears the ground", TheRoundEndSweepClearsTheGround),
         new PlayCheck("a finished quest is engraved at its rarity", AFinishedQuestIsEngravedAtItsRarity),
+        new PlayCheck("a unit at the wall is drawn on screen", AUnitAtTheWallIsDrawnOnScreen),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -241,6 +242,56 @@ public static class PlayChecks
         Assert.That(HollowItems.IsHollow(item), Is.True, "the item was not spent");
         Assert.That(resonance.NoticeFor(item), Is.EqualTo(ResonanceNotice.Engraved), "nothing tells the player it happened");
     }
+
+    /// <summary>
+    /// A unit pinned against a side wall keeps its body on screen. The map presets put the walls at
+    /// ±8.6 while a 16:9 camera shows ±8.9, so a unit knocked to a wall was drawn off the edge. Every
+    /// living unit is put against each wall in turn, facing INTO the arena (a unit faces its target,
+    /// and its target is always inside the walls), measured over 120 frames of the fight so every
+    /// pose of the animations is sampled, and put back.
+    ///
+    /// Weapons are left out, on purpose: a swing reaches up to 2.2 past its bearer, and covering it
+    /// would put the walls inside the back column's cells. A weapon crossing the edge for part of a
+    /// swing is the accepted cost; a head, a body or a cape is not.
+    /// </summary>
+    private static IEnumerator AUnitAtTheWallIsDrawnOnScreen()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var cam = Camera.main;
+        var arena = ArenaBounds.Instance;
+        Assert.That(cam, Is.Not.Null); Assert.That(arena, Is.Not.Null);
+        float left = cam.transform.position.x - cam.orthographicSize * cam.aspect;
+        float right = cam.transform.position.x + cam.orthographicSize * cam.aspect;
+
+        string worst = null; float worstOver = 0f;
+        for (int frame = 0; frame < 120; frame++)
+        {
+        foreach (var unit in PlayHarness.Living())
+        {
+            Vector3 home = unit.transform.position;
+            foreach (bool rightWall in new[] { true, false })
+            {
+                unit.transform.position = ArenaBounds.ClampToArena(new Vector3(rightWall ? 100f : -100f, home.y, home.z));
+                unit.SetFacing(!rightWall);   // facing into the arena, toward whatever it is fighting
+                foreach (var r in unit.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    if (!r.enabled || r.sprite == null || !r.gameObject.activeInHierarchy) continue;
+                    if (IsWeaponArt(r.name)) continue;
+                    float over = rightWall ? r.bounds.max.x - right : left - r.bounds.min.x;
+                    if (over > worstOver) { worstOver = over; worst = DisplayNames.Unit(unit) + "'s " + r.name + (rightWall ? " at the right wall" : " at the left wall"); }
+                }
+            }
+            unit.transform.position = home;
+        }
+        yield return null;
+        }
+        Assert.That(worstOver, Is.LessThanOrEqualTo(0.05f), worst + " is drawn " + worstOver.ToString("0.00") + " past the edge of the screen");
+    }
+
+    private static bool IsWeaponArt(string rendererName) =>
+        rendererName.Contains("Weapon") || rendererName.Contains("Bow") || rendererName.Contains("Firearm") ||
+        rendererName.Contains("Shield") || rendererName.Contains("Arrow");
 
     /// <summary>
     /// The deadlock: a unit whose target is just past its reach, standing still, not attacking.

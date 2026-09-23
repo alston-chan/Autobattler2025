@@ -38,12 +38,47 @@ public class ArenaBounds : MonoBehaviour
              "knockback can throw someone.")]
     public Vector2 size = new Vector2(17.6f, 6.2f);
 
+    [Tooltip("The side walls never stand closer than this to the camera's left and right edges, " +
+             "whatever the size says, so a unit pinned against one keeps its body on screen. A unit " +
+             "at a wall faces into the arena; measured over 200 frames of fighting, its body reaches " +
+             "at most 1.73 toward the wall (a head leaning in an animation). A weapon mid-swing " +
+             "reaches up to 2.2 and may cross the edge for a moment: covering it would put the walls " +
+             "inside the back column (±7). 1.75 puts the coliseum's walls at ±7.14 at 16:9.")]
+    public float screenMargin = 1.75f;
+
     // Edges, derived. The arena is authored as a middle and a span because those are the two things
     // anyone actually wants to change — nudge it across, make it bigger. Four independent edges made
     // the first of those a two-field edit with arithmetic in between, and nothing kept the halves in
     // step with each other.
-    public float MinX => center.x - size.x * 0.5f;
-    public float MaxX => center.x + size.x * 0.5f;
+    public float MinX => center.x - HalfWidth;
+    public float MaxX => center.x + HalfWidth;
+
+    /// <summary>
+    /// Half the arena's width as the fight uses it: the authored half, but never past what the
+    /// camera shows less <see cref="screenMargin"/>. The map presets were authored wider than the
+    /// view — the coliseum's walls at ±8.6 against a camera showing ±8.9 at 16:9 — so a unit knocked
+    /// to a side wall was drawn up to a unit and a half off screen. Read from the camera each time,
+    /// so a narrower window pulls the walls in with it.
+    /// </summary>
+    public float HalfWidth
+    {
+        get
+        {
+            var cam = Camera.main;
+            if (cam == null || !cam.orthographic) return size.x * 0.5f;
+            return FitHalfWidth(size.x * 0.5f, cam.orthographicSize * cam.aspect, cam.transform.position.x - center.x, screenMargin);
+        }
+    }
+
+    /// <summary>
+    /// The authored half-width, cut to what a camera of this half-width, this far off the arena's
+    /// middle, shows with <paramref name="margin"/> to spare on the nearer side. Never below half a unit.
+    /// </summary>
+    public static float FitHalfWidth(float authoredHalf, float cameraHalfWidth, float cameraOffset, float margin)
+    {
+        float visible = cameraHalfWidth - Mathf.Abs(cameraOffset) - margin;
+        return Mathf.Max(0.5f, Mathf.Min(authoredHalf, visible));
+    }
     public float MinY => center.y - size.y * 0.5f;
     public float MaxY => center.y + size.y * 0.5f;
 
@@ -78,7 +113,7 @@ public class ArenaBounds : MonoBehaviour
     /// </summary>
     private Vector3 ClampEllipse(Vector3 p)
     {
-        float rx = size.x * 0.5f;
+        float rx = HalfWidth;
         float ry = size.y * 0.5f;
         if (rx <= 0.0001f || ry <= 0.0001f) return ClampRect(p);   // degenerate box
 
