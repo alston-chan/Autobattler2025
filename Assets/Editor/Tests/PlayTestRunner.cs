@@ -32,6 +32,15 @@ public static class PlayTestRunner
 
     private const string PendingKey = "Autobattler.PlayChecksPending";
     private const string OnlyKey = "Autobattler.PlayChecksOnly";
+    private const string RestoreKey = "Autobattler.PlayChecksRestoreScenario";
+
+    /// <summary>
+    /// The scenario every run plays, whatever the editor has picked. The checks are written against
+    /// its heroes and its three gladiators: with no scenario the demo run's random gear and enemies
+    /// failed a different check most runs (measured 2026-09-23: three failures in three runs, each a
+    /// different check), and with Act1Map the bell waits on a path nobody picks.
+    /// </summary>
+    public const string Scenario = "Assets/Data/Playtest/FourVerbs.asset";
 
     /// <summary>
     /// Run only the checks whose names contain <paramref name="only"/> (any case). The whole list
@@ -64,6 +73,7 @@ public static class PlayTestRunner
         }
 
         Write("PLAY running, started " + DateTime.Now.ToString("HH:mm:ss") + "\n");
+        PinScenario();
         EditorPrefs.SetBool(PendingKey, true);
         EditorApplication.EnterPlaymode();
     }
@@ -71,6 +81,8 @@ public static class PlayTestRunner
     /// <summary>The far side of the domain reload: if a run was asked for, drive it.</summary>
     private static void AfterReload()
     {
+        // Back in edit mode with a scenario still pinned: a run that never reached Finish.
+        if (!EditorApplication.isPlaying && !EditorPrefs.GetBool(PendingKey, false)) RestoreScenario();
         if (!EditorPrefs.GetBool(PendingKey, false)) return;
         if (!EditorApplication.isPlaying) return;      // the reload on the way out, not the way in
 
@@ -83,6 +95,7 @@ public static class PlayTestRunner
         if (checks.Count == 0)
         {
             Write("PLAY done: passed=0 failed=0 (no check matches '" + only + "')" + Environment.NewLine);
+            RestoreScenario();
             EditorApplication.ExitPlaymode();
             return;
         }
@@ -158,7 +171,33 @@ public static class PlayTestRunner
               .Append(" in ").Append((whole.ElapsedMilliseconds / 1000f).ToString("0")).Append("s\n");
         Write(report.ToString());
         Debug.Log("[PlayChecks] " + passed + " passed, " + failed + " failed — " + ResultsPath);
+        RestoreScenario();
         if (EditorApplication.isPlaying) EditorApplication.ExitPlaymode();
+    }
+
+    /// <summary>
+    /// Play <see cref="Scenario"/> for this run, remembering what was picked. In memory only: the
+    /// Playtest asset is never marked dirty, so nothing writes the swap to disk, and the loaded asset
+    /// keeps the value across the domain reload into play mode.
+    /// </summary>
+    private static void PinScenario()
+    {
+        var playtest = Playtest.Active;
+        if (playtest == null) return;
+        if (!EditorPrefs.HasKey(RestoreKey))
+            EditorPrefs.SetString(RestoreKey, playtest.active != null ? AssetDatabase.GetAssetPath(playtest.active) : "");
+        playtest.active = AssetDatabase.LoadAssetAtPath<PlaytestScenario>(Scenario);
+    }
+
+    /// <summary>Put back the scenario the editor had before the run pinned its own.</summary>
+    private static void RestoreScenario()
+    {
+        if (!EditorPrefs.HasKey(RestoreKey)) return;
+        string path = EditorPrefs.GetString(RestoreKey, "");
+        EditorPrefs.DeleteKey(RestoreKey);
+        var playtest = Playtest.Active;
+        if (playtest == null) return;
+        playtest.active = string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<PlaytestScenario>(path);
     }
 
     private static void Write(string text)

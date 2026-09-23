@@ -278,6 +278,11 @@ reading play results. Measured 2026-09-22: 95% of a day's tool time was waiting 
 retries through the plugin's 503s while it reconnects after a reload. The raw call is still
 `npx unity-mcp-cli run-tool tests-run . --input '{"testMode":"EditMode"}'`.
 
+**The play checks always play FourVerbs**, whatever scenario the editor has picked
+(`PlayTestRunner.Scenario`, pinned in memory for the run and put back after). They are written
+against its company and its three gladiators; with no scenario the demo run's random gear and enemies
+failed a different check most runs, and a map scenario would wait at the bell for a path.
+
 **Never call `tests-run` while the editor is in play mode.** The run never finishes, and the MCP
 plugin leases it for ten minutes in SessionState (it survives a domain reload), answering every later
 run with "another test run is already in progress". `Tools/dev.sh` leaves play mode first, and if it
