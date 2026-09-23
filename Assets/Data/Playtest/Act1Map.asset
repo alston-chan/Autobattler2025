@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643e6494917fbf44a928db68e3f09f63, type: 3}
+  m_Name: Act1Map
+  m_EditorClassIdentifier: 
+  run: {fileID: 11400000, guid: df9dbc2e0e1feef28d0afb0c1d2ef4ab, type: 2}
+  heroes: []
+  heroHealthScale: 1
+  encounter: {fileID: 0}
+  loadout: {fileID: 0}
+  enemyKits: []
+  randomEnemyKits: 1
+  notes: 'The Act 1 map run, as a friend would play it: the authored company in its
+    starting kits, a branching map of seven rows with elites and a boss, the shop
+    after every won fight. The run saves at every safe point and resumes on the next
+    play; R in game starts a fresh one.'

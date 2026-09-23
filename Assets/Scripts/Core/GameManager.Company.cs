@@ -20,6 +20,7 @@ public partial class GameManager
 {
     private void BuildCompany()
     {
+        ApplyScenarioRun();
         ApplyScenarioRoster();
         CreateAvatarUI();
         BuildRoster();
@@ -50,6 +51,18 @@ public partial class GameManager
             if (hero.gameObject.activeSelf != fields) hero.gameObject.SetActive(fields);
         }
         Debug.Log($"[Playtest] Scenario '{scenario.name}': fielding {string.Join(", ", scenario.heroes.ConvertAll(h => h.heroName))}.");
+    }
+
+    /// <summary>
+    /// A scenario that names a run plays it in place of the scene's. First of all, since the bag, the
+    /// starting gear and the save all read the run. Runtime only: the scene keeps its own.
+    /// </summary>
+    private void ApplyScenarioRun()
+    {
+        var scenario = Playtest.Scenario;
+        if (scenario == null || scenario.run == null || runManager == null) return;
+        runManager.runData = scenario.run;
+        Debug.Log($"[Playtest] Scenario '{scenario.name}': playing the run '{scenario.run.name}'.");
     }
 
     /// <summary>Collect the player-controlled characters for inventory setup.</summary>

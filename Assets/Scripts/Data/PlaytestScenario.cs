@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// A fight to play on purpose: which heroes field, in what gear and with which spell active,
-/// against which encounter. Tactics come from the gear, as always. For playtesting a question — does 3v3 read better than 5v5,
+/// against which encounter — or a whole run to play, such as the Act 1 map. Tactics come from the gear, as always. For playtesting a question — does 3v3 read better than 5v5,
 /// does a ninja whose blink fires a Cannonball feel as good as it sounds — without touching the
 /// scene or the run. Nothing here is saved anywhere: the scenario is applied at the start of play
 /// and forgotten when play stops. Pick one in Tools > Playtest > Scenarios; none means the game as
@@ -25,6 +25,10 @@ public class PlaytestScenario : ScriptableObject
 
         private static IEnumerable<ValueDropdownItem<string>> ItemIds() => Catalog.ItemIds();
     }
+
+    [Tooltip("The run to play in place of the scene's (RunManager.runData) — the Act 1 map, say. Empty " +
+             "keeps the scene's run. The run brings its own map, shop, starting gear and save.")]
+    public RunData run;
 
     [Tooltip("The heroes to field. Everyone else sits out. Empty fields the company as authored.")]
     public List<HeroKit> heroes = new List<HeroKit>();
