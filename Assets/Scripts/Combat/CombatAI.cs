@@ -27,7 +27,6 @@ public class CombatAI : MonoBehaviour
     // The leash (see Targeting.LeashSeconds): when progress toward the target was last made, and
     // the target a broken leash keeps off the table for a moment.
     private float _lastProgressTime;
-    private float _lastDistanceToTarget = float.MaxValue;
     private Entity _leashed;
     private float _leashedUntil;
     private const float LeashHoldoffSeconds = 2f;
@@ -188,7 +187,6 @@ public class CombatAI : MonoBehaviour
                 // A fresh target: the leash starts now.
                 CurrentTarget = closestEnemy;
                 _lastProgressTime = Time.time;
-                _lastDistanceToTarget = float.MaxValue;
             }
             float distToTarget = Vector3.Distance(transform.position, CurrentTarget.transform.position);
 
@@ -225,7 +223,6 @@ public class CombatAI : MonoBehaviour
             // which is the pinball the leash was meant to end. Relentless never lets go.
             bool inReach = distToTarget <= _attackRange || _isAttacking;
             if (acted || inReach) _lastProgressTime = Time.time;
-            _lastDistanceToTarget = distToTarget;
             float leash = Targeting.LeashFor(_entity.EffectiveCommitment);
             if (Targeting.LockOn && !inReach && !taunted && Time.time - _lastProgressTime > leash)
             {
@@ -253,8 +250,8 @@ public class CombatAI : MonoBehaviour
                 {
                     // Keep going a little past the rim, or a unit whose target stands across the pool
                     // steps out, steps back in, and shivers on the edge for the pool's whole life.
-                    Vector3 away = transform.position - _fleeingPool.transform.position; away.z = 0f;
-                    move = (away.sqrMagnitude > 0.0001f ? away.normalized : (_entity.isTeam ? Vector3.left : Vector3.right)) * moveSpeed;
+                    // Out through the NEAREST rim: the pool is flat, so that is mostly up or down.
+                    move = _fleeingPool.Outward(transform.position) * moveSpeed;
                 }
                 else move = StanceMove(distToTarget);
                 SetAnimState(move.sqrMagnitude > 0.0001f);
@@ -409,7 +406,33 @@ public class CombatAI : MonoBehaviour
         Vector3 perp = Vector3.Cross(dir, Vector3.forward).normalized;
         float offsetAmount = Mathf.PerlinNoise(transform.position.x, transform.position.y) - 0.5f;
         Vector3 lateralOffset = perp * offsetAmount * 0.8f * fade;
-        return (dir + lateralOffset).normalized * moveSpeed;
+        return AroundPools((dir + lateralOffset).normalized, dir) * moveSpeed;
+    }
+
+    /// <summary>
+    /// A step toward the target, turned along the rim of any hostile pool it would walk into.
+    ///
+    /// Measured: a Berserker chasing a scarecrow on the far side of a tar pool reversed four times in
+    /// a second and a half. It walked in, <see cref="Zone.HostileAt"/> sent it out, and the next step
+    /// toward its target walked it straight back in. The standoff rule only held a unit whose TARGET
+    /// stood in the pool; a target beyond it was reached through it. Now the pool is ground to go
+    /// around: within the rim's margin, the part of a step that points into the pool is taken out,
+    /// and a step aimed dead at the centre goes round on the target's side.
+    /// </summary>
+    private Vector3 AroundPools(Vector3 step, Vector3 toTarget)
+    {
+        var zones = Zone.All;
+        Vector3 here = transform.position;
+        for (int i = 0; i < zones.Count; i++)
+        {
+            var z = zones[i];
+            if (z == null || z.Owner == null || z.Owner.isTeam == _entity.isTeam) continue;
+            if (!z.Covers(here, PoolMargin)) continue;   // not at its rim
+            // A target inside the pool is StandingOffFrom's case: hold at the edge, do not circle.
+            if (CurrentTarget != null && z.Covers(CurrentTarget.transform.position, PoolMargin)) continue;
+            step = PoolSteer.Around(step, z.Outward(here), toTarget);
+        }
+        return step;
     }
 
     /// <summary>

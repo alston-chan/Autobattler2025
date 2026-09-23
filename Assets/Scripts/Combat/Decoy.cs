@@ -76,6 +76,7 @@ public static class Decoy
         entity.isCharacter = false;
         entity.maxHealth = health;
         go.SetActive(true);                          // Awake and OnEnable run here, with the data in place
+        go.AddComponent<DecoyMark>();                // what the round-end sweep looks for (CombatDebris)
 
         if (entity.Health != null)
         {
@@ -102,6 +103,9 @@ public static class Decoy
         return entity;
     }
 }
+
+/// <summary>Every decoy wears this, whichever way it was built, so the round-end sweep can find it.</summary>
+public class DecoyMark : MonoBehaviour { }
 
 /// <summary>A decoy body's reactions: the scarecrow's spring when it is hit, and a fall when it dies.</summary>
 public class DecoyBody : MonoBehaviour

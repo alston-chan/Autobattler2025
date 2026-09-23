@@ -60,6 +60,36 @@ public class SpaceVerbTests
     }
 
     [Test]
+    public void APoolIsLeftByItsNearestRim()
+    {
+        // Flat ground: from just left of the middle, the way out is up, not the long way left.
+        var centre = Vector3.zero;
+        var outward = ShapeSprites.FloorOutward(centre, 2f, new Vector3(-0.5f, 0.2f, 0f));
+        Assert.That(Mathf.Abs(outward.y), Is.GreaterThan(Mathf.Abs(outward.x)), "out through the near rim");
+        Assert.That(outward.y, Is.GreaterThan(0f));
+        Assert.That(ShapeSprites.FloorOutward(centre, 2f, new Vector3(1.9f, 0f, 0f)).x, Is.EqualTo(1f).Within(0.001f), "at the side rim, out sideways");
+    }
+
+    [Test]
+    public void AStepIntoAPoolGoesRoundItOnTheTargetsSide()
+    {
+        // A unit at the pool's left rim, its target beyond the pool to the right and a little up.
+        var outward = Vector3.left;
+        var toTarget = new Vector3(1f, 0.2f, 0f).normalized;
+
+        var straightIn = PoolSteer.Around(Vector3.right, outward, toTarget);
+        Assert.That(Vector3.Dot(straightIn, outward), Is.GreaterThanOrEqualTo(-0.001f), "never into the pool");
+        Assert.That(straightIn.y, Is.GreaterThan(0.9f), "round on the target's side, which is up");
+
+        var oblique = PoolSteer.Around(new Vector3(0.7f, -0.7f, 0f).normalized, outward, toTarget);
+        Assert.That(Vector3.Dot(oblique, outward), Is.GreaterThanOrEqualTo(-0.001f), "the inward part is taken out");
+        Assert.That(oblique.y, Is.LessThan(0f), "and the rest of the step is kept");
+
+        var away = new Vector3(-0.6f, 0.8f, 0f);
+        Assert.That(PoolSteer.Around(away, outward, toTarget), Is.EqualTo(away), "a step that does not enter is left alone");
+    }
+
+    [Test]
     public void TarPoolSaysItsVictimsWalkOut()
     {
         var e = new ZoneEffect { radius = 2f, seconds = 5f };

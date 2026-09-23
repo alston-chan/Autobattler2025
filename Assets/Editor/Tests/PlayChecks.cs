@@ -30,6 +30,7 @@ public static class PlayChecks
         new PlayCheck("a whirl cuts the enemy beside it", AWhirlCutsTheEnemyBesideIt),
         new PlayCheck("hold the line covers whoever is close", HoldTheLineCoversWhoeverIsClose),
         new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
+        new PlayCheck("the round-end sweep clears the ground", TheRoundEndSweepClearsTheGround),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
         new PlayCheck("a bar comes back when its owner is alive again", ABarComesBackFromADeathFade),
@@ -165,6 +166,32 @@ public static class PlayChecks
                                        DisplayNames.Unit(first) + " to turn on " + DisplayNames.Unit(wearer), 2f);
 
         foreach (var enemy in row) if (enemy != null && enemy.Statuses != null) enemy.Statuses.Remove(stand.taunted);   // leave nothing for the next check
+    }
+
+    /// <summary>
+    /// What a round leaves on the ground does not reach the next one. A tar pool lives five seconds
+    /// by the clock, and one cast late in a round was still there at the next bell: every unit in it
+    /// walked out of a pool nobody had cast in that fight. The round-end sweep (CombatDebris) was
+    /// written before the space verbs and never learned about them, or about decoys.
+    /// </summary>
+    private static IEnumerator TheRoundEndSweepClearsTheGround()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        var owner = PlayHarness.Living().Find(u => !u.isTeam);
+        Assert.That(owner, Is.Not.Null, "no living enemy to own a pool");
+        var pool = ShapeSprites.OnFloor("SweepCheckPool", owner.transform.position, 1.5f, Color.black, filled: true).gameObject.AddComponent<Zone>();
+        pool.Begin(owner, 1.5f, 30f, 0f, null, 0f, Color.white);
+        var decoy = Decoy.Spawn(owner, owner.transform.position + Vector3.right, 50f, 30f, null, "SweepCheckDecoy");
+        yield return null;
+        Assert.That(Zone.All, Has.Member(pool));
+
+        CombatDebris.Sweep();
+        yield return null;   // Destroy lands at the end of the frame
+
+        Assert.That(pool == null, Is.True, "a tar pool outlived the round-end sweep");
+        Assert.That(decoy == null, Is.True, "a decoy outlived the round-end sweep, and its taunt with it");
+        Assert.That(Zone.All.Exists(z => z != null && z.name == "SweepCheckPool"), Is.False);
     }
 
     /// <summary>

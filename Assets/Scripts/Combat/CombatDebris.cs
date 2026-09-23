@@ -19,6 +19,23 @@ public static class CombatDebris
         cleared += Clear<Assets.HeroEditor.Common.Scripts.ExampleScripts.Projectile>();
         cleared += Clear<ThrownStar>();
         cleared += Clear<CartoonFX.CFXR_Effect>();
+
+        // The verbs that use space, which came after this sweep and were never added to it. A tar
+        // pool lives five seconds by the clock, not by the fight: one cast in the last seconds of a
+        // round was still on the ground at the next bell, and every unit in it walked out of a
+        // pool nobody had cast in this fight. The same holds for a blob still in the air (it lands
+        // as a pool), a strike still counting down, blades still spinning and a star still bouncing.
+        cleared += Clear<Zone>();
+        cleared += Clear<LobbedBlob>();
+        cleared += Clear<DelayedStrike>();
+        cleared += Clear<OrbitRunner>();
+        cleared += Clear<BouncingStar>();
+        cleared += Clear<FallingArrow>();
+        cleared += Clear<FadeAway>();
+        cleared += Clear<Bubble>();
+        // A decoy is a body that taunts: one left standing would open the next fight with its taunt
+        // already holding the enemies it caught.
+        cleared += Clear<DecoyMark>();
         return cleared;
     }
 

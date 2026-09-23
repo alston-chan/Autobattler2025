@@ -108,6 +108,18 @@ public static class ShapeSprites
         return dx * dx + dy * dy <= 1f;
     }
 
+    /// <summary>
+    /// The direction straight out of a floor shape through its nearest rim, from a point in or near it.
+    /// On a flattened shape that is mostly up or down, not away from the centre: a unit fleeing a
+    /// pool radially from near its middle crossed the long way, 2 units of tar instead of 1.1.
+    /// </summary>
+    public static Vector3 FloorOutward(Vector3 centre, float radius, Vector3 p)
+    {
+        float ry = radius * FloorDepth;
+        Vector3 n = new Vector3((p.x - centre.x) / (radius * radius), (p.y - centre.y) / (ry * ry), 0f);
+        return n.sqrMagnitude > 1e-8f ? n.normalized : Vector3.up;
+    }
+
     /// <summary>Everything of the other side alive inside a floor shape: an area as it is drawn.</summary>
     public static List<Entity> EnemiesOnFloor(Entity of, Vector3 centre, float radius)
     {
@@ -563,6 +575,9 @@ public class Zone : MonoBehaviour
     /// <summary>Whether a point is on the pool as drawn, or within <paramref name="margin"/> of its rim.</summary>
     public bool Covers(Vector3 p, float margin = 0f) => ShapeSprites.OnFloorWithin(transform.position, Radius + margin, p);
 
+    /// <summary>The quickest way off the pool from a point: straight out through the nearest rim.</summary>
+    public Vector3 Outward(Vector3 p) => ShapeSprites.FloorOutward(transform.position, Radius, p);
+
     /// <summary>The pool this unit is standing in that belongs to the other side, or null.</summary>
     public static Zone HostileAt(Entity e)
     {
@@ -597,7 +612,10 @@ public class Zone : MonoBehaviour
         }
 
         // Who is in it: stained while inside, clean again on the way out.
-        var inside = ShapeSprites.EnemiesWithin(Owner, transform.position, Radius);
+        // The drawn pool, as the AI's "am I in it" asks (Covers). This read a circle after the AI had
+        // moved to the ellipse, so a unit a row away was stained and ticked while its own AI said
+        // it was on dry ground and had no reason to leave.
+        var inside = ShapeSprites.EnemiesOnFloor(Owner, transform.position, Radius);
         foreach (var e in inside) if (_stained.Add(e)) Stain(e);
         if (_stained.Count > inside.Count)
         {

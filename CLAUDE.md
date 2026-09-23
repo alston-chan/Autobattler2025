@@ -335,6 +335,11 @@ Writing them:
   `Zone.Covers` judge that same ellipse. Arrow Rain and Tar Pool once drew the ellipse and judged a
   circle, hitting the rows above and below the ring. Point-to-point reach (a swing, a body, a blade's
   edge) stays a plain distance: nothing is drawn for it.
+- **Anything a fight puts in the world must be in `CombatDebris.Sweep`.** It runs at round end. The
+  space verbs came after it and were never added, so a tar pool (five seconds by the clock, not by
+  the fight) survived into the next bell and units walked out of a pool nobody had cast. A new
+  lingering effect, projectile or summoned body goes on that list in the same commit;
+  `TheRoundEndSweepClearsTheGround` covers pools and decoys.
 - **`Stance` is serialized by number; 2 was Hold and stays retired.** A tactics item stores its
   stance as an int; `NoItemAsksForTheStanceThatWasRemoved` fails on an asset still carrying it.
 - **A cell is where a unit stands, and the soft wall gives way to the grid.** `BattleGrid.CellToWorld`
