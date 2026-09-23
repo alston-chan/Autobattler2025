@@ -282,16 +282,40 @@ public static class PlayChecks
         var wornAgain = window.Equipment.Items.Find(i => i.Id == held.Id);
         var quest = other.Resonance.QuestOf(wornAgain);
         other.Resonance.Accrue(quest.requirement, quest.questGoal);
+        // Fillers teach something else, so the replacement is told apart from them.
+        GrantSpellEngraving elsewhere = null;
+        foreach (var e in ResonanceDatabase.Active.entries)
+            if (e.engraving is GrantSpellEngraving g && g.spell != null && g.spell != taught) { elsewhere = g; break; }
+        Assert.That(elsewhere, Is.Not.Null, "no second verb in the database to fill the row with");
         var fillers = new System.Collections.Generic.List<Resonance.Banked>();
         while (!other.Resonance.AbilitySlotsFull)
         {
-            var filler = new Resonance.Banked { engraving = quest.engraving, tier = Rarity.C, itemId = held.Id };
+            var filler = new Resonance.Banked { engraving = elsewhere, tier = Rarity.C, itemId = "filler" };
             other.Resonance.banked.Add(filler);
             fillers.Add(filler);
         }
-        try { Assert.That(other.Resonance.Bank(wornAgain), Is.False, "banked a fourth ability past the row's three slots"); }
-        finally { foreach (var filler in fillers) other.Resonance.banked.Remove(filler); }
-        Assert.That(other.Resonance.CanBank(wornAgain), Is.True, "with room in the row, the complete weapon should bank");
+        try
+        {
+            Assert.That(other.Resonance.Bank(wornAgain), Is.False, "banked a fourth ability past the row's three slots");
+            Assert.That(other.Resonance.MustReplaceToBank(wornAgain), Is.True, "a full row should offer to replace");
+
+            // Replacing the middle slot: the new verb takes that slot, the row stays at three.
+            var abilities = other.Resonance.BankedAbilities();
+            var replaced = abilities[1];
+            int at = other.Resonance.banked.IndexOf(replaced);
+            Assert.That(other.Resonance.Bank(wornAgain, replaced), Is.True, "clicking a full slot did not replace it");
+            Assert.That(other.Resonance.BankedAbilities().Count, Is.EqualTo(Entity.MaxBankedAbilities), "replacing changed how many are banked");
+            Assert.That(other.Resonance.banked, Has.No.Member(replaced), "the replaced ability is still banked");
+            Assert.That(other.Resonance.banked[at].itemId, Is.EqualTo(held.Id), "the new ability did not take the replaced one's slot");
+            Assert.That(HollowItems.IsHollow(wornAgain), Is.True, "replacing did not spend the weapon");
+            Assert.That(other.Resonance.banked[at].engraving, Is.SameAs(quest.engraving), "the slot holds the wrong verb");
+            Assert.That(other.spellSlots, Has.Member(taught), "the replacing verb is not in the slots");
+        }
+        finally
+        {
+            foreach (var filler in fillers) other.Resonance.banked.Remove(filler);
+            other.Resonance.Refresh();
+        }
     }
 
     /// <summary>

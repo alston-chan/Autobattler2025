@@ -260,11 +260,19 @@ public class Resonance : MonoBehaviour
     /// none. Between fights only, because hollowing a weapon mid-swing or armour mid-hit would take
     /// it away in the fight that earned it.
     /// </summary>
-    public bool CanBank(Item item)
+    public bool CanBank(Item item) => Ready(item) && !(QuestOf(item).engraving is GrantSpellEngraving && AbilitySlotsFull);
+
+    /// <summary>
+    /// Whether this weapon is ready to bank but the Abilities row is full, so banking it means
+    /// replacing one of the three (<see cref="Bank(Item, Banked)"/>).
+    /// </summary>
+    public bool MustReplaceToBank(Item item) => Ready(item) && QuestOf(item).engraving is GrantSpellEngraving && AbilitySlotsFull;
+
+    /// <summary>Complete, worn, and no fight on — everything banking asks except room in the row.</summary>
+    private bool Ready(Item item)
     {
         var entry = QuestOf(item);
         if (entry == null || _inCombat || !entry.IsComplete(AttunementFor(item))) return false;
-        if (entry.engraving is GrantSpellEngraving && AbilitySlotsFull) return false;
         var inventory = _entity != null ? _entity.characterInventory : null;
         return inventory != null && inventory.Equipment != null && inventory.Equipment.Items.Contains(item);
     }
@@ -275,13 +283,30 @@ public class Resonance : MonoBehaviour
     /// automatic: keeping a complete item worn keeps its stats, and banking spends them. Returns
     /// whether it banked.
     /// </summary>
-    public bool Bank(Item item)
+    public bool Bank(Item item) => Bank(item, null);
+
+    /// <summary>
+    /// Bank a weapon into the full Abilities row in place of <paramref name="replace"/>, one of
+    /// <see cref="BankedAbilities"/>: the new verb takes its slot and the old one is gone for good.
+    /// With no replacement this is <see cref="Bank(Item)"/>. Returns whether it banked.
+    /// </summary>
+    public bool Bank(Item item, Banked replace)
     {
-        if (!CanBank(item)) return false;
+        int slot = replace != null ? banked.IndexOf(replace) : -1;
+        if (replace != null)
+        {
+            if (!MustReplaceToBank(item) || slot < 0 || !(replace.engraving is GrantSpellEngraving)) return false;
+        }
+        else if (!CanBank(item)) return false;
 
         var entry = QuestOf(item);
         int tier = Rarity.Of(item);
-        banked.Add(new Banked { engraving = entry.engraving, tier = tier, itemId = item.Id });
+        var mark = new Banked { engraving = entry.engraving, tier = tier, itemId = item.Id };
+
+        // In place, so the row keeps its order and the refresh below revokes the old verb's grant
+        // (its source key now names a different engraving) as it grants the new one.
+        if (slot >= 0) banked[slot] = mark;
+        else banked.Add(mark);
 
         // Read the key BEFORE hollowing: hollowing changes the item's modifier, and so its
         // descriptor, and the progress being cleared is filed under the old one.
@@ -291,7 +316,8 @@ public class Resonance : MonoBehaviour
         if (_notices.Remove(spentKey)) OnNoticesChanged?.Invoke();
         OnAttunementChanged?.Invoke();
 
-        Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at {Rarity.Letter(tier)}.");
+        Debug.Log($"[Resonance] {_entity.name} banked {entry.engraving.DisplayName} at {Rarity.Letter(tier)}" +
+                  (replace != null ? $" in place of {replace.engraving.DisplayName}." : "."));
         return true;
     }
 

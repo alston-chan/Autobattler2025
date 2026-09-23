@@ -13,12 +13,17 @@ using UnityEngine.UI;
 /// rather than as lines of text. Clicking one before a fight makes it the verb the hero casts; the
 /// active one is framed in green, as a selected item is.
 ///
+/// When the row is full and the selected weapon is ready to bank, the row turns to replacing: every
+/// slot is framed orange and says Replace, and clicking one banks the weapon in that slot, the old
+/// verb gone for good (<see cref="Resonance.Bank(Item, Resonance.Banked)"/>).
+///
 /// Built at runtime from the window's own panel, title and slot art, so the vendor prefab is untouched.
 /// </summary>
 public class BankedAbilityBar : MonoBehaviour
 {
     private static readonly Color FrameIdle = new Color(0.408f, 0.373f, 0.31f, 1f);
     private static readonly Color FrameActive = new Color(0.62f, 0.86f, 0.25f, 1f);
+    private static readonly Color FrameReplace = new Color(1f, 0.55f, 0.2f, 1f);
     private static readonly Color Gold = new Color(1f, 0.82f, 0.28f, 1f);
     private static readonly Color Light = new Color(0.9f, 0.88f, 0.82f, 1f);
     private static readonly Color Muted = new Color(0.55f, 0.52f, 0.47f, 1f);
@@ -30,12 +35,15 @@ public class BankedAbilityBar : MonoBehaviour
     private Entity _hero;
     private RectTransform _panel;
     private Sprite _frameSprite;
+    private TMP_Text _title;
     private readonly List<GameObject> _slots = new List<GameObject>();
 
     // What the row was last drawn from; it is redrawn only when one of these moves.
     private int _drawnCount = -1;
     private Spell _drawnActive;
     private bool _drawnSetup;
+    private Item _drawnSelection;
+    private bool _drawnReplacing;
 
     public void Initialize(CharacterInventory inventory, Entity hero)
     {
@@ -51,10 +59,15 @@ public class BankedAbilityBar : MonoBehaviour
         int count = _hero.Resonance.BankedAbilities().Count;
         var active = _hero.ActiveSpell;
         bool setup = InSetup;
-        if (count == _drawnCount && active == _drawnActive && setup == _drawnSetup) return;
+        var selection = _inventory.SelectedItem;
+        bool replacing = Replacing;
+        if (count == _drawnCount && active == _drawnActive && setup == _drawnSetup &&
+            selection == _drawnSelection && replacing == _drawnReplacing) return;
         _drawnCount = count;
         _drawnActive = active;
         _drawnSetup = setup;
+        _drawnSelection = selection;
+        _drawnReplacing = replacing;
         Redraw();
     }
 
@@ -67,8 +80,14 @@ public class BankedAbilityBar : MonoBehaviour
         }
     }
 
+    /// <summary>The selected weapon is ready to bank and the row is full: a click replaces.</summary>
+    private bool Replacing => _hero.Resonance.MustReplaceToBank(_inventory.SelectedItem);
+
     private void Redraw()
     {
+        bool replacing = Replacing;
+        if (_title != null) _title.text = replacing ? "Abilities — click one to replace" : "Abilities";
+
         foreach (var slot in _slots) Destroy(slot);
         _slots.Clear();
 
@@ -99,7 +118,8 @@ public class BankedAbilityBar : MonoBehaviour
             iconImage.preserveAspect = true;
         }
 
-        var frame = NewImage(slot.transform, "Frame", _frameSprite, active ? FrameActive : FrameIdle, 0f);
+        bool replacing = Replacing;
+        var frame = NewImage(slot.transform, "Frame", _frameSprite, replacing ? FrameReplace : active ? FrameActive : FrameIdle, 0f);
         if (_frameSprite != null) frame.type = UnityEngine.UI.Image.Type.Sliced;
 
         var grade = Text(slot.transform, "Grade", Rarity.Letter(mark.tier), 15f, Color.white, TextAlignmentOptions.TopLeft);
@@ -112,7 +132,20 @@ public class BankedAbilityBar : MonoBehaviour
         name.fontSizeMin = 10f;
         name.fontSizeMax = 14f;
 
-        // Pick it as the verb to cast — before a fight, as the unit card's Cast row allows.
+        if (replacing)
+        {
+            // Along the bottom edge, so the weapon it would throw away is still seen.
+            var band = NewRect("Replace", slot.transform, new Vector2(0.5f, 0f), new Vector2(SlotSize - 6f, 18f), new Vector2(0f, 12f));
+            var bandFace = band.AddComponent<Image>();
+            bandFace.color = new Color(0.1f, 0.05f, 0f, 0.8f);
+            bandFace.raycastTarget = false;
+            var bandText = Text(band.transform, "Label", "Replace", 13f, FrameReplace, TextAlignmentOptions.Center);
+            bandText.fontStyle = FontStyles.Bold;
+            Fill(bandText.rectTransform, 0f);
+        }
+
+        // Pick it as the verb to cast — or, replacing, bank the selected weapon over it. Before a
+        // fight either way, as the unit card's Cast row allows.
         frame.raycastTarget = true;
         var button = slot.AddComponent<Button>();
         button.targetGraphic = frame;
@@ -120,7 +153,8 @@ public class BankedAbilityBar : MonoBehaviour
         var colors = button.colors;
         colors.disabledColor = Color.white;   // mid-fight the row is read-only, not greyed out
         button.colors = colors;
-        button.onClick.AddListener(() => Pick(spell));
+        if (replacing) button.onClick.AddListener(() => Replace(mark));
+        else button.onClick.AddListener(() => Pick(spell));
         return slot;
     }
 
@@ -134,6 +168,13 @@ public class BankedAbilityBar : MonoBehaviour
         var label = Text(slot.transform, "Name", "Empty", 13f, Muted, TextAlignmentOptions.Center);
         Place(label.rectTransform, new Vector2(0.5f, 0f), new Vector2(SlotSpacing - 4f, 20f), new Vector2(0f, -16f));
         return slot;
+    }
+
+    private void Replace(Resonance.Banked mark)
+    {
+        var weapon = _inventory.SelectedItem;
+        if (!InSetup || weapon == null) return;
+        _hero.Resonance.Bank(weapon, mark);
     }
 
     private void Pick(Spell spell)
@@ -176,8 +217,8 @@ public class BankedAbilityBar : MonoBehaviour
         {
             var copy = Instantiate(title.gameObject, _panel, false);
             copy.name = "PanelTitle";
-            var text = copy.GetComponentInChildren<TMP_Text>();
-            if (text != null) text.text = "Abilities";
+            _title = copy.GetComponentInChildren<TMP_Text>();
+            if (_title != null) _title.text = "Abilities";
         }
 
         var frameSource = _inventory.transform.Find("ItemInfo/SelectedItem/Frame");

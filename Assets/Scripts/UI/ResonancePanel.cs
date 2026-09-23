@@ -123,7 +123,7 @@ public class ResonancePanel : MonoBehaviour
         bool canBank = _hero.Resonance.CanBank(_selected);
 
         string quest = !worn ? $"Quest: {progress:0} / {entry.questGoal} {unit} while worn (paused)."
-                     : complete ? $"<b>Quest complete.</b> Bank it to keep this for good at {Rarity.Letter(rarity)}{(_selected.IsWeapon ? ", as a skill to pick between" : "")}; the item is spent."
+                     : complete ? $"<b>Quest complete</b> — bank to keep {(_selected.IsWeapon ? "the skill" : "it")} at {Rarity.Letter(rarity)}; the item is spent."
                      : $"Quest: {progress:0} / {entry.questGoal} {unit}, then it can be banked.";
 
         _detail.text = Keywords.Decorate(effect + "\n" + quest);
@@ -133,8 +133,9 @@ public class ResonancePanel : MonoBehaviour
         _bank.gameObject.SetActive(worn && complete);
         _bank.interactable = canBank;
         _bankFace.color = canBank ? ButtonReady : ButtonBlocked;
-        bool full = _selected.IsWeapon && entry.engraving is GrantSpellEngraving && _hero.Resonance.AbilitySlotsFull;
-        _bankLabel.text = canBank ? "Bank at " + Rarity.Letter(rarity) : full ? "Ability slots full" : "Bank after the fight";
+        // A full Abilities row is not a dead end: the row below turns to replacing.
+        bool replace = _hero.Resonance.MustReplaceToBank(_selected);
+        _bankLabel.text = canBank ? "Bank at " + Rarity.Letter(rarity) : replace ? "Pick an ability to replace" : "Bank after the fight";
     }
 
     private void BankSelected()
