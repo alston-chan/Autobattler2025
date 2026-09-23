@@ -67,10 +67,17 @@ compile() {
 
 tests() {
   local out try
+  # Edit-mode tests refuse to run in play mode, and a probe or a screenshot may have left it on.
+  if playing; then exec_cs 'UnityEditor.EditorApplication.ExitPlaymode();' >/dev/null; sleep 3; fi
   # Straight after a reload the plugin answers 503 for a few seconds while it reconnects.
   for try in 1 2 3 4 5 6; do
     out=$(timeout 300 $MCP tests-run . --input '{"testMode":"EditMode"}' 2>&1)
     grep -qE '"TotalTests"|error CS' <<<"$out" && break
+    # A tests-run sent while the editor was in play mode never finishes, and the plugin leases the
+    # run for ten minutes in SessionState, refusing every run after it. Release the lease and retry.
+    if grep -q 'another test run is already in progress' <<<"$out"; then
+      exec_cs 'System.Type t = null; foreach (var a in System.AppDomain.CurrentDomain.GetAssemblies()) { foreach (var x in a.GetTypes()) if (x.Name == \"Tool_Tests\") { t = x; break; } if (t != null) break; } t.GetMethod(\"ClearActiveTestRun\", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public).Invoke(null, new object[] { null });' >/dev/null
+    fi
     sleep 5
   done
   python - "$out" <<'PY'
