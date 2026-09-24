@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -136,8 +137,37 @@ public class HitFeedback : MonoBehaviour
         Material mat = FlashMaterial;
         if (mat == null) return;
         for (int i = 0; i < _renderers.Length; i++)
-            if (_renderers[i] != null && _renderers[i].sharedMaterial != mat)
-                _renderers[i].sharedMaterial = mat;
+        {
+            var r = _renderers[i];
+            if (r == null) continue;
+            var current = r.sharedMaterial;
+            if (current == mat || OurPaintFlash.Contains(current)) continue;
+            r.sharedMaterial = IsGrayPaint(current) ? PaintFlashFor(current, mat) : mat;
+        }
+    }
+
+    // HeroEditor colours eyes and painted equipment with its "Gray Paint" shader, which tints only
+    // some pixels (the iris, not the eye whites). Moving those renderers onto the plain flash
+    // material tinted the whole sprite, so each one gets a flash material in paint mode instead,
+    // carrying the settings of the material it replaced — one per source material, shared, so
+    // batching survives.
+    private static readonly Dictionary<Material, Material> PaintFlash = new Dictionary<Material, Material>();
+    private static readonly HashSet<Material> OurPaintFlash = new HashSet<Material>();
+
+    private static bool IsGrayPaint(Material m) =>
+        m != null && m.shader != null && m.shader.name == "Hero Editor/Gray Paint";
+
+    private static Material PaintFlashFor(Material source, Material flash)
+    {
+        if (PaintFlash.TryGetValue(source, out var existing) && existing != null) return existing;
+        var m = new Material(flash) { name = flash.name + " (" + source.name + ")" };
+        m.SetFloat("_PaintMode", 1f);
+        m.SetFloat("_SaturationBound", source.GetFloat("_SaturationBound"));
+        m.SetFloat("_ColorMultiplier", source.GetFloat("_ColorMultiplier"));
+        m.SetFloat("_Inverse", source.GetFloat("_Inverse"));
+        PaintFlash[source] = m;
+        OurPaintFlash.Add(m);
+        return m;
     }
 
     private static Material _flashMaterial;

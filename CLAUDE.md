@@ -430,6 +430,13 @@ Writing them:
   renderer multiplies the sprite by the colour, so a swatch reads darker in game than as a hex: judge a
   new one on a rendered head. Both JSONs are TextAssets: after editing one by hand,
   `AssetDatabase.Refresh()` before testing, or the old data is what loads.
+- **The hit flash must keep HeroEditor's paint.** Eyes and painted equipment render with its "Gray
+  Paint" shader (`EyesPaint.mat`, `EquipmentPaint.mat`), which colours only some pixels — the iris is
+  drawn *green* in the sprite and the whites are left alone. `HitFeedback` moves every renderer onto
+  `Sprites/Flash` at the first hit, so Gray Paint renderers get a paint-mode copy
+  (`_PaintMode`, with the source's `_Inverse`, `_ColorMultiplier`, `_SaturationBound`). Without it,
+  every hero's eyes turned green-irised with tinted whites the moment a fight began — invisible in
+  any render taken before combat. `HitFlashPaintTests` pins it.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
