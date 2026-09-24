@@ -1,0 +1,28 @@
+{
+  "Hair": [
+    { "name": "Black", "hex": "#3b302c", "weight": 3 },
+    { "name": "Dark brown", "hex": "#5e3a22", "weight": 3 },
+    { "name": "Brown", "hex": "#963200", "weight": 3 },
+    { "name": "Chestnut", "hex": "#9a5a2e", "weight": 3 },
+    { "name": "Auburn", "hex": "#b4482a", "weight": 2 },
+    { "name": "Ginger", "hex": "#e07a32", "weight": 2 },
+    { "name": "Honey blonde", "hex": "#ffd46e", "weight": 2 },
+    { "name": "Platinum", "hex": "#f2ead6", "weight": 2 },
+    { "name": "Silver", "hex": "#bfc3cc", "weight": 1 },
+    { "name": "Rose", "hex": "#ee93b0", "weight": 1 },
+    { "name": "Lavender", "hex": "#a88ddc", "weight": 1 },
+    { "name": "Sky", "hex": "#78b0e6", "weight": 1 },
+    { "name": "Mint", "hex": "#6ec4b0", "weight": 1 }
+  ],
+  "Eyes": [
+    { "name": "Brown", "hex": "#9a5c30", "weight": 3 },
+    { "name": "Hazel", "hex": "#b08a3c", "weight": 2 },
+    { "name": "Amber", "hex": "#e6a432", "weight": 1 },
+    { "name": "Green", "hex": "#4fa85a", "weight": 2 },
+    { "name": "Blue", "hex": "#3f82e0", "weight": 3 },
+    { "name": "Cyan", "hex": "#00c8ff", "weight": 2 },
+    { "name": "Grey", "hex": "#8e9aac", "weight": 1 },
+    { "name": "Violet", "hex": "#9a62dc", "weight": 1 },
+    { "name": "Ruby", "hex": "#d8465a", "weight": 1 }
+  ]
+}

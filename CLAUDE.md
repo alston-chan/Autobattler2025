@@ -425,8 +425,11 @@ Writing them:
   and beard through `FaceBans` (`Resources/FaceBans.json`, sprite collection ids), because HeroEditor's
   collection mixes zombie, demon and skeleton faces in with the ordinary ones. The list was chosen by eye
   on the Face Part Bans artifact (every option rendered on one head); `FaceBansTests` fails on an id the
-  collection doesn't have. The JSON is a TextAsset: after editing it by hand, `AssetDatabase.Refresh()`
-  before testing, or the old list is what loads.
+  collection doesn't have. Hair and eye colours come from a weighted palette in
+  `Resources/FaceColours.json` (`FaceColours`), not any RGB; the beard takes the hair's colour. The
+  renderer multiplies the sprite by the colour, so a swatch reads darker in game than as a hex: judge a
+  new one on a rendered head. Both JSONs are TextAssets: after editing one by hand,
+  `AssetDatabase.Refresh()` before testing, or the old data is what loads.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this

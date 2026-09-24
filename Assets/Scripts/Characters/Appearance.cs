@@ -40,16 +40,21 @@ public class Appearance : MonoBehaviour
 
     public void SetRandomAppearance()
     {
-        // Every part skips the face bans (FaceBans.json), so emoji and undead faces stay off heroes.
+        // Every part skips the face bans (FaceBans.json), so emoji and undead faces stay off heroes;
+        // colours come from a curated palette (FaceColours.json) instead of any RGB at all.
         var sc = Character.SpriteCollection;
         var bans = FaceBans.Active;
+        var colours = FaceColours.Active;
         CharacterAppearance.Hair = Random.Range(0, 3) == 0 ? null : FaceBans.PickId(sc.Hair, i => i.Id, bans.Hair);
-        CharacterAppearance.HairColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        CharacterAppearance.HairColor = FaceColours.Pick(colours.Hair, CharacterAppearance.HairColor);
         CharacterAppearance.Eyebrows = FaceBans.PickId(sc.Eyebrows, i => i.Id, bans.Eyebrows);
         CharacterAppearance.Eyes = FaceBans.PickId(sc.Eyes, i => i.Id, bans.Eyes);
-        CharacterAppearance.EyesColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        CharacterAppearance.EyesColor = FaceColours.Pick(colours.Eyes, CharacterAppearance.EyesColor);
         CharacterAppearance.Mouth = FaceBans.PickId(sc.Mouth, i => i.Id, bans.Mouth);
         CharacterAppearance.Beard = Random.Range(0, 3) == 0 ? FaceBans.PickId(sc.Beard, i => i.Id, bans.Beard) : null;
+        // The beard grows from the same head: it never rolled a colour of its own, so a blonde
+        // hero wore the default brown beard.
+        CharacterAppearance.BeardColor = CharacterAppearance.HairColor;
 
         Refresh();
     }
