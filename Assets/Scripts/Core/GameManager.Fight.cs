@@ -65,10 +65,16 @@ public partial class GameManager
         int swept = CombatDebris.Sweep();
         if (swept > 0) Debug.Log($"[GameManager] Cleared {swept} in-flight objects at round end.");
 
+        // Mana goes with the fight: every bar is empty between rounds, however the fight ended, and
+        // the next one is charged from nothing. The company is walked as well as the registry,
+        // because the fallen are not in the registry (they leave it on death).
+        foreach (var hero in allyCharacters) if (hero != null && hero.Mana != null) hero.Mana.Empty();
+
         var all = EntityRegistry.All;
         for (int i = all.Count - 1; i >= 0; i--)
         {
             var entity = all[i];
+            if (entity != null && entity.Mana != null) entity.Mana.Empty();
             if (entity == null || entity.isDead || entity.CombatAI == null) continue;
             entity.CombatAI.StopCombat();
 

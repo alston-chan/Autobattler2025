@@ -56,6 +56,17 @@ public class Mana : MonoBehaviour
         Push();
     }
 
+    /// <summary>
+    /// Empty the pool, and say so to the bar. Every fight starts empty, so an ultimate is earned in
+    /// the fight that casts it. Setting <see cref="currentMana"/> alone left the bar drawn full between
+    /// fights, still showing the charge the last fight ended on.
+    /// </summary>
+    public void Empty()
+    {
+        currentMana = 0f;
+        Push();
+    }
+
     /// <summary>Add mana (clamped). Negative values are ignored — use <see cref="TrySpend"/>.</summary>
     public void Gain(float amount)
     {

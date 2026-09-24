@@ -456,8 +456,8 @@ public class RunManager : MonoBehaviour
             }
 
             // Mana starts each fight empty, so ultimates are earned within the fight rather than
-            // carried over from the last one.
-            if (unit.Mana != null) unit.Mana.currentMana = 0f;
+            // carried over from the last one. (The round end empties it too; this covers a revive.)
+            if (unit.Mana != null) unit.Mana.Empty();
 
             // Toward the enemy — after the revive, which restores the body's size and must not be
             // allowed the last word on which way it looks. A unit that died mid-fight was left

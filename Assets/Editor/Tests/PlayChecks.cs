@@ -34,6 +34,7 @@ public static class PlayChecks
         new PlayCheck("a weapon banks only when asked, and its verb goes with it", AWeaponBanksOnlyWhenAsked),
         new PlayCheck("an ability rises as the item it comes from", AnAbilityRisesAsItsItem),
         new PlayCheck("a unit at the wall is drawn on screen", AUnitAtTheWallIsDrawnOnScreen),
+        new PlayCheck("mana is empty after the fight", ManaIsEmptyAfterTheFight),
         new PlayCheck("a won fight opens the shop", AWonFightOpensTheShop),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
         new PlayCheck("a decoy is on its owner's side before anything looks at it", DecoyTakesItsOwnersSide),
@@ -447,6 +448,38 @@ public static class PlayChecks
         yield return null;
         }
         Assert.That(worstOver, Is.LessThanOrEqualTo(0.05f), worst + " is drawn " + worstOver.ToString("0.00") + " past the edge of the screen");
+    }
+
+    /// <summary>
+    /// Mana goes with the fight: when it ends, every hero's pool is empty and its bar has been told
+    /// so. The reset used to set the number without a word to the bar, which went on drawing the
+    /// last fight's charge through the whole setup. The fight is ended by felling its enemies.
+    /// </summary>
+    private static IEnumerator ManaIsEmptyAfterTheFight()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        Entity hero = null;
+        foreach (var unit in PlayHarness.Living())
+            if (unit.isTeam && unit.Mana != null && unit.Mana.maxMana > 0f) { hero = unit; break; }
+        Assert.That(hero, Is.Not.Null, "no living hero has a mana pool");
+
+        hero.Mana.Gain(hero.Mana.maxMana * 0.5f);
+        Assert.That(hero.Mana.currentMana, Is.GreaterThan(0f), "could not charge the pool to test it");
+
+        float told = -1f;
+        System.Action<float, float> listen = (current, max) => told = current;
+        hero.Mana.OnManaChanged += listen;
+        try
+        {
+            foreach (var e in new List<Entity>(EntityRegistry.All))
+                if (e != null && !e.isTeam && !e.isDead && e.Health != null) e.Health.TakeDamage(e.Health.maxHealth * 10f);
+            yield return PlayHarness.Until(() => GameManager.Instance.StateMachine.Current != GameState.Combat, "the fight to end once its enemies fell", 10f);
+
+            Assert.That(hero.Mana.currentMana, Is.EqualTo(0f), DisplayNames.Unit(hero) + " kept its mana past the fight");
+            Assert.That(told, Is.EqualTo(0f), DisplayNames.Unit(hero) + "'s bar was never told its mana emptied");
+        }
+        finally { hero.Mana.OnManaChanged -= listen; }
     }
 
     /// <summary>
