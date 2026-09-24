@@ -63,7 +63,7 @@ public class CastOnEventEngraving : Engraving
         if (target == null || !spell.CanCast(owner, target)) return;
 
         _readyAt = Time.time + cooldown * (1f - 0.2f * (Mathf.Max(1, tier) - 1));
-        AbilityFeedback.Announce(owner, engravingName);
+        AbilityFeedback.AnnounceEngraving(owner, this, engravingName);
         CombatEvents.RaiseCast(owner, spell);
         owner.StartCoroutine(spell.Cast(owner, target));
     }

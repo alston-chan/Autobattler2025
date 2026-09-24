@@ -26,7 +26,7 @@ public class ThirdWallEngraving : Engraving
         if (_hits % every != 0) return;
 
         owner.Health.Heal(hit.amount, owner);
-        AbilityFeedback.Announce(owner, "Third Wall");
+        AbilityFeedback.AnnounceEngraving(owner, this, "Third Wall");
     }
 
     public override string DescribeTier(int tier)

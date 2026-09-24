@@ -774,6 +774,47 @@ public class Resonance : MonoBehaviour
              : _wornOverride ?? (IEnumerable<Item>)System.Array.Empty<Item>();
     }
 
+    /// <summary>
+    /// The item behind a verb, for showing it: the worn weapon that teaches it, else a copy of the
+    /// weapon it was banked from, at the grade it was banked. Null when nothing can be shown.
+    /// </summary>
+    public Item ItemTeaching(Spell spell)
+    {
+        var worn = WeaponTeaching(spell);
+        if (worn != null) return worn;
+        foreach (var mark in banked)
+            if (mark != null && mark.engraving is GrantSpellEngraving grant && grant.spell == spell && !string.IsNullOrEmpty(mark.itemId))
+                return Rarity.Make(mark.itemId, mark.tier);
+        return null;
+    }
+
+    /// <summary>
+    /// The item carrying an engraving this unit holds — <paramref name="engraving"/> is this unit's
+    /// own copy, as the engraving's hooks see themselves, or the asset. The worn item, else the item
+    /// its mark was banked from; null for a trait, which no item carries.
+    /// </summary>
+    public Item ItemOf(Engraving engraving)
+    {
+        if (engraving == null) return null;
+        string key = null;
+        foreach (var pair in _instances) if (pair.Value == engraving) { key = pair.Key; break; }
+        if (key == null) foreach (var pair in _active) if (pair.Value.asset == engraving) { key = pair.Key; break; }
+        if (key == null) return null;
+
+        if (key.StartsWith("worn:"))
+        {
+            string descriptor = key.Substring(5);
+            foreach (var item in WornItems()) if (item != null && Descriptor(item) == descriptor) return item;
+            return null;
+        }
+        if (key.StartsWith("banked:") && int.TryParse(key.Substring(7), out int index) && index >= 0 && index < banked.Count)
+        {
+            var mark = banked[index];
+            return mark != null && !string.IsNullOrEmpty(mark.itemId) ? Rarity.Make(mark.itemId, mark.tier) : null;
+        }
+        return null;
+    }
+
     /// <summary>The worn weapon that teaches this verb, or null (a banked verb, or not a verb).</summary>
     public Item WeaponTeaching(Spell spell)
     {

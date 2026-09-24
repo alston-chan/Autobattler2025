@@ -435,7 +435,7 @@ public class CombatAI : MonoBehaviour
         if (spell.IsUltimate && _entity.Mana != null)
         {
             _entity.Mana.TrySpend(spell.manaCost);
-            AbilityFeedback.Announce(_entity, spell.DisplayName);
+            AbilityFeedback.AnnounceSpell(_entity, spell);
             CombatTelemetry.RecordUlt(_entity);
         }
 

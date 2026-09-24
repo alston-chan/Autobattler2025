@@ -86,6 +86,9 @@ MonoBehaviour:
     speedUpAfter: 40
     speedUpScale: 2
   abilityFeedback:
+    showIcon: 1
+    showName: 0
+    iconSize: 0.95
     enableCallout: 1
     calloutColor: {r: 1, g: 0.88, b: 0.3, a: 1}
     fontSize: 3.75

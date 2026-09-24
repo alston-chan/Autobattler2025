@@ -32,6 +32,7 @@ public static class PlayChecks
         new PlayCheck("stand fast turns the row onto its wearer", StandFastTurnsTheRowOntoItsWearer),
         new PlayCheck("the round-end sweep clears the ground", TheRoundEndSweepClearsTheGround),
         new PlayCheck("a weapon banks only when asked, and its verb goes with it", AWeaponBanksOnlyWhenAsked),
+        new PlayCheck("an ability rises as the item it comes from", AnAbilityRisesAsItsItem),
         new PlayCheck("a unit at the wall is drawn on screen", AUnitAtTheWallIsDrawnOnScreen),
         new PlayCheck("a won fight opens the shop", AWonFightOpensTheShop),
         new PlayCheck("every living unit can be seen to be alive", EveryLivingUnitHasAVisibleBar),
@@ -327,6 +328,61 @@ public static class PlayChecks
             foreach (var filler in fillers) other.Resonance.banked.Remove(filler);
             other.Resonance.Refresh();
         }
+    }
+
+    /// <summary>
+    /// An ability announces itself as the gear it comes from (AbilityFeedback): the weapon's icon on
+    /// its rarity's slot rises over the caster, and the name stays off unless names are switched on
+    /// for debugging. An ability no item carries — a monster's trait — still shows its name, since
+    /// otherwise it would show nothing at all. Counted before and after one synchronous call, so casts
+    /// elsewhere in the fight cannot be mistaken for it.
+    /// </summary>
+    private static IEnumerator AnAbilityRisesAsItsItem()
+    {
+        yield return PlayHarness.ReachTheBell();
+
+        Entity hero = null;
+        Spell spell = null;
+        Assets.HeroEditor.InventorySystem.Scripts.Data.Item weapon = null;
+        foreach (var unit in PlayHarness.Living())
+        {
+            if (!unit.isTeam || unit.Resonance == null || unit.ActiveSpell == null) continue;
+            weapon = unit.Resonance.ItemTeaching(unit.ActiveSpell);
+            if (weapon != null) { hero = unit; spell = unit.ActiveSpell; break; }
+        }
+        Assert.That(hero, Is.Not.Null, "no living hero casts a verb its weapon teaches");
+
+        var settings = CombatFeelSettings.Active.abilityFeedback;
+        Assert.That(settings.showIcon, Is.True, "icons are switched off in the settings asset");
+        Assert.That(settings.iconSize, Is.GreaterThan(0.1f), "the settings asset never got the icon size (a new field's default does not reach a loaded asset)");
+
+        int icons = UnityEngine.Object.FindObjectsOfType<AbilityIconCallout>().Length;
+        int names = CalloutsReading(spell.DisplayName);
+        AbilityFeedback.AnnounceSpell(hero, spell);
+
+        var raised = UnityEngine.Object.FindObjectsOfType<AbilityIconCallout>();
+        Assert.That(raised.Length, Is.EqualTo(icons + 1), spell.DisplayName + " raised no icon");
+        var expected = Assets.HeroEditor.InventorySystem.Scripts.ItemCollection.Active.GetItemIcon(
+            new Assets.HeroEditor.InventorySystem.Scripts.Data.Item(weapon.Id)).Sprite;
+        Assert.That(System.Array.Exists(raised, c => c.transform.Find("Icon")?.GetComponent<SpriteRenderer>()?.sprite == expected),
+                    Is.True, "the icon is not " + weapon.Id + "'s");
+        if (!settings.showName)
+            Assert.That(CalloutsReading(spell.DisplayName), Is.EqualTo(names), "the name rose as well as the icon, with names off");
+
+        int trait = CalloutsReading("Check Trait");
+        AbilityFeedback.Announce(hero, "Check Trait", null);
+        Assert.That(CalloutsReading("Check Trait"), Is.EqualTo(trait + 1), "an ability with no item showed nothing");
+    }
+
+    private static int CalloutsReading(string text)
+    {
+        int n = 0;
+        foreach (var c in UnityEngine.Object.FindObjectsOfType<AbilityCallout>())
+        {
+            var tmp = c.GetComponent<TMPro.TextMeshPro>();
+            if (tmp != null && tmp.text == text) n++;
+        }
+        return n;
     }
 
     /// <summary>

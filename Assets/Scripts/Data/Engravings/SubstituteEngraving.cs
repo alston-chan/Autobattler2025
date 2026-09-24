@@ -38,7 +38,7 @@ public class SubstituteEngraving : Engraving
         // ninja is taunted onto it, so the lock turns, and it is swept away when the vanish ends.
         var sprite = scarecrowPrefab == null ? Supplies.FindSprite(owner, string.IsNullOrEmpty(scarecrowSprite) ? "ThrowingStar" : scarecrowSprite) : null;
         Decoy.Spawn(owner, from, Mathf.Max(1f, owner.Health.maxHealth * 0.15f), seconds, scarecrowPrefab, sprite, "Scarecrow", scarecrowScale);
-        AbilityFeedback.Announce(owner, "Substitute");
+        AbilityFeedback.AnnounceEngraving(owner, this, "Substitute");
 
         owner.DropAggro(seconds);
         // To the back line — the rear cell of the ninja's own lane — and it counts as movement, so a

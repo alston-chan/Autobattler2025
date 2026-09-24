@@ -71,7 +71,7 @@ public class BloodrageEngraving : Engraving
                 damagePerStack * tier, Kryz.CharacterStats.StatModType.PercentAdd, this));
             owner.Stats.AttackSpeed.AddModifier(new Kryz.CharacterStats.StatModifier(
                 attackSpeedPerStack * tier, Kryz.CharacterStats.StatModType.PercentAdd, this));
-            AbilityFeedback.Announce(owner, _stacks == 1 ? "Bloodrage" : "Bloodrage ×" + _stacks);
+            AbilityFeedback.AnnounceEngraving(owner, this, _stacks == 1 ? "Bloodrage" : "Bloodrage ×" + _stacks);
         }
     }
 }

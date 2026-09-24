@@ -178,6 +178,18 @@ every ability is a `CompositeSpell` taught by a weapon.
 - The MCP running a script twice is real: a play probe that adds spells and subscribes handlers ran
   twice in one call and doubled every count. Guard with a marker object (`GameObject.Find("X_ARMED")`)
   created on arming and destroyed when the probe ends.
+- **A file written by hand is not an asset until a refresh imports it.** A scenario or data asset
+  created as YAML reads as null from `AssetDatabase.LoadAssetAtPath` until `AssetDatabase.Refresh()`
+  (and `Tools/dev.sh compile` skips the refresh when no script changed). Measured 2026-09-23: three
+  "the scenario did not apply" runs that were a null scenario.
+- **Pick a scenario for a probe in memory only, never with `SetDirty`.** `Playtest.Active.active = x`
+  holds across the reload into play mode; marking the asset dirty lets the next save-all write the
+  probe's scenario over the player's choice on disk — measured, it did. `PlayTestRunner` pins the same
+  way for exactly this reason.
+- **A probe that calls into items must restore the catalogue first.** Its own compile reloads the
+  domain and nulls `ItemCollection.Active` (see the top of this file): an ability announced from a
+  probe showed its name instead of its icon, the fallback working as designed. Calling
+  `GameManager.Instance.characterInventories[0].Awake()` puts the catalogue and its icons back.
 - **A probe that subscribes to `EditorApplication.update` must catch its own exceptions.** The
   callback is never removed when it throws, so it throws again the next tick, forever — and because
   the exception propagates out of `Internal_CallUpdateFunctions`, it takes the rest of that tick's

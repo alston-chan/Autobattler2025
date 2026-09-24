@@ -1,11 +1,19 @@
 using System;
+using System.Collections.Generic;
+using Assets.HeroEditor.InventorySystem.Scripts;
+using Assets.HeroEditor.InventorySystem.Scripts.Data;
 using TMPro;
 using UnityEngine;
 
 /// <summary>
 /// The "loud" feedback for cost abilities (ults). Per the readability rule (Docs/Juice.md), rare
-/// events must dominate — so an ult announces itself with a floating name callout, a punctuating
-/// flash on the caster, and a beefier hitstop on each victim.
+/// events must dominate — so an ult announces itself over the caster, with a punctuating flash on
+/// the caster and a beefier hitstop on each victim.
+///
+/// What rises over the caster is the item the ability comes from — its icon on its rarity's slot,
+/// as the bag draws it — the way an autobattler shows an item proc: the player learns which piece of
+/// gear did that without reading. An ability with no item behind it (a monster's trait) shows its
+/// name instead, and <see cref="Settings.showName"/> puts the names back over the icons for debugging.
 ///
 /// Every knob lives on the shared <see cref="CombatFeelSettings"/> asset, so the whole thing can be
 /// A/B tested (and, being a ScriptableObject, tuned live in Play mode) like all other combat feel.
@@ -15,9 +23,18 @@ public static class AbilityFeedback
     [Serializable]
     public class Settings
     {
+        [Header("Item icon")]
+        [Tooltip("Float the item the ability comes from — its icon on its rarity's slot — above the " +
+                 "caster. An ability with no item (a monster's trait) shows its name instead.")]
+        public bool showIcon = true;
+        [Tooltip("Debug: float the ability's name as well as its icon.")]
+        public bool showName = false;
+        [Tooltip("The icon's size in world units.")]
+        public float iconSize = 0.95f;
+
         [Header("Name callout")]
-        [Tooltip("Float the ability's name above the caster — the attribution that tells the player " +
-                 "their build just did something.")]
+        [Tooltip("Float the ability's name above the caster when there is no icon to show (or when " +
+                 "showName is on). Off silences names entirely.")]
         public bool enableCallout = true;
         public Color calloutColor = new Color(1f, 0.88f, 0.3f, 1f);
         [Tooltip("Kept close to the damage-number size so callouts read as part of the same layer, " +
@@ -50,8 +67,25 @@ public static class AbilityFeedback
 
     private static Settings S => CombatFeelSettings.Active.abilityFeedback;
 
-    /// <summary>Fire the on-cast feedback: caster flash + floating name callout.</summary>
-    public static void Announce(Entity caster, string abilityName)
+    /// <summary>A verb cast: announced as the weapon that teaches it, worn or banked.</summary>
+    public static void AnnounceSpell(Entity caster, Spell spell)
+    {
+        if (caster == null || spell == null) return;
+        Announce(caster, spell.DisplayName, caster.Resonance != null ? caster.Resonance.ItemTeaching(spell) : null);
+    }
+
+    /// <summary>An engraving firing: announced as the item that carries it, worn or banked.</summary>
+    public static void AnnounceEngraving(Entity owner, Engraving engraving, string label = null)
+    {
+        if (owner == null || engraving == null) return;
+        Announce(owner, label ?? engraving.DisplayName, owner.Resonance != null ? owner.Resonance.ItemOf(engraving) : null);
+    }
+
+    /// <summary>
+    /// Fire the on-cast feedback: caster flash, and over the caster the icon of
+    /// <paramref name="source"/> — or the name, when there is no item or names are switched on.
+    /// </summary>
+    public static void Announce(Entity caster, string abilityName, Item source = null)
     {
         if (caster == null) return;
         var s = S;
@@ -59,8 +93,11 @@ public static class AbilityFeedback
         if (s.flashCaster && caster.HitFeedback != null)
             caster.HitFeedback.Flash(s.flashColor, s.flashDuration);
 
-        if (s.enableCallout && !string.IsNullOrEmpty(abilityName))
-            AbilityCallout.Show(caster.transform.position + s.offset, abilityName, s);
+        var at = caster.transform.position + s.offset;
+        bool iconShown = s.showIcon && source != null && AbilityIconCallout.Show(at, source, s);
+
+        if (s.enableCallout && !string.IsNullOrEmpty(abilityName) && (!iconShown || s.showName))
+            AbilityCallout.Show(iconShown ? at + Vector3.up * s.iconSize * 0.75f : at, abilityName, s);
     }
 
     /// <summary>Fire the per-hit feedback: a heavy hitstop on the victim.</summary>
@@ -132,7 +169,7 @@ public class AbilityCallout : MonoBehaviour
     /// Ease out with a small overshoot: the label passes its resting size, dips a hair under and
     /// settles. The dip is what makes it read as weight landing rather than a zoom.
     /// </summary>
-    private static float EaseOutBack(float k)
+    public static float EaseOutBack(float k)
     {
         const float c1 = 1.70158f, c3 = c1 + 1f;
         float x = k - 1f;
@@ -166,5 +203,76 @@ public class AbilityCallout : MonoBehaviour
             c.a = 1f - (t - 0.5f) / 0.5f;
             _tmp.color = c;
         }
+    }
+}
+
+/// <summary>
+/// An item's icon on its rarity's slot, rising over the unit whose ability it just fired: the same
+/// arrival, rise and fade as <see cref="AbilityCallout"/>, drawn as the gear rather than as a word.
+/// </summary>
+public class AbilityIconCallout : MonoBehaviour
+{
+    /// <summary>Show <paramref name="item"/> at <paramref name="worldPos"/>. False when it has no icon to show.</summary>
+    public static bool Show(Vector3 worldPos, Item item, AbilityFeedback.Settings s)
+    {
+        if (item == null || ItemCollection.Active == null) return false;
+        var icon = ItemCollection.Active.GetItemIcon(new Item(item.Id));
+        if (icon == null || icon.Sprite == null) return false;
+
+        var go = new GameObject("AbilityIcon");
+        go.transform.position = worldPos;
+        var renderers = new List<SpriteRenderer>();
+
+        // The slot first, so the gear reads as a piece of the bag rather than a loose sprite.
+        var slot = Rarity.Background(item);
+        if (slot != null) renderers.Add(Layer(go.transform, "Slot", slot, 32001, s.iconSize));
+        renderers.Add(Layer(go.transform, "Icon", icon.Sprite, 32002, s.iconSize * 0.9f));
+
+        go.AddComponent<AbilityIconCallout>().Init(renderers, s);
+        return true;
+    }
+
+    private static SpriteRenderer Layer(Transform parent, string name, Sprite sprite, int order, float size)
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        var r = go.AddComponent<SpriteRenderer>();
+        r.sprite = sprite;
+        r.sortingOrder = order;   // above sprites and damage numbers, like the name callout
+        float extent = Mathf.Max(sprite.bounds.size.x, sprite.bounds.size.y);
+        go.transform.localScale = Vector3.one * (extent > 0.0001f ? size / extent : 1f);
+        return r;
+    }
+
+    private AbilityFeedback.Settings _s;
+    private List<SpriteRenderer> _renderers;
+    private float _age;
+
+    private void Init(List<SpriteRenderer> renderers, AbilityFeedback.Settings s)
+    {
+        _renderers = renderers;
+        _s = s;
+        if (Punching) transform.localScale = Vector3.one * s.punchScale;
+    }
+
+    private bool Punching => _s.punchScale > 1.001f && _s.punchSeconds > 0.0001f;
+
+    private void Update()
+    {
+        _age += Time.deltaTime;
+        if (_age >= _s.lifetime) { Destroy(gameObject); return; }
+
+        transform.position += Vector3.up * _s.riseSpeed * Time.deltaTime;
+
+        if (Punching)
+        {
+            float k = Mathf.Clamp01(_age / _s.punchSeconds);
+            transform.localScale = Vector3.one * Mathf.LerpUnclamped(_s.punchScale, 1f, AbilityCallout.EaseOutBack(k));
+        }
+
+        float t = _age / _s.lifetime;
+        if (t > 0.5f)
+            foreach (var r in _renderers)
+                if (r != null) { var c = r.color; c.a = 1f - (t - 0.5f) / 0.5f; r.color = c; }
     }
 }
