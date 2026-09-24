@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1474bb256568824dbd7a6626631a608, type: 3}
+  m_Name: Elite_OgreWarchief
+  m_EditorClassIdentifier: 
+  problems: 03000000
+  defaultLoadout: {fileID: 11400000, guid: a5c8c6fbe8ee22540aabbf71d69c20e6, type: 2}
+  rewardPool: {fileID: 0}
+  encounterName: Ogre Warchief
+  spawns:
+  - prefab: {fileID: 3469834518298251047, guid: 4ade45068354d6948995ba11d5b566bb, type: 3}
+    column: 1
+    row: 1
+    unitData: {fileID: 11400000, guid: cec2e9f972d11244aa7c181ee0afb59a, type: 2}
+    kit: {fileID: 0}
+    loadout: {fileID: 11400000, guid: a5c8c6fbe8ee22540aabbf71d69c20e6, type: 2}

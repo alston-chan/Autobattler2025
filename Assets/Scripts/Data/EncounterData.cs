@@ -22,7 +22,9 @@ public enum EnemyProblem
     /// <summary>One huge wall. Punishes AoE-only and slow damage; demands single-target and sustain.</summary>
     Bulwark,
     /// <summary>Backline glass cannons. Punishes slow starts and pure melee; demands reach or a dive.</summary>
-    Sniper
+    Sniper,
+    /// <summary>Grows stronger the longer it lives. Punishes spread damage and stalling; demands burst on one target.</summary>
+    Bloodrager
 }
 
 [CreateAssetMenu(menuName = "Data/Encounter", fileName = "Encounter")]

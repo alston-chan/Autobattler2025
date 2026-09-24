@@ -67,7 +67,7 @@ public class EntityStats : MonoBehaviour
         MagicResist = new CharacterStat(0f);
         AttackSpeed = new CharacterStat(_entity.attackSpeed);
 
-        KnockbackResistance = new CharacterStat(0f);
+        KnockbackResistance = new CharacterStat(_entity.unitData != null ? _entity.unitData.knockbackResist : 0f);
 
         RefreshInspector();
     }

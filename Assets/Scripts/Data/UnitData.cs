@@ -24,6 +24,10 @@ public class UnitData : ScriptableObject
              "it survives the weapon swap that rewrites base damage at spawn.")]
     public float damageMultiplier = 1f;
 
+    [Range(0f, 1f), Tooltip("How much less far shoves and throws carry it: 1 cannot be moved at all. " +
+             "Meant to be rare — an elite that ignores the company's displacement verbs.")]
+    public float knockbackResist = 0f;
+
     [Header("Combat")]
     [Tooltip("Body radius in world units for collisions; 0 uses the physics default.")]
     public float bodyRadius = 0f;
@@ -35,4 +39,9 @@ public class UnitData : ScriptableObject
 
     [Header("Spells")]
     public List<Spell> spells = new List<Spell>();
+
+    [Header("Traits")]
+    [Tooltip("Engravings this unit is born with, held like a worn item's at tier 1: how a monster, " +
+             "which wears nothing, gets a rule of its own — the Ogre's Bloodrage, the Rat King's summons.")]
+    public List<Engraving> traits = new List<Engraving>();
 }

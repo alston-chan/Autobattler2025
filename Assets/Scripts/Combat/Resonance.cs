@@ -437,6 +437,10 @@ public class Resonance : MonoBehaviour
             desired["banked:" + i] = new Grant { asset = mark.engraving, tier = mark.tier };
         }
 
+        if (_innate != null)
+            for (int i = 0; i < _innate.Count; i++)
+                if (_innate[i] != null) desired["innate:" + i] = new Grant { asset = _innate[i], tier = 1 };
+
         return desired;
     }
 
@@ -742,6 +746,19 @@ public class Resonance : MonoBehaviour
 
     // Enemies have no inventory window, so what they wear is handed to them here instead.
     private List<Item> _wornOverride;
+
+    // What the unit is born with (UnitData.traits): held at tier 1 like a worn item's effect, and
+    // gone with nothing, since nothing can take it off.
+    private List<Engraving> _innate;
+
+    /// <summary>
+    /// Give the unit engravings of its own, not from any item — a monster's rule. Granted on the next
+    /// <see cref="Refresh"/>, which the bell always runs.
+    /// </summary>
+    public void SetInnate(List<Engraving> traits) => _innate = traits != null ? new List<Engraving>(traits) : null;
+
+    /// <summary>The unit's innate engravings, for the unit card.</summary>
+    public IReadOnlyList<Engraving> Innate => _innate ?? (IReadOnlyList<Engraving>)System.Array.Empty<Engraving>();
 
     /// <summary>
     /// Tell a unit with no inventory what it wears, so its items resonate like a hero's: an enemy in

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643e6494917fbf44a928db68e3f09f63, type: 3}
+  m_Name: OgreVsSpread
+  m_EditorClassIdentifier: 
+  run: {fileID: 0}
+  heroes:
+  - heroName: Hero_Bow
+    itemIds:
+    - FantasyHeroes.Basic.Bow.RangerBow
+    - FantasyHeroes.Basic.Armor.BanditLightArmor [Paint].vest
+    activeSlot: 0
+  - heroName: Hero_Melee_KnightShield
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.WarHammer
+    - FantasyHeroes.Basic.Shield.AdvancedKnightShield
+    - FantasyHeroes.Basic.Armor.ChainmailLightArmor [Paint].vest
+    activeSlot: 0
+  - heroName: Hero_Wand
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.FireWizardWand
+    - FantasyHeroes.Basic.Armor.Cleric [Paint].vest
+    activeSlot: 0
+  - heroName: Hero_Daggers
+    itemIds:
+    - FantasyHeroes.Basic.MeleeWeapon1H.DeserterDagger [Paint]
+    - FantasyHeroes.Basic.Armor.NinjaOutfit.vest
+    activeSlot: 0
+  heroHealthScale: 0.7
+  encounter: {fileID: 11400000, guid: 1d6d4abd45984014f97e4e6f250ea980, type: 2}
+  loadout: {fileID: 0}
+  enemyKits: []
+  randomEnemyKits: 1
+  notes: 'The wrong company for the Ogre Warchief: the FourVerbs heroes, whose verbs spread
+    damage (Arrow Rain, Whirl, Tar Pool, Ricochet) over one target. Should lose
+    most fights to Bloodrage. Target: about 3 wins in 10.'

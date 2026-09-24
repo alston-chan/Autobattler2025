@@ -646,6 +646,15 @@ public class UnitInspector : MonoBehaviour
             }
         }
 
+        // A monster's own rules, spelled out: an elite is read by what it does, and it has no item to
+        // click for the explanation.
+        foreach (var trait in resonance.Innate)
+        {
+            if (trait == null) continue;
+            text.Append("<color=#FF8A5B>").Append(trait.DisplayName).Append("</color>  <size=85%>")
+                .Append(trait.DescribeTier(1)).Append("</size>\n");
+        }
+
         if (resonance.banked == null) return;
         foreach (var mark in resonance.banked)
         {

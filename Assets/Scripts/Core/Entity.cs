@@ -408,6 +408,7 @@ public class Entity : MonoBehaviour
         HitFeedback.Initialize(this);
         DeathFeedback.Initialize(this);
         Resonance.Initialize(this);
+        if (unitData != null && unitData.traits != null && unitData.traits.Count > 0) Resonance.SetInnate(unitData.traits);
         Statuses.Initialize(this);
     }
 

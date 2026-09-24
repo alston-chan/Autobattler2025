@@ -19,4 +19,6 @@ MonoBehaviour:
     weight: 1
   - encounter: {fileID: 11400000, guid: dacbecfdaebf4a8b9cadbecfdaebfcab, type: 2}
     weight: 2
+  - encounter: {fileID: 11400000, guid: 1d6d4abd45984014f97e4e6f250ea980, type: 2}
+    weight: 1
   loadout: {fileID: 11400000, guid: bd7b9a0cecfdccf06be8d9eafb0cd289, type: 2}
