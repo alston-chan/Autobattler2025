@@ -38,21 +38,31 @@ MonoBehaviour:
     fadeDuration: 0.45
     sinkDistance: 0.18
   damageNumbers:
-    enabled: 0
+    enabled: 1
     spawnOffset: {x: 0, y: 1.6, z: 0}
     spawnJitterX: 0.3
-    fontSize: 3.5
+    fontSize: 4.6
     normalColor: {r: 1, g: 0, b: 0, a: 1}
     critColor: {r: 1, g: 0.75, b: 0.2, a: 1}
-    critSizeMultiplier: 1.6
+    critSizeMultiplier: 1.3
     critPopScale: 1.45
     critSuffix: '!'
     slamColor: {r: 1, g: 0.5, b: 0.25, a: 1}
     slamPrefix: 'SLAM '
-    slamSizeMultiplier: 1.25
+    slamSizeMultiplier: 1.1
     outline: 1
     outlineColor: {r: 0, g: 0, b: 0, a: 1}
-    outlineWidth: 0.5
+    outlineWidth: 0.25
+    font: {fileID: 11400000, guid: d14f2a1b65cdc09448bea145eff1305f, type: 2}
+    gradientDarken: 0.35
+    faceDilate: 0.2
+    shadow: 1
+    shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+    shadowOffset: {x: 0.45, y: -0.55}
+    popDuration: 0.14
+    popOvershoot: 2.4
+    tiltRange: 9
+    shrinkTo: 0.55
     lifetime: 0.7
     riseSpeed: 2.4
     riseDamping: 3.5

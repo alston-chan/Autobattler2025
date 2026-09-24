@@ -31,13 +31,13 @@ public class DamageNumbersManager : MonoBehaviour
         public float spawnJitterX = 0.3f;
 
         [Header("Normal hit")]
-        public float fontSize = 3.5f;
+        public float fontSize = 4.6f;
         public Color normalColor = new Color(1f, 1f, 1f, 1f);
 
         [Header("Crit")]
         [Tooltip("Crits must dominate — this is the moment a build 'pays off'.")]
         public Color critColor = new Color(1f, 0.75f, 0.2f, 1f);
-        public float critSizeMultiplier = 1.6f;
+        public float critSizeMultiplier = 1.3f;
         [Tooltip("Extra scale-punch on spawn that settles back to 1. Sells the impact.")]
         public float critPopScale = 1.45f;
         [Tooltip("Appended to crit numbers.")]
@@ -48,16 +48,41 @@ public class DamageNumbersManager : MonoBehaviour
                  "see the moment physics hurt someone rather than wondering where the damage came from.")]
         public Color slamColor = new Color(1f, 0.5f, 0.25f, 1f);
         public string slamPrefix = "SLAM ";
-        public float slamSizeMultiplier = 1.25f;
+        public float slamSizeMultiplier = 1.1f;
 
         [Header("Outline")]
         [Tooltip("Dark edge so a number reads on any terrain — the battlefield is sage green — and so " +
                  "the face colour is later free to encode damage type.")]
         public bool outline = true;
         public Color outlineColor = new Color(0f, 0f, 0f, 1f);
-        [Tooltip("SDF outline thickness, 0..1. This font's atlas caps how bold it can get, so it needs " +
-                 "a fairly high value to read — ~0.2 is nearly invisible, ~0.5 is a clear edge.")]
-        [Range(0f, 1f)] public float outlineWidth = 0.5f;
+        [Tooltip("SDF outline thickness, 0..1, eaten into the letter as much as grown out of it. With the " +
+                 "Pribambas font on the full Distance Field shader ~0.25 is a bold edge and 0.5 floods the " +
+                 "letters solid black; the old LiberationSans needed ~0.5.")]
+        [Range(0f, 1f)] public float outlineWidth = 0.25f;
+
+        [Header("Cartoon")]
+        [Tooltip("The numbers' font. HeroEditor's own display face (Pribambas) matches the character " +
+                 "art; empty falls back to TextMesh Pro's default.")]
+        public TMP_FontAsset font;
+        [Tooltip("Each number shades from its colour at the top to this much darker at the bottom, " +
+                 "like painted lettering. 0 is flat.")]
+        [Range(0f, 1f)] public float gradientDarken = 0.35f;
+        [Tooltip("Fattens the letters (distance-field dilate). Pribambas is drawn with thin strokes; a " +
+                 "little dilate makes it read as chunky cartoon lettering.")]
+        [Range(0f, 0.5f)] public float faceDilate = 0.2f;
+        [Tooltip("A hard drop shadow behind the outline, so a number reads as a sticker on the scene.")]
+        public bool shadow = true;
+        public Color shadowColor = new Color(0f, 0f, 0f, 0.6f);
+        [Tooltip("Shadow offset in distance-field units (-1..1).")]
+        public Vector2 shadowOffset = new Vector2(0.45f, -0.55f);
+        [Tooltip("How long a number takes to pop to full size, overshooting on the way.")]
+        public float popDuration = 0.14f;
+        [Tooltip("How far the pop overshoots before settling (ease-out-back strength; 0 = none).")]
+        public float popOvershoot = 2.4f;
+        [Tooltip("Random tilt at spawn, in degrees either way, so a flurry of hits doesn't line up.")]
+        public float tiltRange = 9f;
+        [Tooltip("Size a number shrinks to as it fades out.")]
+        [Range(0f, 1f)] public float shrinkTo = 0.55f;
 
         [Header("Motion")]
         public float lifetime = 0.7f;

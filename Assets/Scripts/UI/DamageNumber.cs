@@ -44,7 +44,8 @@ public class DamageNumber : MonoBehaviour
         _life = Mathf.Max(0.01f, s.lifetime);
 
         transform.position = worldPos + new Vector3(Random.Range(-s.spawnJitterX, s.spawnJitterX), 0f, 0f);
-        transform.rotation = Quaternion.identity;   // never inherit an entity's flipped facing
+        // Never inherit an entity's flipped facing; a small random tilt so a flurry doesn't line up.
+        transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(-s.tiltRange, s.tiltRange));
         _velocity = new Vector3(Random.Range(-s.driftX, s.driftX), s.riseSpeed, 0f);
 
         bool crit = info.isCrit;
@@ -52,10 +53,20 @@ public class DamageNumber : MonoBehaviour
         _color = slam ? s.slamColor : crit ? s.critColor : s.normalColor;
         _popScale = crit ? Mathf.Max(1f, s.critPopScale) : 1f;
 
+        // The font first: every material setting below lands on the font's material instance.
+        if (s.font != null && _tmp.font != s.font) _tmp.font = s.font;
+
         int shown = Mathf.Max(1, Mathf.RoundToInt(info.amount));
         _tmp.text = slam ? s.slamPrefix + shown : crit ? shown + s.critSuffix : shown.ToString();
         _tmp.fontSize = crit ? s.fontSize * s.critSizeMultiplier : slam ? s.fontSize * s.slamSizeMultiplier : s.fontSize;
-        _tmp.color = _color;
+
+        // Painted lettering: the colour at the top, shading darker to the bottom. The face colour
+        // stays white so the gradient shows as authored, and fading only has to touch its alpha.
+        Color bottom = Color.Lerp(_color, Color.black, s.gradientDarken);
+        bottom.a = _color.a;
+        _tmp.enableVertexGradient = true;
+        _tmp.colorGradient = new VertexGradient(_color, _color, bottom, bottom);
+        _tmp.color = Color.white;
 
         // Dark outline for readability on any terrain. Set through TMP's own properties rather than
         // poking the material directly: the setter recomputes the SDF scale ratios, without which the
@@ -65,7 +76,25 @@ public class DamageNumber : MonoBehaviour
         _tmp.outlineWidth = s.outline ? s.outlineWidth : 0f;
         _tmp.outlineColor = s.outlineColor;
 
-        transform.localScale = Vector3.one * _popScale;
+        // A hard drop shadow (TMP's underlay) behind the outline, on the same per-object material.
+        var mat = _tmp.fontMaterial;
+        if (s.shadow)
+        {
+            mat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
+            mat.SetColor(ShaderUtilities.ID_UnderlayColor, s.shadowColor);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, s.shadowOffset.x);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, s.shadowOffset.y);
+            mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0f);
+        }
+        else
+        {
+            mat.DisableKeyword(ShaderUtilities.Keyword_Underlay);
+        }
+        mat.SetFloat(ShaderUtilities.ID_FaceDilate, s.faceDilate);
+        // Dilate and the shadow grow the glyph past its quad; without new padding their edges clip.
+        _tmp.UpdateMeshPadding();
+
+        transform.localScale = Vector3.one * (_popScale * PopIn(0f));
         gameObject.SetActive(true);
 
         // A runtime-created / pooled 3D TextMeshPro only marks itself dirty when text changes; the
@@ -89,20 +118,31 @@ public class DamageNumber : MonoBehaviour
         transform.position += _velocity * Time.deltaTime;
         _velocity.y = Mathf.Max(0f, _velocity.y - _s.riseDamping * Time.deltaTime);
 
-        // Crit scale-punch settles back to 1 over the first third.
+        // Every number pops in with a cartoon overshoot; a crit's extra punch settles back to 1 over
+        // the first third; the tail end shrinks as it fades.
+        float scale = PopIn(_age);
         if (_popScale > 1f)
-        {
-            float k = Mathf.Clamp01(_age / (_life * 0.3f));
-            transform.localScale = Vector3.one * Mathf.Lerp(_popScale, 1f, k);
-        }
-
-        // Fade the tail end.
+            scale *= Mathf.Lerp(_popScale, 1f, Mathf.Clamp01(_age / (_life * 0.3f)));
         if (t > _s.fadeStart)
         {
-            float a = 1f - (t - _s.fadeStart) / (1f - _s.fadeStart);
-            Color c = _color;
-            c.a = a;
-            _tmp.color = c;
+            float k = (t - _s.fadeStart) / (1f - _s.fadeStart);
+            scale *= Mathf.Lerp(1f, _s.shrinkTo, k);
+            _tmp.color = new Color(1f, 1f, 1f, 1f - k);   // the gradient carries the colour
         }
+        transform.localScale = Vector3.one * scale;
+    }
+
+    /// <summary>
+    /// Ease-out-back from a small start to full size over <c>popDuration</c>: overshoots, then
+    /// settles. After the pop it is simply 1.
+    /// </summary>
+    private float PopIn(float age)
+    {
+        float d = Mathf.Max(0.0001f, _s.popDuration);
+        if (age >= d) return 1f;
+        float x = age / d - 1f;
+        float c1 = Mathf.Max(0f, _s.popOvershoot), c3 = c1 + 1f;
+        float eased = 1f + c3 * x * x * x + c1 * x * x;
+        return Mathf.Lerp(0.25f, 1f, eased);
     }
 }

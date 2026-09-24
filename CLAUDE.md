@@ -437,6 +437,14 @@ Writing them:
   (`_PaintMode`, with the source's `_Inverse`, `_ColorMultiplier`, `_SaturationBound`). Without it,
   every hero's eyes turned green-irised with tinted whites the moment a fight began — invisible in
   any render taken before combat. `HitFlashPaintTests` pins it.
+- **Damage numbers are Pribambas (HeroEditor's cartoon font) on the full `TextMeshPro/Distance Field`
+  shader.** `Resources/Fonts/Pribambas SDF.asset` is a static atlas of just the glyphs the numbers print
+  (digits, `!`, `SLAM`); a new prefix or suffix needs its letters added. `TMP_FontAsset.CreateFontAsset`
+  gives the *Mobile* shader, which drew no outline or underlay at all — switch the material's shader
+  after building one. On this font an `outlineWidth` of 0.5 (right for the old LiberationSans) floods
+  the letters solid black; 0.25 with `faceDilate` 0.2 is the chunky cartoon look.
+- **`Mathf.SmoothStep(a, b, t)` is not shader `smoothstep`.** It blends *between* a and b; used as a
+  falloff it left the contact shadows at a quarter strength and they looked missing.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this
