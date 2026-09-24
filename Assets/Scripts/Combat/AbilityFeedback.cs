@@ -6,14 +6,14 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// The "loud" feedback for cost abilities (ults). Per the readability rule (Docs/Juice.md), rare
-/// events must dominate — so an ult announces itself over the caster, with a punctuating flash on
-/// the caster and a beefier hitstop on each victim.
+/// The feedback for cost abilities (ults): a punctuating flash on the caster as it fires, and a
+/// beefier hitstop on each victim. The mana bar emptying is the rest of the signal.
 ///
-/// What rises over the caster is the item the ability comes from — its icon on its rarity's slot,
-/// as the bag draws it — the way an autobattler shows an item proc: the player learns which piece of
-/// gear did that without reading. An ability with no item behind it (a monster's trait) shows its
-/// name instead, and <see cref="Settings.showName"/> puts the names back over the icons for debugging.
+/// Nothing floats over the caster by default, as in TFT, where a cast reads through the mana bar and
+/// the ability's own effects and its name lives in the unit's tooltip (decided 2026-09-23; it floated
+/// the name before). Two switches bring it back: <see cref="Settings.showIcon"/> floats the item the
+/// ability comes from, its icon on its rarity's slot — with the name when no item carries it, a
+/// monster's trait — and <see cref="Settings.showName"/> floats the name, for debugging.
 ///
 /// Every knob lives on the shared <see cref="CombatFeelSettings"/> asset, so the whole thing can be
 /// A/B tested (and, being a ScriptableObject, tuned live in Play mode) like all other combat feel.
@@ -23,19 +23,16 @@ public static class AbilityFeedback
     [Serializable]
     public class Settings
     {
-        [Header("Item icon")]
+        [Header("Over the caster (both off: as in TFT)")]
         [Tooltip("Float the item the ability comes from — its icon on its rarity's slot — above the " +
-                 "caster. An ability with no item (a monster's trait) shows its name instead.")]
-        public bool showIcon = true;
-        [Tooltip("Debug: float the ability's name as well as its icon.")]
+                 "caster. An ability no item carries (a monster's trait) floats its name instead.")]
+        public bool showIcon = false;
+        [Tooltip("Debug: float the ability's name above the caster.")]
         public bool showName = false;
         [Tooltip("The icon's size in world units.")]
         public float iconSize = 0.95f;
 
-        [Header("Name callout")]
-        [Tooltip("Float the ability's name above the caster when there is no icon to show (or when " +
-                 "showName is on). Off silences names entirely.")]
-        public bool enableCallout = true;
+        [Header("Name")]
         public Color calloutColor = new Color(1f, 0.88f, 0.3f, 1f);
         [Tooltip("Kept close to the damage-number size so callouts read as part of the same layer, " +
                  "not a billboard over the unit.")]
@@ -82,8 +79,8 @@ public static class AbilityFeedback
     }
 
     /// <summary>
-    /// Fire the on-cast feedback: caster flash, and over the caster the icon of
-    /// <paramref name="source"/> — or the name, when there is no item or names are switched on.
+    /// Fire the on-cast feedback: the caster flash, and whatever the settings float over the caster —
+    /// the icon of <paramref name="source"/>, the name, both, or nothing.
     /// </summary>
     public static void Announce(Entity caster, string abilityName, Item source = null)
     {
@@ -96,7 +93,9 @@ public static class AbilityFeedback
         var at = caster.transform.position + s.offset;
         bool iconShown = s.showIcon && source != null && AbilityIconCallout.Show(at, source, s);
 
-        if (s.enableCallout && !string.IsNullOrEmpty(abilityName) && (!iconShown || s.showName))
+        // The name: asked for, or standing in for an icon that was asked for and has no item.
+        bool name = s.showName || (s.showIcon && !iconShown);
+        if (name && !string.IsNullOrEmpty(abilityName))
             AbilityCallout.Show(iconShown ? at + Vector3.up * s.iconSize * 0.75f : at, abilityName, s);
     }
 
