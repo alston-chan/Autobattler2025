@@ -421,6 +421,12 @@ Writing them:
   is the exact cell centre; `CombatPhysics.WallBand` is the authored `softWall` or the grid's nearest
   cell's room to the edge, whichever is less, so nobody opens a fight being slid. Squeezing the cells
   off the wall instead put units beside their tiles and was reported as looking wrong.
+- **Random faces skip a ban list.** `Appearance.SetRandomAppearance` picks hair, eyebrows, eyes, mouth
+  and beard through `FaceBans` (`Resources/FaceBans.json`, sprite collection ids), because HeroEditor's
+  collection mixes zombie, demon and skeleton faces in with the ordinary ones. The list was chosen by eye
+  on the Face Part Bans artifact (every option rendered on one head); `FaceBansTests` fails on an id the
+  collection doesn't have. The JSON is a TextAsset: after editing it by hand, `AssetDatabase.Refresh()`
+  before testing, or the old list is what loads.
 - **`Docs/` is gitignored** (`# Local design docs`). The design docs are deliberately
   untracked, so changes there are never committed.
 - Vendor code in `Assets/HeroEditor` is edited only where it is genuinely broken for this

@@ -40,13 +40,16 @@ public class Appearance : MonoBehaviour
 
     public void SetRandomAppearance()
     {
-        CharacterAppearance.Hair = Random.Range(0, 3) == 0 ? null : Character.SpriteCollection.Hair[Random.Range(0, Character.SpriteCollection.Hair.Count)].Id;
+        // Every part skips the face bans (FaceBans.json), so emoji and undead faces stay off heroes.
+        var sc = Character.SpriteCollection;
+        var bans = FaceBans.Active;
+        CharacterAppearance.Hair = Random.Range(0, 3) == 0 ? null : FaceBans.PickId(sc.Hair, i => i.Id, bans.Hair);
         CharacterAppearance.HairColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
-        CharacterAppearance.Eyebrows = Character.SpriteCollection.Eyebrows[Random.Range(0, Character.SpriteCollection.Eyebrows.Count)].Id;
-        CharacterAppearance.Eyes = Character.SpriteCollection.Eyes[Random.Range(0, Character.SpriteCollection.Eyes.Count)].Id;
+        CharacterAppearance.Eyebrows = FaceBans.PickId(sc.Eyebrows, i => i.Id, bans.Eyebrows);
+        CharacterAppearance.Eyes = FaceBans.PickId(sc.Eyes, i => i.Id, bans.Eyes);
         CharacterAppearance.EyesColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
-        CharacterAppearance.Mouth = Character.SpriteCollection.Mouth[Random.Range(0, Character.SpriteCollection.Mouth.Count)].Id;
-        CharacterAppearance.Beard = Random.Range(0, 3) == 0 ? Character.SpriteCollection.Beard[Random.Range(0, Character.SpriteCollection.Beard.Count)].Id : null;
+        CharacterAppearance.Mouth = FaceBans.PickId(sc.Mouth, i => i.Id, bans.Mouth);
+        CharacterAppearance.Beard = Random.Range(0, 3) == 0 ? FaceBans.PickId(sc.Beard, i => i.Id, bans.Beard) : null;
 
         Refresh();
     }
