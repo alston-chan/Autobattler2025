@@ -28,6 +28,8 @@ public partial class GameManager
         SetupUnitBars();
         SetupDamageNumbers();
         SetupCombatAudio();
+        // A soft oval on the floor under every unit, so they stand on the arena, not over it.
+        if (GetComponent<ContactShadows>() == null) gameObject.AddComponent<ContactShadows>();
 
         // Watches entity registration to record who does what. Here rather than later because it
         // has to be listening before the first unit is dressed, let alone the first blow.
