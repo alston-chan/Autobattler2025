@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Desert
   m_EditorClassIdentifier: 
   shape: 0
-  center: {x: 0, y: -1.42}
-  size: {x: 17.6, y: 6.93}
+  center: {x: 0, y: -1.26}
+  size: {x: 17.6, y: 6.63}
   gridLift: 0.75
+  nearWallRaise: 0

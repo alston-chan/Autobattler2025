@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DarkCave
   m_EditorClassIdentifier: 
   shape: 0
-  center: {x: 0, y: -1.32}
-  size: {x: 17.6, y: 6.3}
+  center: {x: 0, y: -1.17}
+  size: {x: 17.6, y: 6}
   gridLift: 0.75
+  nearWallRaise: 0

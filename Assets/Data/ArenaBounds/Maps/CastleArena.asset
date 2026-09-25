@@ -16,3 +16,4 @@ MonoBehaviour:
   center: {x: 0, y: -2.05}
   size: {x: 20.4, y: 5.86}
   gridLift: 0
+  nearWallRaise: 0.3

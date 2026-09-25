@@ -45,6 +45,38 @@ public class MapLayoutTests
     }
 
     [Test]
+    public void ARoundMapsNearWallKeepsFeetOffTheFrontWall()
+    {
+        var was = ArenaBounds.Instance;
+        var arena = new GameObject("NearWallArena").AddComponent<ArenaBounds>();
+        try
+        {
+            SetInstance.Invoke(null, new object[] { arena });
+            arena.shape = ArenaShape.Ellipse; arena.center = new Vector2(0f, -1.92f); arena.size = new Vector2(18.1f, 5.8f);
+            arena.nearWallRaise = 0.3f;
+
+            // Knocked to the bottom of the ring: stopped 0.3 above its lowest point, not on the front wall.
+            var low = arena.Clamp(new Vector3(0f, -6f, 0f));
+            Assert.That(low.y, Is.EqualTo(-1.92f - 2.9f + 0.3f).Within(0.01f), "the near wall should stand 0.3 above the ring's bottom");
+
+            // Inside the ring but under the near wall: raised to it.
+            var under = arena.Clamp(new Vector3(0f, -4.7f, 0f));
+            Assert.That(under.y, Is.EqualTo(-1.92f - 2.9f + 0.3f).Within(0.01f));
+
+            // Toward the corners the ring's curve is already above the near wall, so the near wall leaves
+            // a unit standing just inside the curve alone — the back cells at x = ±7 keep their ground.
+            float cornerY = -1.92f - 2.9f * Mathf.Sqrt(1f - (7f / 9.05f) * (7f / 9.05f));
+            var corner = new Vector3(7f, cornerY + 0.05f, 0f);
+            Assert.That(Vector3.Distance(arena.Clamp(corner), corner), Is.LessThan(0.001f), "the near wall moved a unit near a corner");
+        }
+        finally
+        {
+            SetInstance.Invoke(null, new object[] { was });
+            Object.DestroyImmediate(arena.gameObject);
+        }
+    }
+
+    [Test]
     public void ALiftRaisesTheCellsAndIsNotCumulative()
     {
         var grid = new GameObject("LiftGrid").AddComponent<BattleGrid>();
@@ -79,7 +111,9 @@ public class MapLayoutTests
                         // The scene's board: columns 2 apart from ±1, rows 1.5 apart from -3.6.
                         float x = side * (1f + c * 2f), y = -3.6f + r * 1.5f + p.gridLift;
                         float dx = (x - p.center.x) / hx, dy = (y - p.center.y) / hy;
-                        bool inside = p.shape == ArenaShape.Ellipse ? dx * dx + dy * dy <= 1f : Mathf.Abs(dy) <= 1f;
+                        bool inside = p.shape == ArenaShape.Ellipse
+                            ? dx * dx + dy * dy <= 1f && y >= p.center.y - hy + p.nearWallRaise
+                            : Mathf.Abs(dy) <= 1f;
                         Assert.That(inside, Is.True, $"{p.name}: the cell at ({x}, {y}) is outside the walls");
                     }
         }

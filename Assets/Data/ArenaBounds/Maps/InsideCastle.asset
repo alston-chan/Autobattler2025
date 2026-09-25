@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: InsideCastle
   m_EditorClassIdentifier: 
   shape: 0
-  center: {x: 0, y: -0.93}
-  size: {x: 17.6, y: 5.23}
+  center: {x: 0, y: -0.78}
+  size: {x: 17.6, y: 4.93}
   gridLift: 1.25
+  nearWallRaise: 0

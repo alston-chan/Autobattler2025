@@ -23,10 +23,14 @@ public class ArenaBoundsPreset : ScriptableObject
              "rectangular floor lifts the board toward the middle of its floor band.")]
     public float gridLift = 0f;
 
+    [Tooltip("Round maps: a straight near wall this far above the ellipse's lowest point, so a unit's " +
+             "feet never hang over the painted front wall. Rectangles set their bottom edge instead.")]
+    public float nearWallRaise = 0f;
+
     /// <summary>Push this preset into the global <see cref="ArenaBounds"/> and lift the board to match.</summary>
     public void Apply()
     {
-        ArenaBounds.SetBounds(center, size, shape);
+        ArenaBounds.SetBounds(center, size, shape, nearWallRaise);
         if (BattleGrid.Instance != null) BattleGrid.Instance.SetLift(gridLift);
     }
 }

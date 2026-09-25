@@ -425,11 +425,13 @@ Writing them:
   one `ArenaBoundsPreset` each, wired in `BackgroundCycler.mapPresets`; Jungle is the default). They
   were measured from the paintings, not guessed: a flood fill of the floor on a 480×270 copy, an
   ellipse fitted to the round maps' rings (inset 0.25 at the sides, 0.1 top and bottom) and the floor
-  band for the rest, with CastleArena, AbandonedForest, LavaCave and Deck read by hand off a world-grid
+  band for the rest (bottom wall 0.4 above the painted edge, so no foot is drawn over it), with CastleArena, AbandonedForest, LavaCave and Deck read by hand off a world-grid
   overlay because their walls are painted near the floor's colour. Round maps keep the board where it
   was; rectangular ones lift it (`gridLift`, via `BattleGrid.SetLift`, which moves everyone on the field
   with it). An ellipse's curve uses its authored width and only then the screen-margin side walls —
-  squeezing the whole ellipse to the screen moved its top and bottom off the paint.
+  squeezing the whole ellipse to the screen moved its top and bottom off the paint. A round map's
+  near wall is a straight line 0.3 above the ring's lowest point (`nearWallRaise`): raising the
+  ellipse's whole bottom instead pulled its lower corners in past the board's back cells.
   `MapLayoutTests` checks every map's lifted cells sit inside its walls.
 - **Random faces skip a ban list.** `Appearance.SetRandomAppearance` picks hair, eyebrows, eyes, mouth
   and beard through `FaceBans` (`Resources/FaceBans.json`, sprite collection ids), because HeroEditor's

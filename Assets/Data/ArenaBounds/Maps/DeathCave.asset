@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DeathCave
   m_EditorClassIdentifier: 
   shape: 0
-  center: {x: 0, y: -1.69}
-  size: {x: 17.6, y: 4.82}
+  center: {x: 0, y: -1.54}
+  size: {x: 17.6, y: 4.52}
   gridLift: 0.5
+  nearWallRaise: 0

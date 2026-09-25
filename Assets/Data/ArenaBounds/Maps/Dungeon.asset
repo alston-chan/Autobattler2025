@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Dungeon
   m_EditorClassIdentifier: 
   shape: 0
-  center: {x: 0, y: -0.35}
-  size: {x: 17.6, y: 5.49}
+  center: {x: 0, y: -0.21}
+  size: {x: 17.6, y: 5.19}
   gridLift: 1.75
+  nearWallRaise: 0

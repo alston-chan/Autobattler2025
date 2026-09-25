@@ -38,6 +38,11 @@ public class ArenaBounds : MonoBehaviour
              "knockback can throw someone.")]
     public Vector2 size = new Vector2(17.6f, 6.2f);
 
+    [Tooltip("Round arenas only: a straight near wall this far above the ellipse's lowest point. The " +
+             "bottom of a painted ring is where a unit's feet hang over the front wall, and raising the " +
+             "whole ellipse's bottom instead pulled its lower corners in past the board's back cells.")]
+    public float nearWallRaise = 0f;
+
     [Tooltip("The side walls never stand closer than this to the camera's left and right edges, " +
              "whatever the size says, so a unit pinned against one keeps its body on screen. A unit " +
              "at a wall faces into the arena; measured over 200 frames of fighting, its body reaches " +
@@ -132,6 +137,7 @@ public class ArenaBounds : MonoBehaviour
             p.y = center.y + (dy / d) * ry;
         }
         p.x = Mathf.Clamp(p.x, MinX, MaxX);
+        p.y = Mathf.Max(p.y, center.y - ry + nearWallRaise);
         return p;
     }
 
@@ -142,7 +148,7 @@ public class ArenaBounds : MonoBehaviour
     /// Set the global bounds, creating the instance if none exists yet. Lets a per-map driver (e.g.
     /// <see cref="BackgroundCycler"/>) push a map's play area without caring about script order.
     /// </summary>
-    public static void SetBounds(Vector2 center, Vector2 size, ArenaShape shape = ArenaShape.Rectangle)
+    public static void SetBounds(Vector2 center, Vector2 size, ArenaShape shape = ArenaShape.Rectangle, float nearWallRaise = 0f)
     {
         var inst = Instance;
         if (inst == null)
@@ -150,6 +156,7 @@ public class ArenaBounds : MonoBehaviour
         inst.shape = shape;
         inst.center = center;
         inst.size = size;
+        inst.nearWallRaise = nearWallRaise;
     }
 
     private void OnDrawGizmos()
