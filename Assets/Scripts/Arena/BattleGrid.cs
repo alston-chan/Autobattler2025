@@ -30,8 +30,55 @@ public class BattleGrid : MonoBehaviour
     [Tooltip("Centre of the enemy's front-rank, bottom row cell. Extends right and up.")]
     public Vector2 enemyFrontBottom = new Vector2(2.2f, -3.2f);
 
-    private void Awake() => Instance = this;
+    /// <summary>
+    /// How far the current map has raised the board above its authored rows (<see cref="ArenaBoundsPreset.gridLift"/>).
+    /// A rectangular floor sits higher in its painting than the coliseum's sand, so its map lifts the
+    /// tiles to the middle of its floor; round maps leave them where they are.
+    /// </summary>
+    public float Lift { get; private set; }
+
+    private Vector2 _authoredAlly, _authoredEnemy;
+    private bool _authoredKnown;
+
+    private void Awake()
+    {
+        Instance = this;
+        RememberAuthored();
+    }
     private void OnDestroy() { if (Instance == this) Instance = null; }
+
+    private void RememberAuthored()
+    {
+        if (_authoredKnown) return;
+        _authoredAlly = allyFrontBottom;
+        _authoredEnemy = enemyFrontBottom;
+        _authoredKnown = true;
+    }
+
+    /// <summary>
+    /// Raise the board <paramref name="lift"/> above its authored rows. Everyone standing on the field
+    /// moves with it, so a unit keeps its cell, and the tiles are rebuilt where the cells now are.
+    /// </summary>
+    public void SetLift(float lift)
+    {
+        RememberAuthored();
+        float delta = lift - Lift;
+        if (Mathf.Approximately(delta, 0f)) return;
+        Lift = lift;
+        allyFrontBottom = _authoredAlly + Vector2.up * lift;
+        enemyFrontBottom = _authoredEnemy + Vector2.up * lift;
+
+        foreach (var e in EntityRegistry.All)
+            if (e != null) e.transform.position += Vector3.up * delta;
+
+        var view = GetComponent<BattleGridView>();
+        if (view != null)
+        {
+            bool shown = view.IsVisible;
+            view.Build();
+            view.SetVisible(shown);
+        }
+    }
 
     public bool IsValidCell(int column, int row) =>
         column >= 0 && column < columns && row >= 0 && row < rows;

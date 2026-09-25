@@ -19,6 +19,14 @@ public class ArenaBoundsPreset : ScriptableObject
              "knockback can throw someone.")]
     public Vector2 size = new Vector2(17.6f, 6.2f);
 
-    /// <summary>Push this preset into the global <see cref="ArenaBounds"/>.</summary>
-    public void Apply() => ArenaBounds.SetBounds(center, size, shape);
+    [Tooltip("How far this map raises the tile grid above its authored rows. Round maps keep 0; a " +
+             "rectangular floor lifts the board toward the middle of its floor band.")]
+    public float gridLift = 0f;
+
+    /// <summary>Push this preset into the global <see cref="ArenaBounds"/> and lift the board to match.</summary>
+    public void Apply()
+    {
+        ArenaBounds.SetBounds(center, size, shape);
+        if (BattleGrid.Instance != null) BattleGrid.Instance.SetLift(gridLift);
+    }
 }

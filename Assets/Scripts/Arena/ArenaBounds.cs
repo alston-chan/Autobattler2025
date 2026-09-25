@@ -108,22 +108,30 @@ public class ArenaBounds : MonoBehaviour
     }
 
     /// <summary>
-    /// Clamp into the ellipse inscribed in the box. A point outside is projected radially back onto the
-    /// rim — not the exact nearest point, but cheap and visually indistinguishable for gameplay.
+    /// Clamp into the ellipse inscribed in the box, then between the side walls. A point outside is
+    /// projected radially back onto the rim — not the exact nearest point, but cheap and visually
+    /// indistinguishable for gameplay.
+    ///
+    /// The curve uses the authored width, not <see cref="HalfWidth"/>: a round map's ellipse is fitted
+    /// to its painted ring, which runs past the screen's sides, and squeezing the whole ellipse to the
+    /// screen margin moved its top and bottom off the paint too. The screen margin is applied after,
+    /// as the straight side walls it always was.
     /// </summary>
     private Vector3 ClampEllipse(Vector3 p)
     {
-        float rx = HalfWidth;
+        float rx = size.x * 0.5f;
         float ry = size.y * 0.5f;
         if (rx <= 0.0001f || ry <= 0.0001f) return ClampRect(p);   // degenerate box
 
         float dx = (p.x - center.x) / rx;
         float dy = (p.y - center.y) / ry;
         float d = Mathf.Sqrt(dx * dx + dy * dy);
-        if (d <= 1f) return p;   // already inside
-
-        p.x = center.x + (dx / d) * rx;
-        p.y = center.y + (dy / d) * ry;
+        if (d > 1f)
+        {
+            p.x = center.x + (dx / d) * rx;
+            p.y = center.y + (dy / d) * ry;
+        }
+        p.x = Mathf.Clamp(p.x, MinX, MaxX);
         return p;
     }
 

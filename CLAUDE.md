@@ -421,6 +421,16 @@ Writing them:
   is the exact cell centre; `CombatPhysics.WallBand` is the authored `softWall` or the grid's nearest
   cell's room to the edge, whichever is less, so nobody opens a fight being slid. Squeezing the cells
   off the wall instead put units beside their tiles and was reported as looking wrong.
+- **Every background has its own walls and board height** (`Assets/Data/ArenaBounds/Maps/<map>.asset`,
+  one `ArenaBoundsPreset` each, wired in `BackgroundCycler.mapPresets`; Jungle is the default). They
+  were measured from the paintings, not guessed: a flood fill of the floor on a 480×270 copy, an
+  ellipse fitted to the round maps' rings (inset 0.25 at the sides, 0.1 top and bottom) and the floor
+  band for the rest, with CastleArena, AbandonedForest, LavaCave and Deck read by hand off a world-grid
+  overlay because their walls are painted near the floor's colour. Round maps keep the board where it
+  was; rectangular ones lift it (`gridLift`, via `BattleGrid.SetLift`, which moves everyone on the field
+  with it). An ellipse's curve uses its authored width and only then the screen-margin side walls —
+  squeezing the whole ellipse to the screen moved its top and bottom off the paint.
+  `MapLayoutTests` checks every map's lifted cells sit inside its walls.
 - **Random faces skip a ban list.** `Appearance.SetRandomAppearance` picks hair, eyebrows, eyes, mouth
   and beard through `FaceBans` (`Resources/FaceBans.json`, sprite collection ids), because HeroEditor's
   collection mixes zombie, demon and skeleton faces in with the ordinary ones. The list was chosen by eye
